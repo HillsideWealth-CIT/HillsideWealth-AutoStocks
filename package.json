@@ -1,0 +1,23 @@
+{
+  "name": "hillsidewealth-autostocks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HillsideWealth-CIT/HillsideWealth-AutoStocks.git"
+  },
+  "author": "Jason Huang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HillsideWealth-CIT/HillsideWealth-AutoStocks/issues"
+  },
+  "homepage": "https://github.com/HillsideWealth-CIT/HillsideWealth-AutoStocks#readme",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4"
+  }
+}
