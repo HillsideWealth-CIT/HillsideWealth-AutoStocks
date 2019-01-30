@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Home page</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/styles/home.css" />
+	<link rel="icon" type="image/png" href="/imgs/icon.png" />
+</head>
+<body>
+	{{>header}}
+	<h1> Hey {{name}}! </h1>
+	<div id="logout">
+		<a href="/">
+			<button>Logout</button>
+		</a>
+	</div>
+	<div id="upload">drop file here</div>
+	<div id="uploadButton">
+		<button>Upload</button>
+	</div>
+	<a href="/database"><button>View database</button></a>
+	<a href="/register"><button>register</button></a>
+</body>
+</html>
