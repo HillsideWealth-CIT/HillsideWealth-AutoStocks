@@ -1,5 +1,5 @@
 body {
-	background-color: #221F1F;
+	background-color: #295a88;
 	font-family: "Andale Mono", monospace;
 	zoom: 1.5;
 }
@@ -14,7 +14,7 @@ h1 {
 	background-color: #ffffff;
 	display: block;
 	margin-right: auto;
-	width: 5%;
+	width: 60%;
 	margin: 15px;
 }
 #logout {

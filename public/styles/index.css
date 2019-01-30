@@ -1,18 +1,25 @@
 body {
-	background-color: #221F1F;
+	background-color: #295a88;
 	font-family: "Andale Mono", monospace;
 	zoom: 1.5;
 }
-h1 {
-	text-align: center;
-	color: #ffffff;
-	font-size: 50px;
-	margin: 0px;
+
+#menu {
+	position: absolute;
+	margin: auto;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background-color: #ffffff;
+	width:30%;
+	height: 40%;
 }
+
 #logo {
 	background-color: #ffffff;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	width: 10%;
+	width: 60%;
 }
