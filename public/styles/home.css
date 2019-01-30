@@ -1,0 +1,41 @@
+body {
+	background-color: #221F1F;
+	font-family: "Andale Mono", monospace;
+	zoom: 1.5;
+}
+h1 {
+	text-align: center;
+	color: #ffffff;
+	font-size: 25px;
+	margin: 0px;
+}
+
+#logo {
+	background-color: #ffffff;
+	display: block;
+	margin-right: auto;
+	width: 5%;
+	margin: 15px;
+}
+#logout {
+	position: absolute;
+	right:3%;
+	top: 0px;
+	margin: auto;
+}
+#upload {
+	border-style: dashed;
+	height: 10vh;
+	width: 10vw;
+	border-color: #ffffff;
+	margin-right: auto;
+	margin-left: auto;
+	padding-top: 2%;
+	text-align: center;
+	color: white;
+}
+#uploadButton {
+	text-align: center;
+	padding-top: 2%;
+	padding-bottom: 5%;
+}
