@@ -5,16 +5,15 @@ const request = require('request');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const session = require('client-sessions');
-
+const app = express();
 
 /*** Project Scripts ***/
 const auth = require("./actions/auth");
 
 
 /*** Constants ***/
+const port = process.env.PORT || 8080;
 
-const PORT = process.env.PORT || 8080;
-const app = express();
 
 /*** Middlewares ***/
 
@@ -38,66 +37,78 @@ app.use(session({
 /*** Functions ***/
 
 /* Checks session */
-const session_check = (req, res, next) => {
+const sessionCheck = (req, res, next) => {
     console.log(req.session.user);
-    if (!req.session.user) {
+    if (req.session.user) {
         next();
     } else {
-        res.redirect('/');
+        res.redirect('/login');
     }
 }
 
 /*** HTTP Requests ***/
 
-
-
-
-
 /** GET **/
 
-app.get('/', (request, response) => {
+app.get('/', sessionCheck, (request, response) => {
     response.render('index.hbs');
-});
-
-app.get('/home', session_check, (request, response) => {
-    response.render('home.hbs');
-});
-
-app.get('/database', session_check, (request, response) => {
-    response.render('database.hbs');
-});
-
-app.get('/collection', session_check, (request, response) => {
-	response.render('collection.hbs')
-});
-
-app.get('/documentation', session_check, (request, response) => {
-	response.render('documentation.hbs')
-});
-
-app.get('/settings', session_check, (request, response) => {
-	response.render('settings.hbs')
 });
 
 app.get('/register', (request, response) => {
     response.render('register.hbs');
 });
 
+app.get('/login', (request, response) => {
+    response.render('login.hbs');
+});
+
+app.get('/database', sessionCheck, (request, response) => {
+    response.render('database.hbs');
+});
+
+app.get('/collection', sessionCheck, (request, response) => {
+    response.render('collection.hbs')
+});
+
+app.get('/documentation', sessionCheck, (request, response) => {
+    response.render('documentation.hbs')
+});
+
+app.get('/settings', sessionCheck, (request, response) => {
+    response.render('settings.hbs')
+});
+
 
 /** POST **/
 
-
-//Sign in verification
-app.post('/', (request, response) => {
-    login.check(request.body)
-        .then((resolve) => {
-            request.session.user = resolve;
-            response.redirect('/home');
-        }).catch((error) => {
-            console.log(error);
-        });
+/* Login */
+app.post('/login', (request, response) => {
+    auth.login(request.body.username, request.body.password)
+        .then(() => {
+            request.session.user = request.body.username
+            response.redirect('/')
+        }).catch((err) => {
+            console.log(error)
+        })
 });
 
-app.listen(PORT, () => {
-    console.log('Server is up on port 8080');
+/* Register */
+app.post('/register', (request, response) => {
+    auth.signup(request.body.username, request.body.password, request.body.confirmPassword)
+        .then(() => {
+            request.session.user = request.body.username;
+            response.redirect('/')
+        })
+})
+
+/* Logout */
+app.post('/logout', (request, response) => {
+    request.session.reset()
+    response.redirect('/')
+})
+
+
+/*** Start Server ***/
+app.listen(port, () => {
+    console.log(`Server is up on port: ${port}, with PID: ${process.pid}`);
 });

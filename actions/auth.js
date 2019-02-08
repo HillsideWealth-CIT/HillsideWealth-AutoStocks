@@ -20,11 +20,9 @@ const signup = async (username, password, passwordConfirm) => {
     } else if (password.length < 8) {//Passwords too short
         throw `Password must be at least 8 characters`
     } else { //Success
-
-        bcrypt.hash(password, saltRounds, (err, hash) => {
-            if (err) throw err
-            db.addUser(username, hash)
-        })
+        let hash = await generateHash(password)
+        db.addUser(username, hash)
+        return `${username}'s account added!`
     }
 }
 
@@ -40,6 +38,17 @@ const login = async (username, password) => {
         throw `Username or Password does not match.`
 
     }
+}
+
+/* Uses bcrypt to return a salted hash */
+const generateHash = async (password) => {
+    const hashedPass = await new Promise((resolve, reject) => {
+        bcrypt.hash(password, saltRounds, (err, hash) => {
+            if (err) reject(err)
+            resolve(hash)
+        })
+    })
+    return hashedPass
 }
 
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Hillside Wealth Web</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/styles/index.css" />
+	<link rel="icon" type="image/png" href="/imgs/icon.png" />
+</head>
+
+<body>
+	{{>logo}}
+	<div id="menu">
+		<h2> Hillside Wealth Tool </h2>
+		<form action="/login" method="post">
+			<input type="text" placeholder="Username" name="username" id="username">
+			<br />
+			<input type="password" placeholder="Password" name="password" id="password">
+			<br />
+			<button id="send" type="submit">Login</button>
+		</form>
+
+		<div id="subMenu">
+			<a id="createAccount" href="/register">Create an Account</a>
+		</div>
+		<div id="subMenu2">
+			<a id="forgotPassword" href="/">Forgot Password?</a>
+		</div>
+	</div>
+
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+	<!-- <script src="login.js"></script> -->
+</body>
+
+</html>

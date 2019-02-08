@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>Hillside Wealth Web</title>
+	<title>Home page</title>
 	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="/styles/index.css" />
+	<link rel="stylesheet" type="text/css" href="/styles/home.css" />
 	<link rel="icon" type="image/png" href="/imgs/icon.png" />
 </head>
+
 <body>
-	{{>logo}}
-	<div id="menu">
-		<h2> Hillside Wealth Tool </h2>
-		<form action="/" method="post">
-			<input type="text" placeholder="Username" name="userName" id="userName">
-			<br />
-			<input type="password" placeholder="Password" name="password" id="password">
-			<br />
-			<button id="send" type="submit">Login</button>
-		</form>
-
-		<div id="subMenu">
-			<a id="createAccount" href="/register">Create an Account</a>
+	{{>header}}
+	{{!-- <div id="logout">
+		<a href="/">
+			<button>Logout</button>
+		</a>
+	</div> --}}
+	<div id="container">
+		<div id="upload">
+			<p>Drop files here, or click below</p>
+			<div id="uploadButton">
+				<button>
+					<img id="dropImage" src="/imgs/upload.png">
+					Upload
+				</button>
+			</div>
+			<p>You can upload up to a max of 500 MB</p>
 		</div>
-		<div id="subMenu2">
-			<a id="forgotPassword" href="/">Forgot Password?</a>
-		</div>
+		<div id="confirm">Confirm</div>
+		<div id="cancel">Cancel</div>
 	</div>
-
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-<!-- <script src="login.js"></script> -->
+	<a href="/register"><button>register</button></a>
 </body>
+
 </html>
