@@ -67,6 +67,18 @@ app.get('/database', session_check, (request, response) => {
     response.render('database.hbs');
 });
 
+app.get('/collection', session_check, (request, response) => {
+	response.render('collection.hbs')
+});
+
+app.get('/documentation', session_check, (request, response) => {
+	response.render('documentation.hbs')
+});
+
+app.get('/settings', session_check, (request, response) => {
+	response.render('settings.hbs')
+});
+
 app.get('/register', (request, response) => {
     response.render('register.hbs');
 });
