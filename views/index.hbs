@@ -10,11 +10,9 @@
 
 <body>
 	{{>header}}
-	{{!-- <div id="logout">
-		<a href="/">
-			<button>Logout</button>
-		</a>
-	</div> --}}
+	<form action="/logout" method="post">
+		<button id="type submit">Logout</button>
+	</form>
 	<div id="container">
 		<div id="upload">
 			<p>Drop files here, or click below</p>
