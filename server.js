@@ -16,11 +16,6 @@ const auth = require("./actions/auth");
 const PORT = process.env.PORT || 8080;
 const app = express();
 
-
-
-
-
-
 /*** Middlewares ***/
 
 app.set('view engine', 'hbs');
@@ -60,8 +55,6 @@ const session_check = (req, res, next) => {
 
 /** GET **/
 
-/** POST **/
-
 app.get('/', (request, response) => {
     response.render('index.hbs');
 });
@@ -77,6 +70,10 @@ app.get('/database', session_check, (request, response) => {
 app.get('/register', (request, response) => {
     response.render('register.hbs');
 });
+
+
+/** POST **/
+
 
 //Sign in verification
 app.post('/', (request, response) => {
