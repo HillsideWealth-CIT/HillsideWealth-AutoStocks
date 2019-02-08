@@ -9,12 +9,21 @@
 <body>
 	{{>header}}
 	<div id="menu">
-		<h2> Hillside Wealth Management ISSP </h2>
+		<h2> Hillside Wealth Tool </h2>
 		<form action="/" method="post">
 			<input type="text" placeholder="Username" name="userName" id="userName">
+			<br />
 			<input type="password" placeholder="Password" name="password" id="password">
+			<br />
 			<button id="send" type="submit">Login</button>
 		</form>
+
+		<div id="subMenu">
+			<a id="createAccount" href="/register">Create an Account</a>
+		</div>
+		<div id="subMenu2">
+			<a id="forgotPassword" href="/">Forgot Password?</a>
+		</div>
 	</div>
 
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
