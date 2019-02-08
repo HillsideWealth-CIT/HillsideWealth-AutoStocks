@@ -1,36 +1,49 @@
 const bcrypt = require('bcrypt');
-data = {};
-
-module.exports.check = function(input) {
-    return new Promise((resolve, reject)=>{
-        results = DB_Query(input);
-        if(results == true){
-            data.userName = input.userName;
-            data.password = input.password;
-            resolve(data);
-        }
-        else {
-            data.error = 1;
-            reject(data);
-        }
-    });
-};
+const db = require('./database')
 
 
+/* Constants */
+const saltRounds = 12
 
-function DB_Query(input){
-    // function for DB query
-    var example = {
-        userName: 'jason',
-        password: bcrypt.hashSync('jason', bcrypt.genSaltSync(10))
-    };
-    console.log(example.password);
-    console.log(input.password);
-    console.log(bcrypt.compareSync(input.password, example.password));
-    if (input.userName == example.userName && bcrypt.compareSync(input.password, example.password) == true){
-        return true;
-    } else {
-        console.log('wat')
-        return false;
+/*** Functions ***/
+
+/* Signup */
+const signup = async (username, password, passwordConfirm) => {
+    let usernameAvailable = await db.usernameAvailable(username)
+
+    if (username.length < 3 || username.length > 32) { //Username too short/long
+        throw `Username must be between 3-32 characters`
+    } else if (!usernameAvailable) { //Username not available
+        throw `${username} already in use.`
+    } else if (password != passwordConfirm) {//Passwords do not match
+        throw `Passwords do not match.`
+    } else if (password.length < 8) {//Passwords too short
+        throw `Password must be at least 8 characters`
+    } else { //Success
+
+        bcrypt.hash(password, saltRounds, (err, hash) => {
+            if (err) throw err
+            db.addUser(username, hash)
+        })
     }
 }
+
+/* Login */
+const login = async (username, password) => {
+    const user = await db.retrieveUser(username)
+
+}
+
+
+
+
+
+module.exports = {
+    signup,
+    login
+}
+
+
+
+
+
