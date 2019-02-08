@@ -8,8 +8,7 @@ const session = require('client-sessions');
 
 
 /*** Project Scripts ***/
-const login = require("./actions/login");
-
+const auth = require("./actions/auth");
 
 
 /*** Constants ***/
@@ -19,16 +18,18 @@ const app = express();
 
 
 
-app.use(express.static(__dirname + '/public'));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 
 /*** Middlewares ***/
-app.set('view engine', 'hbs');
 
-hbs.registerPartials(__dirname + '/views/partials');
+app.set('view engine', 'hbs');
+app.use(express.static(`${__dirname}/public`));
+hbs.registerPartials(`${__dirname}/views/partials`);
+
+/* Bodyparser Middlewares */
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 /* Session Middleware */
 app.use(session({
@@ -51,7 +52,15 @@ const session_check = (req, res, next) => {
     }
 }
 
+/*** HTTP Requests ***/
 
+
+
+
+
+/** GET **/
+
+/** POST **/
 
 app.get('/', (request, response) => {
     response.render('index.hbs');
