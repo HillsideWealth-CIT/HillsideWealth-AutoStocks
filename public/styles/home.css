@@ -1,6 +1,6 @@
 body {
-	background-color: #295a88;
-	font-family: "Andale Mono", monospace;
+	background-color: #255A85;
+	font-family: sans-serif;
 	zoom: 1.5;
 }
 h1 {
@@ -11,7 +11,6 @@ h1 {
 }
 
 #logo {
-	background-color: #ffffff;
 	display: block;
 	margin-right: auto;
 	width: 60%;

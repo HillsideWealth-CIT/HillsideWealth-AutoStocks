@@ -12,11 +12,11 @@ body {
 	top: 0px;
 	bottom: 0px;
 	background-color: #ffffff;
-	width:300px;
-	height: 250px;
+	width:325px;
+	height: 370px;
 	text-align: center;
 	border-radius: 4px;
-	padding: 20px;
+	padding: 12px;
 }
 
 #logo {
@@ -26,15 +26,7 @@ body {
 	width: 60%;
 }
 
-#userName {
-	width: 85%;
-	border:none;
-	border-bottom: 2px solid rgb(219, 219, 219);
-	padding-top: 10px;
-	font-size: 16px;
-}
-
-#password {
+.input {
 	width: 85%;
 	margin-top: 20px;
 	border:none;
@@ -64,8 +56,9 @@ body {
 	margin: 30px;
 	background-color: #255A85;
 	color:white;
-	padding: 7px;
-	width: 70px;
+	padding: 8px;
+	width: 98px;
+	bottom:8px;
 	font-size: 16px;
 	border: none;
 	cursor: pointer;
@@ -73,6 +66,25 @@ body {
 }
 
 #send:hover{
+	background-color: rgb(51, 121, 179);
+}
+
+#back {
+	left: 0px;
+	position: absolute;
+	margin: 30px;
+	background-color: #255A85;
+	color:white;
+	padding: 8px;
+	width: 98px;
+	bottom:8px;
+	font-size: 16px;
+	border: none;
+	cursor: pointer;
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+#back:hover{
 	background-color: rgb(51, 121, 179);
 }
 

@@ -3,12 +3,28 @@
 <head>
 	<title>Database page</title>
 	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="/styles/home.css" />
+	<link rel="stylesheet" type="text/css" href="/styles/register.css" />
 	<link rel="icon" type="image/png" href="/imgs/icon.png" />
 </head>
 <body>
 	{{>header}}
-	<input type="text" name="password" placeholder="password">
-	<button>submit</button>
+	<div id='menu'>
+		<h2>Create an Account</h2>
+		<form action="/register" method="POST">
+			<input type="text" name="userName" placeholder="Username" class="input">
+			<br/>
+			<input type="text" name="email" placeholder="Email" class="input">
+			<br />
+			<input type="password" name="password" placeholder="Password" class="input">
+			<br />
+			<input type="password" name="confirmPassword"placeholder="Confirm password" class="input">
+
+			<button type="submit" id="send">Signup</button>
+	
+		</form>
+		<a href="/">
+			<button id="back">Back</button>
+		</a>
+	</div>
 </body>
 </html>
