@@ -1,77 +1,114 @@
+/*** Node Modules ***/
+require('dotenv').config()
 const express = require('express');
 const request = require('request');
 const hbs = require('hbs');
-var app = express();
 const bodyParser = require('body-parser');
-const PORT = process.env.PORT || 8080;
+const session = require('client-sessions');
+const app = express();
 
-const login = require("./actions/Login");
+/*** Project Scripts ***/
+const auth = require("./actions/auth");
 
-var session = require('client-sessions');
+
+/*** Constants ***/
+const port = process.env.PORT || 8080;
+
+
+/*** Middlewares ***/
 
 app.set('view engine', 'hbs');
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(`${__dirname}/public`));
+hbs.registerPartials(`${__dirname}/views/partials`);
 
-app.use(bodyParser.urlencoded({ extended: false }));
+/* Bodyparser Middlewares */
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+/* Session Middleware */
 app.use(session({
-	cookieName: 'session',
-	secret: 'dthrowdashupsmash',
-	duration: 30 * 60 * 1000,
-	activeDuration: 5 * 60 * 1000,
+    cookieName: 'session',
+    secret: process.env.SESSION_SECRET,
+    duration: 30 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000,
 }));
 
-function session_check(req, res, next){
-	console.log(req.session.user);
-	if (req.session.user != undefined){
-		next();
-	} else {
-		res.redirect('/');
-	}
+
+/*** Functions ***/
+
+/* Checks session */
+const sessionCheck = (req, res, next) => {
+    console.log(req.session.user);
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
 }
 
-hbs.registerPartials(__dirname + '/views/partials');
+/*** HTTP Requests ***/
 
-app.get('/', (request, response) => {
+/** GET **/
+
+app.get('/', sessionCheck, (request, response) => {
     response.render('index.hbs');
 });
 
-app.get('/home', session_check, (request, response) => {
-	response.render('home.hbs');
-});
-
-app.get('/database', session_check,(request, response) => {
-	response.render('database.hbs');
-});
-
-app.get('/collection', session_check, (request, response) => {
-	response.render('collection.hbs')
-});
-
-app.get('/documentation', session_check, (request, response) => {
-	response.render('documentation.hbs')
-});
-
-app.get('/settings', session_check, (request, response) => {
-	response.render('settings.hbs')
-});
-
 app.get('/register', (request, response) => {
-	response.render('register.hbs');
+    response.render('register.hbs');
 });
 
-//Sign in verification
-app.post('/', (request, response) => {
-	login.check(request.body)
-	.then((resolve)=>{
-		request.session.user = resolve;
-		response.redirect('/home');
-	}).catch ((error) => {
-		console.log(error);
-	});
+app.get('/login', (request, response) => {
+    response.render('login.hbs');
 });
 
-app.listen(PORT, () => {
-    console.log('Server is up on port 8080');
+app.get('/database', sessionCheck, (request, response) => {
+    response.render('database.hbs');
+});
+
+app.get('/collection', sessionCheck, (request, response) => {
+    response.render('collection.hbs')
+});
+
+app.get('/documentation', sessionCheck, (request, response) => {
+    response.render('documentation.hbs')
+});
+
+app.get('/settings', sessionCheck, (request, response) => {
+    response.render('settings.hbs')
+});
+
+
+/** POST **/
+
+/* Login */
+app.post('/login', (request, response) => {
+    auth.login(request.body.username, request.body.password)
+        .then(() => {
+            request.session.user = request.body.username
+            response.redirect('/')
+        }).catch((err) => {
+            console.log(error)
+        })
+});
+
+/* Register */
+app.post('/register', (request, response) => {
+    auth.signup(request.body.username, request.body.password, request.body.confirmPassword)
+        .then(() => {
+            request.session.user = request.body.username;
+            response.redirect('/')
+        })
+})
+
+/* Logout */
+app.post('/logout', (request, response) => {
+    request.session.reset()
+    response.redirect('/')
+})
+
+
+/*** Start Server ***/
+app.listen(port, () => {
+    console.log(`Server is up on port: ${port}, with PID: ${process.pid}`);
 });
