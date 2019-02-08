@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 data = {};
 
 module.exports.check = function(input) {
@@ -15,13 +16,18 @@ module.exports.check = function(input) {
     });
 };
 
+
+
 function DB_Query(input){
     // function for DB query
     var example = {
         userName: 'jason',
-        password: ''
+        password: bcrypt.hashSync('jason', bcrypt.genSaltSync(10))
     };
-    if (input.userName == example.userName && input.password == example.password){
+    console.log(example.password);
+    console.log(input.password);
+    console.log(bcrypt.compareSync(input.password, example.password));
+    if (input.userName == example.userName && bcrypt.compareSync(input.password, example.password) == true){
         return true;
     } else {
         console.log('wat')
