@@ -6,6 +6,8 @@ const hbs = require('hbs');
 const bodyParser = require('body-parser');
 const session = require('client-sessions');
 const app = express();
+const multer = require('multer');
+const upload = multer({dest: './uploads/'});
 
 /*** Project Scripts ***/
 const auth = require("./actions/auth");
@@ -99,6 +101,14 @@ app.post('/register', (request, response) => {
             request.session.user = request.body.username;
             response.redirect('/')
         })
+})
+
+/* File Upload */
+app.post('/upload', upload.single('myfile'),(request, response) => {
+    console.log(request.file.filename);
+    // uploaded files are stored inside the uploads folder @alex
+    // Module for parsing the csv goes under here @alex
+    // redirects to the comparason page @alex
 })
 
 /* Logout */

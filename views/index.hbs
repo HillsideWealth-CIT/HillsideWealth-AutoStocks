@@ -14,20 +14,24 @@
 		<button id="type submit">Logout</button>
 	</form>
 	<div id="container">
-		<div id="upload">
-			<p>Drop files here, or click below</p>
-			<div id="uploadButton">
-				<button>
-					<img id="dropImage" src="/imgs/upload.png">
+		<form action="/upload" enctype="multipart/form-data" method="POST">
+		<div id="upload" class="dropzone">
+			<p class="dropzone">Drop files here, or click below</p>
+			<div id="uploadButton" class="dropzone">
+				<input type='file' name='myfile' id="myfile" class="dropzone" required>
+					<img id="dropImage" src="/imgs/upload.png" class="dropzone">
 					Upload
-				</button>
+				</input>
 			</div>
-			<p>You can upload up to a max of 500 MB</p>
+			<p class="dropzone">You can upload up to a max of 500 MB</p>
 		</div>
-		<div id="confirm">Confirm</div>
+		<button id="confirm" type="submit">Confirm</button>
 		<div id="cancel">Cancel</div>
+		</form>
 	</div>
 	<a href="/register"><button>register</button></a>
+	<script src="../public/js/dropzone.js"></script>
+	<script src="../public/js/dropzone.js"></script>
 </body>
 
 </html>
