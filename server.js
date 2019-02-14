@@ -9,8 +9,10 @@ const app = express();
 const multer = require('multer');
 const upload = multer({dest: './uploads/'});
 
+
 /*** Project Scripts ***/
 const auth = require("./actions/auth");
+const db = require("./actions/database");
 
 
 /*** Constants ***/

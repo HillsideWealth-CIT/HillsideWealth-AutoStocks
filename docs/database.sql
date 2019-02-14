@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "stocks"
 CREATE TABLE IF NOT EXISTS "pbstock"
 (
     "symbol" varchar(10) REFERENCES stocks(symbol),
-    "playbook_id" serial REFERENCES playbooks(playbook_id),
+    "playbook_id" int REFERENCES playbooks(playbook_id),
     PRIMARY KEY(symbol, playbook_id)
 );
 
@@ -43,15 +43,15 @@ CREATE TABLE IF NOT EXISTS "stockdata"
     "market_cap" int,
     "net_debt" float(2),
     "enterpise_value" float(2),
-    "nd_aEBITDA" float(2),
+    "nd_aebitda" float(2),
     "revenue" int,
-    "aEBITDA" float(2),
-    "aEBITDA_percent" float(1),
+    "aebitda" float(2),
+    "aebitda_percent" float(1),
     "asset_turnover" float(2),
-    "aEBITDA_AT" float(1),
+    "aebitda_at" float(1),
     "roe" float(1),
     "effective_tax" float(2),
-    "ev_aEBITDA" float(2),
+    "ev_aebitda" float(2),
     "spice" float(2),
     "roe_mult" float(2)
 );
