@@ -1,23 +1,22 @@
 /*** Node Modules ***/
-require('dotenv').config()
-const express = require('express');
-const request = require('request');
-const hbs = require('hbs');
-const bodyParser = require('body-parser');
-const session = require('client-sessions');
+require("dotenv").config();
+const express = require("express");
+const request = require("request");
+const hbs = require("hbs");
+const bodyParser = require("body-parser");
+const session = require("client-sessions");
 const app = express();
 
 /*** Project Scripts ***/
 const auth = require("./actions/auth");
-
+const csv = require("./actions/csv_parse");
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
 
-
 /*** Middlewares ***/
 
-app.set('view engine', 'hbs');
+app.set("view engine", "hbs");
 app.use(express.static(`${__dirname}/public`));
 hbs.registerPartials(`${__dirname}/views/partials`);
 
@@ -26,13 +25,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 /* Session Middleware */
-app.use(session({
-    cookieName: 'session',
-    secret: process.env.SESSION_SECRET,
-    duration: 30 * 60 * 1000,
-    activeDuration: 5 * 60 * 1000,
-}));
+app.use(
+    session({
+        cookieName: "session",
+        secret: process.env.SESSION_SECRET,
+        duration: 30 * 60 * 1000,
+        activeDuration: 5 * 60 * 1000
+    })
+);
 
+// csv.csv_to_json('GuruFocus_download_2019-02-10-15-48.csv')
 
 /*** Functions ***/
 
@@ -42,71 +44,73 @@ const sessionCheck = (req, res, next) => {
     if (req.session.user) {
         next();
     } else {
-        res.redirect('/login');
+        res.redirect("/login");
     }
-}
+};
 
 /*** HTTP Requests ***/
 
 /** GET **/
 
-app.get('/', sessionCheck, (request, response) => {
-    response.render('index.hbs');
+app.get("/", sessionCheck, (request, response) => {
+    response.render("index.hbs");
 });
 
-app.get('/register', (request, response) => {
-    response.render('register.hbs');
+app.get("/register", (request, response) => {
+    response.render("register.hbs");
 });
 
-app.get('/login', (request, response) => {
-    response.render('login.hbs');
+app.get("/login", (request, response) => {
+    response.render("login.hbs");
 });
 
-app.get('/database', sessionCheck, (request, response) => {
-    response.render('database.hbs');
+app.get("/database", sessionCheck, (request, response) => {
+    response.render("database.hbs");
 });
 
-app.get('/collection', sessionCheck, (request, response) => {
-    response.render('collection.hbs')
+app.get("/collection", sessionCheck, (request, response) => {
+    response.render("collection.hbs");
 });
 
-app.get('/documentation', sessionCheck, (request, response) => {
-    response.render('documentation.hbs')
+app.get("/documentation", sessionCheck, (request, response) => {
+    response.render("documentation.hbs");
 });
 
-app.get('/settings', sessionCheck, (request, response) => {
-    response.render('settings.hbs')
+app.get("/settings", sessionCheck, (request, response) => {
+    response.render("settings.hbs");
 });
-
 
 /** POST **/
 
 /* Login */
-app.post('/login', (request, response) => {
+app.post("/login", (request, response) => {
     auth.login(request.body.username, request.body.password)
         .then(() => {
-            request.session.user = request.body.username
-            response.redirect('/')
-        }).catch((err) => {
-            console.log(error)
+            request.session.user = request.body.username;
+            response.redirect("/");
         })
+        .catch(err => {
+            console.log(error);
+        });
 });
 
 /* Register */
-app.post('/register', (request, response) => {
-    auth.signup(request.body.username, request.body.password, request.body.confirmPassword)
-        .then(() => {
-            request.session.user = request.body.username;
-            response.redirect('/')
-        })
-})
+app.post("/register", (request, response) => {
+    auth.signup(
+        request.body.username,
+        request.body.password,
+        request.body.confirmPassword
+    ).then(() => {
+        request.session.user = request.body.username;
+        response.redirect("/");
+    });
+});
 
 /* Logout */
-app.post('/logout', (request, response) => {
-    request.session.reset()
-    response.redirect('/')
-})
-
+app.post("/logout", (request, response) => {
+    request.session.reset();
+    response.redirect("/");
+});
 
 /*** Start Server ***/
 app.listen(port, () => {
