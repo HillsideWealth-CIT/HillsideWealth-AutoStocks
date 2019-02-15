@@ -9,12 +9,31 @@ body {
 #logo {
 	margin-left: auto;
 	margin-right: auto;
-	width: 60%;
+	width: 38%;
 }
 #menu {
 	background-color: #C3C3C3;
 	text-align: center;
 	padding: 5px;
+}
+
+.input {
+	width: 85%;
+	margin-top: 20px;
+	border:none;
+	border-bottom: 2px solid rgb(219, 219, 219);
+	font-size: 16px;
+	padding-top: 10px;
+
+}
+#notification{
+	text-align: left;
+	padding-left: 7%;
+    padding-top: 6%;
+}
+#notCheck{
+	right: 8%;
+    position: absolute;
 }
 a{
 	text-decoration: none;
@@ -26,9 +45,7 @@ p{
 }
 #logout {
 	position: absolute;
-	right:3%;
-	top: 0px;
-	margin: auto;
+    right: 0px;
 }
 
 #container {
@@ -39,13 +56,14 @@ p{
 	top: 0px;
 	bottom: 0px;
 	background-color: #ffffff;
-	width:325px;
-	height: 250px;
+	text-align: center;
+	width:20vw;
+	height: 33vh;
 	padding: 10px;
 }
 #upload {
 	border-style: dashed;
-	height: 10vh;
+	height: 14vh;
 	border-color: #555555;
 	margin-right: auto;
 	margin-left: auto;
@@ -66,8 +84,7 @@ p{
 	margin: 11px;
 	background-color: #255A85;
 	color:white;
-	padding: 8px;
-	width: 64px;
+	padding: 9px;
 	bottom:5px;
 	font-size: 16px;
 	border: none;
@@ -83,8 +100,7 @@ p{
 	position: absolute;
 	margin: 11px;
 	background-color: white;
-	padding: 8px;
-	width: 64px;
+	padding: 9px;
 	bottom:5px;
 	font-size: 16px;
 	border: none;
@@ -94,4 +110,8 @@ p{
 
 #cancel:hover{
 	background-color: rgb(168, 168, 168);
+}
+
+.dropzone {
+	padding: 1%;
 }

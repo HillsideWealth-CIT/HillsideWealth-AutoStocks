@@ -3,9 +3,54 @@
 <head>
 	<title>Collection</title>
 	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="/styles/home.css" />
+	<link rel="stylesheet" type="text/css" href="/styles/collection.css" />
 	<link rel="icon" type="image/png" href="/imgs/icon.png" />
 </head>
 <body>
 	{{>header}}
+	<div class="searchBar">
+		<input type="text" placeholder="Search" id="search" />
+		<button id="filters" class="btn">Filters</button>
+		<button id="searchBtn" class="btn">Search</button>
+	</div>
+	<table>
+		<tr>
+			<th>Options</th>
+			<th>ID</th>
+			<th>Fullname</th>
+			<th>Email</th>
+			<th>Password</th>
+			<th>Date created</th>
+		</tr>
+		<tr>
+			<td> <input type="radio"/>
+				edit copy delete
+			</td>
+			<td>1</td>
+			<td>John Doe</td>
+			<td>email@bcit.ca</td>
+			<td>2384h2jkhuigf3234</td>
+			<td>2019/02/02</td>
+		</tr>
+		<tr>
+			<td> <input type="radio"/> edit copy delete</td>
+			<td>2</td>
+			<td>Jane Doe</td>
+			<td>email@bcit.ca</td>
+			<td>2384h2jkhuigf3234</td>
+			<td>2019/02/02</td>
+		</tr>
+		<tr>
+			<td> <input type="radio"/> edit copy delete</td>
+			<td>3</td>
+			<td>Jone Doe</td>
+			<td>email@bcit.ca</td>
+			<td>2384h2jkhuigf3234</td>
+			<td>2019/02/02</td>
+		</tr>
+
+
+	</table>
+
+
 </body>
