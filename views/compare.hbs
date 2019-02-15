@@ -13,28 +13,9 @@
 			href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
 		<script
 			src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-		<script
-			src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-		{{!-- <script>
-			$(document).ready(function(){
-			$("#myInput").on("keyup", function() {
-				var value = $(this).val().toLowerCase();
-				$("#myTable tr").filter(function() {
-				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-				});
-			});
-			});
-} );
-		</script> --}}
 		<link rel="stylesheet"
 			href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
 			integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-			crossorigin="anonymous">
-		<link rel="stylesheet"
-			href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-			integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
 			crossorigin="anonymous">
 		<link rel="stylesheet"
 			href="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.css">
@@ -58,7 +39,7 @@
 		{{>header}}
 		<div class="container">
 			<div class="d-flex justify-content-center">
-				<div style="height:75vh; overflow:auto" class="table-responsive p-3" >
+				<div style="height:75vh; overflow:auto;" class="table-responsive p-3" >
 					<table data-toggle="table" class="table table1 table-hover">
 						<thead class='thead-dark'>
 							<tr>
@@ -86,12 +67,12 @@
 						</tbody>
 					</table>
 				</div>
-				<div style="height:75vh; overflow:auto" class="table-responsive p-3">
+				<div style="height:75vh; overflow:auto;" class="table-responsive p-3">
 					<table data-toggle="table" class="table table1 table-hover">
 						{{!-- <input id="myInput" type="text" placeholder="Search.."> --}}
-						<thead class='thead-light'>
+						<thead class=''>
 							<tr>
-								<td><label class="checkbox-inline"><input type="checkbox" value=""></label></td>
+								<th><label class="checkbox-inline"><input type="checkbox" value=""></label></th>
 								<th data-sortable="true">Status</th>
 								<th data-sortable="true">Last Updated</th>
 								<th data-sortable="true">Symbol</th>
