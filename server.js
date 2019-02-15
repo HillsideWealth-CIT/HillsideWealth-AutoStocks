@@ -6,10 +6,18 @@ const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const session = require("client-sessions");
 const app = express();
+const multer = require('multer');
+const upload = multer({dest: './uploads/'});
+const fs = require("fs");
+var global;
+
+
 
 /*** Project Scripts ***/
 const auth = require("./actions/auth");
-const csv = require("./actions/csv_parse");
+const csv_parse = require("./actions/csv_parse");
+const db = require("./actions/database");
+
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -33,8 +41,6 @@ app.use(
         activeDuration: 5 * 60 * 1000
     })
 );
-
-// csv.csv_to_json('GuruFocus_download_2019-02-10-15-48.csv')
 
 /*** Functions ***/
 
@@ -80,6 +86,13 @@ app.get("/settings", sessionCheck, (request, response) => {
     response.render("settings.hbs");
 });
 
+app.get("/compare", sessionCheck, (request, response) => {
+    var data = JSON.parse(global)
+    response.render('compare.hbs', {data: data});
+});
+
+
+
 /** POST **/
 
 /* Login */
@@ -105,6 +118,17 @@ app.post("/register", (request, response) => {
         response.redirect("/");
     });
 });
+
+/* File Upload */
+app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) => {
+        csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved)=>{
+            global = resolved;
+            response.redirect("/compare");
+        }).catch(err => {
+            console.log(err);
+        });
+    });
+
 
 /* Logout */
 app.post("/logout", (request, response) => {
