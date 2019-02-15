@@ -5,7 +5,7 @@ const csvjson = async (csv_file) => {
     const results = [];
     return new Promise (( resolve, reject) => {  
         fs.createReadStream(csv_file.toString())
-        .pipe(csv({ skipline: 11 }))
+        .pipe(csv({skipLines: 9}))
         .on("data", line => {
             results.push(line);
         })
