@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<title>Stocks</title>
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="/styles/home.css" />
-		<link rel="stylesheet" type="text/css" href="/styles/compare.css">
+		<link rel="stylesheet" type="text/css" href="/styles/upload.css" />
 		<link rel="icon" type="image/png" href="/imgs/icon.png" />
 		<link rel="stylesheet"
 			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
@@ -14,12 +12,8 @@
 		<script
 			src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<link rel="stylesheet"
-			href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-			integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-			crossorigin="anonymous">
-		<link rel="stylesheet"
 			href="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.css">
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"
 			integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
 		<script
 			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
@@ -33,17 +27,19 @@
 			src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.2/core.min.js"></script>
 		<script
 			src="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.js"></script>
+		<script
+			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
 	</head>
-
-	<body>
+	<body style="overflow:hidden;">
 		{{>header}}
-		<div class="container">
+		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
-				<div style="height:75vh; overflow:auto;" class="table-responsive p-3" >
-					<table data-toggle="table" class="table table1 table-hover">
+				<div class="table-responsive p-3">
+					<table id="myTable" data-toggle="table" data-height=575 data-search="true"
+						data-show-columns="true" class="table table1 table-hover">
 						<thead class='thead-dark'>
 							<tr>
-								<th><label class="checkbox-inline"><input type="checkbox" value=""></label></th>
+								<th data-checkbox="true"></th>
 								<th data-sortable="true">Status</th>
 								<th data-sortable="true">Symbol</th>
 								<th data-sortable="true">Price</th>
@@ -51,10 +47,10 @@
 								<th>Info</th>
 							</tr>
 						</thead>
-						<tbody id="myTable">
+						<tbody>
 							{{#each data}}
 							<tr>
-								<td><label class="checkbox-inline"><input type="checkbox" value=""></label></td>
+								<td></td>
 								<td>New</td>
 								<td>{{ Symbol }}</td>
 								<td>{{ Price }}</td>
@@ -66,13 +62,16 @@
 							{{/each}}
 						</tbody>
 					</table>
-				</div>
-				<div style="height:75vh; overflow:auto;" class="table-responsive p-3">
-					<table data-toggle="table" class="table table1 table-hover">
-						{{!-- <input id="myInput" type="text" placeholder="Search.."> --}}
-						<thead class=''>
+					<div class="d-flex flex-column-reverse p-1">
+						<button type="button" class="btn btn-success">Add</button>
+					</div>
+					</div>
+				<div class="table-responsive p-3">
+					<table id="myTable" data-toggle="table"  data-height=575 data-search="true"
+						data-show-columns="true" class="table table1 table-hover">
+						<thead>
 							<tr>
-								<th><label class="checkbox-inline"><input type="checkbox" value=""></label></th>
+								<th data-checkbox="true"></th>
 								<th data-sortable="true">Status</th>
 								<th data-sortable="true">Last Updated</th>
 								<th data-sortable="true">Symbol</th>
@@ -83,7 +82,7 @@
 						<tbody id="myTable">
 							{{#each data}}
 							<tr>
-								<td><label class="checkbox-inline"><input type="checkbox" value=""></label></td>
+								<td></td>
 								<td>Active</td>
 								<td>2019-02-14</td>
 								<td>{{ Symbol }}</td>
@@ -93,6 +92,9 @@
 							{{/each}}
 						</tbody>
 					</table>
+					<div class="d-flex flex-column-reverse p-1">
+						<button type="button" class="btn btn-danger">Remove</button>
+					</div>
 				</div>
 				{{#each data}}
 				<div class="modal" id={{ Symbol }}>
@@ -157,9 +159,11 @@
 					</div>
 				</div>
 				{{/each}}
-
 			</div>
 		</div>
-		<script src="../public/js/compare.js"></script>
+		<script>
+			$('#myTable').bootstrapTable({
+			});
+		</script>
 	</body>
 </html>
