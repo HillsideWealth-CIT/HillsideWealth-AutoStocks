@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Stocks</title>
+		<title>Adding Stocks</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="/styles/upload.css" />
 		<link rel="icon" type="image/png" href="/imgs/icon.png" />
@@ -29,13 +29,19 @@
 			src="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.js"></script>
 		<script
 			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+		<script
+			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
+		{{!-- <script
+			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/export/bootstrap-table-export.min.js"></script>
+		--}}
 	</head>
 	<body style="overflow:hidden;">
 		{{>header}}
 		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
-					<table id="myTable" data-toggle="table" data-height=575 data-search="true"
+					<table id="myTable1" data-click-to-select="true" data-toggle="table"
+						data-height=575 data-search="true"
 						data-show-columns="true" class="table table1 table-hover">
 						<thead class='thead-dark'>
 							<tr>
@@ -49,7 +55,7 @@
 						</thead>
 						<tbody>
 							{{#each data}}
-							<tr>
+							<tr data-val={{Symbol}}>
 								<td></td>
 								<td>New</td>
 								<td>{{ Symbol }}</td>
@@ -63,37 +69,32 @@
 						</tbody>
 					</table>
 					<div class="d-flex flex-column-reverse p-1">
-						<button type="button" class="btn btn-success">Add</button>
+						<button type="button" onclick="add();" class="btn btn-success">Add</button>
 					</div>
-					</div>
+				</div>
 				<div class="table-responsive p-3">
-					<table id="myTable" data-toggle="table"  data-height=575 data-search="true"
+					<table id="myTable2" data-toggle="table" data-click-to-select="true"
+						data-height=575 data-search="true"
 						data-show-columns="true" class="table table1 table-hover">
 						<thead>
 							<tr>
 								<th data-checkbox="true"></th>
-								<th data-sortable="true">Status</th>
-								<th data-sortable="true">Last Updated</th>
 								<th data-sortable="true">Symbol</th>
-								<th data-sortable="true">Price</th>
-								<th data-sortable="true">Currency</th>
+								<th data-sortable="true">Stock Name</th>
 							</tr>
 						</thead>
-						<tbody id="myTable">
-							{{#each data}}
-							<tr>
+						<tbody>
+							{{#each dbdata}}
+							<tr data-val={{symbol}}>
 								<td></td>
-								<td>Active</td>
-								<td>2019-02-14</td>
-								<td>{{ Symbol }}</td>
-								<td>{{ Price }}</td>
-								<td>{{Currency}}</td>
+								<td>{{ symbol }}</td>
+								<td>{{ stock_name }}</td>
 							</tr>
 							{{/each}}
 						</tbody>
 					</table>
 					<div class="d-flex flex-column-reverse p-1">
-						<button type="button" class="btn btn-danger">Remove</button>
+						<button type="button" onclick="rm();" class="btn btn-danger">Remove</button>
 					</div>
 				</div>
 				{{#each data}}
@@ -162,8 +163,24 @@
 			</div>
 		</div>
 		<script>
-			$('#myTable').bootstrapTable({
-			});
+			var add_list = [];
+			var rm_list = [];
+			function add() {
+				$("#myTable1 tbody input:checked").each(function() { 
+					add_list.push($(this).parents("tr:first").data("val"));
+				});
+				alert(add_list)
+				$('#myTable1').bootstrapTable('uncheckAll');
+				add_list = [];
+			};
+			function rm() { 
+				$("#myTable2 tbody input:checked").each(function() { 
+					rm_list.push($(this).parents("tr:first").data("val"));
+				});
+				alert(rm_list)
+				$('#myTable2').bootstrapTable('uncheckAll');
+				rm_list = [];
+			};
 		</script>
 	</body>
 </html>

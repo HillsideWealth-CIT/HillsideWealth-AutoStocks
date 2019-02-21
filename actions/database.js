@@ -24,6 +24,9 @@ const runQuery = async (query, param) => {
 const addUser = async (username, password) => {
     return await runQuery('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password])
 }
+const showstocks = async () => {
+    return await runQuery('SELECT * FROM stocks;')
+}
 
 
 /* Checks if username exists in the database.
@@ -154,5 +157,7 @@ module.exports = {
     addUser,
     usernameAvailable,
     retrieveUser,
-    addStockData
+    addStockData,
+    showstocks,
+    addStocks
 }
