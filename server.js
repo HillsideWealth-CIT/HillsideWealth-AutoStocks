@@ -10,6 +10,11 @@ const multer = require('multer');
 const upload = multer({dest: './uploads/'});
 const fs = require("fs");
 var global;
+var dbdata = [];
+
+hbs.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+});
 
 
 
@@ -52,6 +57,7 @@ const sessionCheck = (req, res, next) => {
     } else {
         res.redirect("/login");
     }
+    global = [];
 };
 
 /*** HTTP Requests ***/
@@ -87,8 +93,8 @@ app.get("/settings", sessionCheck, (request, response) => {
 });
 
 app.get("/compare", sessionCheck, (request, response) => {
-    var data = JSON.parse(global)
-    response.render('compare.hbs', {data: data});
+    var data = JSON.parse(global);
+    response.render('compare.hbs', {data: data, dbdata: dbdata});
 });
 
 
@@ -123,10 +129,16 @@ app.post("/register", (request, response) => {
 app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) => {
         csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved)=>{
             global = resolved;
-            response.redirect("/compare");
+            db.showstocks().then((resolved2)=>{
+                dbdata = resolved2.rows;
+                response.redirect("/compare");
+            }).catch(err => {
+                console.log(err);
+            })
         }).catch(err => {
             console.log(err);
         });
+    
     });
 
 
