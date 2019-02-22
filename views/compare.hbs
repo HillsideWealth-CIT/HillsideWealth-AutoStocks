@@ -31,17 +31,15 @@
 			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
 		<script
 			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
-		{{!-- <script
-			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/export/bootstrap-table-export.min.js"></script>
-		--}}
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 	</head>
 	<body style="overflow:hidden;">
 		{{>header}}
 		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
-					<table id="myTable1" data-click-to-select="true" data-toggle="table"
-						data-height=575 data-search="true"
+					<table id="myTable1" data-toggle="table"
+						data-height=650 data-search="true"
 						data-show-columns="true" class="table table1 table-hover">
 						<thead class='thead-dark'>
 							<tr>
@@ -74,7 +72,7 @@
 				</div>
 				<div class="table-responsive p-3">
 					<table id="myTable2" data-toggle="table" data-click-to-select="true"
-						data-height=575 data-search="true"
+						data-height=650 data-search="true"
 						data-show-columns="true" class="table table1 table-hover">
 						<thead>
 							<tr>
@@ -146,16 +144,9 @@
 								</div>
 								<label for="comment">Comment:</label>
 								<div class="form-group">
-									<textarea class="form-control" rows="5" id="comment"></textarea>
+									<textarea class="form-control" rows="5" id="{{ Symbol }}_comment"></textarea>
 								</div>
 							</div>
-
-							<!-- Modal footer -->
-							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
-								<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-							</div>
-
 						</div>
 					</div>
 				</div>
@@ -163,21 +154,38 @@
 			</div>
 		</div>
 		<script>
+		{{#if no_data}}
+			Swal.fire({
+			title: 'Error!',
+			type: 'error',
+			confirmButtonColor: 'red',
+			confirmButtonText: 'Upload CSV File'
+			}).then(function() {
+				window.location = "/";
+			});
+		{{else}}
+			window.onbeforeunload = function(){
+			return 'Are you sure you want to leave?';
+		};
+		{{/if}}
 			var add_list = [];
 			var rm_list = [];
 			function add() {
 				$("#myTable1 tbody input:checked").each(function() { 
-					add_list.push($(this).parents("tr:first").data("val"));
-				});
-				alert(add_list)
+					var sym = $(this).parents("tr:first").data("val");
+					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
+					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString()});
+			});
+				alert(JSON.stringify(add_list))
 				$('#myTable1').bootstrapTable('uncheckAll');
 				add_list = [];
 			};
 			function rm() { 
-				$("#myTable2 tbody input:checked").each(function() { 
-					rm_list.push($(this).parents("tr:first").data("val"));
+				$("#myTable2 tbody input:checked").each(function() {
+					var sym = $(this).parents("tr:first").data("val")
+					rm_list.push({"symbol" : sym.toString()});
 				});
-				alert(rm_list)
+				alert(JSON.stringify(rm_list))
 				$('#myTable2').bootstrapTable('uncheckAll');
 				rm_list = [];
 			};
