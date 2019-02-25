@@ -17,8 +17,6 @@ hbs.registerHelper('json', function(context) {
     return JSON.stringify(context);
 });
 
-
-
 /*** Project Scripts ***/
 const auth = require("./actions/auth");
 const csv_parse = require("./actions/csv_parse");
