@@ -18,10 +18,10 @@ hbs.registerHelper('json', function(context) {
 });
 
 /*** Project Scripts ***/
+const api_calls = require("./actions/api_calls");
 const auth = require("./actions/auth");
 const csv_parse = require("./actions/csv_parse");
 const db = require("./actions/database");
-
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -148,6 +148,23 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     
     });
 
+/* Compare page*/
+app.post('/compare', (request, response) => {
+    //console.log(request.body);
+    switch(request.body.action){
+        case 'Append':
+            api_calls.gurufocus_add(request.body.stocks)
+                .then((resolve) =>{
+                    console.log(resolve)
+                })
+                .catch((reason) => {console.log(reason)})
+            break;
+        
+        case 'Remove':
+            console.log('removing')
+            break;
+    }
+})
 
 /* Logout */
 app.post("/logout", (request, response) => {
