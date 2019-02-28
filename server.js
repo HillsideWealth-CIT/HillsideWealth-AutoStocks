@@ -56,7 +56,7 @@ const sessionCheck = (req, res, next) => {
     } else {
         res.redirect("/login");
     }
-    csvdata = [];
+
 };
 
 /*** HTTP Requests ***/
@@ -156,12 +156,25 @@ app.post('/compare', (request, response) => {
             api_calls.gurufocus_add(request.body.stocks)
                 .then((resolve) =>{
                     console.log(resolve)
+                    let promises = [];
+                    for(let i = 0; i < resolve.length; i++){
+                        promises.push(db.addStock(resolve[i].symbol, resolve[i].company));
+                    }
+                    Promise.all(promises)
+                        .then((returned) => {
+                            // function for redirecting to compare
+                        });
                 })
-                .catch((reason) => {console.log(reason)})
+                .catch((reason) => console.log(reason));
             break;
         
         case 'Remove':
-            console.log('removing')
+            let promises = [];
+            for(let i = 0; i < request.body.stocks.length; i++){
+                promises.push(db.removeStocks(request.body.stocks[i].symbol));
+            }
+            Promise.all(promises)
+                .then(/* redirects back to compare */)
             break;
     }
 })

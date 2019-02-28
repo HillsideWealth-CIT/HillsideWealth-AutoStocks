@@ -152,6 +152,10 @@ const addStocks = async (symbol, stock_name) => {
     return await runQuery(`INSERT INTO stocks (symbol, stock_name) VALUES ($1, $2);`, [symbol, stock_name])
 }
 
+const removeStocks = async (symbol) => {
+    return await runQuery(`DELETE from stocks WHERE symbol="${symbol}"`)
+}
+
 
 module.exports = {
     addUser,
@@ -159,5 +163,6 @@ module.exports = {
     retrieveUser,
     addStockData,
     showstocks,
-    addStocks
+    addStocks,
+    removeStocks
 }
