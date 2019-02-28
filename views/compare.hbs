@@ -192,6 +192,7 @@
 				$('#myTable2').bootstrapTable('uncheckAll');
 				rm_list = [];
 			};
+
             function ajax_func(list, action){
                 var data = {};
                 data.stocks = list;
@@ -201,12 +202,25 @@
                     type:"POST",
                     data:JSON.stringify(data),
                     contentType: 'application/json',
-                    url:"http://localhost:8080/compare",
-                    sucess: function(returned_data) {
-                        console.log(returned_data);
-                    }
-                });
+                    url:"http://localhost:8080/upload",
+                }).done(function(returned_data){
+					returned = JSON.parse(returned_data)
+					console.log(returned)
+					switch(returned.action){
+						case "Remove":
+							$("#myTable2 tbody input:checked").each(function() {
+									var sym = $(this).parents("tr:first").data("val");
+									console.log(sym);
+									$(sym.toString()).remove();
+							});
+							break;
+
+						case "Appending":
+							break;
+					}
+				});
             }
+
 		</script>
 	</body>
 </html>

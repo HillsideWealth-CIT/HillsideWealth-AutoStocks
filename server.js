@@ -133,57 +133,66 @@ app.post("/register", (request, response) => {
 
 /* File Upload */
 app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) => {
-    var csvdata
-    csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
-        csvdata = JSON.parse(resolved);
-        db.showstocks().then((resolved2) => {
-            let dbdata = resolved2;
-            if (csvdata.length == 0) {
-                var no_data = true;
-            } else {
-                for (i = 0; i < dbdata.length; i++) {
-                    _.remove(csvdata, function (e) {
-                        return e.Symbol == dbdata[i].symbol;
-                    });
+    if("action" in request.body != true){
+        var csvdata;
+        csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
+            csvdata = JSON.parse(resolved);
+            db.showstocks().then((resolved2) => {
+                let dbdata = resolved2;
+                if (csvdata.length == 0) {
+                    var no_data = true;
+                } else {
+                    for (i = 0; i < dbdata.length; i++) {
+                        _.remove(csvdata, function (e) {
+                            return e.Symbol == dbdata[i].symbol;
+                        });
+                    }
                 }
-            }
-            response.render('compare.hbs', { data: csvdata, dbdata: dbdata, no_data: no_data });
+                response.render('compare.hbs', { data: csvdata, dbdata: dbdata, no_data: no_data });
+            }).catch(err => {
+                console.error(err);
+            })
         }).catch(err => {
             console.error(err);
-        })
-    }).catch(err => {
-        console.error(err);
-    });
+        });
+    }
+    else{
+        switch (request.body.action) {
+            case 'Append':
+                api_calls.gurufocus_add(request.body.stocks)
+                    .then((resolve) => {
+                        let promises = [];
+                        for (let i = 0; i < resolve.length; i++) {
+                            promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
+                        }
+                        Promise.all(promises)
+                            .then((returned) => {
+                               response.send(JSON.stringify(request.body));
+                            })
+                    })
+                    .catch((reason) => console.log(reason));
+                break;
+    
+            case 'Remove':
+                let promises = [];
+                for (let i = 0; i < request.body.stocks.length; i++) {
+                    promises.push(db.removeStocks(request.body.stocks[i].symbol));
+                }
+                Promise.all(promises)
+                    .then((returned) => {
+                        console.log("what")
+                        response.send(JSON.stringify(request.body));
+                    })
+                break;
+        }
+    }
+
 });
 
 /* Compare page*/
 app.post('/compare', (request, response) => {
     console.log(request.body.action)
-    switch (request.body.action) {
-        case 'Append':
-            api_calls.gurufocus_add(request.body.stocks)
-                .then((resolve) => {
-                    let promises = [];
-                    for (let i = 0; i < resolve.length; i++) {
-                        promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
-                    }
-                    Promise.all(promises)
-                        .then((returned) => {
-                            // function for redirecting to compare
-                        })
-                })
-                .catch((reason) => console.log(reason));
-            break;
-
-        case 'Remove':
-            let promises = [];
-            for (let i = 0; i < request.body.stocks.length; i++) {
-                promises.push(db.removeStocks(request.body.stocks[i].symbol));
-            }
-            Promise.all(promises)
-                .then(/* redirects back to compare */)
-            break;
-    }
+    
 })
 
 /* Logout */
