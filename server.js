@@ -11,7 +11,6 @@ const upload = multer({ dest: './uploads/' });
 const fs = require("fs");
 const _ = require("lodash")
 var csvdata = [];
-var dbdata = [];
 
 hbs.registerHelper('json', function (context) {
     return JSON.stringify(context);
@@ -92,6 +91,7 @@ app.get("/settings", sessionCheck, (request, response) => {
 });
 
 app.get("/compare", sessionCheck, (request, response) => {
+    let dbdata = request.session.dbdata
     if (csvdata.length == 0) {
         var no_data = true;
     } else {
@@ -137,8 +137,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
         csvdata = JSON.parse(resolved);
         db.showstocks().then((resolved2) => {
-            dbdata = resolved2;
-            console.log(dbdata[0].stockdata)
+            request.session.dbdata = resolved2;
             response.redirect("/compare");
         }).catch(err => {
             console.log(err);
