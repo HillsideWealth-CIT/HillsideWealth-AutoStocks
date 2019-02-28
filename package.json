@@ -30,6 +30,7 @@
     "multer": "^1.4.1",
     "node-server-screenshot": "^0.2.1",
     "pg": "^7.8.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "xlsx-to-json": "^0.3.0"
   }
 }

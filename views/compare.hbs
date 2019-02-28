@@ -47,21 +47,19 @@
 								<th data-sortable="true">Status</th>
 								<th data-sortable="true">Symbol</th>
 								<th data-sortable="true">Price</th>
-								<th data-sortable="true">Currency</th>
 								<th>Info</th>
 							</tr>
 						</thead>
 						<tbody>
 							{{#each data}}
-							<tr data-val={{Symbol}}>
+							<tr data-val={{ "Ticker" }}>
 								<td></td>
 								<td>New</td>
-								<td>{{ Symbol }}</td>
-								<td>{{ Price }}</td>
-								<td>{{Currency}}</td>
+								<td>{{ "Ticker" }}</td>
+								<td>{{ "Current Price" }}</td>
 								<td class="d-flex flex-row justify-content-center align-items-center"><i
 										class="fas fa-info-circle fa-2x" data-toggle="modal"
-										data-target=#{{ Symbol }}></i></td>
+										data-target=#{{ "Ticker" }}></i></td>
 							</tr>
 							{{/each}}
 						</tbody>
@@ -96,19 +94,19 @@
 					</div>
 				</div>
 				{{#each data}}
-				<div class="modal" id={{ Symbol }}>
+				<div class="modal" id={{ "Ticker" }}>
 					<div class="modal-dialog modal-dialog-centered modal-xl">
 						<div class="modal-content">
 
 							<!-- Modal Header -->
 							<div class="modal-header">
-								<h4 class="modal-title">{{ Company }}</h4>
+								<h4 class="modal-title">{{ "Ticker" }}</h4>
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
 
 							<!-- Modal body -->
 							<div class="modal-body">
-								<div class="table-responsive p-3">
+								{{!-- <div class="table-responsive p-3">
 									<table class="table table-striped">
 										<thead class='thead-dark'>
 											<tr>
@@ -141,10 +139,10 @@
 											</tr>
 										</tbody>
 									</table>
-								</div>
+								</div> --}}
 								<label for="comment">Comment:</label>
 								<div class="form-group">
-									<textarea class="form-control" rows="5" id="{{ Symbol }}_comment"></textarea>
+									<textarea class="form-control" rows="5" id="{{ "Ticker" }}_comment"></textarea>
 								</div>
 							</div>
 						</div>
@@ -176,7 +174,8 @@
 					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
 					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString()});
 			});
-				alert(JSON.stringify(add_list))
+                ajax_func(add_list, 'Append')
+                //alert(JSON.stringify(add_list))
 				$('#myTable1').bootstrapTable('uncheckAll');
 				add_list = [];
 			};
@@ -185,10 +184,26 @@
 					var sym = $(this).parents("tr:first").data("val")
 					rm_list.push({"symbol" : sym.toString()});
 				});
-				alert(JSON.stringify(rm_list))
+                ajax_func(rm_list, 'Remove')
+				//alert(JSON.stringify(rm_list))
 				$('#myTable2').bootstrapTable('uncheckAll');
 				rm_list = [];
 			};
+            function ajax_func(list, action){
+                var data = {};
+                data.stocks = list;
+                data.action = action;
+                console.log(data)
+                $.ajax({
+                    type:"POST",
+                    data:JSON.stringify(data),
+                    contentType: 'application/json',
+                    url:"http://localhost:8080/compare",
+                    sucess: function(returned_data) {
+                        console.log(returned_data);
+                    }
+                });
+            }
 		</script>
 	</body>
 </html>

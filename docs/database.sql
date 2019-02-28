@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS "pbstock"
 CREATE TABLE IF NOT EXISTS "stockdata"
 (
     "stockdata_id" serial PRIMARY KEY,
-    "symbol" varchar(10) REFERENCES stocks(symbol),
+    "symbol" varchar(10) REFERENCES stocks(symbol) ON DELETE CASCADE,
     "date" timestamp with time zone,
     "notes" varchar(250),
     "dividend" float(2),
