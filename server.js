@@ -9,7 +9,7 @@ const app = express();
 const multer = require('multer');
 const upload = multer({dest: './uploads/'});
 const fs = require("fs");
-const _ = require("lodash")
+const _ = require("lodash");
 var csvdata = [];
 var dbdata = [];
 
