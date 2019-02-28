@@ -35,7 +35,7 @@
 	</head>
 	<body style="overflow:hidden;">
 		{{>header}}
-		<div class="container-fluid">
+			<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
 					<table id="myTable1" data-toggle="table"
@@ -47,19 +47,21 @@
 								<th data-sortable="true">Status</th>
 								<th data-sortable="true">Symbol</th>
 								<th data-sortable="true">Price</th>
+								<th data-sortable="true">Currency</th>
 								<th>Info</th>
 							</tr>
 						</thead>
 						<tbody>
 							{{#each data}}
-							<tr data-val={{ "Ticker" }}>
+							<tr data-val={{Symbol}}>
 								<td></td>
 								<td>New</td>
-								<td>{{ "Ticker" }}</td>
-								<td>{{ "Current Price" }}</td>
+								<td>{{ Symbol }}</td>
+								<td>{{ Price }}</td>
+								<td>{{Currency}}</td>
 								<td class="d-flex flex-row justify-content-center align-items-center"><i
 										class="fas fa-info-circle fa-2x" data-toggle="modal"
-										data-target=#{{ "Ticker" }}></i></td>
+										data-target=#{{ Symbol }}></i></td>
 							</tr>
 							{{/each}}
 						</tbody>
@@ -81,7 +83,7 @@
 						</thead>
 						<tbody>
 							{{#each dbdata}}
-							<tr data-val={{symbol}}>
+							<tr id={{symbol}} data-val={{symbol}}>
 								<td></td>
 								<td>{{ symbol }}</td>
 								<td>{{ stock_name }}</td>
@@ -94,19 +96,19 @@
 					</div>
 				</div>
 				{{#each data}}
-				<div class="modal" id={{ "Ticker" }}>
+				<div class="modal" id={{ Symbol }}>
 					<div class="modal-dialog modal-dialog-centered modal-xl">
 						<div class="modal-content">
 
 							<!-- Modal Header -->
 							<div class="modal-header">
-								<h4 class="modal-title">{{ "Ticker" }}</h4>
+								<h4 class="modal-title">{{ Company }}</h4>
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
 
 							<!-- Modal body -->
 							<div class="modal-body">
-								{{!-- <div class="table-responsive p-3">
+								<div class="table-responsive p-3">
 									<table class="table table-striped">
 										<thead class='thead-dark'>
 											<tr>
@@ -139,10 +141,10 @@
 											</tr>
 										</tbody>
 									</table>
-								</div> --}}
+								</div>
 								<label for="comment">Comment:</label>
 								<div class="form-group">
-									<textarea class="form-control" rows="5" id="{{ "Ticker" }}_comment"></textarea>
+									<textarea class="form-control" rows="5" id="{{ Symbol }}_comment" data-company="{{ Company }}"></textarea>
 								</div>
 							</div>
 						</div>
@@ -169,20 +171,22 @@
 			var add_list = [];
 			var rm_list = [];
 			function add() {
-				$("#myTable1 tbody input:checked").each(function() { 
+				$("#myTable1 tbody input:checked").each(function() {
 					var sym = $(this).parents("tr:first").data("val");
 					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
-					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString()});
+					var sym_company = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.company;
+					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString(), "company": sym_company.toString()});
 			});
                 ajax_func(add_list, 'Append')
                 //alert(JSON.stringify(add_list))
 				$('#myTable1').bootstrapTable('uncheckAll');
 				add_list = [];
 			};
-			function rm() { 
+			function rm() {
 				$("#myTable2 tbody input:checked").each(function() {
-					var sym = $(this).parents("tr:first").data("val")
+					var sym = $(this).parents("tr:first").data("val");
 					rm_list.push({"symbol" : sym.toString()});
+					$(`#${sym.toString()}`).remove();
 				});
                 ajax_func(rm_list, 'Remove')
 				//alert(JSON.stringify(rm_list))

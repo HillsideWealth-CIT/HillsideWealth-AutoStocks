@@ -48,7 +48,6 @@ app.use(
 
 /* Checks session */
 const sessionCheck = (req, res, next) => {
-    console.log(req.session.user);
     if (req.session.user) {
         next();
     } else {
@@ -151,23 +150,22 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
             }
             response.render('compare.hbs', { data: csvdata, dbdata: dbdata, no_data: no_data });
         }).catch(err => {
-            console.log(err);
+            console.error(err);
         })
     }).catch(err => {
-        console.log(err);
+        console.error(err);
     });
 });
 
 /* Compare page*/
 app.post('/compare', (request, response) => {
-    //console.log(request.body);
-    switch(request.body.action){
+    console.log(request.body.action)
+    switch (request.body.action) {
         case 'Append':
             api_calls.gurufocus_add(request.body.stocks)
-                .then((resolve) =>{
-                    console.log(resolve)
+                .then((resolve) => {
                     let promises = [];
-                    for(let i = 0; i < resolve.length; i++){
+                    for (let i = 0; i < resolve.length; i++) {
                         promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
                     }
                     Promise.all(promises)
@@ -177,10 +175,10 @@ app.post('/compare', (request, response) => {
                 })
                 .catch((reason) => console.log(reason));
             break;
-        
+
         case 'Remove':
             let promises = [];
-            for(let i = 0; i < request.body.stocks.length; i++){
+            for (let i = 0; i < request.body.stocks.length; i++) {
                 promises.push(db.removeStocks(request.body.stocks[i].symbol));
             }
             Promise.all(promises)
