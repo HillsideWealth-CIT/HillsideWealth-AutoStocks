@@ -12,7 +12,6 @@ const runQuery = async (query, param) => {
     const client = await pool.connect()
     try {
         const res = await client.query(query, param)
-        console.log(res)
         return res
     } finally {
         client.release()
@@ -23,9 +22,6 @@ const runQuery = async (query, param) => {
 /* Adds user to database */
 const addUser = async (username, password) => {
     return await runQuery('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password])
-}
-const showstocks = async () => {
-    return await runQuery('SELECT * FROM stocks;')
 }
 
 
@@ -51,6 +47,39 @@ const retrieveUser = async (username) => {
     }
 }
 
+/* Shows stocks and all the data for that stock
+** Will return an array wih this format:
+**  [
+    {
+        stock_name: Apple Inc:
+        symbol: APPL
+        stockdata: [{
+            stockdata_id: 1
+            date: <timestamp>
+            <etc>
+        },
+        stockdata_id: 2
+            date: <timestamp>
+            <etc>
+        }]
+    },
+    {<etc>},
+    {<etc>}
+    ]
+*/
+const showstocks = async () => {
+    let stockAndData = []
+    let stocks = await runQuery('SELECT * FROM stocks;')
+    for (i in stocks.rows) {
+        let currentData = await runQuery(`SELECT * FROM stockdata WHERE symbol = $1`, [stocks.rows[i].symbol])
+        stockAndData.push({
+            symbol: stocks.rows[i].symbol,
+            stock_name: stocks.rows[i].stock_name,
+            stockdata: currentData.rows
+        })
+    }
+    return stockAndData
+}
 
 /* Parses JSON data for stock data and adds it to the database. */
 const addStockData = async (data) => {
@@ -143,8 +172,6 @@ const addStockData = async (data) => {
     }
     //Creates query string
     let query = `INSERT INTO stockdata (${_.trimEnd(columns, ',')}) VALUES (${_.trimEnd(placeholders, ',')});`
-    console.log(query)
-    console.log(params)
     return await runQuery(query, params)
 }
 
