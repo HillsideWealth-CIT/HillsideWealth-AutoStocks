@@ -144,7 +144,7 @@
 								</div>
 								<label for="comment">Comment:</label>
 								<div class="form-group">
-									<textarea class="form-control" rows="5" id="{{ Symbol }}_comment"></textarea>
+									<textarea class="form-control" rows="5" id="{{ Symbol }}_comment" data-company="{{ Company }}"></textarea>
 								</div>
 							</div>
 						</div>
@@ -171,17 +171,18 @@
 			var add_list = [];
 			var rm_list = [];
 			function add() {
-				$("#myTable1 tbody input:checked").each(function() { 
+				$("#myTable1 tbody input:checked").each(function() {
 					var sym = $(this).parents("tr:first").data("val");
 					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
-					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString()});
+					var sym_company = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.company;
+					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString(), "company": sym_company.toString()});
 			});
                 ajax_func(add_list, 'Append')
                 //alert(JSON.stringify(add_list))
 				$('#myTable1').bootstrapTable('uncheckAll');
 				add_list = [];
 			};
-			function rm() { 
+			function rm() {
 				$("#myTable2 tbody input:checked").each(function() {
 					var sym = $(this).parents("tr:first").data("val")
 					rm_list.push({"symbol" : sym.toString()});
