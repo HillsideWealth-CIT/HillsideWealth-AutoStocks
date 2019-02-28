@@ -18,10 +18,10 @@ hbs.registerHelper('json', function (context) {
 });
 
 /*** Project Scripts ***/
+const api_calls = require("./actions/api_calls");
 const auth = require("./actions/auth");
 const csv_parse = require("./actions/csv_parse");
 const db = require("./actions/database");
-
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -56,7 +56,7 @@ const sessionCheck = (req, res, next) => {
     } else {
         res.redirect("/login");
     }
-    csvdata = [];
+
 };
 
 /*** HTTP Requests ***/
@@ -146,9 +146,38 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     }).catch(err => {
         console.log(err);
     });
-
 });
 
+/* Compare page*/
+app.post('/compare', (request, response) => {
+    //console.log(request.body);
+    switch(request.body.action){
+        case 'Append':
+            api_calls.gurufocus_add(request.body.stocks)
+                .then((resolve) =>{
+                    console.log(resolve)
+                    let promises = [];
+                    for(let i = 0; i < resolve.length; i++){
+                        promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
+                    }
+                    Promise.all(promises)
+                        .then((returned) => {
+                            // function for redirecting to compare
+                        })
+                })
+                .catch((reason) => console.log(reason));
+            break;
+        
+        case 'Remove':
+            let promises = [];
+            for(let i = 0; i < request.body.stocks.length; i++){
+                promises.push(db.removeStocks(request.body.stocks[i].symbol));
+            }
+            Promise.all(promises)
+                .then(/* redirects back to compare */)
+            break;
+    }
+})
 
 /* Logout */
 app.post("/logout", (request, response) => {

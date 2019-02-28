@@ -176,7 +176,8 @@
 					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
 					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString()});
 			});
-				alert(JSON.stringify(add_list))
+                ajax_func(add_list, 'Append')
+                //alert(JSON.stringify(add_list))
 				$('#myTable1').bootstrapTable('uncheckAll');
 				add_list = [];
 			};
@@ -185,10 +186,26 @@
 					var sym = $(this).parents("tr:first").data("val")
 					rm_list.push({"symbol" : sym.toString()});
 				});
-				alert(JSON.stringify(rm_list))
+                ajax_func(rm_list, 'Remove')
+				//alert(JSON.stringify(rm_list))
 				$('#myTable2').bootstrapTable('uncheckAll');
 				rm_list = [];
 			};
+            function ajax_func(list, action){
+                var data = {};
+                data.stocks = list;
+                data.action = action;
+                console.log(data)
+                $.ajax({
+                    type:"POST",
+                    data:JSON.stringify(data),
+                    contentType: 'application/json',
+                    url:"http://localhost:8080/compare",
+                    sucess: function(returned_data) {
+                        console.log(returned_data);
+                    }
+                });
+            }
 		</script>
 	</body>
 </html>
