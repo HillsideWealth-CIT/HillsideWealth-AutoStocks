@@ -10,7 +10,6 @@ const multer = require('multer');
 const upload = multer({ dest: './uploads/' });
 const fs = require("fs");
 const _ = require("lodash")
-var csvdata = [];
 
 hbs.registerHelper('json', function (context) {
     return JSON.stringify(context);
@@ -90,6 +89,7 @@ app.get("/settings", sessionCheck, (request, response) => {
     response.render("settings.hbs");
 });
 
+/*
 app.get("/compare", sessionCheck, (request, response) => {
     let dbdata = request.session.dbdata
     if (csvdata.length == 0) {
@@ -103,7 +103,7 @@ app.get("/compare", sessionCheck, (request, response) => {
     }
     response.render('compare.hbs', { data: csvdata, dbdata: dbdata, no_data: no_data });
 });
-
+ */
 
 
 /** POST **/
@@ -134,11 +134,21 @@ app.post("/register", (request, response) => {
 
 /* File Upload */
 app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) => {
+    var csvdata
     csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
         csvdata = JSON.parse(resolved);
         db.showstocks().then((resolved2) => {
-            request.session.dbdata = resolved2;
-            response.redirect("/compare");
+            let dbdata = resolved2;
+            if (csvdata.length == 0) {
+                var no_data = true;
+            } else {
+                for (i = 0; i < dbdata.length; i++) {
+                    _.remove(csvdata, function (e) {
+                        return e.Symbol == dbdata[i].symbol;
+                    });
+                }
+            }
+            response.render('compare.hbs', { data: csvdata, dbdata: dbdata, no_data: no_data });
         }).catch(err => {
             console.log(err);
         })
