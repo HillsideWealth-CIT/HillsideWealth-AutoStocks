@@ -53,7 +53,7 @@
 						</thead>
 						<tbody>
 							{{#each data}}
-							<tr data-val={{Symbol}}>
+							<tr id={{Symbol}} data-val={{Symbol}}>
 								<td></td>
 								<td>New</td>
 								<td>{{ Symbol }}</td>
@@ -81,9 +81,9 @@
 								<th data-sortable="true">Stock Name</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id='db_stocks'>
 							{{#each dbdata}}
-							<tr data-val={{symbol}}>
+							<tr id= "{{ symbol }}2" data-val={{symbol}}>
 								<td></td>
 								<td>{{ symbol }}</td>
 								<td>{{ stock_name }}</td>
@@ -208,14 +208,26 @@
 					console.log(returned)
 					switch(returned.action){
 						case "Remove":
-							$("#myTable2 tbody input:checked").each(function() {
-									var sym = $(this).parents("tr:first").data("val");
-									console.log(sym);
-									$(sym.toString()).remove();
-							});
+							for(let i = 0; i < returned.stocks.length; i++){
+								console.log(returned.stocks[i].symbol)
+								$(`#${returned.stocks[i].symbol}2`).remove();
+							}
 							break;
 
-						case "Appending":
+						case "Append":
+							//console.log(returned.stocks)
+							for(let i = 0; i < returned.stocks.length; i++){
+								
+								$(`#${returned.stocks[i].symbol}`).remove();
+							}
+							
+							for(let j = 0; j < returned.stocks.length; j++){
+								let html_string = `<tr id= "${ returned.stocks[j].symbol }2" data-index="3" data-val=${returned.stocks[j].symbol}><td class="bs-checkbox "><input data-index="3" name="btSelectItem" type="checkbox"></td><td>${returned.stocks[j].symbol}</td><td>${returned.stocks[j].company}</td></tr>`
+								$('#db_stocks').append(html_string);
+							}
+
+							
+
 							break;
 					}
 				});

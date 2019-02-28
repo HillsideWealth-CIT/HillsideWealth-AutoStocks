@@ -162,12 +162,13 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
                 api_calls.gurufocus_add(request.body.stocks)
                     .then((resolve) => {
                         let promises = [];
+                        console.log(resolve);
                         for (let i = 0; i < resolve.length; i++) {
                             promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
                         }
                         Promise.all(promises)
                             .then((returned) => {
-                               response.send(JSON.stringify(request.body));
+                               response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
                             })
                     })
                     .catch((reason) => console.log(reason));
@@ -180,7 +181,6 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
                 }
                 Promise.all(promises)
                     .then((returned) => {
-                        console.log("what")
                         response.send(JSON.stringify(request.body));
                     })
                 break;
