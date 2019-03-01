@@ -53,6 +53,7 @@
 						</thead>
 						<tbody>
 							{{#each data}}
+
 							<tr data-val={{Symbol}} id={{Symbol}}1>
 								<td></td>
 								<td>New</td>
@@ -215,9 +216,11 @@
 							break;
 
 						case "Append":
+
 							//console.log(returned.stocks)
                             //console.log($("#db_stocks tr").length)
                             let trnum = $('#db_stocks tr').length;
+
 							for(let i = 0; i < returned.stocks.length; i++){
 								$(`#${returned.stocks[i].symbol}1`).remove();
 							}

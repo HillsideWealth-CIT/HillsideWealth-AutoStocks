@@ -73,11 +73,15 @@ app.get("/login", (request, response) => {
 });
 
 app.get("/database", sessionCheck, (request, response) => {
-    response.render("database.hbs");
+    db.showstocks()
+    .then(response.render("database.hbs", { dbdata: dbdata}));
 });
 
 app.get("/collection", sessionCheck, (request, response) => {
-    response.render("collection.hbs");
+    db.showstocks()
+    .then(res => response.render("collection.hbs", {
+        dbdata: res
+    }));
 });
 
 app.get("/documentation", sessionCheck, (request, response) => {
