@@ -37,10 +37,13 @@
 	<body style="overflow:hidden;">
 		{{>header}}
 		<div id="toolbar" class="d-flex flex-row justify-content-center align-items-center">
+			<form action="/collection" method="POST">
 			 <button type="submit" class="btn btn-dark btn-sm ">
          		<span class="fas fa-sync-alt"></span> Refresh
         	</button>
+			</form>
 		</div>
+		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
 					<table id="myTable2" data-toggle="table" data-height=600 data-search="true" data-toolbar="#toolbar" data-click-to-select="true"
@@ -71,6 +74,10 @@
 						</thead>
 						<tbody id='db_stocks'>
 							{{#each dbdata}}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
 									<tr id= "{{ this.symbol }}">
 										<td></td>
 										<td>{{ this.symbol }}</td>
@@ -160,14 +167,24 @@
 										{{else}}
 											<td>Null</td>
 										{{/if}}
+									</tr>
 
+<<<<<<< HEAD
 
 										{{!-- <td>{{ this.rows }}</td> --}}
+=======
+>>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
 									</tr>
-								
+
 							{{/each}}
 						</tbody>
 					</table>
+<<<<<<< HEAD
+=======
+					<div class="d-flex flex-column-reverse p-1">
+
+					</div>
+>>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
 				</div>
 			</div>
 		</div>
