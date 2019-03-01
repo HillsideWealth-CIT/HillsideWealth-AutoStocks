@@ -133,61 +133,62 @@ app.post("/register", (request, response) => {
 
 /* File Upload */
 app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) => {
-    var csvdata
-    csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
-        csvdata = JSON.parse(resolved);
-        console.log(csvdata);
-        db.showstocks().then((resolved2) => {
-            let dbdata = resolved2;
-            if (csvdata.length == 0) {
-                var no_data = true;
-            } else {
+    if("action" in request.body != true){
+        var csvdata;
+        csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
+            csvdata = JSON.parse(resolved);
+            db.showstocks().then((resolved2) => {
+                let dbdata = resolved2;
                 for (i = 0; i < dbdata.length; i++) {
                     _.remove(csvdata, function (e) {
                         return e.Symbol == dbdata[i].symbol;
                     });
                 }
-            }
-            response.render('compare.hbs', { data: csvdata, dbdata: dbdata, no_data: no_data });
+                response.render('compare.hbs', { data: csvdata, dbdata: dbdata });
+            }).catch(err => {
+                console.error(err);
+            })
         }).catch(err => {
             console.error(err);
-        })
-    }).catch(err => {
-        console.error(err);
-    });
+        });
+    }
+    else{
+        switch (request.body.action) {
+            case 'Append':
+                api_calls.gurufocus_add(request.body.stocks)
+                    .then((resolve) => {
+                        let promises = [];
+                        console.log(resolve);
+                        for (let i = 0; i < resolve.length; i++) {
+                            promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
+                        }
+                        Promise.all(promises)
+                            .then((returned) => {
+                               response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
+                            })
+                    })
+                    .catch((reason) => console.log(reason));
+                break;
+    
+            case 'Remove':
+                let promises = [];
+                for (let i = 0; i < request.body.stocks.length; i++) {
+                    promises.push(db.removeStocks(request.body.stocks[i].symbol));
+                }
+                Promise.all(promises)
+                    .then((returned) => {
+                        response.send(JSON.stringify(request.body));
+                    })
+                break;
+        }
+    }
+
 });
 
 /* Compare page*/
 app.post('/compare', (request, response) => {
     console.log(request.body.action)
-    switch (request.body.action) {
-        case 'Append':
-            api_calls.gurufocus_add(request.body.stocks)
-                .then((resolve) => {
-                    let promises = [];
-                    for (let i = 0; i < resolve.length; i++) {
-                        promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
-                    }
-                    Promise.all(promises)
-                        .then((returned) => {
-                            response.redirect('/');
-                        })
-                })
-                .catch((reason) => console.log(reason));
-            break;
-
-        case 'Remove':
-            let promises = [];
-            for (let i = 0; i < request.body.stocks.length; i++) {
-                promises.push(db.removeStocks(request.body.stocks[i].symbol));
-            }
-            Promise.all(promises)
-                .then((returned) => {
-                    response.redirect('/');
-                    console.log(returned);
-                }).catch((reason) => console.log(reason));
-            break;
-    }
+    
 })
 
 /* Logout */
