@@ -53,7 +53,7 @@ const financials_call = (symbol, callback) => {
 
 	let data = {};
         request({
-            url: `https://api.gurufocus.com/public/user/49791c4074556510da66a0296e8c672b:8850a7457029e3e220a7c15bf06be9ea/stock/${symbol}/summary`,
+            url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/summary`,
             json: true
         }, (error, response, body) => {
             	if(error) {
@@ -65,7 +65,7 @@ const financials_call = (symbol, callback) => {
             	}
             });
         request({
-        	url: `https://api.gurufocus.com/public/user/49791c4074556510da66a0296e8c672b:8850a7457029e3e220a7c15bf06be9ea/stock/${symbol}/financials`,
+        	url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/financials`,
         	json: true
         }, (error, response, body) => {
 	        	if(error) {

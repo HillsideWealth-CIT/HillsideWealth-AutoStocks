@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const db = require('./database')
+const db = require('./database');
 
 
 /* Constants */
@@ -31,12 +31,10 @@ const signup = async (username, password, passwordConfirm) => {
 const login = async (username, password) => {
     const user = await db.retrieveUser(username)
     const match = await bcrypt.compare(password, user.password);
-
     if (match) {
         return true
     } else {
         throw `Username or Password does not match.`
-
     }
 }
 

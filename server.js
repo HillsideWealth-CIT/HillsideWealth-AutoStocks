@@ -144,16 +144,12 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
             csvdata = JSON.parse(resolved);
             db.showstocks().then((resolved2) => {
                 let dbdata = resolved2;
-                if (csvdata.length == 0) {
-                    var no_data = true;
-                } else {
-                    for (i = 0; i < dbdata.length; i++) {
-                        _.remove(csvdata, function (e) {
-                            return e.Symbol == dbdata[i].symbol;
-                        });
-                    }
+                for (i = 0; i < dbdata.length; i++) {
+                    _.remove(csvdata, function (e) {
+                        return e.Symbol == dbdata[i].symbol;
+                    });
                 }
-                response.render('compare.hbs', { data: csvdata, dbdata: dbdata, no_data: no_data });
+                response.render('compare.hbs', { data: csvdata, dbdata: dbdata });
             }).catch(err => {
                 console.error(err);
             })

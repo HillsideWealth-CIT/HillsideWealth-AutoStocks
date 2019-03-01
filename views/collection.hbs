@@ -31,20 +31,24 @@
 			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
 		<script
 			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
+		<script src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 	</head>
 	<body style="overflow:hidden;">
 		{{>header}}
-		<form action="/collection" method="POST">
-			<button type="submit" id="send">UPDATE!</button>
-		</form>
+		<div id="toolbar" class="d-flex flex-row justify-content-center align-items-center">
+			<form action="/collection" method="POST">
+			 <button type="submit" class="btn btn-dark btn-sm ">
+         		<span class="fas fa-sync-alt"></span> Refresh
+        	</button>
+			</form>
+		</div>
 		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
-					<table id="myTable2" data-toggle="table"
-						data-height=650 data-search="true"
-						data-show-columns="true" class="table table1 table-hover">
-						<thead>
+					<table id="myTable2" data-toggle="table" data-height=600 data-search="true" data-toolbar="#toolbar" data-click-to-select="true"
+						data-show-columns="true" data-show-export="true" data-export-options='{"fileName": "DB_Stocks"}' class="table table1 table-hover">
+						<thead class='thead-light'>
 							<tr>
 								<th data-checkbox="true"></th>
 								<th data-sortable="true">Symbol</th>
@@ -70,7 +74,10 @@
 						</thead>
 						<tbody id='db_stocks'>
 							{{#each dbdata}}
+<<<<<<< HEAD
+=======
 
+>>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
 									<tr id= "{{ this.symbol }}">
 										<td></td>
 										<td>{{ this.symbol }}</td>
@@ -162,19 +169,26 @@
 										{{/if}}
 									</tr>
 
+<<<<<<< HEAD
+
+										{{!-- <td>{{ this.rows }}</td> --}}
+=======
+>>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
 									</tr>
 
 							{{/each}}
 						</tbody>
 					</table>
+<<<<<<< HEAD
+=======
 					<div class="d-flex flex-column-reverse p-1">
 
 					</div>
+>>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
 				</div>
 			</div>
 		</div>
 		<script>
-
 		</script>
 	</body>
 </html>
