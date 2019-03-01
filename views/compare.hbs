@@ -53,7 +53,7 @@
 						</thead>
 						<tbody>
 							{{#each data}}
-							<tr id={{Symbol}} data-val={{Symbol}}>
+							<tr data-val={{Symbol}}>
 								<td></td>
 								<td>New</td>
 								<td>{{ Symbol }}</td>
@@ -215,7 +215,7 @@
 							break;
 
 						case "Append":
-							//console.log(returned.stocks)
+							console.log(returned.stocks)
 							for(let i = 0; i < returned.stocks.length; i++){
 								
 								$(`#${returned.stocks[i].symbol}`).remove();
