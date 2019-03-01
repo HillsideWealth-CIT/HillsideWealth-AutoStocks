@@ -31,17 +31,21 @@
 			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
 		<script
 			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
+		<script src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 	</head>
 	<body style="overflow:hidden;">
 		{{>header}}
-		<div class="container-fluid">
+		<div id="toolbar" class="d-flex flex-row justify-content-center align-items-center">
+			 <button type="button" class="btn btn-dark btn-sm ">
+         		<span class="fas fa-sync-alt"></span> Refresh
+        	</button>
+		</div>
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
-					<table id="myTable2" data-toggle="table"
-						data-height=650 data-search="true"
-						data-show-columns="true" class="table table1 table-hover">
-						<thead>
+					<table id="myTable2" data-toggle="table" data-height=600 data-search="true" data-toolbar="#toolbar" data-click-to-select="true"
+						data-show-columns="true" data-show-export="true" data-export-options='{"fileName": "DB_Stocks"}' class="table table1 table-hover">
+						<thead class='thead-light'>
 							<tr>
 								<th data-checkbox="true"></th>
 								<th data-sortable="true">Symbol</th>
@@ -67,7 +71,6 @@
 						</thead>
 						<tbody id='db_stocks'>
 							{{#each dbdata}}
-								
 									<tr id= "{{ this.symbol }}">
 										<td></td>
 										<td>{{ this.symbol }}</td>
@@ -159,20 +162,16 @@
 										{{/if}}
 
 
-										<td>{{ this.rows }}</td>
+										{{!-- <td>{{ this.rows }}</td> --}}
 									</tr>
 								
 							{{/each}}
 						</tbody>
 					</table>
-					<div class="d-flex flex-column-reverse p-1">
-						
-					</div>
 				</div>
 			</div>
 		</div>
 		<script>
-
 		</script>
 	</body>
 </html>
