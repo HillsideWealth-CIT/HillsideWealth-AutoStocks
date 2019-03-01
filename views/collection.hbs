@@ -1,56 +1,178 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Collection</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="/styles/collection.css" />
-	<link rel="icon" type="image/png" href="/imgs/icon.png" />
-</head>
-<body>
-	{{>header}}
-	<div class="searchBar">
-		<input type="text" placeholder="Search" id="search" />
-		<button id="filters" class="btn">Filters</button>
-		<button id="searchBtn" class="btn">Search</button>
-	</div>
-	<table>
-		<tr>
-			<th>Options</th>
-			<th>ID</th>
-			<th>Fullname</th>
-			<th>Email</th>
-			<th>Password</th>
-			<th>Date created</th>
-		</tr>
-		<tr>
-			<td> <input type="radio"/>
-				edit copy delete
-			</td>
-			<td>1</td>
-			<td>John Doe</td>
-			<td>email@bcit.ca</td>
-			<td>2384h2jkhuigf3234</td>
-			<td>2019/02/02</td>
-		</tr>
-		<tr>
-			<td> <input type="radio"/> edit copy delete</td>
-			<td>2</td>
-			<td>Jane Doe</td>
-			<td>email@bcit.ca</td>
-			<td>2384h2jkhuigf3234</td>
-			<td>2019/02/02</td>
-		</tr>
-		<tr>
-			<td> <input type="radio"/> edit copy delete</td>
-			<td>3</td>
-			<td>Jone Doe</td>
-			<td>email@bcit.ca</td>
-			<td>2384h2jkhuigf3234</td>
-			<td>2019/02/02</td>
-		</tr>
+	<head>
+		<title>Collection</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="/styles/collection.css" />
+		<link rel="icon" type="image/png" href="/imgs/icon.png" />
+		<link rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+		<link rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<link rel="stylesheet"
+			href="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.css">
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+			integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+			integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+			crossorigin="anonymous"></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+			integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+			crossorigin="anonymous"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.2/core.min.js"></script>
+		<script
+			src="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.js"></script>
+		<script
+			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+		<script
+			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+	</head>
+	<body style="overflow:hidden;">
+		{{>header}}
+		<div class="container-fluid">
+			<div class="d-flex justify-content-center">
+				<div class="table-responsive p-3">
+					<table id="myTable2" data-toggle="table"
+						data-height=650 data-search="true"
+						data-show-columns="true" class="table table1 table-hover">
+						<thead>
+							<tr>
+								<th data-checkbox="true"></th>
+								<th data-sortable="true">Symbol</th>
+								<th data-sortable="true">Stock Name</th>
+								<th data-sortable="true">Yield</th>
+								<th data-sortable="true">Price</th>
+								<th data-sortable="true">Sales Order</th>
+								<th data-sortable="true">Market Cap</th>
+								<th data-sortable="true">Net Debt</th>
+								<th data-sortable="true">Enterprise Value</th>
+								<th data-sortable="true">ND aEBITDA</th>
+								<th data-sortable="true">Revenue</th>
+								<th data-sortable="true">aEBITDA</th>
+								<th data-sortable="true">aEBITDA %</th>
+								<th data-sortable="true">Asset Turnover</th>
+								<th data-sortable="true">aEBITDA AT</th>
+								<th data-sortable="true">ROE</th>
+								<th data-sortable="true">Effective Tax</th>
+								<th data-sortable="true">EV EBITDA</th>
+								<th data-sortable="true">Spice</th>
+								<th data-sortable="true">ROE Mult</th>
+							</tr>
+						</thead>
+						<tbody id='db_stocks'>
+							{{#each dbdata}}
+								
+									<tr id= "{{ this.symbol }}">
+										<td></td>
+										<td>{{ this.symbol }}</td>
+										<td>{{ this.stock_name }}</td>
+										{{#if this.stockdata.[0].yield}}
+											<td>{{this.stockdata.[0].yield}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].price}}
+											<td>{{this.stockdata.[0].price}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].sales_order}}
+											<td>{{this.stockdata.[0].sales_order}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].market_cap}}
+											<td>{{this.stockdata.[0].market_cap}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].net_debt}}
+											<td>{{this.stockdata.[0].net_debt}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].enterprise_value}}
+											<td>{{this.stockdata.[0].enterprise_value}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].nd_aebitda}}
+											<td>{{this.stockdata.[0].nd_aebitda}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].revenue}}
+											<td>{{this.stockdata.[0].revenue}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].aebitda}}
+											<td>{{this.stockdata.[0].aebitda}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].aebitda_percent}}
+											<td>{{this.stockdata.[0].aebitda_percent}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].asset_turnover}}
+											<td>{{this.stockdata.[0].asset_turnover}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].aebitda_at}}
+											<td>{{this.stockdata.[0].aebitda_at}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].roe}}
+											<td>{{this.stockdata.[0].roe}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].effective_tax}}
+											<td>{{this.stockdata.[0].effective_tax}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].ev_aebitda}}
+											<td>{{this.stockdata.[0].ev_aebitda}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].spice}}
+											<td>{{this.stockdata.[0].spice}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
+										{{#if this.stockdata.[0].roe_mult}}
+											<td>{{this.stockdata.[0].roe_mult}}</td>
+										{{else}}
+											<td>Null</td>
+										{{/if}}
 
 
-	</table>
+										<td>{{ this.rows }}</td>
+									</tr>
+								
+							{{/each}}
+						</tbody>
+					</table>
+					<div class="d-flex flex-column-reverse p-1">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
 
-
-</body>
+		</script>
+	</body>
+</html>

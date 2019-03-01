@@ -21,16 +21,47 @@ a{
 	color: black;
 	margin: 10px;
 }
-.searchBar {
-	width: 100%;
-	padding: 1%;
+p{
+	margin: 3px;
 }
-#search {
- 	width: 84%;
-	padding: 12px;
-	margin-left: 1%;
+#logout {
+	position: absolute;
+    right: 0px;
 }
-.btn {
+
+#container {
+	position: absolute;
+	margin: auto;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background-color: #ffffff;
+	width:35vw;
+	height: 35vh;
+	padding: 10px;
+}
+#upload {
+	border-style: dashed;
+	height: 14vh;
+	border-color: #555555;
+	margin-right: auto;
+	margin-left: auto;
+	padding-top: 2%;
+	border-radius: 7px;
+	padding: 5px;
+}
+#uploadButton {
+	margin: 5px;
+}
+#dropImage {
+	width: 16px;
+}
+
+#confirm {
+	left: 0px;
+	position: absolute;
+	margin: 11px;
 	background-color: #255A85;
 	color:white;
 	padding: 9px;
@@ -41,27 +72,26 @@ a{
 	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
-.btn:hover{
+#confirm:hover{
 	background-color: rgb(51, 121, 179);
 }
-
-td {
-
-	color: rgb(0, 0, 0);
+#cancel {
+	left: 96px;
+	position: absolute;
+	margin: 11px;
+	background-color: white;
+	padding: 9px;
+	bottom:5px;
+	font-size: 16px;
+	border: none;
+	cursor: pointer;
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
-th {
-	text-align: left;
-	color: rgb(37, 90, 133);
-	height: 34px;
+#cancel:hover{
+	background-color: rgb(168, 168, 168);
 }
 
-tr:nth-child(even) {
-	background-color: rgb(210, 210, 210);
-}
-
-table {
-	background-color: aliceblue;
-	width: 93%;
-	margin: 3%;
+.dropzone {
+	padding: 1%;
 }
