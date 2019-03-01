@@ -53,7 +53,7 @@
 						</thead>
 						<tbody>
 							{{#each data}}
-							<tr data-val={{Symbol}}>
+							<tr data-val={{Symbol}} id={{Symbol}}1>
 								<td></td>
 								<td>New</td>
 								<td>{{ Symbol }}</td>
@@ -216,13 +216,14 @@
 
 						case "Append":
 							//console.log(returned.stocks)
+                            //console.log($("#db_stocks tr").length)
+                            let trnum = $('#db_stocks tr').length;
 							for(let i = 0; i < returned.stocks.length; i++){
-
-								$(`#${returned.stocks[i].symbol}`).remove();
+								$(`#${returned.stocks[i].symbol}1`).remove();
 							}
 
 							for(let j = 0; j < returned.stocks.length; j++){
-								let html_string = `<tr id= "${ returned.stocks[j].symbol }2" data-index="3" data-val=${returned.stocks[j].symbol}><td class="bs-checkbox "><input data-index="3" name="btSelectItem" type="checkbox"></td><td>${returned.stocks[j].symbol}</td><td>${returned.stocks[j].company}</td></tr>`
+								let html_string = `<tr id= "${ returned.stocks[j].symbol }2" data-index="${trnum + j}" data-val=${returned.stocks[j].symbol}><td class="bs-checkbox "><input data-index="${trnum + j}" name="btSelectItem" type="checkbox"></td><td>${returned.stocks[j].symbol}</td><td>${returned.stocks[j].company}</td></tr>`
 								$('#db_stocks').append(html_string);
 							}
 
