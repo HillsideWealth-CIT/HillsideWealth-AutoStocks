@@ -70,14 +70,16 @@ const retrieveUser = async (username) => {
 const showstocks = async () => {
     let stockAndData = []
     let stocks = await runQuery('SELECT * FROM stocks;')
+    let stockdata = await runQuery(`SELECT * FROM stockdata`)
     for (i in stocks.rows) {
-        let currentData = await runQuery(`SELECT * FROM stockdata WHERE symbol = $1`, [stocks.rows[i].symbol])
+
         stockAndData.push({
             symbol: stocks.rows[i].symbol,
             stock_name: stocks.rows[i].stock_name,
-            stockdata: currentData.rows
+            stockdata: stockdata.rows.filter(data => data.symbol == stocks.rows[i].symbol)
         })
     }
+
     return stockAndData
 }
 
