@@ -84,6 +84,7 @@ app.get("/collection", sessionCheck, (request, response) => {
     }));
 });
 
+
 app.get("/documentation", sessionCheck, (request, response) => {
     response.render("documentation.hbs");
 });
@@ -192,6 +193,11 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     }
 
 });
+
+// update DB
+app.post('/collection', (request, response) => {
+    api_calls.gurufocus_update()
+})
 
 /* Compare page*/
 app.post('/compare', (request, response) => {
