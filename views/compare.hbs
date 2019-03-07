@@ -32,14 +32,9 @@
 		<script
 			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+		<style>.fixed-table-container{ background-color:white}</style>
 	</head>
 	<body style="overflow:hidden;">
-		<div id="toolbar1" class="d-flex flex-row justify-content-center align-items-center">
-			 <h2>CSV</h2>
-		</div>
-		<div id="toolbar2" class="d-flex flex-row justify-content-center align-items-center">
-			 <h2>DB</h2>
-		</div>
 		{{>header}}
 			<div class="container-fluid">
 			<div class="d-flex justify-content-center">
@@ -60,15 +55,15 @@
 						<tbody>
 							{{#each data}}
 
-							<tr data-val={{Symbol}} id={{Symbol}}1>
+							<tr data-val={{Ticker}} id={{Ticker}}1>
 								<td></td>
 								<td>New</td>
-								<td>{{ Symbol }}</td>
-								<td>{{ Price }}</td>
-								<td>{{Currency}}</td>
+								<td>{{ Ticker }}</td>
+								<td>{{ "Current Price" }}</td>
+								<td>{{ "Currency Symbol" }}</td>
 								<td class="d-flex flex-row justify-content-center align-items-center"><i
 										class="fas fa-info-circle fa-2x" data-toggle="modal"
-										data-target="#{{ Symbol }}_modal"></i></td>
+										data-target="#{{ Ticker }}_modal"></i></td>
 							</tr>
 							{{/each}}
 						</tbody>
@@ -103,7 +98,7 @@
 					</div>
 				</div>
 				{{#each data}}
-				<div class="modal" id="{{ Symbol }}_modal">
+				<div class="modal" id="{{ Ticker }}_modal">
 					<div class="modal-dialog modal-dialog-centered modal-xl">
 						<div class="modal-content">
 
@@ -124,34 +119,30 @@
 												<th>Exchange</th>
 												<th>Price</th>
 												<th>Currency</th>
-												<th>Market Cap(Mil)</th>
-												<th>US$ Market Cap($Mil)</th>
 												<th>aEBTIDA*AT</th>
 												<th>ROE % (5y Median)</th>
 												<th>Market Cap ($M)</th>
-												<th>3 Year Total Revenue Growth Rate</th>
+												<th>3-Year Total Revenue Growth Rate</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
 												<td>{{ Company }}</td>
-												<td>{{ Symbol }}</td>
+												<td>{{ Ticker }}</td>
 												<td>{{ Exchange }}</td>
-												<td>{{ Price }}</td>
-												<td>{{ Currency }}</td>
-												<td>{{ "Market Cap(Mil)" }}</td>
-												<td>{{ "US$ Market Cap($Mil)" }}</td>
+												<td>{{ "Current Price" }}</td>
+												<td>{{ "Currency Symbol" }}</td>
 												<td>{{ "aEBTIDA*AT" }}</td>
 												<td>{{ "ROE % (5y Median)" }}</td>
 												<td>{{ "Market Cap ($M)" }}</td>
-												<td>{{ "3 Year Total Revenue Growth Rate" }}</td>
+												<td>{{ "3-Year Total Revenue Growth Rate" }}</td>
 											</tr>
 										</tbody>
 									</table>
 								</div>
 								<label for="comment">Comment:</label>
 								<div class="form-group">
-									<textarea class="form-control" rows="5" id="{{ Symbol }}_comment" data-company="{{ Company }}"></textarea>
+									<textarea class="form-control" rows="5" id="{{ Ticker }}_comment" data-ex="{{ Exchange }}" data-company="{{ Company }}"></textarea>
 								</div>
 							</div>
 						</div>
@@ -160,10 +151,13 @@
 				{{/each}}
 			</div>
 		</div>
+		<div id="toolbar1" class="d-flex flex-row justify-content-center align-items-center">
+			 <h2>CSV</h2>
+		</div>
+		<div id="toolbar2" class="d-flex flex-row justify-content-center align-items-center">
+			 <h2>DB</h2>
+		</div>
 		<script>
-			window.onbeforeunload = function(){
-			return 'Are you sure you want to leave?';
-		};
 			var add_list = [];
 			var rm_list = [];
 			function add() {
@@ -171,7 +165,8 @@
 					var sym = $(this).parents("tr:first").data("val");
 					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
 					var sym_company = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.company;
-					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString(), "company": sym_company.toString()});
+					var sym_exchange = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.ex;
+					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString(), "company": sym_company.toString(), "exchange": sym_exchange.toString()});
 			});
                 ajax_func(add_list, 'Append')
                 //alert(JSON.stringify(add_list))
@@ -201,35 +196,7 @@
                     contentType: 'application/json',
                     url:"http://localhost:8080/upload",
                 }).done(function(returned_data){
-					returned = JSON.parse(returned_data)
-					console.log(returned)
-					switch(returned.action){
-						case "Remove":
-							for(let i = 0; i < returned.stocks.length; i++){
-								console.log(returned.stocks[i].symbol)
-								$(`#${returned.stocks[i].symbol}2`).remove();
-							}
-							break;
-
-						case "Append":
-
-							//console.log(returned.stocks)
-                            //console.log($("#db_stocks tr").length)
-                            let trnum = $('#db_stocks tr').length;
-
-							for(let i = 0; i < returned.stocks.length; i++){
-								$(`#${returned.stocks[i].symbol}1`).remove();
-							}
-
-							for(let j = 0; j < returned.stocks.length; j++){
-								let html_string = `<tr id= "${ returned.stocks[j].symbol }2" data-index="${trnum + j}" data-val=${returned.stocks[j].symbol}><td class="bs-checkbox "><input data-index="${trnum + j}" name="btSelectItem" type="checkbox"></td><td>${returned.stocks[j].symbol}</td><td>${returned.stocks[j].company}</td></tr>`
-								$('#db_stocks').append(html_string);
-							}
-
-
-
-							break;
-					}
+					location.reload()
 				});
             }
 

@@ -31,24 +31,22 @@
 			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
 		<script
 			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
-		<script src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
+		<script
+			src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+		<style>.fixed-table-container{ background-color:white}th:nth-child(2),td:nth-child(2){position:sticky;left:0px;}td:nth-child(2){background-color:whitesmoke; z-index: 999;}
+		</style>
 	</head>
 	<body style="overflow:hidden;">
 		{{>header}}
-		<div id="toolbar" class="d-flex flex-row justify-content-center align-items-center">
-			<form action="/collection" method="POST">
-			 <button type="submit" class="btn btn-dark btn-sm ">
-         		<span class="fas fa-sync-alt"></span> Refresh
-        	</button>
-			</form>
-		</div>
 		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
-					<table id="myTable2" data-toggle="table" data-height=600 data-search="true" data-toolbar="#toolbar" data-click-to-select="true"
-						data-show-columns="true" data-show-export="true" data-export-options='{"fileName": "DB_Stocks"}' class="table table1 table-hover">
-						<thead class='thead-light'>
+					<table id="table" data-toggle="table" data-height=600 data-search="true"
+						data-toolbar="#toolbar" data-click-to-select="true"
+						data-show-columns="true" data-show-export="true" data-export-options='{"
+						fileName" :"DB_Stocks" }' class="table table1 table-hover">
+						<thead class='thead-dark'>
 							<tr>
 								<th data-checkbox="true"></th>
 								<th data-sortable="true">Symbol</th>
@@ -74,121 +72,124 @@
 						</thead>
 						<tbody id='db_stocks'>
 							{{#each dbdata}}
-<<<<<<< HEAD
-=======
+							<tr id="{{ this.symbol }}">
+								<td></td>
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								{{#if this.stockdata.[0].yield}}
+								<td>{{this.stockdata.[0].yield}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].price}}
+								<td>{{this.stockdata.[0].price}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].sales_order}}
+								<td>{{this.stockdata.[0].sales_order}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].market_cap}}
+								<td>{{this.stockdata.[0].market_cap}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].net_debt}}
+								<td>{{this.stockdata.[0].net_debt}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].enterprise_value}}
+								<td>{{this.stockdata.[0].enterprise_value}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].nd_aebitda}}
+								<td>{{this.stockdata.[0].nd_aebitda}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].revenue}}
+								<td>{{this.stockdata.[0].revenue}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].aebitda}}
+								<td>{{this.stockdata.[0].aebitda}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].aebitda_percent}}
+								<td>{{this.stockdata.[0].aebitda_percent}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].asset_turnover}}
+								<td>{{this.stockdata.[0].asset_turnover}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].aebitda_at}}
+								<td>{{this.stockdata.[0].aebitda_at}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].roe}}
+								<td>{{this.stockdata.[0].roe}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].effective_tax}}
+								<td>{{this.stockdata.[0].effective_tax}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].ev_aebitda}}
+								<td>{{this.stockdata.[0].ev_aebitda}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].spice}}
+								<td>{{this.stockdata.[0].spice}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+								{{#if this.stockdata.[0].roe_mult}}
+								<td>{{this.stockdata.[0].roe_mult}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
+							</tr>
 
->>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
-									<tr id= "{{ this.symbol }}">
-										<td></td>
-										<td>{{ this.symbol }}</td>
-										<td>{{ this.stock_name }}</td>
-										{{#if this.stockdata.[0].yield}}
-											<td>{{this.stockdata.[0].yield}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].price}}
-											<td>{{this.stockdata.[0].price}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].sales_order}}
-											<td>{{this.stockdata.[0].sales_order}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].market_cap}}
-											<td>{{this.stockdata.[0].market_cap}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].net_debt}}
-											<td>{{this.stockdata.[0].net_debt}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].enterprise_value}}
-											<td>{{this.stockdata.[0].enterprise_value}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].nd_aebitda}}
-											<td>{{this.stockdata.[0].nd_aebitda}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].revenue}}
-											<td>{{this.stockdata.[0].revenue}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].aebitda}}
-											<td>{{this.stockdata.[0].aebitda}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].aebitda_percent}}
-											<td>{{this.stockdata.[0].aebitda_percent}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].asset_turnover}}
-											<td>{{this.stockdata.[0].asset_turnover}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].aebitda_at}}
-											<td>{{this.stockdata.[0].aebitda_at}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].roe}}
-											<td>{{this.stockdata.[0].roe}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].effective_tax}}
-											<td>{{this.stockdata.[0].effective_tax}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].ev_aebitda}}
-											<td>{{this.stockdata.[0].ev_aebitda}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].spice}}
-											<td>{{this.stockdata.[0].spice}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-										{{#if this.stockdata.[0].roe_mult}}
-											<td>{{this.stockdata.[0].roe_mult}}</td>
-										{{else}}
-											<td>Null</td>
-										{{/if}}
-									</tr>
 
-<<<<<<< HEAD
-
-										{{!-- <td>{{ this.rows }}</td> --}}
-=======
->>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
-									</tr>
+							{{!-- <td>{{ this.rows }}</td> --}}
 
 							{{/each}}
 						</tbody>
 					</table>
-<<<<<<< HEAD
-=======
-					<div class="d-flex flex-column-reverse p-1">
-
-					</div>
->>>>>>> 837c4dc8f6cf8c7f4a5695b212ae3f4fecce7dcf
 				</div>
 			</div>
 		</div>
-		<script>
-		</script>
+		<div id="toolbar" class="d-flex flex-row justify-content-center
+			align-items-center px-3">
+			<form action="" class="pr-2" method="POST">
+				<button type="submit" class="btn btn-success btn-sm">
+					<span class="fas fa-plus"></span> Add
+				</button>
+			</form>
+			<form action="" method="POST">
+				<button type="submit" class="btn btn-danger btn-sm">
+					<span class="fas fa-trash-alt"></span> Delete
+				</button>
+			</form>
+			<form action="/collection" class="px-2" method="POST">
+				<button type="submit" class="btn btn-dark btn-sm">
+					<span class="fas fa-sync-alt"></span> Refresh
+				</button>
+			</form>
+		</div>
 	</body>
+
 </html>

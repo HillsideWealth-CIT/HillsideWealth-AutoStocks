@@ -1,7 +1,8 @@
 body {
-	background-color: #255A85;
+	background-image: url("/imgs/nature.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
 	font-family: sans-serif;
-	zoom: 1.5;
 }
 
 #menu {
@@ -12,8 +13,8 @@ body {
 	top: 0px;
 	bottom: 0px;
 	background-color: #ffffff;
-	width:300px;
-	height: 250px;
+	width:350px;
+	height: 300px;
 	text-align: center;
 	border-radius: 4px;
 	padding: 20px;
@@ -25,7 +26,7 @@ body {
 	margin-right: auto;
 	width: 60%;
 }
-
+/* 
 #userName {
 	width: 85%;
 	border:none;
@@ -74,5 +75,5 @@ body {
 
 #send:hover{
 	background-color: rgb(51, 121, 179);
-}
+} */
 
