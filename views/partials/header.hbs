@@ -1,13 +1,65 @@
-<div id="header">
-	<div id="logo">
-		<a  href="/">
-			<img src="/imgs/hillside_logo.png" width="100%"/>
-		</a>
-	</div>
-</div>
-<div id="menu">
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+	integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+	crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<link rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+{{!-- <div id="menu">
 	<a href="/">Upload</a>
 	<a href="collection">Collection</a>
 	<a href="documentation">Documentation</a>
 	<a href="settings">Settings</a>
-</div>
+	<form id="lo_form" action="/logout" method="post">
+		<a id="lo">Logout</a>
+	</form>
+</div> --}}
+<style>
+body {background-color: #F0F0F0;}
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark justify-content-between" style="background-color:#255A85; color:white;">
+	<a class="navbar-brand" href="/"><img src="/imgs/hillside_logo.png" style="width:20vw;height:5vh;" /></a>
+  <ul class="navbar-nav">
+		{{#if i}}
+    <li class="nav-item active">
+		{{else}}
+		<li class="nav-item">
+		{{/if}}
+      <a class="nav-link" href="/">Upload</a>
+    </li>
+    {{#if c}}
+    <li class="nav-item active">
+		{{else}}
+		<li class="nav-item">
+		{{/if}}
+      <a class="nav-link" href="collection">Collection</a>
+    </li>
+		{{#if d}}
+    <li class="nav-item active">
+		{{else}}
+		<li class="nav-item">
+		{{/if}}
+      <a class="nav-link" href="documentation">Documentation</a>
+    <!-- Dropdown -->
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        <i class="fas fa-user"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right">
+				<a class="dropdown-item" href="settings" style="width:auto;">My Account</a>
+		<form id="lo_form" action="/logout" method="post">
+			<a id="lo" class="dropdown-item" style="width:auto;" href="#">Log Out</a>
+		</form>
+      </div>
+    </li>
+  </ul>
+</nav>
+<script>
+	$("#lo").click(function() {
+		$("#lo_form").submit();
+	});
+</script>

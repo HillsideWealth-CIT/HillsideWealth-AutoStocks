@@ -61,7 +61,7 @@ const sessionCheck = (req, res, next) => {
 /** GET **/
 
 app.get("/", sessionCheck, (request, response) => {
-    response.render("index.hbs");
+    response.render("index.hbs", {i: true});
 });
 
 app.get("/register", (request, response) => {
@@ -72,43 +72,21 @@ app.get("/login", (request, response) => {
     response.render("login.hbs");
 });
 
-app.get("/database", sessionCheck, (request, response) => {
-    db.showstocks()
-    .then(response.render("database.hbs", { dbdata: dbdata}));
-});
-
 app.get("/collection", sessionCheck, (request, response) => {
     db.showstocks()
     .then(res => response.render("collection.hbs", {
-        dbdata: res
+        dbdata: res,
+        c: true
     }));
 });
 
-
 app.get("/documentation", sessionCheck, (request, response) => {
-    response.render("documentation.hbs");
+    response.render("documentation.hbs",{d: true});
 });
 
 app.get("/settings", sessionCheck, (request, response) => {
     response.render("settings.hbs");
 });
-
-/*
-app.get("/compare", sessionCheck, (request, response) => {
-    let dbdata = request.session.dbdata
-    if (csvdata.length == 0) {
-        var no_data = true;
-    } else {
-        for (i = 0; i < dbdata.length; i++) {
-            _.remove(csvdata, function (e) {
-                return e.Symbol == dbdata[i].symbol;
-            });
-        }
-    }
-    response.render('compare.hbs', { data: csvdata, dbdata: dbdata, no_data: no_data });
-});
- */
-
 
 /** POST **/
 
@@ -146,10 +124,10 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
                 let dbdata = resolved2;
                 for (i = 0; i < dbdata.length; i++) {
                     _.remove(csvdata, function (e) {
-                        return e.Symbol == dbdata[i].symbol;
+                        return e.Ticker == dbdata[i].symbol;
                     });
                 }
-                response.render('compare.hbs', { data: csvdata, dbdata: dbdata });
+                response.render('compare.hbs', { data: csvdata, dbdata: dbdata, i: true });
             }).catch(err => {
                 console.error(err);
             })
@@ -193,12 +171,6 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
 // update DB
 app.post('/collection', (request, response) => {
     api_calls.gurufocus_update()
-})
-
-/* Compare page*/
-app.post('/compare', (request, response) => {
-    console.log(request.body.action)
-    
 })
 
 /* Logout */
