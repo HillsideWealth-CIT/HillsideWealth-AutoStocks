@@ -3,7 +3,6 @@ const csv = require("csv-parser");
 const fs = require("fs");
 
 const csvjson = async (csv_file) => {
-    const results1 = [];
     return new Promise (( resolve, reject) => {
         xlsxj({
             input: csv_file, 
