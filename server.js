@@ -6,6 +6,7 @@ const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const session = require("client-sessions");
 const app = express();
+var schedule = require('node-schedule');
 const multer = require('multer');
 const upload = multer({ dest: './uploads/' });
 const fs = require("fs");
@@ -20,6 +21,7 @@ const api_calls = require("./actions/api_calls");
 const auth = require("./actions/auth");
 const csv_parse = require("./actions/csv_parse");
 const db = require("./actions/database");
+const email = require('./actions/node_mailer');
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -183,3 +185,9 @@ app.post("/logout", (request, response) => {
 app.listen(port, () => {
     console.log(`Server is up on port: ${port}, with PID: ${process.pid}`);
 });
+
+/*** Sends an email update on the 15th of everymonth ***/
+var quarter_updates = schedule.scheduleJob('* * * 15 * *', ()=>{
+    email.send_email();
+})
+quarter_updates;
