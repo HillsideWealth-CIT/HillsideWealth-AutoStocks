@@ -168,7 +168,6 @@ function gurufocus_update() {
 
 
 module.exports = {
-    gurufocus_add,
     gurufocus_update,
     gurufocusAdd
 }
