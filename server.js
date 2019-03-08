@@ -6,6 +6,7 @@ const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const session = require("client-sessions");
 const app = express();
+var schedule = require('node-schedule');
 const multer = require('multer');
 const upload = multer({ dest: './uploads/' });
 const fs = require("fs");
@@ -20,6 +21,7 @@ const api_calls = require("./actions/api_calls");
 const auth = require("./actions/auth");
 const csv_parse = require("./actions/csv_parse");
 const db = require("./actions/database");
+const email = require('./actions/node_mailer');
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -138,21 +140,13 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     else{
         switch (request.body.action) {
             case 'Append':
-                api_calls.gurufocus_add(request.body.stocks)
+                api_calls.gurufocusAdd(request.body.stocks)
                     .then((resolve) => {
-                        let promises = [];
-                        console.log(resolve);
-                        for (let i = 0; i < resolve.length; i++) {
-                            promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
-                        }
-                        Promise.all(promises)
-                            .then((returned) => {
                                response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
-                            })
                     })
                     .catch((reason) => console.log(reason));
                 break;
-    
+
             case 'Remove':
                 let promises = [];
                 for (let i = 0; i < request.body.stocks.length; i++) {
@@ -170,7 +164,8 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
 
 // update DB
 app.post('/collection', (request, response) => {
-    api_calls.gurufocus_update()
+    //For now, do nothing because it's broken.
+    //api_calls.gurufocus_update()
 })
 
 /* Logout */
@@ -179,7 +174,23 @@ app.post("/logout", (request, response) => {
     response.redirect("/");
 });
 
+//Graph temporary page
+app.get('/graph', (request, response) => {
+    db.showstocks()
+    .then((stocks) => {
+        response.render('graph.hbs', {
+            stockdata: stocks
+        })
+    })
+})
+
 /*** Start Server ***/
 app.listen(port, () => {
     console.log(`Server is up on port: ${port}, with PID: ${process.pid}`);
 });
+
+/*** Sends an email update on the 15th of everymonth ***/
+var quarter_updates = schedule.scheduleJob('* * * 15 * *', ()=>{
+    email.send_email();
+})
+quarter_updates;

@@ -70,7 +70,7 @@ const retrieveUser = async (username) => {
 const showstocks = async () => {
     let stockAndData = []
     let stocks = await runQuery('SELECT * FROM stocks;')
-    let stockdata = await runQuery(`SELECT * FROM stockdata`)
+    let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
     for (i in stocks.rows) {
 
         stockAndData.push({
@@ -125,7 +125,7 @@ const addStockData = async (data) => {
         placeholders += `$${params.push(data.net_debt)},`
     }
     if (data.enterprise_value) {
-        columns += 'enterprice_value,'
+        columns += 'enterprise_value,'
         placeholders += `$${params.push(data.enterprise_value)},`
     }
     if (data.nd_aebitda) {
@@ -174,6 +174,7 @@ const addStockData = async (data) => {
     }
     //Creates query string
     let query = `INSERT INTO stockdata (${_.trimEnd(columns, ',')}) VALUES (${_.trimEnd(placeholders, ',')});`
+    console.log(query)
     return await runQuery(query, params)
 }
 
@@ -187,7 +188,32 @@ const removeStocks = async (symbol) => {
     return await runQuery(`DELETE from stocks WHERE symbol='${symbol}';`)
 }
 
-
+runQuery(`CREATE TABLE IF NOT EXISTS "stockdata"
+(
+    "stockdata_id" serial PRIMARY KEY,
+    "symbol" varchar(10) REFERENCES stocks(symbol) ON DELETE CASCADE,
+    "date" date,
+    "notes" varchar(250),
+    "dividend" numeric,
+    "yield" numeric,
+    "price" numeric,
+    "sales_order" numeric,
+    "market_cap" numeric,
+    "net_debt" numeric,
+    "enterprise_value" numeric,
+    "nd_aebitda" numeric,
+    "revenue" numeric,
+    "aebitda" numeric,
+    "aebitda_percent" numeric,
+    "asset_turnover" numeric,
+    "aebitda_at" numeric,
+    "roe" numeric,
+    "effective_tax" numeric,
+    "ev_aebitda" numeric,
+    "spice" numeric,
+    "roe_mult" numeric
+);
+`)
 module.exports = {
     addUser,
     usernameAvailable,
