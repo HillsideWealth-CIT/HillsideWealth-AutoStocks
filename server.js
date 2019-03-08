@@ -140,21 +140,13 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     else{
         switch (request.body.action) {
             case 'Append':
-                api_calls.gurufocus_add(request.body.stocks)
+                api_calls.gurufocusAdd(request.body.stocks)
                     .then((resolve) => {
-                        let promises = [];
-                        console.log(resolve);
-                        for (let i = 0; i < resolve.length; i++) {
-                            promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
-                        }
-                        Promise.all(promises)
-                            .then((returned) => {
                                response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
-                            })
                     })
                     .catch((reason) => console.log(reason));
                 break;
-    
+
             case 'Remove':
                 let promises = [];
                 for (let i = 0; i < request.body.stocks.length; i++) {
@@ -172,7 +164,8 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
 
 // update DB
 app.post('/collection', (request, response) => {
-    api_calls.gurufocus_update()
+    //For now, do nothing because it's broken.
+    //api_calls.gurufocus_update()
 })
 
 /* Logout */
