@@ -181,6 +181,16 @@ app.post("/logout", (request, response) => {
     response.redirect("/");
 });
 
+//Graph temporary page
+app.get('/graph', (request, response) => {
+    db.showstocks()
+    .then((stocks) => {
+        response.render('graph.hbs', {
+            stockdata: stocks
+        })
+    })
+})
+
 /*** Start Server ***/
 app.listen(port, () => {
     console.log(`Server is up on port: ${port}, with PID: ${process.pid}`);
