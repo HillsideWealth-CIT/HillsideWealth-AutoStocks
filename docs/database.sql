@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS "stocks"
 
 CREATE TABLE IF NOT EXISTS "pbstock"
 (
-    "symbol" varchar(10) REFERENCES stocks(symbol),
-    "playbook_id" int REFERENCES playbooks(playbook_id),
+    "symbol" varchar(10) REFERENCES stocks(symbol) ON DELETE CASCADE,
+    "playbook_id" int REFERENCES playbooks(playbook_id) ON DELETE CASCADE,
     PRIMARY KEY(symbol, playbook_id)
 );
 
@@ -34,24 +34,24 @@ CREATE TABLE IF NOT EXISTS "stockdata"
 (
     "stockdata_id" serial PRIMARY KEY,
     "symbol" varchar(10) REFERENCES stocks(symbol) ON DELETE CASCADE,
-    "date" timestamp with time zone,
+    "date" date,
     "notes" varchar(250),
-    "dividend" float(2),
-    "yield" float(2),
-    "price" float(2),
-    "sales_order" float(2),
-    "market_cap" int,
-    "net_debt" float(2),
-    "enterpise_value" float(2),
-    "nd_aebitda" float(2),
-    "revenue" int,
-    "aebitda" float(2),
-    "aebitda_percent" float(1),
-    "asset_turnover" float(2),
-    "aebitda_at" float(1),
-    "roe" float(1),
-    "effective_tax" float(2),
-    "ev_aebitda" float(2),
-    "spice" float(2),
-    "roe_mult" float(2)
+    "dividend" numeric,
+    "yield" numeric,
+    "price" numeric,
+    "sales_order" numeric,
+    "market_cap" numeric,
+    "net_debt" numeric,
+    "enterprise_value" numeric,
+    "nd_aebitda" numeric,
+    "revenue" numeric,
+    "aebitda" numeric,
+    "aebitda_percent" numeric,
+    "asset_turnover" numeric,
+    "aebitda_at" numeric,
+    "roe" numeric,
+    "effective_tax" numeric,
+    "ev_aebitda" numeric,
+    "spice" numeric,
+    "roe_mult" numeric
 );

@@ -1,45 +1,90 @@
 const request = require('request');
 require('dotenv').config
 
-function summary_call(item) {
-    let nitem = {};
-    //let link =
-    console.log(`item: ${JSON.stringify(item)}`)
+const db = require("../actions/database");
+
+const summaryAPI = (symbol) => {
     return new Promise((resolve, reject) => {
-        request({
-            url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${item.symbol}/financials`,
-            json: true
-        }, (err, resp, body) => {
+        request({ url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/summary`, json: true }, (err, res, body) => {
             if (err) reject(err)
-
-            nitem["symbol"] = item.symbol;
-            nitem["company"] = item.company
-            nitem["comment"] = item.comment;
-            resolve(nitem);
-
+            resolve(body)
         })
     })
 }
 
-
-function gurufocus_add(list) {
-    var promises = [];
-    for (let i = 0; i < list.length; i++) {
-        //console.log(list[i])
-        promises.push(summary_call(list[i]))
-    }
-
+const financialsAPI = (symbol) => {
     return new Promise((resolve, reject) => {
-        Promise.all(promises)
-            .then((returned) => {
-                resolve(returned)
-            })
-            .catch((err) => reject(err));
+        request({ url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/financials`, json: true }, (err, res, body) => {
+            if (err) reject(err)
+            resolve(body)
+        })
     })
 }
 
-var symbols = ['AAPL', 'GOOGL', 'AMZN', 'TSX:ATZ', 'TSX:CP', 'TSX:DOL']
+/**
+ * Accepts list of stock symbols, does a gurufocus search on them, and returns a list of objects with stock data.
+ * @param {Array} list List of stock symbols
+ * @param {Boolean} summary_call Whether summary call should be used.
+ * @param {Boolean} financials_call Whether fincancials call should be used.
+ */
+const gurufocusAdd = async (list, summaryCall = true, financialsCall = true) => {
+    var stocksList = []
+    for (i in list) {
+        let currentStock = {
+            symbol: list[i].symbol,
+            comment: list[i].comment,
+            data: []
+        }
+        if (summaryCall) {
+            let summary = await summaryAPI(list[i].symbol)
+            currentStock.company = summary.summary.general.company
+        }
+        if (financialsCall) {
+            let financials = await financialsAPI(list[i].symbol)
+            let annuals = financials.financials.annuals
 
+            for (f in annuals["Fiscal Year"]) {
+                let currentData = {
+                    date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0,4), annuals["Fiscal Year"][f].slice(6, 8)),
+                    symbol: list[i].symbol,
+                    price: annuals.valuation_and_quality["Month End Stock Price"][f],
+                    market_cap: annuals.valuation_and_quality["Market Cap"][f],
+                    roe: annuals.common_size_ratios["ROE %"][f],
+                    yield: annuals.valuation_ratios["Dividend Yield %"][f],
+                    dividend: annuals.common_size_ratios["Dividend Payout Ratio"][f],
+                    asset_turnover: annuals.common_size_ratios["Asset Turnover"][f],
+                    revenue: annuals.income_statement.Revenue[f],
+                    enterprise_value: annuals.valuation_and_quality["Enterprise Value"][f],
+                    aebitda: Math.round(Number(annuals.cashflow_statement["Stock Based Compensation"][f]) + Number(annuals.income_statement.EBITDA[f])),
+                }
+                //console.log(currentData)
+                currentStock.data.push(currentData)
+            }
+
+        }
+        stocksList.push(currentStock)
+    }
+    for (i in stocksList) {
+        try {
+            await db.addStocks(stocksList[i].symbol, stocksList[i].company)
+        }
+        catch { /* Do nothing. This happens when stock already exists */ }
+        try {
+            console.log(stocksList[i].data)
+            for (d in stocksList[i].data) {
+                let currentData = stocksList[i].data[d]
+                await db.addStockData(currentData)
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+
+    return stocksList
+}
+
+/*
 const financials_call = (symbol, callback) => {
 
 	//Net debt = Long term debt + current portion of long term debt + minority interest - cash& cash equivalents - market securities
@@ -114,15 +159,16 @@ const financials_call = (symbol, callback) => {
         });
  };
 
-
- function gurufocus_update(){
- 	for(item in symbols) {
- 		financials_call(symbols[item]);
- 	}
- }
+ */
+function gurufocus_update() {
+    for (item in symbols) {
+        financials_call(symbols[item]);
+    }
+}
 
 
 module.exports = {
     gurufocus_add,
-    gurufocus_update
+    gurufocus_update,
+    gurufocusAdd
 }
