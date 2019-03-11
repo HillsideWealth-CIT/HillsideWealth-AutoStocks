@@ -34,18 +34,18 @@
 		<script
 			src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-		<style>.fixed-table-container{ background-color:white}th:nth-child(2),td:nth-child(2){position:sticky;left:0px;}td:nth-child(2){background-color:whitesmoke; z-index: 999;}
+		<style>.fixed-table-container{ background-color:white}th:nth-child(3),td:nth-child(3){position:sticky;left:0px;}td:nth-child(3){background-color: #F0F0F0; z-index: 999;}
 		</style>
 	</head>
-	<body style="overflow:hidden;">
+	<body>
 		{{>header}}
 		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
-					<table id="table" data-toggle="table" data-height=600 data-search="true"
-						data-toolbar="#toolbar" data-click-to-select="true"
-						data-show-columns="true" data-show-export="true" data-export-options='{"
-						fileName" :"DB_Stocks" }' class="table table1 table-hover">
+					<table id="table" data-toggle="table" data-search="true"
+						data-toolbar="#toolbar" data-click-to-select="true" data-height="750" data-detail-view="true" data-detail-formatter="detailFormatter"
+						data-show-columns="true" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks" }'
+						class="table table1 table-hover">
 						<thead class='thead-dark'>
 							<tr>
 								<th data-checkbox="true"></th>
