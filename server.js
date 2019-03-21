@@ -22,6 +22,7 @@ const auth = require("./actions/auth");
 const csv_parse = require("./actions/csv_parse");
 const db = require("./actions/database");
 const email = require('./actions/node_mailer');
+const list_actions = require("./actions/list_actions");
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -140,30 +141,10 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     else{
         switch (request.body.action) {
             case 'Append':
-                api_calls.gurufocus_add(request.body.stocks)
-                    .then((resolve) => {
-                        let promises = [];
-                        console.log(resolve);
-                        for (let i = 0; i < resolve.length; i++) {
-                            promises.push(db.addStocks(resolve[i].symbol, resolve[i].company));
-                        }
-                        Promise.all(promises)
-                            .then((returned) => {
-                               response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
-                            })
-                    })
-                    .catch((reason) => console.log(reason));
+                list_actions.Append(request, response);
                 break;
-    
             case 'Remove':
-                let promises = [];
-                for (let i = 0; i < request.body.stocks.length; i++) {
-                    promises.push(db.removeStocks(request.body.stocks[i].symbol));
-                }
-                Promise.all(promises)
-                    .then((returned) => {
-                        response.send(JSON.stringify(request.body));
-                    })
+                list_actions.remove(request, response);
                 break;
         }
     }
@@ -172,7 +153,17 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
 
 // update DB
 app.post('/collection', (request, response) => {
-    api_calls.gurufocus_update()
+    //api_calls.gurufocus_update()
+    //console.log(request.body);
+    switch(request.body.action){
+        case 'append':
+            api_calls.
+            break;
+
+        case 'remove':
+            list_actions.remove(request, response);
+            break;
+    }
 })
 
 /* Logout */
@@ -180,6 +171,7 @@ app.post("/logout", (request, response) => {
     request.session.reset();
     response.redirect("/");
 });
+
 
 /*** Start Server ***/
 app.listen(port, () => {
