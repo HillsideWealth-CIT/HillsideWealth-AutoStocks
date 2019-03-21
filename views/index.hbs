@@ -1,30 +1,31 @@
 <!DOCTYPE html>
 <html>
-
     <head>
         <title>Upload page</title>
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="/styles/upload.css"/>
-        <link rel="icon" type="image/png" href="/imgs/icon.png"/>
+        <link rel="stylesheet" type="text/css" href="/styles/upload.css" />
+        <link rel="icon" type="image/png" href="/imgs/icon.png" />
     </head>
 
     <body>
         {{>header}}
-        <div id="container">
-            <form action="/upload" enctype="multipart/form-data" method="POST">
-                <div id="upload" class="dropzone">
-                    <p class="dropzone">Drop files here, or click below</p>
-                    <div id="uploadButton" class="dropzone">
-                        <input type='file' accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name='myfile' id="myfile" class="dropzone" required>
-                            {{!-- <img id="dropImage" src="/imgs/upload.png" class="dropzone"> Upload --}}
-                        </input>
-                    </div>
-                    <p class="dropzone">You can upload up to a max of 500 MB</p>
+        <div class="container-fluid d-flex justify-content-center">
+            <div class="d-flex align-items-center" style="height:75vh;">
+                <div class="card">
+                      <div class="card-header">
+                           Drag and Drop a File or Select Choose File
+                        </div>
+                    <div class="card-body">
+                        <form action="/upload" enctype="multipart/form-data"
+                            method="POST">
+                            <input type='file' 
+                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+                                application/vnd.ms-excel" name='myfile'
+                                id="myfile" required></input>
+                        <button class="btn" style="background-color:#255A85; color:white;" type="submit">Confirm</button>
+                    </form>
                 </div>
-
-                <button id="confirm" type="submit">Confirm</button>
-                <div id="cancel">Cancel</div>
-            </form>
+            </div>
         </div>
         <script src="../public/js/dropzone.js"></script>
     </body>

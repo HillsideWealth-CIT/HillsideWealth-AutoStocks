@@ -1,7 +1,7 @@
 body {
 	background-image: url("/imgs/nature.jpg");
 	background-size: cover;
-	background-repeat: no-repeat;
+	/* background-repeat: no-repeat; */
 	font-family: sans-serif;
 }
 

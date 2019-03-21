@@ -88,7 +88,7 @@ app.get("/documentation", sessionCheck, (request, response) => {
 });
 
 app.get("/settings", sessionCheck, (request, response) => {
-    response.render("settings.hbs");
+    response.render("settings.hbs",{s: true});
 });
 
 /** POST **/

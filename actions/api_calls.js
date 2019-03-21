@@ -68,7 +68,7 @@ const gurufocusAdd = async (list, summaryCall = true, financialsCall = true) => 
         try {
             await db.addStocks(stocksList[i].symbol, stocksList[i].company)
         }
-        catch { /* Do nothing. This happens when stock already exists */ }
+        catch (err){ /* Do nothing. This happens when stock already exists */ }
         try {
             console.log(stocksList[i].data)
             for (d in stocksList[i].data) {
