@@ -22,7 +22,7 @@
 body {background-color: #F0F0F0;}
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" style="background-color:#255A85; color:white;">
-	<a class="navbar-brand" href="/"><img src="/imgs/hillside_logo.png" style="width:20vw;height:5vh;" /></a>
+	<a class="navbar-brand" href="/"><img src="/imgs/hillside_logo.png" style="width:20vw;height:5vh;margin:10px;" /></a>
   <ul class="navbar-nav">
 		{{#if i}}
     <li class="nav-item active">
@@ -45,7 +45,11 @@ body {background-color: #F0F0F0;}
 		{{/if}}
       <a class="nav-link" href="documentation">Documentation</a>
     <!-- Dropdown -->
-    <li class="nav-item dropdown">
+		{{#if s}}
+    <li class="nav-item dropdown nav-item active">   
+		{{else}}
+		<li class="nav-item dropdown">
+		{{/if}}
       <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
         <i class="fas fa-user"></i>
       </a>

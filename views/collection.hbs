@@ -34,7 +34,7 @@
 		<script
 			src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-		<style>.fixed-table-container{ background-color:white}th:nth-child(3),td:nth-child(3){position:sticky;left:0px;}td:nth-child(3){background-color: #F0F0F0; z-index: 999;}
+		<style>.fixed-table-container{ background-color:white} th:nth-child(3),td:nth-child(3){position:sticky;left:0px;} td:nth-child(3){background-color: #F0F0F0; z-index: 999;}
 		</style>
 	</head>
 	<body>
@@ -43,7 +43,7 @@
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
 					<table id="table" data-toggle="table" data-search="true"
-						data-toolbar="#toolbar" data-click-to-select="true" data-height="750" data-detail-view="true" data-detail-formatter="detailFormatter"
+						data-toolbar="#toolbar" data-height="600" data-detail-view="true" data-detail-formatter="detailFormatter"
 						data-show-columns="true" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks" }'
 						class="table table1 table-hover">
 						<thead class='thead-dark'>
@@ -162,10 +162,6 @@
 								<td>Null</td>
 								{{/if}}
 							</tr>
-
-
-							{{!-- <td>{{ this.rows }}</td> --}}
-
 							{{/each}}
 						</tbody>
 					</table>
@@ -190,9 +186,136 @@
 				</button>
 			</form>
 
-			{{!-- TEMPORARY GRAPH BUTTON --}}
-			<a href="graph"><button>graph</button></a>
 		</div>
 	</body>
+
+<script>
+	function detailFormatter(index, row) {
+    var html = []
+	{{#each dbdata}}
+	html.push(`
+	{{!-- <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank"><button class="btn btn-primary"><span class="far fa-chart-bar"></span> Gurufocus</button></a>
+	<a href='https://ca.finance.yahoo.com/quote/{{this.symbol}}/analysis' target="_blank"><button class="btn btn-primary" style="background-color:#720e9e; color:white;"> <span class="fab fa-yahoo"></span> Yahoo</button></a> --}}
+	{{!-- <br><br> --}}
+	<table id="table" class="table table-hover">
+						<thead class="thead-light" align="center">
+							<tr>
+								<th>Symbol</th>
+								<th>Stock Name</th>
+								<th>TTL</th>
+								<th>Yield</th>
+								<th>Price</th>
+								<th>Sales Order</th>
+								<th>Market Cap</th>
+								<th>Net Debt</th>
+								<th>Enterprise Value</th>
+								<th>ND aEBITDA</th>
+								<th>Revenue</th>
+								<th>aEBITDA</th>
+								<th>aEBITDA %</th>
+								<th>Asset Turnover</th>
+								<th>aEBITDA AT</th>
+								<th>ROE</th>
+								<th>Effective Tax</th>
+								<th>EV EBITDA</th>
+								<th>Spice</th>
+								<th>ROE Mult</th>
+							</tr>
+						</thead>
+						<tbody id='db_stocks' align="center">
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>Y1</td>
+								<td>{{this.stockdata.[1].yield}}</td>
+								<td>{{this.stockdata.[1].price}}</td>							
+								<td>{{this.stockdata.[1].sales_order}}</td>
+								<td>{{this.stockdata.[1].market_cap}}</td>
+								<td>{{this.stockdata.[1].net_debt}}</td>
+								<td>{{this.stockdata.[1].enterprise_value}}</td>
+								<td>{{this.stockdata.[1].nd_aebitda}}</td>
+								<td>{{this.stockdata.[1].revenue}}</td>
+								<td>{{this.stockdata.[1].aebitda}}</td>
+								<td>{{this.stockdata.[1].aebitda_percent}}</td>
+								<td>{{this.stockdata.[1].asset_turnover}}</td>
+								<td>{{this.stockdata.[1].aebitda_at}}</td>
+								<td>{{this.stockdata.[1].roe}}</td>
+								<td>{{this.stockdata.[1].effective_tax}}</td>
+								<td>{{this.stockdata.[1].ev_aebitda}}</td>
+								<td>{{this.stockdata.[1].spice}}</td>
+								<td>{{this.stockdata.[1].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>Y2</td>
+								<td>{{this.stockdata.[2].yield}}</td>
+								<td>{{this.stockdata.[2].price}}</td>							
+								<td>{{this.stockdata.[2].sales_order}}</td>
+								<td>{{this.stockdata.[2].market_cap}}</td>
+								<td>{{this.stockdata.[2].net_debt}}</td>
+								<td>{{this.stockdata.[2].enterprise_value}}</td>
+								<td>{{this.stockdata.[2].nd_aebitda}}</td>
+								<td>{{this.stockdata.[2].revenue}}</td>
+								<td>{{this.stockdata.[2].aebitda}}</td>
+								<td>{{this.stockdata.[2].aebitda_percent}}</td>
+								<td>{{this.stockdata.[2].asset_turnover}}</td>
+								<td>{{this.stockdata.[2].aebitda_at}}</td>
+								<td>{{this.stockdata.[2].roe}}</td>
+								<td>{{this.stockdata.[2].effective_tax}}</td>
+								<td>{{this.stockdata.[2].ev_aebitda}}</td>
+								<td>{{this.stockdata.[2].spice}}</td>
+								<td>{{this.stockdata.[2].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>Y3</td>
+								<td>{{this.stockdata.[3].yield}}</td>
+								<td>{{this.stockdata.[3].price}}</td>							
+								<td>{{this.stockdata.[3].sales_order}}</td>
+								<td>{{this.stockdata.[3].market_cap}}</td>
+								<td>{{this.stockdata.[3].net_debt}}</td>
+								<td>{{this.stockdata.[3].enterprise_value}}</td>
+								<td>{{this.stockdata.[3].nd_aebitda}}</td>
+								<td>{{this.stockdata.[3].revenue}}</td>
+								<td>{{this.stockdata.[3].aebitda}}</td>
+								<td>{{this.stockdata.[3].aebitda_percent}}</td>
+								<td>{{this.stockdata.[3].asset_turnover}}</td>
+								<td>{{this.stockdata.[3].aebitda_at}}</td>
+								<td>{{this.stockdata.[3].roe}}</td>
+								<td>{{this.stockdata.[3].effective_tax}}</td>
+								<td>{{this.stockdata.[3].ev_aebitda}}</td>
+								<td>{{this.stockdata.[3].spice}}</td>
+								<td>{{this.stockdata.[3].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>Y4</td>
+								<td>{{this.stockdata.[4].yield}}</td>
+								<td>{{this.stockdata.[4].price}}</td>							
+								<td>{{this.stockdata.[4].sales_order}}</td>
+								<td>{{this.stockdata.[4].market_cap}}</td>
+								<td>{{this.stockdata.[4].net_debt}}</td>
+								<td>{{this.stockdata.[4].enterprise_value}}</td>
+								<td>{{this.stockdata.[4].nd_aebitda}}</td>
+								<td>{{this.stockdata.[4].revenue}}</td>
+								<td>{{this.stockdata.[4].aebitda}}</td>
+								<td>{{this.stockdata.[4].aebitda_percent}}</td>
+								<td>{{this.stockdata.[4].asset_turnover}}</td>
+								<td>{{this.stockdata.[4].aebitda_at}}</td>
+								<td>{{this.stockdata.[4].roe}}</td>
+								<td>{{this.stockdata.[4].effective_tax}}</td>
+								<td>{{this.stockdata.[4].ev_aebitda}}</td>
+								<td>{{this.stockdata.[4].spice}}</td>
+								<td>{{this.stockdata.[4].roe_mult}}</td>
+							</tr>
+						</tbody>
+					</table>`)
+	{{/each}}
+	return html[index]
+  }
+</script>
 
 </html>
