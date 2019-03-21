@@ -72,7 +72,7 @@
 						</thead>
 						<tbody id='db_stocks'>
 							{{#each dbdata}}
-							<tr id="{{ this.symbol }}">
+							<tr id="{{ this.symbol }}" data-val={{this.symbol}}>
 								<td></td>
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
@@ -174,17 +174,17 @@
 		</div>
 		<div id="toolbar" class="d-flex flex-row justify-content-center
 			align-items-center px-3">
-			<form action="" class="pr-2" method="POST">
-				<button type="submit" class="btn btn-success btn-sm">
+            <form class="px-2">
+				<button type="button" onclick="add();" class="btn btn-success btn-sm">
 					<span class="fas fa-plus"></span> Add
 				</button>
-			</form>
-			<form action="" method="POST">
-				<button type="submit" class="btn btn-danger btn-sm">
+            </form>
+            <form class="px-2">
+				<button type="button" onclick="remove();" class="btn btn-danger btn-sm">
 					<span class="fas fa-trash-alt"></span> Delete
 				</button>
-			</form>
-			<form action="/collection" class="px-2" method="POST">
+            </form>
+			<form class="px-2">
 				<button type="submit" class="btn btn-dark btn-sm">
 					<span class="fas fa-sync-alt"></span> Refresh
 				</button>
@@ -193,6 +193,52 @@
 			{{!-- TEMPORARY GRAPH BUTTON --}}
 			<a href="graph"><button>graph</button></a>
 		</div>
+
+        <script>
+            var rm_list = [];
+            function add(){
+                Swal.fire({
+                    title: 'Enter the stock symbol',
+                    input: 'text',
+                    inputAttributes: {
+                        autocapitalize: 'off'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Add',
+                    showLoaderOnConfirm: true,
+                    preConfirm: (symbol) => {
+						console.log([symbol])
+                        ajax_func([symbol], "append")
+                    }
+                })
+            }
+
+            function remove() {
+				$("#table #db_stocks input:checked").each(function() {
+					var sym = $(this).parents('tr:first').data('val')
+					rm_list.push({"symbol" : sym.toString()});
+					$(`#${sym.toString()}`).remove();
+				});
+                ajax_func(rm_list, 'remove');
+				rm_list = [];
+			};
+
+            function ajax_func(list, action){
+                var data = {};
+                data.stocks = list;
+                data.action = action;
+                console.log(data)
+                $.ajax({
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    url: "http://localhost:8080/collection",
+                }).done(function(returned_data){
+                    location.reload()
+                })
+                }
+        </script>
+
 	</body>
 
 </html>

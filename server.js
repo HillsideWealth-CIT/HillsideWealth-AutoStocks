@@ -22,6 +22,7 @@ const auth = require("./actions/auth");
 const csv_parse = require("./actions/csv_parse");
 const db = require("./actions/database");
 const email = require('./actions/node_mailer');
+const list_actions = require("./actions/list_actions");
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -148,14 +149,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
                 break;
 
             case 'Remove':
-                let promises = [];
-                for (let i = 0; i < request.body.stocks.length; i++) {
-                    promises.push(db.removeStocks(request.body.stocks[i].symbol));
-                }
-                Promise.all(promises)
-                    .then((returned) => {
-                        response.send(JSON.stringify(request.body));
-                    })
+                list_actions.remove(request, response);
                 break;
         }
     }
@@ -164,8 +158,21 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
 
 // update DB
 app.post('/collection', (request, response) => {
-    //For now, do nothing because it's broken.
     //api_calls.gurufocus_update()
+    //console.log(request.body);
+    switch(request.body.action){
+        case 'append':
+        api_calls.gurufocusAdd(request.body.stocks)
+            .then((resolve) => {
+                       response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
+            })
+            .catch((reason) => console.log(reason));
+            break;
+
+        case 'remove':
+            list_actions.remove(request, response);
+            break;
+    }
 })
 
 /* Logout */

@@ -28,7 +28,7 @@ const financialsAPI = (symbol) => {
  * @param {Boolean} financials_call Whether fincancials call should be used.
  */
 const gurufocusAdd = async (list, summaryCall = true, financialsCall = true) => {
-    var stocksList = []
+    var stocksList = [];
     for (i in list) {
         let currentStock = {
             symbol: list[i].symbol,
