@@ -167,8 +167,30 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
 
 // update DB
 app.post('/collection', (request, response) => {
-    //For now, do nothing because it's broken.
-    //api_calls.gurufocus_update()
+    switch (request.body.action) {
+        case 'Append':
+            api_calls.gurufocusAdd(request.body.stocks, request.session.user)
+                .then((resolve) => {
+                    response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
+                })
+                .catch((reason) => console.log(reason));
+            break;
+
+        case 'Remove':
+            let promises = [];
+            for (let i = 0; i < request.body.stocks.length; i++) {
+                promises.push(db.removeStocks(request.body.stocks[i].symbol, request.session.user));
+            }
+            Promise.all(promises)
+                .then((returned) => {
+                    response.send(JSON.stringify(request.body));
+                })
+            break;
+        
+        case 'Update':
+
+            break;
+    }
 })
 
 /* Logout */
