@@ -27,7 +27,7 @@ const financialsAPI = (symbol) => {
  * @param {Boolean} summary_call Whether summary call should be used.
  * @param {Boolean} financials_call Whether fincancials call should be used.
  */
-const gurufocusAdd = async (list, summaryCall = true, financialsCall = true) => {
+const gurufocusAdd = async (list, username, summaryCall = true, financialsCall = true) => {
     var stocksList = []
     for (i in list) {
         let currentStock = {
@@ -66,12 +66,13 @@ const gurufocusAdd = async (list, summaryCall = true, financialsCall = true) => 
     }
     for (i in stocksList) {
         try {
-            await db.addStocks(stocksList[i].symbol, stocksList[i].company)
+            var stocks = await db.addStocks(stocksList[i].symbol, stocksList[i].company, username)
         }
-        catch (err){ /* Do nothing. This happens when stock already exists */ }
+        catch (err){ var stocks = await db.runQuery('SELECT stock_id FROM stocks') }
         try {
-            console.log(stocksList[i].data)
+            //console.log(stocksList[i].data)
             for (d in stocksList[i].data) {
+                stocksList[i].data[d].stock_id = stocks.rows[0].stock_id
                 let currentData = stocksList[i].data[d]
                 await db.addStockData(currentData)
             }

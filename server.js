@@ -75,7 +75,7 @@ app.get("/login", (request, response) => {
 });
 
 app.get("/collection", sessionCheck, (request, response) => {
-    db.showstocks()
+    db.showstocks(request.session.user)
     .then(res => response.render("collection.hbs", {
         dbdata: res,
         c: true
@@ -122,7 +122,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
         var csvdata;
         csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
             csvdata = JSON.parse(resolved);
-            db.showstocks().then((resolved2) => {
+            db.showstocks(request.session.user).then((resolved2) => {
                 let dbdata = resolved2;
                 for (i = 0; i < dbdata.length; i++) {
                     _.remove(csvdata, function (e) {
@@ -140,7 +140,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     else{
         switch (request.body.action) {
             case 'Append':
-                api_calls.gurufocusAdd(request.body.stocks)
+                api_calls.gurufocusAdd(request.body.stocks, request.session.user)
                     .then((resolve) => {
                                response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
                     })
@@ -150,7 +150,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
             case 'Remove':
                 let promises = [];
                 for (let i = 0; i < request.body.stocks.length; i++) {
-                    promises.push(db.removeStocks(request.body.stocks[i].symbol));
+                    promises.push(db.removeStocks(request.body.stocks[i].symbol, request.session.user));
                 }
                 Promise.all(promises)
                     .then((returned) => {
@@ -176,7 +176,7 @@ app.post("/logout", (request, response) => {
 
 //Graph temporary page
 app.get('/graph', (request, response) => {
-    db.showstocks()
+    db.showstocks(request.session.user)
     .then((stocks) => {
         response.render('graph.hbs', {
             stockdata: stocks

@@ -67,19 +67,20 @@ const retrieveUser = async (username) => {
     {<etc>}
     ]
 */
-const showstocks = async () => {
+const showstocks = async (username) => {
     let stockAndData = []
-    let stocks = await runQuery('SELECT * FROM stocks;')
-    let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
+    let stocks = await runQuery('SELECT * FROM stocks WHERE username = $1', [username])
+    console.log(stocks)
+    let stockdata = await runQuery(`SELECT * FROM stockdata WHERE stock_id = $1 ORDER BY date DESC`, [stocks.rows[0].stock_id])
     for (i in stocks.rows) {
 
         stockAndData.push({
             symbol: stocks.rows[i].symbol,
             stock_name: stocks.rows[i].stock_name,
-            stockdata: stockdata.rows.filter(data => data.symbol == stocks.rows[i].symbol)
+            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id)
         })
     }
-
+    console.log(stockAndData)
     return stockAndData
 }
 
@@ -88,9 +89,9 @@ const addStockData = async (data) => {
     let columns = ``
     let params = []
     let placeholders = ''
-    if (data.symbol) {
-        columns += 'symbol,'
-        placeholders += `$${params.push(data.symbol)},`
+    if (data.stock_id) {
+        columns += 'stock_id,'
+        placeholders += `$${params.push(data.stock_id)},`
     }
     if (data.date) {
         columns += 'date,'
@@ -112,9 +113,9 @@ const addStockData = async (data) => {
         columns += 'price,'
         placeholders += `$${params.push(data.price)},`
     }
-    if (data.sales_order) {
-        columns += 'sales_order,'
-        placeholders += `$${params.push(data.sales_order)},`
+    if (data.shares_outstanding) {
+        columns += 'shares_outstanding,'
+        placeholders += `$${params.push(data.shares_outstanding)},`
     }
     if (data.market_cap) {
         columns += 'market_cap,'
@@ -128,10 +129,6 @@ const addStockData = async (data) => {
         columns += 'enterprise_value,'
         placeholders += `$${params.push(data.enterprise_value)},`
     }
-    if (data.nd_aebitda) {
-        columns += 'nd_aebitda,'
-        placeholders += `$${params.push(data.nd_aebitda)},`
-    }
     if (data.revenue) {
         columns += 'revenue,'
         placeholders += `$${params.push(data.revenue)},`
@@ -140,17 +137,9 @@ const addStockData = async (data) => {
         columns += 'aebitda,'
         placeholders += `$${params.push(data.aebitda)},`
     }
-    if (data.aebitda_percent) {
-        columns += 'aebitda_percent,'
-        placeholders += `$${params.push(data.aebitda_percent)},`
-    }
     if (data.asset_turnover) {
         columns += 'asset_turnover,'
         placeholders += `$${params.push(data.asset_turnover)},`
-    }
-    if (data.aebitda_at) {
-        columns += 'aebitda_at,'
-        placeholders += `$${params.push(data.aebitda_at)},`
     }
     if (data.roe) {
         columns += 'roe,'
@@ -160,60 +149,24 @@ const addStockData = async (data) => {
         columns += 'effective_tax,'
         placeholders += `$${params.push(data.effective_tax)},`
     }
-    if (data.ev_aebitda) {
-        columns += 'ev_aebitda,'
-        placeholders += `$${params.push(data.ev_aebitda)},`
-    }
-    if (data.spice) {
-        columns += 'spice,'
-        placeholders += `$${params.push(data.spice)},`
-    }
-    if (data.roe_mult) {
-        columns += 'roe_mult,'
-        placeholders += `$${params.push(data.roe_mult)},`
-    }
+
     //Creates query string
     let query = `INSERT INTO stockdata (${_.trimEnd(columns, ',')}) VALUES (${_.trimEnd(placeholders, ',')});`
     console.log(query)
     return await runQuery(query, params)
 }
 
-const addStocks = async (symbol, stock_name) => {
-    return await runQuery(`INSERT INTO stocks (symbol, stock_name) VALUES ($1, $2);`, [symbol, stock_name])
+const addStocks = async (symbol, stock_name, username) => {
+    return await runQuery(`INSERT INTO stocks (symbol, stock_name, username) VALUES ($1, $2, $3) RETURNING stock_id`, [symbol, stock_name, username])
 }
 
-const removeStocks = async (symbol) => {
+const removeStocks = async (symbol, username) => {
     console.log(`DELETE from stocks WHERE symbol="${symbol}"`)
     //process.exit();
-    return await runQuery(`DELETE from stocks WHERE symbol='${symbol}';`)
+    return await runQuery(`DELETE from stocks WHERE symbol=$1 AND username =$2`, [symbol, username])
 }
 
-runQuery(`CREATE TABLE IF NOT EXISTS "stockdata"
-(
-    "stockdata_id" serial PRIMARY KEY,
-    "symbol" varchar(10) REFERENCES stocks(symbol) ON DELETE CASCADE,
-    "date" date,
-    "notes" varchar(250),
-    "dividend" numeric,
-    "yield" numeric,
-    "price" numeric,
-    "sales_order" numeric,
-    "market_cap" numeric,
-    "net_debt" numeric,
-    "enterprise_value" numeric,
-    "nd_aebitda" numeric,
-    "revenue" numeric,
-    "aebitda" numeric,
-    "aebitda_percent" numeric,
-    "asset_turnover" numeric,
-    "aebitda_at" numeric,
-    "roe" numeric,
-    "effective_tax" numeric,
-    "ev_aebitda" numeric,
-    "spice" numeric,
-    "roe_mult" numeric
-);
-`)
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -221,5 +174,6 @@ module.exports = {
     addStockData,
     showstocks,
     addStocks,
-    removeStocks
+    removeStocks,
+    runQuery
 }
