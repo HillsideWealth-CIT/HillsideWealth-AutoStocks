@@ -141,11 +141,10 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
     else{
         switch (request.body.action) {
             case 'Append':
-                api_calls.gurufocusAdd(request.body.stocks, request.session.user)
-                    .then((resolve) => {
-                               response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
-                    })
-                    .catch((reason) => console.log(reason));
+            api_calls.gurufocusAdd(request.body.stocks, request.session.user)
+            .then((resolve) => {
+                response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
+            })
                 break;
 
             case 'Remove':
@@ -166,15 +165,14 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
 // update DB
 app.post('/collection', (request, response) => {
     //api_calls.gurufocus_update()
-    //console.log(request.body);
+    console.log(request.body);
     switch(request.body.action){
         case 'append':
         api_calls.gurufocusAdd(request.body.stocks, request.session.user)
             .then((resolve) => {
-                       response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
+                response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
             })
-            .catch((reason) => console.log(reason));
-            break;
+                break;
         case 'remove':
             list_actions.remove(request, response);
             break;

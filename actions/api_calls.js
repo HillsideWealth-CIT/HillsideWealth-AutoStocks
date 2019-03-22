@@ -34,6 +34,7 @@ const financialsAPI = (symbol) => {
  * @param {Boolean} financials_call Whether fincancials call should be used.
  */
 const gurufocusAdd = async (list, username, summaryCall = true, financialsCall = true) => {
+    console.log(list)
     var stocksList = []
     for (i in list) {
         let currentStock = {
@@ -82,7 +83,6 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
                 stocksList[i].data[d].stock_id = stocks.rows[0].stock_id
                 let currentData = stocksList[i].data[d]
                 console.log(currentData);
-                process.exit();
                 await db.addStockData(currentData)
             }
         } catch (err) {
