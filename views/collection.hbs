@@ -74,7 +74,7 @@
 							{{#each dbdata}}
 							<tr id="{{ this.symbol }}" data-val={{this.symbol}}>
 								<td></td>
-								<td>{{ this.symbol }}</td>
+								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
 								<td>{{ this.stock_name }}</td>
 								{{#if this.stockdata.[0].yield}}
 								<td>{{this.stockdata.[0].yield}}</td>
