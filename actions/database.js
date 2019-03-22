@@ -58,9 +58,9 @@ const retrieveUser = async (username) => {
             date: <timestamp>
             <etc>
         },
-            stockdata_id: 2
-                date: <timestamp>
-                <etc>
+        stockdata_id: 2
+            date: <timestamp>
+            <etc>
         }]
     },
     {<etc>},
@@ -249,6 +249,22 @@ const removeStocks = async (symbol, username) => {
     return await runQuery(`DELETE from stocks WHERE symbol=$1 AND username =$2`, [symbol, username])
 }
 
+const updateStocks = async (list, username) => {
+    console.log(list)
+    var keys = Object.keys(list[0])
+    for(let i in list) {
+        let arr = [];
+        for (let y in keys){
+            arr.push(`${keys[y]} = '${list[i][keys[y]]}'`);
+            if (keys[y] == "symbol"){
+                var symbol = list[i][keys[y]];
+            }
+        }
+        console.log(arr)
+        //return await runQuery(``)
+    }
+}
+
 
 module.exports = {
     addUser,
@@ -259,5 +275,6 @@ module.exports = {
     addStocks,
     removeStocks,
     runQuery,
-    arrayAddStockData
+    arrayAddStockData,
+    updateStocks
 }
