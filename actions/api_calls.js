@@ -5,6 +5,7 @@ const db = require("../actions/database");
 
 const summaryAPI = (symbol) => {
     return new Promise((resolve, reject) => {
+        apiTimer().then(() => reject('Timeout'))
         request({ url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/summary`, json: true }, (err, res, body) => {
             if (err) reject(err)
             resolve(body)
@@ -18,6 +19,14 @@ const financialsAPI = (symbol) => {
             if (err) reject(err)
             resolve(body)
         })
+    })
+}
+
+const apiTimer = () => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve()
+        }, 30000)
     })
 }
 
@@ -39,9 +48,9 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
             try {
                 let summary = await summaryAPI(list[i].symbol)
                 currentStock.company = summary.summary.general.company
-                setTimeout(() => {throw 'timeout'}, 30000)
             }
-            catch {
+            catch (err) {
+                console.log(err)
                 currentStock.company = 'Failed to get company name'
             }
         }
@@ -54,6 +63,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
                     date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
                     price: annuals.valuation_and_quality["Month End Stock Price"][f],
+                    net_debt: annuals.cashflow_statement["Net Issuance of Debt"][f],
                     market_cap: annuals.valuation_and_quality["Market Cap"][f],
                     roe: annuals.common_size_ratios["ROE %"][f],
                     yield: annuals.valuation_ratios["Dividend Yield %"][f],
@@ -61,6 +71,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
                     asset_turnover: annuals.common_size_ratios["Asset Turnover"][f],
                     revenue: annuals.income_statement.Revenue[f],
                     enterprise_value: annuals.valuation_and_quality["Enterprise Value"][f],
+                    effective_tax: annuals.income_statement["Tax Rate %"][f],
+                    shares_outstanding: annuals.valuation_and_quality["Shares Outstanding (EOP)"][f],
                     aebitda: Math.round(Number(annuals.cashflow_statement["Stock Based Compensation"][f]) + Number(annuals.income_statement.EBITDA[f])),
                 }
                 //console.log(currentData)

@@ -53,11 +53,11 @@
 								<th data-sortable="true">Stock Name</th>
 								<th data-sortable="true">Yield</th>
 								<th data-sortable="true">Price</th>
-								<th data-sortable="true">Sales Order</th>
+								<th data-sortable="true">Shares Outstanding</th>
 								<th data-sortable="true">Market Cap</th>
 								<th data-sortable="true">Net Debt</th>
 								<th data-sortable="true">Enterprise Value</th>
-								<th data-sortable="true">ND aEBITDA</th>
+								<th data-sortable="true">ND/aEBITDA</th>
 								<th data-sortable="true">Revenue</th>
 								<th data-sortable="true">aEBITDA</th>
 								<th data-sortable="true">aEBITDA %</th>
@@ -65,7 +65,7 @@
 								<th data-sortable="true">aEBITDA AT</th>
 								<th data-sortable="true">ROE</th>
 								<th data-sortable="true">Effective Tax</th>
-								<th data-sortable="true">EV EBITDA</th>
+								<th data-sortable="true">EV/aEBITDA</th>
 								<th data-sortable="true">Spice</th>
 								<th data-sortable="true">ROE Mult</th>
 							</tr>
@@ -86,8 +86,8 @@
 								{{else}}
 								<td>Null</td>
 								{{/if}}
-								{{#if this.stockdata.[0].sales_order}}
-								<td>{{this.stockdata.[0].sales_order}}</td>
+								{{#if this.stockdata.[0].shares_outstanding}}
+								<td>{{this.stockdata.[0].shares_outstanding}}</td>
 								{{else}}
 								<td>Null</td>
 								{{/if}}
@@ -251,14 +251,14 @@
 							<tr>
 								<th>Symbol</th>
 								<th>Stock Name</th>
-								<th>TTL</th>
+								<th>TTM</th>
 								<th>Yield</th>
 								<th>Price</th>
-								<th>Sales Order</th>
+								<th>Shares Outstanding</th>
 								<th>Market Cap</th>
 								<th>Net Debt</th>
 								<th>Enterprise Value</th>
-								<th>ND aEBITDA</th>
+								<th>ND/aEBITDA</th>
 								<th>Revenue</th>
 								<th>aEBITDA</th>
 								<th>aEBITDA %</th>
@@ -266,7 +266,7 @@
 								<th>aEBITDA AT</th>
 								<th>ROE</th>
 								<th>Effective Tax</th>
-								<th>EV EBITDA</th>
+								<th>EV/aEBITDA</th>
 								<th>Spice</th>
 								<th>ROE Mult</th>
 							</tr>
@@ -277,8 +277,8 @@
 								<td>{{ this.stock_name }}</td>
 								<td>Y1</td>
 								<td>{{this.stockdata.[1].yield}}</td>
-								<td>{{this.stockdata.[1].price}}</td>							
-								<td>{{this.stockdata.[1].sales_order}}</td>
+								<td>{{this.stockdata.[1].price}}</td>
+								<td>{{this.stockdata.[1].shares_outstanding}}</td>
 								<td>{{this.stockdata.[1].market_cap}}</td>
 								<td>{{this.stockdata.[1].net_debt}}</td>
 								<td>{{this.stockdata.[1].enterprise_value}}</td>
@@ -299,8 +299,8 @@
 								<td>{{ this.stock_name }}</td>
 								<td>Y2</td>
 								<td>{{this.stockdata.[2].yield}}</td>
-								<td>{{this.stockdata.[2].price}}</td>							
-								<td>{{this.stockdata.[2].sales_order}}</td>
+								<td>{{this.stockdata.[2].price}}</td>
+								<td>{{this.stockdata.[2].shares_outstanding}}</td>
 								<td>{{this.stockdata.[2].market_cap}}</td>
 								<td>{{this.stockdata.[2].net_debt}}</td>
 								<td>{{this.stockdata.[2].enterprise_value}}</td>
@@ -321,8 +321,8 @@
 								<td>{{ this.stock_name }}</td>
 								<td>Y3</td>
 								<td>{{this.stockdata.[3].yield}}</td>
-								<td>{{this.stockdata.[3].price}}</td>							
-								<td>{{this.stockdata.[3].sales_order}}</td>
+								<td>{{this.stockdata.[3].price}}</td>
+								<td>{{this.stockdata.[3].shares_outstanding}}</td>
 								<td>{{this.stockdata.[3].market_cap}}</td>
 								<td>{{this.stockdata.[3].net_debt}}</td>
 								<td>{{this.stockdata.[3].enterprise_value}}</td>
@@ -343,8 +343,8 @@
 								<td>{{ this.stock_name }}</td>
 								<td>Y4</td>
 								<td>{{this.stockdata.[4].yield}}</td>
-								<td>{{this.stockdata.[4].price}}</td>							
-								<td>{{this.stockdata.[4].sales_order}}</td>
+								<td>{{this.stockdata.[4].price}}</td>
+								<td>{{this.stockdata.[4].shares_outstanding}}</td>
 								<td>{{this.stockdata.[4].market_cap}}</td>
 								<td>{{this.stockdata.[4].net_debt}}</td>
 								<td>{{this.stockdata.[4].enterprise_value}}</td>
