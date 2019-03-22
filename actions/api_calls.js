@@ -36,8 +36,14 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
             data: []
         }
         if (summaryCall) {
-            let summary = await summaryAPI(list[i].symbol)
-            currentStock.company = summary.summary.general.company
+            try {
+                let summary = await summaryAPI(list[i].symbol)
+                currentStock.company = summary.summary.general.company
+                setTimeout(() => {throw 'timeout'}, 30000)
+            }
+            catch {
+                currentStock.company = 'Failed to get company name'
+            }
         }
         if (financialsCall) {
             let financials = await financialsAPI(list[i].symbol)
@@ -45,7 +51,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
 
             for (f in annuals["Fiscal Year"]) {
                 let currentData = {
-                    date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0,4), annuals["Fiscal Year"][f].slice(6, 8)),
+                    date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
                     price: annuals.valuation_and_quality["Month End Stock Price"][f],
                     market_cap: annuals.valuation_and_quality["Market Cap"][f],
@@ -68,18 +74,13 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
         try {
             var stocks = await db.addStocks(stocksList[i].symbol, stocksList[i].company, username)
         }
-        catch (err){ var stocks = await db.runQuery('SELECT stock_id FROM stocks') }
-        try {
-            //console.log(stocksList[i].data)
-            for (d in stocksList[i].data) {
-                stocksList[i].data[d].stock_id = stocks.rows[0].stock_id
-                let currentData = stocksList[i].data[d]
-                await db.addStockData(currentData)
-            }
+        catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks') }
+
+        //console.log(stocksList[i].data)
+        for (d in stocksList[i].data) {
+            stocksList[i].data[d].stock_id = stocks.rows[0].stock_id
         }
-        catch (err) {
-            console.log(err)
-        }
+        db.arrayAddStockData(stocksList[i].data)
     }
 
     return stocksList
