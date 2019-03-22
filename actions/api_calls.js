@@ -5,7 +5,10 @@ const db = require("../actions/database");
 
 const summaryAPI = (symbol) => {
     return new Promise((resolve, reject) => {
-        request({ url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/summary`, json: true }, (err, res, body) => {
+        request({
+            url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/summary`,
+            json: true
+        }, (err, res, body) => {
             if (err) reject(err)
             resolve(body)
         })
@@ -14,7 +17,10 @@ const summaryAPI = (symbol) => {
 
 const financialsAPI = (symbol) => {
     return new Promise((resolve, reject) => {
-        request({ url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/financials`, json: true }, (err, res, body) => {
+        request({
+            url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/financials`,
+            json: true
+        }, (err, res, body) => {
             if (err) reject(err)
             resolve(body)
         })
@@ -27,8 +33,8 @@ const financialsAPI = (symbol) => {
  * @param {Boolean} summary_call Whether summary call should be used.
  * @param {Boolean} financials_call Whether fincancials call should be used.
  */
-const gurufocusAdd = async (list, summaryCall = true, financialsCall = true) => {
-    var stocksList = [];
+const gurufocusAdd = async (list, username, summaryCall = true, financialsCall = true) => {
+    var stocksList = []
     for (i in list) {
         let currentStock = {
             symbol: list[i].symbol,
@@ -45,7 +51,7 @@ const gurufocusAdd = async (list, summaryCall = true, financialsCall = true) => 
 
             for (f in annuals["Fiscal Year"]) {
                 let currentData = {
-                    date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0,4), annuals["Fiscal Year"][f].slice(6, 8)),
+                    date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
                     price: annuals.valuation_and_quality["Month End Stock Price"][f],
                     market_cap: annuals.valuation_and_quality["Market Cap"][f],
@@ -66,23 +72,52 @@ const gurufocusAdd = async (list, summaryCall = true, financialsCall = true) => 
     }
     for (i in stocksList) {
         try {
-            await db.addStocks(stocksList[i].symbol, stocksList[i].company)
+            var stocks = await db.addStocks(stocksList[i].symbol, stocksList[i].company, username)
+        } catch (err) {
+            var stocks = await db.runQuery('SELECT stock_id FROM stocks')
         }
-        catch (err){ /* Do nothing. This happens when stock already exists */ }
         try {
-            console.log(stocksList[i].data)
+            //console.log(stocksList[i].data)
             for (d in stocksList[i].data) {
+                stocksList[i].data[d].stock_id = stocks.rows[0].stock_id
                 let currentData = stocksList[i].data[d]
+                console.log(currentData);
+                process.exit();
                 await db.addStockData(currentData)
             }
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err)
         }
     }
 
     return stocksList
 }
+
+const gurufocus_update = async (symbol, username) => {
+        let financials = await financialsAPI(symbol)
+        let annuals = financials.financials.annuals
+        let currentStock = [];
+        for (f in annuals["Fiscal Year"]) {
+            let currentData = {
+                date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
+                symbol: symbol,
+                price: annuals.valuation_and_quality["Month End Stock Price"][f],
+                market_cap: annuals.valuation_and_quality["Market Cap"][f],
+                roe: annuals.common_size_ratios["ROE %"][f],
+                yield: annuals.valuation_ratios["Dividend Yield %"][f],
+                dividend: annuals.common_size_ratios["Dividend Payout Ratio"][f],
+                asset_turnover: annuals.common_size_ratios["Asset Turnover"][f],
+                revenue: annuals.income_statement.Revenue[f],
+                enterprise_value: annuals.valuation_and_quality["Enterprise Value"][f],
+                aebitda: Math.round(Number(annuals.cashflow_statement["Stock Based Compensation"][f]) + Number(annuals.income_statement.EBITDA[f])),
+            }
+            currentStock.push(currentData);
+        }
+        await db.update_stocks(symbol, currentStock[24], username)
+}
+
+
+
 
 /*
 const financials_call = (symbol, callback) => {
@@ -160,12 +195,8 @@ const financials_call = (symbol, callback) => {
  };
 
  */
-const gurufocus_update = () => {
-    console.log(db.showstocks());
-}
-
 
 module.exports = {
     gurufocus_update,
-    gurufocusAdd
+    gurufocusAdd,
 }
