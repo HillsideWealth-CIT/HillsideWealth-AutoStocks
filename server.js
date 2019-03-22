@@ -77,7 +77,17 @@ app.get("/login", (request, response) => {
 app.get("/collection", sessionCheck, (request, response) => {
     db.showstocks(request.session.user)
         .then(res => {
-            console.log(res)
+            // Calculates data before rendering
+            res.forEach((stock) => {
+                stock.stockdata.forEach((data) => {
+                    data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10
+                    data.nd_aebitda = Math.round(data.net_debt / data.aebitda * 100) / 100
+                    data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
+                    data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
+                    data.spice = data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda)
+                })
+            })
+
             response.render("collection.hbs", {
                 dbdata: res,
                 c: true
@@ -167,8 +177,30 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
 
 // update DB
 app.post('/collection', (request, response) => {
-    //For now, do nothing because it's broken.
-    //api_calls.gurufocus_update()
+    switch (request.body.action) {
+        case 'Append':
+            api_calls.gurufocusAdd(request.body.stocks, request.session.user)
+                .then((resolve) => {
+                    response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
+                })
+                .catch((reason) => console.log(reason));
+            break;
+
+        case 'Remove':
+            let promises = [];
+            for (let i = 0; i < request.body.stocks.length; i++) {
+                promises.push(db.removeStocks(request.body.stocks[i].symbol, request.session.user));
+            }
+            Promise.all(promises)
+                .then((returned) => {
+                    response.send(JSON.stringify(request.body));
+                })
+            break;
+
+        case 'Update':
+
+            break;
+    }
 })
 
 /* Logout */

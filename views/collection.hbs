@@ -53,11 +53,11 @@
 								<th data-sortable="true">Stock Name</th>
 								<th data-sortable="true">Yield</th>
 								<th data-sortable="true">Price</th>
-								<th data-sortable="true">Sales Order</th>
+								<th data-sortable="true">Shares Outstanding</th>
 								<th data-sortable="true">Market Cap</th>
 								<th data-sortable="true">Net Debt</th>
 								<th data-sortable="true">Enterprise Value</th>
-								<th data-sortable="true">ND aEBITDA</th>
+								<th data-sortable="true">ND/aEBITDA</th>
 								<th data-sortable="true">Revenue</th>
 								<th data-sortable="true">aEBITDA</th>
 								<th data-sortable="true">aEBITDA %</th>
@@ -65,14 +65,14 @@
 								<th data-sortable="true">aEBITDA AT</th>
 								<th data-sortable="true">ROE</th>
 								<th data-sortable="true">Effective Tax</th>
-								<th data-sortable="true">EV EBITDA</th>
+								<th data-sortable="true">EV/aEBITDA</th>
 								<th data-sortable="true">Spice</th>
 								<th data-sortable="true">ROE Mult</th>
 							</tr>
 						</thead>
 						<tbody id='db_stocks'>
 							{{#each dbdata}}
-							<tr id="{{ this.symbol }}">
+							<tr id="{{ this.symbol }}" data-val={{this.symbol}}>
 								<td></td>
 								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
 								<td>{{ this.stock_name }}</td>
@@ -86,8 +86,8 @@
 								{{else}}
 								<td>Null</td>
 								{{/if}}
-								{{#if this.stockdata.[0].sales_order}}
-								<td>{{this.stockdata.[0].sales_order}}</td>
+								{{#if this.stockdata.[0].shares_outstanding}}
+								<td>{{this.stockdata.[0].shares_outstanding}}</td>
 								{{else}}
 								<td>Null</td>
 								{{/if}}
@@ -170,23 +170,72 @@
 		</div>
 		<div id="toolbar" class="d-flex flex-row justify-content-center
 			align-items-center px-3">
-			<form action="" class="pr-2" method="POST">
-				<button type="submit" class="btn btn-success btn-sm">
+            <form class="px-2">
+				<button type="button" onclick="add();" class="btn btn-success btn-sm">
 					<span class="fas fa-plus"></span> Add
 				</button>
-			</form>
-			<form action="" method="POST">
-				<button type="submit" class="btn btn-danger btn-sm">
+            </form>
+            <form class="px-2">
+				<button type="button" onclick="remove();" class="btn btn-danger btn-sm">
 					<span class="fas fa-trash-alt"></span> Delete
 				</button>
-			</form>
-			<form action="/collection" class="px-2" method="POST">
-				<button type="submit" class="btn btn-dark btn-sm">
+            </form>
+			<form class="px-2">
+				<button type="button" onclick='update();' class="btn btn-dark btn-sm">
 					<span class="fas fa-sync-alt"></span> Refresh
 				</button>
 			</form>
 
 		</div>
+
+        <script>
+            var rm_list = [];
+            function add(){
+                Swal.fire({
+                    title: 'Enter the stock symbol',
+                    input: 'text',
+                    inputAttributes: {
+                        autocapitalize: 'off'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Add',
+                    showLoaderOnConfirm: true,
+                    preConfirm: (symbol) => {
+                        ajax_func([{'symbol': symbol.toUpperCase(), 'comment': '', 'company': '', 'exchange': ''}], "Append")
+                    }
+                })
+            }
+
+            function remove() {
+				$("#table #db_stocks input:checked").each(function() {
+					var sym = $(this).parents('tr:first').data('val')
+					rm_list.push({"symbol" : sym.toString()});
+					$(`#${sym.toString()}`).remove();
+				});
+                ajax_func(rm_list, 'Remove');
+				rm_list = [];
+			};
+
+			function update() {
+				ajax_func([],'Update')
+			}
+
+            function ajax_func(list, action){
+                var data = {};
+                data.stocks = list;
+                data.action = action;
+                console.log(data)
+                $.ajax({
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    url: "http://localhost:8080/collection",
+                }).done(function(returned_data){
+                    location.reload()
+                })
+                }
+        </script>
+
 	</body>
 
 <script>
@@ -202,14 +251,14 @@
 							<tr>
 								<th>Symbol</th>
 								<th>Stock Name</th>
-								<th>TTL</th>
+								<th>TTM</th>
 								<th>Yield</th>
 								<th>Price</th>
-								<th>Sales Order</th>
+								<th>Shares Outstanding</th>
 								<th>Market Cap</th>
 								<th>Net Debt</th>
 								<th>Enterprise Value</th>
-								<th>ND aEBITDA</th>
+								<th>ND/aEBITDA</th>
 								<th>Revenue</th>
 								<th>aEBITDA</th>
 								<th>aEBITDA %</th>
@@ -217,7 +266,7 @@
 								<th>aEBITDA AT</th>
 								<th>ROE</th>
 								<th>Effective Tax</th>
-								<th>EV EBITDA</th>
+								<th>EV/aEBITDA</th>
 								<th>Spice</th>
 								<th>ROE Mult</th>
 							</tr>
@@ -228,8 +277,8 @@
 								<td>{{ this.stock_name }}</td>
 								<td>Y1</td>
 								<td>{{this.stockdata.[1].yield}}</td>
-								<td>{{this.stockdata.[1].price}}</td>							
-								<td>{{this.stockdata.[1].sales_order}}</td>
+								<td>{{this.stockdata.[1].price}}</td>
+								<td>{{this.stockdata.[1].shares_outstanding}}</td>
 								<td>{{this.stockdata.[1].market_cap}}</td>
 								<td>{{this.stockdata.[1].net_debt}}</td>
 								<td>{{this.stockdata.[1].enterprise_value}}</td>
@@ -250,8 +299,8 @@
 								<td>{{ this.stock_name }}</td>
 								<td>Y2</td>
 								<td>{{this.stockdata.[2].yield}}</td>
-								<td>{{this.stockdata.[2].price}}</td>							
-								<td>{{this.stockdata.[2].sales_order}}</td>
+								<td>{{this.stockdata.[2].price}}</td>
+								<td>{{this.stockdata.[2].shares_outstanding}}</td>
 								<td>{{this.stockdata.[2].market_cap}}</td>
 								<td>{{this.stockdata.[2].net_debt}}</td>
 								<td>{{this.stockdata.[2].enterprise_value}}</td>
@@ -272,8 +321,8 @@
 								<td>{{ this.stock_name }}</td>
 								<td>Y3</td>
 								<td>{{this.stockdata.[3].yield}}</td>
-								<td>{{this.stockdata.[3].price}}</td>							
-								<td>{{this.stockdata.[3].sales_order}}</td>
+								<td>{{this.stockdata.[3].price}}</td>
+								<td>{{this.stockdata.[3].shares_outstanding}}</td>
 								<td>{{this.stockdata.[3].market_cap}}</td>
 								<td>{{this.stockdata.[3].net_debt}}</td>
 								<td>{{this.stockdata.[3].enterprise_value}}</td>
@@ -294,8 +343,8 @@
 								<td>{{ this.stock_name }}</td>
 								<td>Y4</td>
 								<td>{{this.stockdata.[4].yield}}</td>
-								<td>{{this.stockdata.[4].price}}</td>							
-								<td>{{this.stockdata.[4].sales_order}}</td>
+								<td>{{this.stockdata.[4].price}}</td>
+								<td>{{this.stockdata.[4].shares_outstanding}}</td>
 								<td>{{this.stockdata.[4].market_cap}}</td>
 								<td>{{this.stockdata.[4].net_debt}}</td>
 								<td>{{this.stockdata.[4].enterprise_value}}</td>
