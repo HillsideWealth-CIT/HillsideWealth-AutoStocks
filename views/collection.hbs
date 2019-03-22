@@ -181,7 +181,7 @@
 				</button>
             </form>
 			<form class="px-2">
-				<button type="submit" class="btn btn-dark btn-sm">
+				<button type="button" onclick='update();' class="btn btn-dark btn-sm">
 					<span class="fas fa-sync-alt"></span> Refresh
 				</button>
 			</form>
@@ -201,8 +201,7 @@
                     confirmButtonText: 'Add',
                     showLoaderOnConfirm: true,
                     preConfirm: (symbol) => {
-						console.log([symbol])
-                        ajax_func([symbol], "append")
+                        ajax_func([{'symbol': symbol.toUpperCase(), 'comment': '', 'company': '', 'exchange': ''}], "append")
                     }
                 })
             }
@@ -216,6 +215,10 @@
                 ajax_func(rm_list, 'remove');
 				rm_list = [];
 			};
+
+			function update() {
+				ajax_func([],'update')
+			}
 
             function ajax_func(list, action){
                 var data = {};

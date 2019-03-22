@@ -13,8 +13,10 @@ function remove(request, response){
 }
 
 function update(request, response){
+    db.showstocks();
 }
 
 module.exports = {
-    remove
+    remove,
+    update
 }

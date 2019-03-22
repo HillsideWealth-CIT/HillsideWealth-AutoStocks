@@ -168,9 +168,12 @@ app.post('/collection', (request, response) => {
             })
             .catch((reason) => console.log(reason));
             break;
-
         case 'remove':
             list_actions.remove(request, response);
+            break;
+        case 'update':
+            console.log('this worked')
+            list_actions.update(request, response);
             break;
     }
 })

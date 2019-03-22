@@ -160,10 +160,8 @@ const financials_call = (symbol, callback) => {
  };
 
  */
-function gurufocus_update() {
-    for (item in symbols) {
-        financials_call(symbols[item]);
-    }
+const gurufocus_update = () => {
+    console.log(db.showstocks());
 }
 
 
