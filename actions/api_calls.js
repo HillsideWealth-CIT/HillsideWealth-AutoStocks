@@ -36,12 +36,12 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
             data: []
         }
         if (summaryCall) {
-            try {
+            try{
                 let summary = await summaryAPI(list[i].symbol)
                 currentStock.company = summary.summary.general.company
                 setTimeout(() => {throw 'timeout'}, 30000)
             }
-            catch {
+            catch(err){
                 currentStock.company = 'Failed to get company name'
             }
         }
