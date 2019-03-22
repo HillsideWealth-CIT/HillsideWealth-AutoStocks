@@ -63,7 +63,7 @@ const sessionCheck = (req, res, next) => {
 /** GET **/
 
 app.get("/", sessionCheck, (request, response) => {
-    response.render("index.hbs", {i: true});
+    response.render("index.hbs", { i: true });
 });
 
 app.get("/register", (request, response) => {
@@ -76,18 +76,21 @@ app.get("/login", (request, response) => {
 
 app.get("/collection", sessionCheck, (request, response) => {
     db.showstocks(request.session.user)
-    .then(res => response.render("collection.hbs", {
-        dbdata: res,
-        c: true
-    }));
+        .then(res => {
+            console.log(res)
+            response.render("collection.hbs", {
+                dbdata: res,
+                c: true
+            })
+        });
 });
 
 app.get("/documentation", sessionCheck, (request, response) => {
-    response.render("documentation.hbs",{d: true});
+    response.render("documentation.hbs", { d: true });
 });
 
 app.get("/settings", sessionCheck, (request, response) => {
-    response.render("settings.hbs",{s: true});
+    response.render("settings.hbs", { s: true });
 });
 
 /** POST **/
@@ -118,7 +121,7 @@ app.post("/register", (request, response) => {
 
 /* File Upload */
 app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) => {
-    if("action" in request.body != true){
+    if ("action" in request.body != true) {
         var csvdata;
         csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
             csvdata = JSON.parse(resolved);
@@ -137,12 +140,12 @@ app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) =
             console.error(err);
         });
     }
-    else{
+    else {
         switch (request.body.action) {
             case 'Append':
                 api_calls.gurufocusAdd(request.body.stocks, request.session.user)
                     .then((resolve) => {
-                               response.send(JSON.stringify({stocks: resolve, action: 'Append'}));
+                        response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
                     })
                     .catch((reason) => console.log(reason));
                 break;
@@ -177,11 +180,11 @@ app.post("/logout", (request, response) => {
 //Graph temporary page
 app.get('/graph', (request, response) => {
     db.showstocks(request.session.user)
-    .then((stocks) => {
-        response.render('graph.hbs', {
-            stockdata: stocks
+        .then((stocks) => {
+            response.render('graph.hbs', {
+                stockdata: stocks
+            })
         })
-    })
 })
 
 /*** Start Server ***/
@@ -190,7 +193,7 @@ app.listen(port, () => {
 });
 
 /*** Sends an email update on the 15th of everymonth ***/
-var quarter_updates = schedule.scheduleJob('* * * 15 * *', ()=>{
+var quarter_updates = schedule.scheduleJob('* * * 15 * *', () => {
     email.send_email();
 })
 quarter_updates;

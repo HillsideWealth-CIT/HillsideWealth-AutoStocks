@@ -70,8 +70,8 @@ const retrieveUser = async (username) => {
 const showstocks = async (username) => {
     let stockAndData = []
     let stocks = await runQuery('SELECT * FROM stocks WHERE username = $1', [username])
-    console.log(stocks)
-    let stockdata = await runQuery(`SELECT * FROM stockdata WHERE stock_id = $1 ORDER BY date DESC`, [stocks.rows[0].stock_id])
+    //console.log(stocks)
+    let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
     for (i in stocks.rows) {
 
         stockAndData.push({
@@ -80,7 +80,7 @@ const showstocks = async (username) => {
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id)
         })
     }
-    console.log(stockAndData)
+    //console.log(stockAndData)
     return stockAndData
 }
 
@@ -156,12 +156,95 @@ const addStockData = async (data) => {
     return await runQuery(query, params)
 }
 
+/* Parses an array of JSON stockdata and adds it to the database.
+Use this when there's more than one set of data and they all have the same fields.*/
+const arrayAddStockData = async (data) => {
+    let columns = []
+    let params = []
+    let placeholders = []
+    console.log(data)
+    //console.log(data)
+    for (i in data) {
+        if (data[i].stock_id) {
+            if (i == 0) columns.push('stock_id')
+            placeholders.push( `$${params.push(data[i].stock_id)}`)
+        }
+        if (data[i].date) {
+            if (i == 0) columns.push('date')
+            placeholders.push( `$${params.push(data[i].date)}`)
+        }
+        if (data[i].notes) {
+            if (i == 0) columns.push('notes')
+            placeholders.push( `$${params.push(data[i].notes)}`)
+        }
+        if (data[i].dividend) {
+            if (i == 0) columns.push('dividend')
+            placeholders.push( `$${params.push(data[i].dividend)}`)
+        }
+        if (data[i].yield) {
+            if (i == 0) columns.push('yield')
+            placeholders.push( `$${params.push(data[i].yield)}`)
+        }
+        if (data[i].price) {
+            if (i == 0) columns.push('price')
+            placeholders.push( `$${params.push(data[i].price)}`)
+        }
+        if (data[i].shares_outstanding) {
+            if (i == 0) columns.push('shares_outstanding')
+            placeholders.push( `$${params.push(data[i].shares_outstanding)}`)
+        }
+        if (data[i].market_cap) {
+            if (i == 0) columns.push('market_cap')
+            placeholders.push( `$${params.push(data[i].market_cap)}`)
+        }
+        if (data[i].net_debt) {
+            if (i == 0) columns.push('net_debt')
+            placeholders.push( `$${params.push(data[i].net_debt)}`)
+        }
+        if (data[i].enterprise_value) {
+            if (i == 0) columns.push('enterprise_value')
+            placeholders.push(`$${params.push(data[i].enterprise_value)}`)
+        }
+        if (data[i].revenue) {
+            if (i == 0) columns.push('revenue')
+            placeholders.push(`$${params.push(data[i].revenue)}`)
+        }
+        if (data[i].aebitda) {
+            if (i == 0) columns.push('aebitda')
+            placeholders.push( `$${params.push(data[i].aebitda)}`)
+        }
+        if (data[i].asset_turnover) {
+            if (i == 0) columns.push('asset_turnover')
+            placeholders.push( `$${params.push(data[i].asset_turnover)}`)
+        }
+        if (data[i].roe) {
+            if (i == 0) columns.push('roe')
+            placeholders.push( `$${params.push(data[i].roe)}`)
+        }
+        if (data[i].effective_tax) {
+            if (i == 0) columns.push('effective_tax')
+            placeholders.push( `$${params.push(data[i].effective_tax)}`)
+        }
+
+    }
+    let query = `INSERT INTO stockdata (${columns.join(', ')}) VALUES`
+    for (let i = 0; i < params.length / columns.length; i++) {
+        query += (` (${placeholders.slice(i * columns.length, i* columns.length + columns.length).join(', ')}),`)
+    }
+    query = _.trimEnd(query, ',')
+    //let query = `INSERT INTO stockdata (${_.trimEnd(columns, ',')}) VALUES (${_.trimEnd(placeholders, ',')});`
+    console.log(query)
+    return await runQuery(query, params)
+}
+
+
+
 const addStocks = async (symbol, stock_name, username) => {
     return await runQuery(`INSERT INTO stocks (symbol, stock_name, username) VALUES ($1, $2, $3) RETURNING stock_id`, [symbol, stock_name, username])
 }
 
 const removeStocks = async (symbol, username) => {
-    console.log(`DELETE from stocks WHERE symbol="${symbol}"`)
+    //console.log(`DELETE from stocks WHERE symbol="${symbol}"`)
     //process.exit();
     return await runQuery(`DELETE from stocks WHERE symbol=$1 AND username =$2`, [symbol, username])
 }
@@ -175,5 +258,6 @@ module.exports = {
     showstocks,
     addStocks,
     removeStocks,
-    runQuery
+    runQuery,
+    arrayAddStockData
 }
