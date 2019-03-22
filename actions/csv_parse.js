@@ -5,7 +5,7 @@ const fs = require("fs");
 const csvjson = async (csv_file) => {
     return new Promise (( resolve, reject) => {
         xlsxj({
-            input: csv_file, 
+            input: csv_file,
             output: "stocks.json"
           }, function(err, result) {
             if(err) {

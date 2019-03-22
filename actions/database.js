@@ -58,9 +58,9 @@ const retrieveUser = async (username) => {
             date: <timestamp>
             <etc>
         },
-        stockdata_id: 2
-            date: <timestamp>
-            <etc>
+            stockdata_id: 2
+                date: <timestamp>
+                <etc>
         }]
     },
     {<etc>},
