@@ -77,7 +77,17 @@ app.get("/login", (request, response) => {
 app.get("/collection", sessionCheck, (request, response) => {
     db.showstocks(request.session.user)
         .then(res => {
-            console.log(res)
+            // Calculates data before rendering
+            res.forEach((stock) => {
+                stock.stockdata.forEach((data) => {
+                    data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10
+                    data.nd_aebitda = Math.round(data.net_debt / data.aebitda * 100) / 100
+                    data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
+                    data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
+                    data.spice = data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda)
+                })
+            })
+
             response.render("collection.hbs", {
                 dbdata: res,
                 c: true
@@ -186,7 +196,7 @@ app.post('/collection', (request, response) => {
                     response.send(JSON.stringify(request.body));
                 })
             break;
-        
+
         case 'Update':
 
             break;
