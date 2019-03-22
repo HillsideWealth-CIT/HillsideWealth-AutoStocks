@@ -202,13 +202,14 @@ app.post('/collection', (request, response) => {
                 db.showstocks(request.session.user)
                 .then((resolve) => {
                     for(let i in resolve){
-                        Promises.push(api_calls.gurufocus_update(resolve[i]))
+                        Promises.push(api_calls.gurufocus_update(resolve[i]));
                     }
                     Promise.all(Promises)
                     .then((returned) => {
-                        db.updateStocks(returned, request.session.user);
-                    })
-                })
+                        db.updateStocks(returned, request.session.user)
+                        .then((resolve) => {response.send({'Status': 'Ok'})});
+                    });
+                });
             break;
     }
 })
