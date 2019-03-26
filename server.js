@@ -199,15 +199,17 @@ app.post('/collection', (request, response) => {
 
         case 'Update':
                 let Promises = [];
+                let Promises_add = [];
                 db.showstocks(request.session.user)
                 .then((resolve) => {
                     for(let i in resolve){
-                        Promises.push(api_calls.gurufocus_update(resolve[i]));
+                        Promises.push(db.removeStocks(resolve[i], request.session.user));
+                        Promises_add.push({symbol: resolve[i].symbol, comment: '', company: '', exchange: ''});
                     }
                     Promise.all(Promises)
                     .then((returned) => {
-                        db.updateStocks(returned, request.session.user)
-                        .then((resolve) => {response.send({'Status': 'Ok'})});
+                        api_calls.gurufocusAdd(Promises_add, request.session.user);
+                        response.send(JSON.stringify({'Status': 'Complete'}))
                     });
                 });
             break;
