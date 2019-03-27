@@ -174,12 +174,6 @@ const financials_call = (symbol, callback) => {
  };
 
  */
-function gurufocus_update() {
-    for (item in symbols) {
-        financials_call(symbols[item]);
-    }
-}
-
 
 module.exports = {
     gurufocus_update,

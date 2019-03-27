@@ -58,9 +58,9 @@ const retrieveUser = async (username) => {
             date: <timestamp>
             <etc>
         },
-            stockdata_id: 2
-                date: <timestamp>
-                <etc>
+        stockdata_id: 2
+            date: <timestamp>
+            <etc>
         }]
     },
     {<etc>},
@@ -249,7 +249,6 @@ const removeStocks = async (symbol, username) => {
     return await runQuery(`DELETE from stocks WHERE symbol=$1 AND username =$2`, [symbol, username])
 }
 
-
 module.exports = {
     addUser,
     usernameAvailable,
@@ -259,5 +258,6 @@ module.exports = {
     addStocks,
     removeStocks,
     runQuery,
-    arrayAddStockData
+    arrayAddStockData,
+    updateStocks
 }
