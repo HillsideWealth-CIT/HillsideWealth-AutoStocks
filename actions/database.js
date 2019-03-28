@@ -46,7 +46,6 @@ const retrieveUser = async (username) => {
         throw `${username} does not exist!`
     }
 }
-
 /* Shows stocks and all the data for that stock
 ** Will return an array wih this format:
 **  [
@@ -162,7 +161,6 @@ const arrayAddStockData = async (data) => {
     let columns = []
     let params = []
     let placeholders = []
-    console.log(data)
     //console.log(data)
     for (i in data) {
         if (data[i].stock_id) {
@@ -232,8 +230,9 @@ const arrayAddStockData = async (data) => {
         query += (` (${placeholders.slice(i * columns.length, i* columns.length + columns.length).join(', ')}),`)
     }
     query = _.trimEnd(query, ',')
+    query+= ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
     //let query = `INSERT INTO stockdata (${_.trimEnd(columns, ',')}) VALUES (${_.trimEnd(placeholders, ',')});`
-    console.log(query)
+    //console.log(query)
     return await runQuery(query, params)
 }
 
@@ -249,6 +248,8 @@ const removeStocks = async (symbol, username) => {
     return await runQuery(`DELETE from stocks WHERE symbol=$1 AND username =$2`, [symbol, username])
 }
 
+
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -258,6 +259,5 @@ module.exports = {
     addStocks,
     removeStocks,
     runQuery,
-    arrayAddStockData,
-    updateStocks
+    arrayAddStockData
 }
