@@ -11,6 +11,7 @@ const multer = require('multer');
 const upload = multer({ dest: './uploads/' });
 const fs = require("fs");
 const _ = require("lodash")
+const moment = require("moment")
 
 hbs.registerHelper('json', function (context) {
     return JSON.stringify(context);
@@ -85,6 +86,7 @@ app.get("/collection", sessionCheck, (request, response) => {
                     data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
                     data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
                     data.spice = data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda)
+                    data.date = moment(data.date).format('MMM DD, YYYY')
                 })
             })
 
@@ -198,20 +200,25 @@ app.post('/collection', (request, response) => {
             break;
 
         case 'Update':
-                let Promises = [];
-                let Promises_add = [];
-                db.showstocks(request.session.user)
-                .then((resolve) => {
-                    for(let i in resolve){
-                        Promises.push(db.removeStocks(resolve[i], request.session.user));
-                        Promises_add.push({symbol: resolve[i].symbol, comment: '', company: '', exchange: ''});
-                    }
-                    Promise.all(Promises)
-                    .then((returned) => {
-                        api_calls.gurufocusAdd(Promises_add, request.session.user);
-                        response.send(JSON.stringify({'Status': 'Complete'}))
-                    });
+            api_calls.gurufocusAdd(request.body.stocks, request.session.user, summaryCall=false)
+                .then((r) => {
+                    response.send(JSON.stringify(request.body))
+                })
+
+
+
+            /* db.showstocks(request.session.user)
+            .then((resolve) => {
+                for(let i in resolve){
+                    Promises.push(db.removeStocks(resolve[i], request.session.user));
+                    Promises_add.push({symbol: resolve[i].symbol, comment: '', company: '', exchange: ''});
+                }
+                Promise.all(Promises)
+                .then((returned) => {
+                    api_calls.gurufocusAdd(Promises_add, request.session.user);
+                    response.send(JSON.stringify({'Status': 'Complete'}))
                 });
+            }); */
             break;
     }
 })
