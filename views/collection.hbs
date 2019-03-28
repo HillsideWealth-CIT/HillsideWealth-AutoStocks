@@ -51,6 +51,7 @@
 								<th data-checkbox="true"></th>
 								<th data-sortable="true">Symbol</th>
 								<th data-sortable="true">Stock Name</th>
+								<th data-sortable="true">Date</th>
 								<th data-sortable="true">Yield</th>
 								<th data-sortable="true">Price</th>
 								<th data-sortable="true">Shares Outstanding</th>
@@ -76,6 +77,11 @@
 								<td></td>
 								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
 								<td>{{ this.stock_name }}</td>
+								{{#if this.stockdata.[0].date}}
+								<td>{{this.stockdata.[0].date}}</td>
+								{{else}}
+								<td>Null</td>
+								{{/if}}
 								{{#if this.stockdata.[0].yield}}
 								<td>{{this.stockdata.[0].yield}}</td>
 								{{else}}
@@ -210,15 +216,21 @@
 				$("#table #db_stocks input:checked").each(function() {
 					var sym = $(this).parents('tr:first').data('val')
 					rm_list.push({"symbol" : sym.toString()});
-					$(`#${sym.toString()}`).remove();
+					//$(`#${sym.toString()}`).remove();
 				});
                 ajax_func(rm_list, 'Remove');
 				rm_list = [];
 			};
 
 			function update() {
-				ajax_func([],'Update')
-			}
+				$("#table #db_stocks input:checked").each(function() {
+					var sym = $(this).parents('tr:first').data('val')
+					rm_list.push({"symbol" : sym.toString()});
+				});
+                ajax_func(rm_list, 'Update');
+				console.log(rm_list)
+				rm_list = [];
+			};
 
             function ajax_func(list, action){
                 var data = {};
@@ -252,6 +264,7 @@
 								<th>Symbol</th>
 								<th>Stock Name</th>
 								<th>TTM</th>
+								<th>Date</th>
 								<th>Yield</th>
 								<th>Price</th>
 								<th>Shares Outstanding</th>
@@ -276,6 +289,7 @@
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
 								<td>Y1</td>
+								<td>{{this.stockdata.[1].date}}</td>
 								<td>{{this.stockdata.[1].yield}}</td>
 								<td>{{this.stockdata.[1].price}}</td>
 								<td>{{this.stockdata.[1].shares_outstanding}}</td>
@@ -298,6 +312,7 @@
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
 								<td>Y2</td>
+								<td>{{this.stockdata.[2].date}}</td>
 								<td>{{this.stockdata.[2].yield}}</td>
 								<td>{{this.stockdata.[2].price}}</td>
 								<td>{{this.stockdata.[2].shares_outstanding}}</td>
@@ -320,6 +335,7 @@
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
 								<td>Y3</td>
+								<td>{{this.stockdata.[3].date}}</td>
 								<td>{{this.stockdata.[3].yield}}</td>
 								<td>{{this.stockdata.[3].price}}</td>
 								<td>{{this.stockdata.[3].shares_outstanding}}</td>
@@ -342,6 +358,7 @@
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
 								<td>Y4</td>
+								<td>{{this.stockdata.[4].date}}</td>
 								<td>{{this.stockdata.[4].yield}}</td>
 								<td>{{this.stockdata.[4].price}}</td>
 								<td>{{this.stockdata.[4].shares_outstanding}}</td>
