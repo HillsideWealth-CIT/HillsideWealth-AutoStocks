@@ -11,7 +11,7 @@
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
 					<table id="table" data-toggle="table" data-search="true"
-						data-toolbar="#toolbar" data-height="600" data-detail-view="true" data-detail-formatter="detailFormatter"
+						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-detail-formatter="detailFormatter"
 						data-show-columns="true" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks" }'
 						class="table table1 table-hover">
 						<thead class='thead-dark'>
@@ -228,15 +228,11 @@
     var html = []
 	{{#each dbdata}}
 	html.push(`
-	{{!-- <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank"><button class="btn btn-primary"><span class="far fa-chart-bar"></span> Gurufocus</button></a>
-	<a href='https://ca.finance.yahoo.com/quote/{{this.symbol}}/analysis' target="_blank"><button class="btn btn-primary" style="background-color:#720e9e; color:white;"> <span class="fab fa-yahoo"></span> Yahoo</button></a> --}}
-	{{!-- <br><br> --}}
 	<table id="table" class="table table-hover">
 						<thead class="thead-light" align="center">
 							<tr>
 								<th>Symbol</th>
 								<th>Stock Name</th>
-								<th>TTM</th>
 								<th>Date</th>
 								<th>Yield</th>
 								<th>Price</th>
@@ -261,7 +257,6 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>Y1</td>
 								<td>{{this.stockdata.[1].date}}</td>
 								<td>{{this.stockdata.[1].yield}}</td>
 								<td>{{this.stockdata.[1].price}}</td>
@@ -284,7 +279,6 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>Y2</td>
 								<td>{{this.stockdata.[2].date}}</td>
 								<td>{{this.stockdata.[2].yield}}</td>
 								<td>{{this.stockdata.[2].price}}</td>
@@ -307,7 +301,6 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>Y3</td>
 								<td>{{this.stockdata.[3].date}}</td>
 								<td>{{this.stockdata.[3].yield}}</td>
 								<td>{{this.stockdata.[3].price}}</td>
@@ -330,7 +323,6 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>Y4</td>
 								<td>{{this.stockdata.[4].date}}</td>
 								<td>{{this.stockdata.[4].yield}}</td>
 								<td>{{this.stockdata.[4].price}}</td>
@@ -349,6 +341,28 @@
 								<td>{{this.stockdata.[4].ev_aebitda}}</td>
 								<td>{{this.stockdata.[4].spice}}</td>
 								<td>{{this.stockdata.[4].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>{{this.stockdata.[5].date}}</td>
+								<td>{{this.stockdata.[5].yield}}</td>
+								<td>{{this.stockdata.[5].price}}</td>
+								<td>{{this.stockdata.[5].shares_outstanding}}</td>
+								<td>{{this.stockdata.[5].market_cap}}</td>
+								<td>{{this.stockdata.[5].net_debt}}</td>
+								<td>{{this.stockdata.[5].enterprise_value}}</td>
+								<td>{{this.stockdata.[5].nd_aebitda}}</td>
+								<td>{{this.stockdata.[5].revenue}}</td>
+								<td>{{this.stockdata.[5].aebitda}}</td>
+								<td>{{this.stockdata.[5].aebitda_percent}}</td>
+								<td>{{this.stockdata.[5].asset_turnover}}</td>
+								<td>{{this.stockdata.[5].aebitda_at}}</td>
+								<td>{{this.stockdata.[5].roe}}</td>
+								<td>{{this.stockdata.[5].effective_tax}}</td>
+								<td>{{this.stockdata.[5].ev_aebitda}}</td>
+								<td>{{this.stockdata.[5].spice}}</td>
+								<td>{{this.stockdata.[5].roe_mult}}</td>
 							</tr>
 						</tbody>
 					</table>`)
