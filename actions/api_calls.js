@@ -85,10 +85,10 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
     for (i in stocksList) {
         try {
             var stocks = await db.addStocks(stocksList[i].symbol, stocksList[i].company, username)
+            console.log(stocks)
         }
-        catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks') }
+        catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 and username = $2', [stocksList[i].symbol, username]); console.log(stocks) }
 
-        //console.log(stocksList[i].data)
         for (d in stocksList[i].data) {
             stocksList[i].data[d].stock_id = stocks.rows[0].stock_id
         }
@@ -174,14 +174,7 @@ const financials_call = (symbol, callback) => {
  };
 
  */
-function gurufocus_update() {
-    for (item in symbols) {
-        financials_call(symbols[item]);
-    }
-}
-
 
 module.exports = {
-    gurufocus_update,
     gurufocusAdd
 }

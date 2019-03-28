@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS "stocks"
 
 CREATE TABLE IF NOT EXISTS "stockdata"
 (
-    "stockdata_id" serial PRIMARY KEY,
     "stock_id" serial REFERENCES stocks(stock_id) ON DELETE CASCADE,
     "stock_name" varchar(50),
     "date" date,
@@ -33,5 +32,6 @@ CREATE TABLE IF NOT EXISTS "stockdata"
     "aebitda" numeric,
     "asset_turnover" numeric,
     "roe" numeric,
-    "effective_tax" numeric
+    "effective_tax" numeric,
+    PRIMARY KEY(stock_id, date)
 );
