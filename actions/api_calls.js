@@ -53,6 +53,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
                 console.log(err)
                 currentStock.company = 'Failed to get company name'
             }
+
         }
         if (financialsCall) {
             let financials = await financialsAPI(list[i].symbol)
@@ -85,10 +86,10 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
     for (i in stocksList) {
         try {
             var stocks = await db.addStocks(stocksList[i].symbol, stocksList[i].company, username)
-            console.log(stocks)
         }
-        catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 and username = $2', [stocksList[i].symbol, username]); console.log(stocks) }
+        catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks') }
 
+        //console.log(stocksList[i].data)
         for (d in stocksList[i].data) {
             stocksList[i].data[d].stock_id = stocks.rows[0].stock_id
         }

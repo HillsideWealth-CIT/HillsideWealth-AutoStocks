@@ -197,21 +197,28 @@
         <script>
             var rm_list = [];
             function add(){
-                Swal.fire({
-                    title: 'Enter the stock symbol',
-                    input: 'text',
-                    inputAttributes: {
-                        autocapitalize: 'off'
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: 'Add',
-                    showLoaderOnConfirm: true,
-                    preConfirm: (symbol) => {
-                        ajax_func([{'symbol': symbol.toUpperCase(), 'comment': '', 'company': '', 'exchange': ''}], "Append")
-                    }
-                })
+				Swal.mixin({
+					input: 'text',
+					confirmButtonText: 'Next',
+					showCancelButton: true,
+					progressSteps:['1', '2']
+				}).queue([{
+					title: 'Add a stock'
+				}, 'Add a Comment'])
+				.then((result) => {
+					if (result.value) {
+						Swal.fire({
+							title: 'Confirm',
+							html:
+							`stock: ${result.value[0]} comment: ${result.value[1]}`,
+							confirmButtonText: 'Confirm',
+							showCancelButton: true,
+						}).then(()=> {
+							 ajax_func([{'symbol': result.value[0].toUpperCase(), 'comment': result.value[1], 'company': '', 'exchange': ''}], "Append")
+						})
+					}
+				})
             }
-
             function remove() {
 				$("#table #db_stocks input:checked").each(function() {
 					var sym = $(this).parents('tr:first').data('val')
