@@ -20,7 +20,7 @@ hbs.registerHelper('json', function (context) {
 /*** Project Scripts ***/
 const api_calls = require("./actions/api_calls");
 const auth = require("./actions/auth");
-const csv_parse = require("./actions/csv_parse");
+const xlsx_parse = require("./actions/xlsx_parse");
 const db = require("./actions/database");
 const email = require('./actions/node_mailer');
 
@@ -134,17 +134,17 @@ app.post("/register", (request, response) => {
 /* File Upload */
 app.post('/upload', upload.single('myfile'), sessionCheck, (request, response) => {
     if ("action" in request.body != true) {
-        var csvdata;
-        csv_parse.csvjson(`./uploads/${request.file.filename}`).then((resolved) => {
-            csvdata = JSON.parse(resolved);
+        var xlsxdata;
+        xlsx_parse.xlsxjson(`./uploads/${request.file.filename}`).then((resolved) => {
+            xlsxdata = JSON.parse(resolved);
             db.showstocks(request.session.user).then((resolved2) => {
                 let dbdata = resolved2;
                 for (i = 0; i < dbdata.length; i++) {
-                    _.remove(csvdata, function (e) {
+                    _.remove(xlsxdata, function (e) {
                         return e.Ticker == dbdata[i].symbol;
                     });
                 }
-                response.render('compare.hbs', { data: csvdata, dbdata: dbdata, i: true });
+                response.render('compare.hbs', { data: xlsxdata, dbdata: dbdata, i: true });
             }).catch(err => {
                 console.error(err);
             })

@@ -3,6 +3,7 @@
 	<head>
 		<title>Adding Stocks</title>
 		<meta charset="utf-8">
+		<link rel="icon" type="image/png" href="/imgs/icon.png" />
 		<style>.fixed-table-container{ background-color:white}</style>
 	</head>
 	<body style="">
@@ -123,13 +124,11 @@
 			</div>
 		</div>
 		<div id="toolbar1" class="d-flex flex-row justify-content-center align-items-center">
-			 <h2>CSV</h2>
+			 <h2>XLSX</h2>
 		</div>
 		<div id="toolbar2" class="d-flex flex-row justify-content-center align-items-center">
 			 <h2>DB</h2>
 		</div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<script>
 			var add_list = [];
 			var rm_list = [];
@@ -149,9 +148,6 @@
 					text: 'The page will reload shortly.',
 					showConfirmButton: false,
 				});
-                //alert(JSON.stringify(add_list))
-				//$('#myTable1').bootstrapTable('uncheckAll');
-				//add_list = [];
 			};
 			function rm() {
 				$("#myTable2 tbody input:checked").each(function() {
@@ -167,9 +163,6 @@
 					text: 'The page will reload shortly.',
 					showConfirmButton: false,
 				});
-				//alert(JSON.stringify(rm_list))
-				//$('#myTable2').bootstrapTable('uncheckAll');
-				//rm_list = [];
 			};
 
             function ajax_func(list, action){
