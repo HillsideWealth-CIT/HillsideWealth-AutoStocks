@@ -1,30 +1,75 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Database page</title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="/styles/login.css" />
 	<link rel="icon" type="image/png" href="/imgs/icon.png" />
 </head>
+
 <body>
 	{{>logo}}
 	<div id='menu'>
 		<h2>Create an Account</h2>
-		<form action="/register" method="POST">
-			<input type="text" name="username" placeholder="Username" class="input">
-			<br/>
+			<input type="text" name="username" placeholder="Username" class="input" id="userName">
+			<br />
 			{{!-- <input type="text" name="email" placeholder="Email" class="input">
 			<br /> --}}
-			<input type="password" name="password" placeholder="Password" class="input">
+			<input type="password" name="password" placeholder="Password" class="input" id="password">
 			<br />
-			<input type="password" name="confirmPassword"placeholder="Confirm password" class="input">
+			<input type="password" name="confirmPassword" placeholder="Confirm password" class="input"
+				id="confirmPassword">
 			<br />
-			<button type="submit" style="background-color:#255A85; color:white;" id="send">Signup</button>
-
-		</form>
+			<button onclick="test();" style="background-color:#255A85; color:white;" class="btnd">Signup</button>
 		<a href="/">
 			<button id="back">Back</button>
 		</a>
 	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+	<script>
+		/**
+		* Stores user input into a JSON and sends it to ajax_func().
+		* @constructor
+		*/
+		function test() {
+			let info = {
+				username: $('#userName').val(),
+				password: $('#password').val(),
+				confirmPassword: $('#confirmPassword').val()
+			};
+			ajax_func(info);
+		}
+
+		/**
+		* Sends user input into the server through ajax.
+		* @constructor
+		* @param {JSON} data - The user input stored as a JSON file
+		*/
+		function ajax_func(data) {
+			$.ajax({
+				type: "POST",
+				data: JSON.stringify(data),
+				contentType: 'application/json',
+				url: "/register"
+			}).done(function (returned_data) {
+				let returned = JSON.parse(returned_data);
+				console.log(returned)
+				if (returned.status != "authorized") {
+					Swal.fire({
+						type: 'error',
+						title: 'Login Incorrect',
+						text: `${returned["status"]}`
+					});
+				}
+				else {
+					window.location.href = "/";
+				}
+
+			})
+		}
+	</script>
 </body>
+
 </html>
