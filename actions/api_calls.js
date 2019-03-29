@@ -64,7 +64,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
                     date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
                     price: annuals.valuation_and_quality["Month End Stock Price"][f],
-                    net_debt: annuals.cashflow_statement["Net Issuance of Debt"][f],
+                    net_debt: annuals.balance_sheet["Long-Term Debt"][f] + annuals.balance_sheet["Current Portion of Long-Term Debt"][f] + annuals.balance_sheet["Minority Interest"][f] - annuals.balance_sheet["Cash And Cash Equivalents"][f] - annuals.balance_sheet["Marketable Securities"][f],
                     market_cap: annuals.valuation_and_quality["Market Cap"][f],
                     roe: annuals.common_size_ratios["ROE %"][f],
                     yield: annuals.valuation_ratios["Dividend Yield %"][f],
