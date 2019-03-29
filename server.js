@@ -96,43 +96,48 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                 })
 
                 // Calculates metric growth rates
-                const end_date = stock.stockdata[0].date.getFullYear(),
-                    end_price = stock.stockdata[0].price,
-                    end_roe = stock.stockdata[0].roe
-                var price_10 = null,
-                    price_5 = null,
-                    price_3 = null,
-                    price_1 = null,
-                    roe_10 = null,
-                    roe_5 = null,
-                    roe_3 = null,
-                    roe_1 = null
-                for (var i = 1; i < stock.stockdata.length; i++) {
-                    if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
-                        price_10 = stock.stockdata[i].price
-                        roe_10 = stock.stockdata[i].roe
-                    } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
-                        price_5 = stock.stockdata[i].price
-                        roe_5 = stock.stockdata[i].roe
-                    } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
-                        price_3 = stock.stockdata[i].price
-                        roe_3 = stock.stockdata[i].roe
-                    } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
-                        price_1 = stock.stockdata[i].price
-                        roe_1 = stock.stockdata[i].roe
+                try {
+                    const end_date = stock.stockdata[0].date.getFullYear(),
+                        end_price = stock.stockdata[0].price,
+                        end_roe = stock.stockdata[0].roe
+                    var price_10 = null,
+                        price_5 = null,
+                        price_3 = null,
+                        price_1 = null,
+                        roe_10 = null,
+                        roe_5 = null,
+                        roe_3 = null,
+                        roe_1 = null
+                    for (var i = 1; i < stock.stockdata.length; i++) {
+                        if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
+                            price_10 = stock.stockdata[i].price
+                            roe_10 = stock.stockdata[i].roe
+                        } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
+                            price_5 = stock.stockdata[i].price
+                            roe_5 = stock.stockdata[i].roe
+                        } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
+                            price_3 = stock.stockdata[i].price
+                            roe_3 = stock.stockdata[i].roe
+                        } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
+                            price_1 = stock.stockdata[i].price
+                            roe_1 = stock.stockdata[i].roe
+                        }
                     }
+                    // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
+                    stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 10000) / 10000 + '%'
+                    stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 10000) / 10000 + '%'
+                    stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 10000) / 10000 + '%'
+                    stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 10000) / 10000 + '%'
+                    // console.log(stock.symbol, 'ROE', '10y:'+roe_10, '5y:'+roe_5, '3y:'+roe_3, '1y:'+roe_1)
+                    // NaN% signifies a negative ROE
+                    stock.roe_growth_10 = Math.round((Math.pow(end_roe / roe_10, 1 / 10) - 1) * 10000) / 10000 + '%'
+                    stock.roe_growth_5 = Math.round((Math.pow(end_roe / roe_5, 1 / 5) - 1) * 10000) / 10000 + '%'
+                    stock.roe_growth_3 = Math.round((Math.pow(end_roe / roe_3, 1 / 3) - 1) * 10000) / 10000 + '%'
+                    stock.roe_growth_1 = Math.round((Math.pow(end_roe / roe_1, 1 / 1) - 1) * 10000) / 10000 + '%'
                 }
-                // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
-                stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 10000) / 10000 + '%'
-                stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 10000) / 10000 + '%'
-                stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 10000) / 10000 + '%'
-                stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 10000) / 10000 + '%'
-                // console.log(stock.symbol, 'ROE', '10y:'+roe_10, '5y:'+roe_5, '3y:'+roe_3, '1y:'+roe_1)
-                // NaN% signifies a negative ROE at 10y
-                stock.roe_growth_10 = Math.round((Math.pow(end_roe / roe_10, 1 / 10) - 1) * 10000) / 10000 + '%'
-                stock.roe_growth_5 = Math.round((Math.pow(end_roe / roe_5, 1 / 5) - 1) * 10000) / 10000 + '%'
-                stock.roe_growth_3 = Math.round((Math.pow(end_roe / roe_3, 1 / 3) - 1) * 10000) / 10000 + '%'
-                stock.roe_growth_1 = Math.round((Math.pow(end_roe / roe_1, 1 / 1) - 1) * 10000) / 10000 + '%'
+                catch {
+                    ///
+                }
             })
 
 
@@ -161,11 +166,11 @@ app.get('/admin', sessionCheck, (request, response) => {
     if (request.session.status != 'admin') {
         response.redirect('/')
     } else {
-
+        admin = true;
         db.retrieveCodes().then((r) => {
             let codes = r.rows
             console.log(codes)
-            response.render('admin.hbs', { codes: codes })
+            response.render('admin.hbs', { codes: codes, a: true})
 
         })
     }

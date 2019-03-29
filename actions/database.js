@@ -161,7 +161,7 @@ const arrayAddStockData = async (data) => {
     let params = []
     let placeholders = []
     for (i in data) {
-        if (data[i].stock_id) {
+        if (data[i].stock_id || data[i].stock_id == 0) {
             if (i == 0) columns.push('stock_id')
             placeholders.push(`$${params.push(data[i].stock_id)}`)
         }
@@ -193,9 +193,12 @@ const arrayAddStockData = async (data) => {
             if (i == 0) columns.push('market_cap')
             placeholders.push(`$${params.push(data[i].market_cap)}`)
         }
-        if (data[i].net_debt) {
+        if (data[i].net_debt || isNaN(data[i].net_debt) || data[i].net_debt == 0) {
             if (i == 0) columns.push('net_debt')
-            placeholders.push(`$${params.push(data[i].net_debt)}`)
+            if (isNaN(data[i].net_debt)) {
+                placeholders.push(`$${params.push(null)}`)
+            } else {
+            placeholders.push(`$${params.push(data[i].net_debt)}`)}
         }
         if (data[i].enterprise_value) {
             if (i == 0) columns.push('enterprise_value')
@@ -205,7 +208,7 @@ const arrayAddStockData = async (data) => {
             if (i == 0) columns.push('revenue')
             placeholders.push(`$${params.push(data[i].revenue)}`)
         }
-        if (data[i].aebitda) {
+        if (data[i].aebitda || data[i].aebitda == 0) {
             if (i == 0) columns.push('aebitda')
             placeholders.push(`$${params.push(data[i].aebitda)}`)
         }
@@ -221,16 +224,19 @@ const arrayAddStockData = async (data) => {
             if (i == 0) columns.push('effective_tax')
             placeholders.push(`$${params.push(data[i].effective_tax)}`)
         }
-
+        console.log(data[i])
     }
+
     let query = `INSERT INTO stockdata (${columns.join(', ')}) VALUES`
     for (let i = 0; i < params.length / columns.length; i++) {
+        console.log(i * columns.length, i * columns.length + columns.length)
         query += (` (${placeholders.slice(i * columns.length, i * columns.length + columns.length).join(', ')}),`)
     }
     query = _.trimEnd(query, ',')
     query += ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
     //let query = `INSERT INTO stockdata (${_.trimEnd(columns, ',')}) VALUES (${_.trimEnd(placeholders, ',')});`
-    //console.log(query)
+    console.log(query)
+    console.log(params)
     return await runQuery(query, params)
 }
 
