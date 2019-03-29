@@ -6,7 +6,7 @@ const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const session = require("client-sessions");
 const app = express();
-var schedule = require('node-schedule');
+//var schedule = require('node-schedule');
 const multer = require('multer');
 const upload = multer({ dest: './uploads/' });
 const fs = require("fs");
@@ -341,7 +341,8 @@ app.listen(port, () => {
 });
 
 /*** Sends an email update on the 15th of everymonth ***/
-var quarter_updates = schedule.scheduleJob('* * * 15 * *', () => {
+/* var quarter_updates = schedule.scheduleJob('* * * 15 * *', () => {
     email.send_email();
 })
 quarter_updates;
+ */
