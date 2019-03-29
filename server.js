@@ -341,7 +341,8 @@ app.listen(port, () => {
 });
 
 /*** Sends an email update on the 15th of everymonth ***/
-var quarter_updates = schedule.scheduleJob('* * * 15 * *', () => {
+/* var quarter_updates = schedule.scheduleJob('* * * 15 * *', () => {
     email.send_email();
 })
 quarter_updates;
+ */
