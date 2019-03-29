@@ -32,7 +32,7 @@ const login = async (username, password) => {
     const user = await db.retrieveUser(username)
     const match = await bcrypt.compare(password, user.password);
     if (match) {
-        return true
+        return user
     } else {
         throw `Username or Password does not match.`
     }
@@ -50,9 +50,21 @@ const generateHash = async (password) => {
 }
 
 
+const validateCode = async (code) => {
+    var codes = await db.retrieveCodes()
+    codes = codes.rows
+    result = codes.find((el) => el.code.trim() == code.trim())
+    if (result) {
+        return result.type
+    } else {
+        throw 'Invalid Code'
+    }
+}
+
 module.exports = {
     signup,
-    login
+    login,
+    validateCode
 }
 
 

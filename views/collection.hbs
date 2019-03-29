@@ -3,6 +3,7 @@
 	<head>
 		<title>Collection</title>
 		<meta charset="utf-8">
+		<link rel="icon" type="image/png" href="/imgs/icon.png" />
 		<style>.fixed-table-container{ background-color:white} th:nth-child(3),td:nth-child(3){position:sticky;left:0px;} td:nth-child(3){background-color: #F0F0F0; z-index: 999;}</style>
 	</head>
 	<body>
@@ -11,7 +12,7 @@
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
 					<table id="table" data-toggle="table" data-search="true"
-						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-detail-formatter="detailFormatter"
+						data-toolbar="#toolbar" data-height="700" data-detail-view="true" data-detail-formatter="detailFormatter"
 						data-show-columns="true" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks" }'
 						class="table table1 table-hover">
 						<thead class='thead-dark'>
@@ -53,133 +54,32 @@
 								<td></td>
 								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
 								<td>{{ this.stock_name }}</td>
-								{{#if this.stockdata.[0].datestring}}
 								<td>{{this.stockdata.[0].datestring}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].yield}}
 								<td>{{this.stockdata.[0].yield}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].price}}
 								<td>{{this.stockdata.[0].price}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.price_growth_1}}
 								<td>{{this.price_growth_1}}</td>
-								{{else}}
-								{{/if}}
-								{{#if this.price_growth_3}}
 								<td>{{this.price_growth_3}}</td>
-								{{else}}
-								{{/if}}
-								{{#if this.price_growth_5}}
 								<td>{{this.price_growth_5}}</td>
-								{{else}}
-								{{/if}}
-								{{#if this.price_growth_10}}
 								<td>{{this.price_growth_10}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].shares_outstanding}}
 								<td>{{this.stockdata.[0].shares_outstanding}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].market_cap}}
 								<td>{{this.stockdata.[0].market_cap}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].net_debt}}
 								<td>{{this.stockdata.[0].net_debt}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].enterprise_value}}
 								<td>{{this.stockdata.[0].enterprise_value}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].nd_aebitda}}
 								<td>{{this.stockdata.[0].nd_aebitda}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].revenue}}
 								<td>{{this.stockdata.[0].revenue}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].aebitda}}
 								<td>{{this.stockdata.[0].aebitda}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].aebitda_percent}}
 								<td>{{this.stockdata.[0].aebitda_percent}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].asset_turnover}}
 								<td>{{this.stockdata.[0].asset_turnover}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].aebitda_at}}
 								<td>{{this.stockdata.[0].aebitda_at}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].roe}}
 								<td>{{this.stockdata.[0].roe}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.roe_growth_1}}
 								<td>{{this.roe_growth_1}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.roe_growth_3}}
 								<td>{{this.roe_growth_3}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.roe_growth_5}}
 								<td>{{this.roe_growth_5}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.roe_growth_10}}
 								<td>{{this.roe_growth_10}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].effective_tax}}
 								<td>{{this.stockdata.[0].effective_tax}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].ev_aebitda}}
 								<td>{{this.stockdata.[0].ev_aebitda}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].spice}}
 								<td>{{this.stockdata.[0].spice}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
-								{{#if this.stockdata.[0].roe_mult}}
 								<td>{{this.stockdata.[0].roe_mult}}</td>
-								{{else}}
-								<td>Null</td>
-								{{/if}}
 							</tr>
 							{{/each}}
 						</tbody>
@@ -216,7 +116,8 @@
 					showCancelButton: true,
 					progressSteps:['1', '2']
 				}).queue([{
-					title: 'Add a stock'
+					title: 'Add a stock',
+					text: '*Canadian stocks must begin with TSX:'
 				}, 'Add a Comment'])
 				.then((result) => {
 					if (result.value) {
@@ -227,7 +128,14 @@
 							confirmButtonText: 'Confirm',
 							showCancelButton: true,
 						}).then(()=> {
-							 ajax_func([{'symbol': result.value[0].toUpperCase(), 'comment': result.value[1], 'company': '', 'exchange': ''}], "Append")
+							ajax_func([{'symbol': result.value[0].toUpperCase(), 'comment': result.value[1], 'company': '', 'exchange': ''}], "Append")
+							Swal.fire({
+								position:'center',
+								type: 'success',
+								title: `${result.value[0].toUpperCase()} is currently being saved!`,
+								text: 'The page will reload shortly.',
+								showConfirmButton: false,
+							});
 						})
 					}
 				})
@@ -239,6 +147,13 @@
 					//$(`#${sym.toString()}`).remove();
 				});
                 ajax_func(rm_list, 'Remove');
+				Swal.fire({
+					position:'center',
+					type: 'success',
+					title: 'The selected stocks are currently being removed!',
+					text: 'The page will reload shortly.',
+					showConfirmButton: false,
+				});
 				rm_list = [];
 			};
 			function update() {
@@ -247,6 +162,13 @@
 					rm_list.push({"symbol" : sym.toString()});
 				});
                 ajax_func(rm_list, 'Update');
+				Swal.fire({
+					position:'center',
+					type: 'success',
+					title: 'The selected stocks are currently being updated!',
+					text: 'The page will reload shortly.',
+					showConfirmButton: false,
+				});
 				console.log(rm_list)
 				rm_list = [];
 			};
