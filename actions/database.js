@@ -163,39 +163,39 @@ const arrayAddStockData = async (data) => {
     for (i in data) {
         if (data[i].stock_id) {
             if (i == 0) columns.push('stock_id')
-            placeholders.push( `$${params.push(data[i].stock_id)}`)
+            placeholders.push(`$${params.push(data[i].stock_id)}`)
         }
         if (data[i].date) {
             if (i == 0) columns.push('date')
-            placeholders.push( `$${params.push(data[i].date)}`)
+            placeholders.push(`$${params.push(data[i].date)}`)
         }
         if (data[i].notes) {
             if (i == 0) columns.push('notes')
-            placeholders.push( `$${params.push(data[i].notes)}`)
+            placeholders.push(`$${params.push(data[i].notes)}`)
         }
         if (data[i].dividend) {
             if (i == 0) columns.push('dividend')
-            placeholders.push( `$${params.push(data[i].dividend)}`)
+            placeholders.push(`$${params.push(data[i].dividend)}`)
         }
         if (data[i].yield) {
             if (i == 0) columns.push('yield')
-            placeholders.push( `$${params.push(data[i].yield)}`)
+            placeholders.push(`$${params.push(data[i].yield)}`)
         }
         if (data[i].price) {
             if (i == 0) columns.push('price')
-            placeholders.push( `$${params.push(data[i].price)}`)
+            placeholders.push(`$${params.push(data[i].price)}`)
         }
         if (data[i].shares_outstanding) {
             if (i == 0) columns.push('shares_outstanding')
-            placeholders.push( `$${params.push(data[i].shares_outstanding)}`)
+            placeholders.push(`$${params.push(data[i].shares_outstanding)}`)
         }
         if (data[i].market_cap) {
             if (i == 0) columns.push('market_cap')
-            placeholders.push( `$${params.push(data[i].market_cap)}`)
+            placeholders.push(`$${params.push(data[i].market_cap)}`)
         }
         if (data[i].net_debt) {
             if (i == 0) columns.push('net_debt')
-            placeholders.push( `$${params.push(data[i].net_debt)}`)
+            placeholders.push(`$${params.push(data[i].net_debt)}`)
         }
         if (data[i].enterprise_value) {
             if (i == 0) columns.push('enterprise_value')
@@ -207,28 +207,28 @@ const arrayAddStockData = async (data) => {
         }
         if (data[i].aebitda) {
             if (i == 0) columns.push('aebitda')
-            placeholders.push( `$${params.push(data[i].aebitda)}`)
+            placeholders.push(`$${params.push(data[i].aebitda)}`)
         }
         if (data[i].asset_turnover) {
             if (i == 0) columns.push('asset_turnover')
-            placeholders.push( `$${params.push(data[i].asset_turnover)}`)
+            placeholders.push(`$${params.push(data[i].asset_turnover)}`)
         }
         if (data[i].roe) {
             if (i == 0) columns.push('roe')
-            placeholders.push( `$${params.push(data[i].roe)}`)
+            placeholders.push(`$${params.push(data[i].roe)}`)
         }
         if (data[i].effective_tax) {
             if (i == 0) columns.push('effective_tax')
-            placeholders.push( `$${params.push(data[i].effective_tax)}`)
+            placeholders.push(`$${params.push(data[i].effective_tax)}`)
         }
 
     }
     let query = `INSERT INTO stockdata (${columns.join(', ')}) VALUES`
     for (let i = 0; i < params.length / columns.length; i++) {
-        query += (` (${placeholders.slice(i * columns.length, i* columns.length + columns.length).join(', ')}),`)
+        query += (` (${placeholders.slice(i * columns.length, i * columns.length + columns.length).join(', ')}),`)
     }
     query = _.trimEnd(query, ',')
-    query+= ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
+    query += ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
     //let query = `INSERT INTO stockdata (${_.trimEnd(columns, ',')}) VALUES (${_.trimEnd(placeholders, ',')});`
     //console.log(query)
     return await runQuery(query, params)
@@ -244,6 +244,25 @@ const removeStocks = async (symbol, username) => {
     return await runQuery(`DELETE from stocks WHERE symbol=$1 AND username =$2`, [symbol, username])
 }
 
+
+const retrieveCodes = async () => {
+    return await runQuery('SELECT * from codes')
+}
+
+const changeStatus = async (username, status) => {
+    return await runQuery('UPDATE users SET status = $1 WHERE username = $2', [status, username])
+}
+
+const changeCode = async (newcode, code_id) => {
+    return await runQuery(`UPDATE codes SET code = $1 WHERE code_id = $2 `, [newcode, code_id])
+}
+
+const retrieveAllUsers = async () => {
+    return await runQuery('SELECT * from users')
+}
+
+
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -253,5 +272,9 @@ module.exports = {
     addStocks,
     removeStocks,
     runQuery,
-    arrayAddStockData
+    arrayAddStockData,
+    retrieveCodes,
+    changeStatus,
+    retrieveAllUsers,
+    changeCode
 }

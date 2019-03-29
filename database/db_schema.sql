@@ -3,7 +3,8 @@
 CREATE TABLE IF NOT EXISTS "users"
 (
     "username" varchar(32) PRIMARY KEY,
-    "password" char(60) NOT NULL
+    "password" char(60) NOT NULL,
+    "status" char(32) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "stocks"
@@ -35,3 +36,13 @@ CREATE TABLE IF NOT EXISTS "stockdata"
     "effective_tax" numeric,
     PRIMARY KEY(stock_id, date)
 );
+
+CREATE TABLE IF NOT EXISTS "codes"
+(
+    "code_id" serial PRIMARY KEY,
+    "code" varchar(32) UNIQUE,
+    "type" varchar(32),
+)
+
+ALTER TABLE "users"
+    ADD "status" char(32) NOT NULL

@@ -3,7 +3,7 @@
 <head>
 	<title>Database page</title>
 	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="/styles/register.css" />
+	<link rel="stylesheet" type="text/css" href="/styles/login.css" />
 	<link rel="icon" type="image/png" href="/imgs/icon.png" />
 </head>
 <body>
@@ -13,13 +13,13 @@
 		<form action="/register" method="POST">
 			<input type="text" name="username" placeholder="Username" class="input">
 			<br/>
-			<input type="text" name="email" placeholder="Email" class="input">
-			<br />
+			{{!-- <input type="text" name="email" placeholder="Email" class="input">
+			<br /> --}}
 			<input type="password" name="password" placeholder="Password" class="input">
 			<br />
 			<input type="password" name="confirmPassword"placeholder="Confirm password" class="input">
-
-			<button type="submit" id="send">Signup</button>
+			<br />
+			<button type="submit" style="background-color:#255A85; color:white;" id="send">Signup</button>
 
 		</form>
 		<a href="/">
