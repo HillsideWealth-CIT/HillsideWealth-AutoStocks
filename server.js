@@ -112,10 +112,10 @@ app.post("/login", (request, response) => {
     auth.login(request.body.username, request.body.password)
         .then(() => {
             request.session.user = request.body.username;
-            response.redirect("/");
+            response.send(JSON.stringify({'status': 'authorized'}));
         })
         .catch(err => {
-            console.log(error);
+            response.send(JSON.stringify({'status': err}));
         });
 });
 
