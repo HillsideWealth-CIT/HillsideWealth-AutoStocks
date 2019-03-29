@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>Database page</title>
+	<title>Register</title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="/styles/login.css" />
 	<link rel="icon" type="image/png" href="/imgs/icon.png" />
@@ -10,22 +10,45 @@
 
 <body>
 	{{>logo}}
-	<div id='menu'>
+		<div class="container-fluid d-flex justify-content-center">
+            <div class="d-flex align-items-center" style="height:75vh;">
+                <div class="card" style="width: 25rem;">
+                      <div class="card-header text-center" >
+                           <h4>Create an Account</h4>
+                        </div>
+                    <div class="card-body">
+						<div class="form-group">
+							<label class="d-flex justify-content-start" for="exampleInputEmail1">Username</label>
+							<input type="text" class="form-control" placeholder="Username" name="username" id="userName">
+						</div>
+						<div class="form-group">
+							<label class="d-flex justify-content-start" for="exampleInputEmail1">Password</label>
+							<input type="password" class="form-control" placeholder="Password" name="password" id="password">
+						</div>
+						<div class="form-group">
+							<label class="d-flex justify-content-start" for="exampleInputEmail1">Confirm Password</label>
+							<input type="password" name="confirmPassword" placeholder="Confirm password" class="form-control" id="confirmPassword">
+						</div>
+					<button onclick="test();" style="background-color:#255A85; color:white;" class="btn">Sign Up</button>
+          			<input type="button" onclick="location.href='/login';" style="background-color:#F0F0F0;" class="btn btn-light" value="Back" />
+
+                </div>
+            </div>
+        </div>
+	{{!-- <div id='menu'>
 		<h2>Create an Account</h2>
 			<input type="text" name="username" placeholder="Username" class="input" id="userName">
 			<br />
-			{{!-- <input type="text" name="email" placeholder="Email" class="input">
-			<br /> --}}
 			<input type="password" name="password" placeholder="Password" class="input" id="password">
 			<br />
 			<input type="password" name="confirmPassword" placeholder="Confirm password" class="input"
 				id="confirmPassword">
 			<br />
-			<button onclick="test();" style="background-color:#255A85; color:white;" class="btnd">Signup</button>
+			<button onclick="test();" style="background-color:#255A85; color:white;" class="btn">Signup</button>
 		<a href="/">
-			<button id="back">Back</button>
+			<button class="btn" style="background-color:#C4C4C4;" id="back">Back</button>
 		</a>
-	</div>
+	</div> --}}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 	<script>

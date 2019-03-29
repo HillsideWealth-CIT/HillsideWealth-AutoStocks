@@ -1,29 +1,68 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Enter Code</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="/styles/login.css" />
-	<link rel="icon" type="image/png" href="/imgs/icon.png" />
-</head>
-<body>
-	{{>logo}}
-	<div id='menu'>
+    <head>
+        <title>Enter Code</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="/styles/login.css"/>
+        <link rel="icon" type="image/png" href="/imgs/icon.png"/>
+    </head>
+    <body>
+        {{>logo}}
+        <div class="container-fluid d-flex justify-content-center">
+            <div class="d-flex align-items-center" style="height:75vh;">
+                <div class="card" style="width: 25rem;">
+                    <div class="card-header text-center">
+                        <H4>Welcome
+                            {{user}}!</H4>
+                    </div>
+                    <div class="card-body">
+                        <H5>Enter your registration code below.</H5>
+						<form action="entercode" method="POST">
+                        <div class="form-group">
+                            <input
+                                type="text"
+                                name="code"
+                                placeholder="Enter your code"
+                                class="form-control"/>
+                        </div>
+						<div class="form-group">
+							<input type="submit" style="background-color:#255A85; color:white;" class="btn" value="Submit"></input>
+						</form>
+						</div>
+						<div class="form-group">
+						<form
+                            id="lo_form"
+                            action="/logout"
+                            method="post">
+                            <a id="lo" class="d-flex justify-content-center" href="#">Not you? Click here to sign out.</a>
+                        </form>
+						</div>
+                    </div>
+                </div>
+            </div>
+            {{!-- <div id='menu'>
         <H4>Welcome {{user}}!</H4>
         <H5>Enter your registration code below.</H5>
-        <br /> <br />
+        <br/>
+        <br/>
         <form action="entercode" method="POST">
             <input type="text" name="code" placeholder="Enter your code" class="input">
             <input type="submit" value="submit"></input>
         </form>
-        <form id="lo_form" style="bottom:0px; position:absolute; padding:40px;" action="/logout" method="post">
-			<a id="lo" href="#">Not you? Click here to sign out.</a>
-		</form>
-	</div>
+        <form
+            id="lo_form"
+            style="bottom:0px; position:absolute; padding:40px;"
+            action="/logout"
+            method="post">
+            <a id="lo" href="#">Not you? Click here to sign out.</a>
+        </form>
+    </div>
+    --}}
 </body>
 <script>
-	$("#lo").click(function() {
-		$("#lo_form").submit();
-	});
+    $("#lo")
+        .click(function () {
+            $("#lo_form").submit();
+        });
 </script>
 </html>
