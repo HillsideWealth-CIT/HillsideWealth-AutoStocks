@@ -18,7 +18,6 @@
                            <h4>Hillside Wealth Tool</h4>
                         </div>
                     <div class="card-body">
-					<form action="/login" method="post">
 						<div class="form-group">
 							<label class="d-flex justify-content-start" for="exampleInputEmail1">Username</label>
 							<input type="text" class="form-control" placeholder="Username" name="username" id="userName">
@@ -27,12 +26,50 @@
 							<label class="d-flex justify-content-start" for="exampleInputEmail1">Password</label>
 							<input type="password" class="form-control" placeholder="Password" name="password" id="password">
 						</div>
-				<button type="submit" style="background-color:#255A85; color:white;" class="btn">Login</button>
-					</form>
+					<button onclick="test();" style="background-color:#255A85; color:white;" class="btnd">Login</button>
                 </div>
             </div>
         </div>
-	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-	<!-- <script src="login.js"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+	<script>
+
+	/**
+	* Stores user input into a JSON and sends it to ajax_func().
+	* @constructor
+	*/
+	function test(){
+		let info = {username: $('#userName').val(), password: $('#password').val()};
+		ajax_func(info);
+	}
+
+	/**
+	* Sends user input into the server through ajax.
+	* @constructor
+	* @param {JSON} data - The user input stored as a JSON file
+	*/
+	function ajax_func(data){
+		$.ajax({
+			type: "POST",
+			data: JSON.stringify(data),
+			contentType: 'application/json',
+			url: "/login"
+			}).done(function(returned_data){
+				let returned = JSON.parse(returned_data);
+				console.log(returned)
+				if(returned.status != "authorized"){
+					Swal.fire({
+					type: 'error',
+					title: 'Login Incorrect',
+					text: `${returned["status"]}`
+				});
+				}
+				else{
+					window.location.href = "/";
+				}
+				
+			})
+	}
+	</script>
 </body>
 </html>

@@ -171,7 +171,8 @@
 					showCancelButton: true,
 					progressSteps:['1', '2']
 				}).queue([{
-					title: 'Add a stock'
+					title: 'Add a stock',
+					text: '*Canadian stocks must begin with TXE:'
 				}, 'Add a Comment'])
 				.then((result) => {
 					if (result.value) {
@@ -182,7 +183,14 @@
 							confirmButtonText: 'Confirm',
 							showCancelButton: true,
 						}).then(()=> {
-							 ajax_func([{'symbol': result.value[0].toUpperCase(), 'comment': result.value[1], 'company': '', 'exchange': ''}], "Append")
+							ajax_func([{'symbol': result.value[0].toUpperCase(), 'comment': result.value[1], 'company': '', 'exchange': ''}], "Append")
+							Swal.fire({
+								position:'center',
+								type: 'success',
+								title: `${result.value[0].toUpperCase()} is currently being saved!`,
+								text: 'The page will reload shortly.',
+								showConfirmButton: false,
+							});
 						})
 					}
 				})
@@ -194,6 +202,13 @@
 					//$(`#${sym.toString()}`).remove();
 				});
                 ajax_func(rm_list, 'Remove');
+				Swal.fire({
+					position:'center',
+					type: 'success',
+					title: 'The selected stocks are currently being removed!',
+					text: 'The page will reload shortly.',
+					showConfirmButton: false,
+				});
 				rm_list = [];
 			};
 			function update() {
@@ -202,6 +217,13 @@
 					rm_list.push({"symbol" : sym.toString()});
 				});
                 ajax_func(rm_list, 'Update');
+				Swal.fire({
+					position:'center',
+					type: 'success',
+					title: 'The selected stocks are currently being updated!',
+					text: 'The page will reload shortly.',
+					showConfirmButton: false,
+				});
 				console.log(rm_list)
 				rm_list = [];
 			};
