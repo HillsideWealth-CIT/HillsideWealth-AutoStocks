@@ -3,39 +3,7 @@
 	<head>
 		<title>Collection</title>
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="/styles/collection.css" />
-		<link rel="icon" type="image/png" href="/imgs/icon.png" />
-		<link rel="stylesheet"
-			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-		<link rel="stylesheet"
-			href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
-		<script
-			src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<link rel="stylesheet"
-			href="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.css">
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"
-			integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
-			integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
-			crossorigin="anonymous"></script>
-		<script
-			src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
-			integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
-			crossorigin="anonymous"></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.2/core.min.js"></script>
-		<script
-			src="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.js"></script>
-		<script
-			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
-		<script
-			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
-		<script
-			src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-		<style>.fixed-table-container{ background-color:white} th:nth-child(3),td:nth-child(3){position:sticky;left:0px;} td:nth-child(3){background-color: #F0F0F0; z-index: 999;}
-		</style>
+		<style>.fixed-table-container{ background-color:white} th:nth-child(3),td:nth-child(3){position:sticky;left:0px;} td:nth-child(3){background-color: #F0F0F0; z-index: 999;}</style>
 	</head>
 	<body>
 		{{>header}}
@@ -43,7 +11,7 @@
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
 					<table id="table" data-toggle="table" data-search="true"
-						data-toolbar="#toolbar" data-height="600" data-detail-view="true" data-detail-formatter="detailFormatter"
+						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-detail-formatter="detailFormatter"
 						data-show-columns="true" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks" }'
 						class="table table1 table-hover">
 						<thead class='thead-dark'>
@@ -243,7 +211,6 @@
 				});
 				rm_list = [];
 			};
-
 			function update() {
 				$("#table #db_stocks input:checked").each(function() {
 					var sym = $(this).parents('tr:first').data('val')
@@ -260,7 +227,6 @@
 				console.log(rm_list)
 				rm_list = [];
 			};
-
             function ajax_func(list, action){
                 var data = {};
                 data.stocks = list;
@@ -284,15 +250,11 @@
     var html = []
 	{{#each dbdata}}
 	html.push(`
-	{{!-- <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank"><button class="btn btn-primary"><span class="far fa-chart-bar"></span> Gurufocus</button></a>
-	<a href='https://ca.finance.yahoo.com/quote/{{this.symbol}}/analysis' target="_blank"><button class="btn btn-primary" style="background-color:#720e9e; color:white;"> <span class="fab fa-yahoo"></span> Yahoo</button></a> --}}
-	{{!-- <br><br> --}}
 	<table id="table" class="table table-hover">
 						<thead class="thead-light" align="center">
 							<tr>
 								<th>Symbol</th>
 								<th>Stock Name</th>
-								<th>TTM</th>
 								<th>Date</th>
 								<th>Yield</th>
 								<th>Price</th>
@@ -317,7 +279,6 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>Y1</td>
 								<td>{{this.stockdata.[1].date}}</td>
 								<td>{{this.stockdata.[1].yield}}</td>
 								<td>{{this.stockdata.[1].price}}</td>
@@ -340,7 +301,6 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>Y2</td>
 								<td>{{this.stockdata.[2].date}}</td>
 								<td>{{this.stockdata.[2].yield}}</td>
 								<td>{{this.stockdata.[2].price}}</td>
@@ -363,7 +323,6 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>Y3</td>
 								<td>{{this.stockdata.[3].date}}</td>
 								<td>{{this.stockdata.[3].yield}}</td>
 								<td>{{this.stockdata.[3].price}}</td>
@@ -386,7 +345,6 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>Y4</td>
 								<td>{{this.stockdata.[4].date}}</td>
 								<td>{{this.stockdata.[4].yield}}</td>
 								<td>{{this.stockdata.[4].price}}</td>
@@ -405,6 +363,28 @@
 								<td>{{this.stockdata.[4].ev_aebitda}}</td>
 								<td>{{this.stockdata.[4].spice}}</td>
 								<td>{{this.stockdata.[4].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>{{this.stockdata.[5].date}}</td>
+								<td>{{this.stockdata.[5].yield}}</td>
+								<td>{{this.stockdata.[5].price}}</td>
+								<td>{{this.stockdata.[5].shares_outstanding}}</td>
+								<td>{{this.stockdata.[5].market_cap}}</td>
+								<td>{{this.stockdata.[5].net_debt}}</td>
+								<td>{{this.stockdata.[5].enterprise_value}}</td>
+								<td>{{this.stockdata.[5].nd_aebitda}}</td>
+								<td>{{this.stockdata.[5].revenue}}</td>
+								<td>{{this.stockdata.[5].aebitda}}</td>
+								<td>{{this.stockdata.[5].aebitda_percent}}</td>
+								<td>{{this.stockdata.[5].asset_turnover}}</td>
+								<td>{{this.stockdata.[5].aebitda_at}}</td>
+								<td>{{this.stockdata.[5].roe}}</td>
+								<td>{{this.stockdata.[5].effective_tax}}</td>
+								<td>{{this.stockdata.[5].ev_aebitda}}</td>
+								<td>{{this.stockdata.[5].spice}}</td>
+								<td>{{this.stockdata.[5].roe_mult}}</td>
 							</tr>
 						</tbody>
 					</table>`)

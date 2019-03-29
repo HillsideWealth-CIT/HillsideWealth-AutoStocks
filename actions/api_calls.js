@@ -45,7 +45,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
             data: []
         }
         if (summaryCall) {
-            try {
+            try{
                 let summary = await summaryAPI(list[i].symbol)
                 currentStock.company = summary.summary.general.company
             }
