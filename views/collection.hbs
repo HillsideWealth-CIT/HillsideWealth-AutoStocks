@@ -23,6 +23,10 @@
 								<th data-sortable="true">Date</th>
 								<th data-sortable="true">Yield</th>
 								<th data-sortable="true">Price</th>
+								<th data-sortable="true">Price Growth (1y)</th>
+								<th data-sortable="true">Price Growth (3y)</th>
+								<th data-sortable="true">Price Growth (5y)</th>
+								<th data-sortable="true">Price Growth (10y)</th>
 								<th data-sortable="true">Shares Outstanding</th>
 								<th data-sortable="true">Market Cap</th>
 								<th data-sortable="true">Net Debt</th>
@@ -34,6 +38,10 @@
 								<th data-sortable="true">Asset Turnover</th>
 								<th data-sortable="true">aEBITDA AT</th>
 								<th data-sortable="true">ROE</th>
+								<th data-sortable="true">ROE Growth (1y)</th>
+								<th data-sortable="true">ROE Growth (3y)</th>
+								<th data-sortable="true">ROE Growth (5y)</th>
+								<th data-sortable="true">ROE Growth (10y)</th>
 								<th data-sortable="true">Effective Tax</th>
 								<th data-sortable="true">EV/aEBITDA</th>
 								<th data-sortable="true">Spice</th>
@@ -46,9 +54,13 @@
 								<td></td>
 								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
 								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[0].date}}</td>
+								<td>{{this.stockdata.[0].datestring}}</td>
 								<td>{{this.stockdata.[0].yield}}</td>
 								<td>{{this.stockdata.[0].price}}</td>
+								<td>{{this.price_growth_1}}</td>
+								<td>{{this.price_growth_3}}</td>
+								<td>{{this.price_growth_5}}</td>
+								<td>{{this.price_growth_10}}</td>
 								<td>{{this.stockdata.[0].shares_outstanding}}</td>
 								<td>{{this.stockdata.[0].market_cap}}</td>
 								<td>{{this.stockdata.[0].net_debt}}</td>
@@ -60,6 +72,10 @@
 								<td>{{this.stockdata.[0].asset_turnover}}</td>
 								<td>{{this.stockdata.[0].aebitda_at}}</td>
 								<td>{{this.stockdata.[0].roe}}</td>
+								<td>{{this.roe_growth_1}}</td>
+								<td>{{this.roe_growth_3}}</td>
+								<td>{{this.roe_growth_5}}</td>
+								<td>{{this.roe_growth_10}}</td>
 								<td>{{this.stockdata.[0].effective_tax}}</td>
 								<td>{{this.stockdata.[0].ev_aebitda}}</td>
 								<td>{{this.stockdata.[0].spice}}</td>
@@ -208,7 +224,7 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[1].date}}</td>
+								<td>{{this.stockdata.[1].datestring}}</td>
 								<td>{{this.stockdata.[1].yield}}</td>
 								<td>{{this.stockdata.[1].price}}</td>
 								<td>{{this.stockdata.[1].shares_outstanding}}</td>
@@ -230,7 +246,7 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[2].date}}</td>
+								<td>{{this.stockdata.[2].datestring}}</td>
 								<td>{{this.stockdata.[2].yield}}</td>
 								<td>{{this.stockdata.[2].price}}</td>
 								<td>{{this.stockdata.[2].shares_outstanding}}</td>
@@ -252,7 +268,7 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[3].date}}</td>
+								<td>{{this.stockdata.[3].datestring}}</td>
 								<td>{{this.stockdata.[3].yield}}</td>
 								<td>{{this.stockdata.[3].price}}</td>
 								<td>{{this.stockdata.[3].shares_outstanding}}</td>
@@ -274,7 +290,7 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[4].date}}</td>
+								<td>{{this.stockdata.[4].datestring}}</td>
 								<td>{{this.stockdata.[4].yield}}</td>
 								<td>{{this.stockdata.[4].price}}</td>
 								<td>{{this.stockdata.[4].shares_outstanding}}</td>
@@ -296,7 +312,7 @@
 							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[5].date}}</td>
+								<td>{{this.stockdata.[5].datestring}}</td>
 								<td>{{this.stockdata.[5].yield}}</td>
 								<td>{{this.stockdata.[5].price}}</td>
 								<td>{{this.stockdata.[5].shares_outstanding}}</td>
