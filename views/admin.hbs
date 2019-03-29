@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Collection</title>
+    <title>Admin</title>
     <meta charset="utf-8">
     <style>
         .fixed-table-container {
@@ -24,33 +24,34 @@
 
 <body>
     {{>header}}
+    <H2 style="left:50px;position:relative;">Click the codes to unhide them.</H2>
+    <H5 style="left:50px;position:relative;">Note: People who register with admin codes will also have access to this menu</H5>
     <div class="container-fluid">
         <div class="d-flex justify-content-center">
             <div class="table-responsive p-3">
-                <table id="table" data-toggle="table" data-search="true" data-toolbar="#toolbar" data-height="800"
-                    data-show-columns="true" class="table table1 table-hover">
+                <table id="table" data-toolbar="#toolbar" data-height="800" data-show-columns="true"
+                    class="table table1 table-hover">
                     <thead class='thead-dark'>
                         <tr>
-                            <th data-sortable="true">Code</th>
+                            <th data-sortable="true">Registration Code</th>
                             <th data-sortable="true">Type</th>
-                            <th data-sortable="true">Task</th>
+                            <th data-sortable="true">Actions</th>
 
                         </tr>
                     </thead>
                     <tbody>
                         {{#each codes}}
                         <tr>
-                            {{#if this.code}}
-                            <td id="{{this.code_id}}code"><div style="background-color:black; color:black" onclick="unhide(this)">{{this.code}}</div></td>
-                            {{else}}
-                            <td>Null</td>
-                            {{/if}}
-                            {{#if this.type}}
+                            <td id="{{this.code_id}}code">
+                                <div style="background-color:black; color:black" onclick="unhide(this)">{{this.code}}
+                                </div>
+                            </td>
                             <td id="{{this.code_id}}type">{{this.type}}</td>
-                            {{else}}
-                            <td>Null</td>
-                            {{/if}}
-                            <td><input id="{{this.code_id}}text" type="text" maxlength="30" placeholder=" Enter a new code"/><button onclick="changeCode({{this.code_id}}, document.getElementById('{{this.code_id}}text').value)">Change Code</button> <button onclick="changeCode({{this.code_id}}, randomString(10))">Randomize Code</button>
+                            <td><input id="{{this.code_id}}text" type="text" maxlength="30"
+                                    placeholder=" Enter a new code" /><button
+                                    onclick="changeCode({{this.code_id}}, document.getElementById('{{this.code_id}}text').value)">Change
+                                    Code</button> <button
+                                    onclick="changeCode({{this.code_id}}, randomString(10))">Randomize Code</button>
                             </td>
                         </tr>
                         {{/each}}
@@ -87,7 +88,7 @@
         })
             .then((r) => r.json())
             .then(r => {
-                document.getElementById(`${r.code_id}code`).innerHTML= r.newCode
+                document.getElementById(`${r.code_id}code`).innerHTML = r.newCode
             })
     }
 </script>
