@@ -79,7 +79,6 @@ const showstocks = async (username) => {
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id)
         })
     }
-    //console.log(stockAndData)
     return stockAndData
 }
 
@@ -161,7 +160,6 @@ const arrayAddStockData = async (data) => {
     let columns = []
     let params = []
     let placeholders = []
-    //console.log(data)
     for (i in data) {
         if (data[i].stock_id) {
             if (i == 0) columns.push('stock_id')
@@ -236,8 +234,6 @@ const arrayAddStockData = async (data) => {
     return await runQuery(query, params)
 }
 
-
-
 const addStocks = async (symbol, stock_name, username) => {
     return await runQuery(`INSERT INTO stocks (symbol, stock_name, username) VALUES ($1, $2, $3) RETURNING stock_id`, [symbol, stock_name, username])
 }
@@ -247,8 +243,6 @@ const removeStocks = async (symbol, username) => {
     //process.exit();
     return await runQuery(`DELETE from stocks WHERE symbol=$1 AND username =$2`, [symbol, username])
 }
-
-
 
 module.exports = {
     addUser,
