@@ -161,11 +161,11 @@ app.get('/admin', sessionCheck, (request, response) => {
     if (request.session.status != 'admin') {
         response.redirect('/')
     } else {
-
+        admin = true;
         db.retrieveCodes().then((r) => {
             let codes = r.rows
             console.log(codes)
-            response.render('admin.hbs', { codes: codes })
+            response.render('admin.hbs', { codes: codes, a: true})
 
         })
     }

@@ -36,8 +36,16 @@ body {background-color: #F0F0F0;}
 	<a class="navbar-brand" href="/"><img src="/imgs/hillside_logo.png" style="width:20vw;height:5vh;margin:10px;" /></a>
   <ul class="navbar-nav">
 		{{#if admin}}
-			<a class="nav-link" href="admin" style=>Admin Controls & User Management</a>
+    <li class="nav-item">
+		<a class="nav-link" href="admin" style="">Admin Controls & User Management</a>
+		{{else}}
+		{{#if a}}
+		<li class="nav-item">
+		<a class="nav-link active" href="admin" style="">Admin Controls & User Management</a>
+		{{else}}
 		{{/if}}
+		{{/if}}
+		</li>
 		{{#if i}}
     <li class="nav-item active">
 		{{else}}
