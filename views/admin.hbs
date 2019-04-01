@@ -24,7 +24,7 @@
                                     {{this.type}}</h4>
                                 <p><b>Registration Code:</b> <i id="{{this.code_id}}hidecode" style="color:#255A85;" class="far fa-eye"></i></p>
                                 <p id="{{this.code_id}}code" class="initiallyHidden"> {{this.code}}</p>
-                                <span class="help-block form-text text-muted">* Click the eye icon to unreveal code.</span>
+                                <span class="help-block form-text text-muted">*Click the Eye Icon to Reveal Code.</span>
                                 <input id="{{this.code_id}}text" class="form-control" type="text"
                                     maxlength="30"
                                     placeholder="Enter a new code" />
@@ -69,12 +69,6 @@ $(document).ready(function(){
         for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
         return result;
     }
-
-    const unhide = (self) => {
-        self.style.backgroundColor = ''
-    }
-
-
     const changeCode = (code_id, newCode) => {
         const data = {
             code_id: code_id,
