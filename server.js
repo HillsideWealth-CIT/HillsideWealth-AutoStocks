@@ -135,7 +135,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     stock.roe_growth_3 = Math.round((Math.pow(end_roe / roe_3, 1 / 3) - 1) * 10000) / 10000 + '%'
                     stock.roe_growth_1 = Math.round((Math.pow(end_roe / roe_1, 1 / 1) - 1) * 10000) / 10000 + '%'
                 }
-                catch {
+                catch(err){
                     ///
                 }
             })
@@ -146,7 +146,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                 c: true,
                 admin: (request.session.status == 'admin')
             })
-        });
+        }); 
 });
 
 app.get("/documentation", sessionCheck, statusCheck, (request, response) => {
