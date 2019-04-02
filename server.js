@@ -255,7 +255,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
                         return e.Ticker == dbdata[i].symbol;
                     });
                 }
-                response.render('compare.hbs', { data: xlsxdata, dbdata: dbdata, i: true });
+                response.render('compare.hbs', { data: xlsxdata, dbdata: dbdata, i: true, admin: (request.session.status == 'admin') });
             }).catch(err => {
                 console.error(err);
             })
