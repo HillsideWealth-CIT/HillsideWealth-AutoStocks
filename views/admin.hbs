@@ -24,7 +24,7 @@
                                     {{this.type}}</h4>
                                 <p><b>Registration Code:</b> <i id="{{this.code_id}}hidecode" style="color:#255A85;" class="far fa-eye"></i></p>
                                 <p id="{{this.code_id}}code" class="initiallyHidden"> {{this.code}}</p>
-                                <span class="help-block form-text text-muted">*Click the Eye Icon to Reveal Code.</span>
+                                <span class="help-block form-text text-muted">* Click the eye icon to reveal code.</span>
                                 <input id="{{this.code_id}}text" class="form-control" type="text"
                                     maxlength="30"
                                     placeholder="Enter a new code" />
@@ -75,7 +75,19 @@ $(document).ready(function(){
             newCode: newCode
         }
         console.log(data)
-        fetch(`/newCode`, {
+        if(newCode == ""){
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Invalid Code!',
+            });
+        } else{
+            Swal.fire({
+                type: 'success',
+                title: 'Success',
+                text: 'Code Changed!',
+            });
+            fetch(`/newCode`, {
             method: 'post',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -84,6 +96,7 @@ $(document).ready(function(){
             .then(r => {
                 document.getElementById(`${r.code_id}code`).innerHTML = r.newCode
             })
+        }
     }
 </script>
     </html>
