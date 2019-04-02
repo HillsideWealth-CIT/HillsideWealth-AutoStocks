@@ -1,79 +1,74 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>User Control Panel</title>
-    <meta charset="utf-8">
-    <style>
-        .fixed-table-container {
-            background-color: white
-        }
+    <head>
+        <title>User Control Panel</title>
+        <meta charset="utf-8">
+        <link rel="icon" type="image/png" href="/imgs/icon.png" />
+        <style>.initiallyHidden { display: none; }</style>
+    </head>
 
-        th:nth-child(3),
-        td:nth-child(3) {
-            position: sticky;
-            left: 0px;
-        }
+    <body>
+        {{>header}}
+        <div class="container-fluid d-flex justify-content-center">
+            <div class="d-flex align-items-center" style="height:90vh;">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4>Admin Control & User Management</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            {{#each codes}}
+                            <div class="py-2">
+                                <h4 id="{{this.code_id}}type">Account Type:
+                                    {{this.type}}</h4>
+                                <p><b>Registration Code:</b> <i id="{{this.code_id}}hidecode" style="color:#255A85;" class="far fa-eye"></i></p>
+                                <p id="{{this.code_id}}code" class="initiallyHidden"> {{this.code}}</p>
+                                <span class="help-block form-text text-muted">*Click the Eye Icon to Reveal Code.</span>
+                                <input id="{{this.code_id}}text" class="form-control" type="text"
+                                    maxlength="30"
+                                    placeholder="Enter a new code" />
+                                <div class="py-2">
+                                <button style="background-color:#255A85; color:white;" class="btn"
+                                    onclick="changeCode({{this.code_id}},
+                                    document.getElementById('{{this.code_id}}text').value)">Change
+                                    Code</button>
 
-        td:nth-child(3) {
-            background-color: #F0F0F0;
-            z-index: 999;
-        }
-    </style>
-</head>
-
-<body>
-    {{>header}}
-    <H2 style="left:50px;position:relative;">Click the codes to unhide them.</H2>
-    <H5 style="left:50px;position:relative;">Note: People who register with admin codes will also have access to this menu</H5>
-    <div class="container-fluid">
-        <div class="d-flex justify-content-center">
-            <div class="table-responsive p-3">
-                <table id="table" data-toolbar="#toolbar" data-height="800" data-show-columns="true"
-                    class="table table1 table-hover">
-                    <thead class='thead-dark'>
-                        <tr>
-                            <th data-sortable="true">Registration Code</th>
-                            <th data-sortable="true">Type</th>
-                            <th data-sortable="true">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each codes}}
-                        <tr>
-                            <td id="{{this.code_id}}code">
-                                <div style="background-color:black; color:black" onclick="unhide(this)">{{this.code}}
+                                <button style="background-color:#F0F0F0;" class="btn"
+                                    onclick="changeCode({{this.code_id}},
+                                    randomString(10))">Randomize Code</button>
                                 </div>
-                            </td>
-                            <td id="{{this.code_id}}type">{{this.type}}</td>
-                            <td><input id="{{this.code_id}}text" type="text" maxlength="30"
-                                    placeholder=" Enter a new code" /><button
-                                    onclick="changeCode({{this.code_id}}, document.getElementById('{{this.code_id}}text').value)">Change
-                                    Code</button> <button
-                                    onclick="changeCode({{this.code_id}}, randomString(10))">Randomize Code</button>
-                            </td>
-                        </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <p>Note: People
+                            who register with
+                            admin codes will have access to Admin Control & User Management page.</p>
+                    </div>
+                </div>
             </div>
-        </div>
-
-
-</body>
-<script>
+        </body>
+        <script>
+$(document).ready(function(){
+  $("#1hidecode").click(function(){
+    $("#1code").toggle();
+    $(this).toggleClass('far fa-eye far fa-eye-slash')
+  });
+});
+$(document).ready(function(){
+  $("#2hidecode").click(function(){
+    $("#2code").toggle();
+    $(this).toggleClass('far fa-eye far fa-eye-slash')
+  });
+});
     const randomString = (length) => {
         var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
         var result = '';
         for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
         return result;
     }
-
-    const unhide = (self) => {
-        self.style.backgroundColor = ''
-    }
-
-
     const changeCode = (code_id, newCode) => {
         const data = {
             code_id: code_id,
@@ -91,6 +86,4 @@
             })
     }
 </script>
-
-
-</html>
+    </html>

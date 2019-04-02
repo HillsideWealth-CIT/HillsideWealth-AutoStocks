@@ -1,90 +1,104 @@
-		<link rel="stylesheet" type="text/css" href="/styles/collection.css" />
-		<link rel="icon" type="image/png" href="/imgs/icon.png" />
-		<link rel="stylesheet"
-			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-		<link rel="stylesheet"
-			href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
-		<script
-			src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<link rel="stylesheet"
-			href="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.css">
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"
-			integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
-			integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
-			crossorigin="anonymous"></script>
-		<script
-			src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
-			integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
-			crossorigin="anonymous"></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.2/core.min.js"></script>
-		<script
-			src="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.js"></script>
-		<script
-			src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
-		<script
-			src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
-		<script
-			src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+ <link rel="stylesheet" type="text/css" href="/styles/collection.css" />
+<link rel="icon" type="image/png" href="/imgs/icon.png" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+	integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+	integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.2/core.min.js"></script>
+<script
+	src="https://unpkg.com/bootstrap-table@1.13.4/dist/bootstrap-table.min.js"></script>
+<script
+	src="https://rawgit.com/wenzhixin/bootstrap-table/master/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+<script
+	src="https://unpkg.com/tableexport.jquery.plugin@1.10.1/tableExport.min.js"></script>
+<script
+	src="https://unpkg.com/bootstrap-table@1.13.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <style>
 body {background-color: #F0F0F0;}
 </style>
-<nav class="navbar navbar-expand-lg navbar-dark justify-content-between" style="background-color:#255A85; color:white;">
-	<a class="navbar-brand" href="/"><img src="/imgs/hillside_logo.png" style="width:20vw;height:5vh;margin:10px;" /></a>
-  <ul class="navbar-nav">
-		{{#if admin}}
-    <li class="nav-item">
-		<a class="nav-link" href="admin" style="">Admin Controls & User Management</a>
-		{{else}}
-		{{#if a}}
-		<li class="nav-item">
-		<a class="nav-link active" href="admin" style="">Admin Controls & User Management</a>
-		{{else}}
-		{{/if}}
-		{{/if}}
-		</li>
-		{{#if i}}
-    <li class="nav-item active">
-		{{else}}
-		<li class="nav-item">
-		{{/if}}
-      <a class="nav-link" href="/">Upload</a>
-    </li>
-    {{#if c}}
-    <li class="nav-item active">
-		{{else}}
-		<li class="nav-item">
-		{{/if}}
-      <a class="nav-link" href="collection">Collection</a>
-    </li>
-		{{#if d}}
-    <li class="nav-item active">
-		{{else}}
-		<li class="nav-item">
-		{{/if}}
-      <a class="nav-link" href="documentation">Documentation</a>
-    <!-- Dropdown -->
-		{{#if s}}
-    <li class="nav-item dropdown nav-item active">
-		{{else}}
-		<li class="nav-item dropdown">
-		{{/if}}
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        <i class="fas fa-user"></i>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right">
-				<a class="dropdown-item" href="settings" style="width:auto;">My Account</a>
-		<form id="lo_form" action="/logout" method="post">
-			<a id="lo" class="dropdown-item" style="width:auto;" href="#">Log Out</a>
-		</form>
-      </div>
-    </li>
-  </ul>
-</nav>
-<script>
+<nav class="navbar navbar-expand-lg navbar-dark justify-content-between"
+	style="background-color:#255A85; color:white;">
+	<a class="navbar-brand collapse navbar-collapse" href="/"><img src="/imgs/hillside_logo.png"
+			style="width:20vw;height:5vh;margin:10px;" /></a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse"
+		data-target="#navbarSupportedContent"
+		aria-controls="navbarSupportedContent" aria-expanded="false"
+		aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav ml-auto">
+			{{#if admin}}
+			<li class="nav-item">
+				<a class="nav-link" href="admin" style="">Admin Controls & User Management</a>
+				{{else}}
+				{{#if a}}
+				<li class="nav-item">
+					<a class="nav-link active" href="admin" style="">Admin Controls & User
+						Management</a>
+					{{else}}
+					{{/if}}
+					{{/if}}
+				</li>
+				{{#if i}}
+				<li class="nav-item active">
+					{{else}}
+					<li class="nav-item">
+						{{/if}}
+						<a class="nav-link" href="/">Upload</a>
+					</li>
+					{{#if c}}
+					<li class="nav-item active">
+						{{else}}
+						<li class="nav-item">
+							{{/if}}
+							<a class="nav-link" href="collection">Collection</a>
+						</li>
+						{{#if d}}
+						<li class="nav-item active">
+							{{else}}
+							<li class="nav-item">
+								{{/if}}
+								<a class="nav-link" href="documentation">Documentation</a>
+								<!-- Dropdown -->
+								{{#if s}}
+								<li class="nav-item dropdown nav-item active">
+									{{else}}
+									<li class="nav-item dropdown">
+										{{/if}}
+										<a class="nav-link dropdown-toggle" href="#" id="navbardrop"
+											data-toggle="dropdown">
+											<i class="fas fa-user"></i>
+										</a>
+										<div class="dropdown-menu dropdown-menu-right">
+											<a class="dropdown-item" href="settings" style="width:auto;">My
+												Account</a>
+											<form id="lo_form" action="/logout" method="post">
+												<a id="lo" class="dropdown-item" style="width:auto;" href="#">Log
+													Out</a>
+											</form>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</nav>
+						<script>
 	$("#lo").click(function() {
 		$("#lo_form").submit();
 	});
