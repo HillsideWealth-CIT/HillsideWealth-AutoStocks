@@ -27,25 +27,38 @@
 								<th data-sortable="true">Price Growth (3y)</th>
 								<th data-sortable="true">Price Growth (5y)</th>
 								<th data-sortable="true">Price Growth (10y)</th>
-								<th data-sortable="true">Shares Outstanding</th>
-								<th data-sortable="true">Market Cap</th>
-								<th data-sortable="true">Net Debt</th>
-								<th data-sortable="true">Enterprise Value</th>
+								<th data-sortable="true">Shares Outstanding (M)</th>
+								<th data-sortable="true">S/O Change (1y)(M)</th>
+								<th data-sortable="true">S/O Change (3y)(M)</th>
+								<th data-sortable="true">S/O Change (5y)(M)</th>
+								<th data-sortable="true">S/O Change (10y)(M)</th>
+								<th data-sortable="true">Market Cap (M)</th>
+								<th data-sortable="true">Net Debt (M)</th>
+								<th data-sortable="true">Enterprise Value (M)</th>
 								<th data-sortable="true">ND/aEBITDA</th>
-								<th data-sortable="true">Revenue</th>
-								<th data-sortable="true">aEBITDA</th>
+								<th data-sortable="true">Revenue (M)</th>
+								<th data-sortable="true">Revenue Growth (1y)</th>
+								<th data-sortable="true">Revenue Growth (3y)</th>
+								<th data-sortable="true">Revenue Growth (5y)</th>
+								<th data-sortable="true">Revenue Growth (10y)</th>
+								<th data-sortable="true">aEBITDA (M)</th>
+								<th data-sortable="true">aEBITDA Growth (1y)</th>
+								<th data-sortable="true">aEBITDA Growth (3y)</th>
+								<th data-sortable="true">aEBITDA Growth (5y)</th>
+								<th data-sortable="true">aEBITDA Growth (10y)</th>
 								<th data-sortable="true">aEBITDA %</th>
 								<th data-sortable="true">Asset Turnover</th>
 								<th data-sortable="true">aEBITDA AT</th>
 								<th data-sortable="true">ROE</th>
-								<th data-sortable="true">ROE Growth (1y)</th>
-								<th data-sortable="true">ROE Growth (3y)</th>
-								<th data-sortable="true">ROE Growth (5y)</th>
-								<th data-sortable="true">ROE Growth (10y)</th>
 								<th data-sortable="true">Effective Tax</th>
 								<th data-sortable="true">EV/aEBITDA</th>
-								<th data-sortable="true">Spice</th>
-								<th data-sortable="true">ROE Mult</th>
+								<th data-sortable="true">aEBITDA Spice</th>
+								<th data-sortable="true">ROE Spice</th>
+								<th data-sortable="true">FCF</th>
+								<th data-sortable="true">FCF Growth (1y)</th>
+								<th data-sortable="true">FCF Growth (3y)</th>
+								<th data-sortable="true">FCF Growth (5y)</th>
+								<th data-sortable="true">FCF Growth (10y)</th>
 							</tr>
 						</thead>
 						<tbody id='db_stocks'>
@@ -61,25 +74,38 @@
 								<td>{{this.price_growth_3}}</td>
 								<td>{{this.price_growth_5}}</td>
 								<td>{{this.price_growth_10}}</td>
-								<td>{{this.stockdata.[0].shares_outstanding}}</td>
-								<td>{{this.stockdata.[0].market_cap}}</td>
+								<td>{{this.stockdata.[0].shares_outstanding_format}}</td>
+								<td>{{this.so_change_1}}</td>
+								<td>{{this.so_change_3}}</td>
+								<td>{{this.so_change_5}}</td>
+								<td>{{this.so_change_10}}</td>
+								<td>{{this.stockdata.[0].market_cap_format}}</td>
 								<td>{{this.stockdata.[0].net_debt}}</td>
-								<td>{{this.stockdata.[0].enterprise_value}}</td>
+								<td>{{this.stockdata.[0].enterprise_value_format}}</td>
 								<td>{{this.stockdata.[0].nd_aebitda}}</td>
-								<td>{{this.stockdata.[0].revenue}}</td>
+								<td>{{this.stockdata.[0].revenue_format}}</td>
+								<td>{{this.revenue_growth_1}}</td>
+								<td>{{this.revenue_growth_3}}</td>
+								<td>{{this.revenue_growth_5}}</td>
+								<td>{{this.revenue_growth_10}}</td>
 								<td>{{this.stockdata.[0].aebitda}}</td>
+								<td>{{this.aebitda_growth_1}}</td>
+								<td>{{this.aebitda_growth_3}}</td>
+								<td>{{this.aebitda_growth_5}}</td>
+								<td>{{this.aebitda_growth_10}}</td>
 								<td>{{this.stockdata.[0].aebitda_percent}}</td>
 								<td>{{this.stockdata.[0].asset_turnover}}</td>
 								<td>{{this.stockdata.[0].aebitda_at}}</td>
-								<td>{{this.stockdata.[0].roe}}</td>
-								<td>{{this.roe_growth_1}}</td>
-								<td>{{this.roe_growth_3}}</td>
-								<td>{{this.roe_growth_5}}</td>
-								<td>{{this.roe_growth_10}}</td>
-								<td>{{this.stockdata.[0].effective_tax}}</td>
+								<td>{{this.stockdata.[0].roe_format}}</td>
+								<td>{{this.stockdata.[0].effective_tax_format}}</td>
 								<td>{{this.stockdata.[0].ev_aebitda}}</td>
-								<td>{{this.stockdata.[0].spice}}</td>
+								<td>{{this.stockdata.[0].aebitda_spice}}</td>
 								<td>{{this.stockdata.[0].roe_mult}}</td>
+								<td>{{this.stockdata.[0].fcf}}</td>
+								<td>{{this.fcf_growth_1}}</td>
+								<td>{{this.fcf_growth_3}}</td>
+								<td>{{this.fcf_growth_5}}</td>
+								<td>{{this.fcf_growth_10}}</td>
 							</tr>
 							{{/each}}
 						</tbody>
@@ -330,6 +356,116 @@
 								<td>{{this.stockdata.[5].ev_aebitda}}</td>
 								<td>{{this.stockdata.[5].spice}}</td>
 								<td>{{this.stockdata.[5].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>{{this.stockdata.[6].datestring}}</td>
+								<td>{{this.stockdata.[6].yield}}</td>
+								<td>{{this.stockdata.[6].price}}</td>
+								<td>{{this.stockdata.[6].shares_outstanding}}</td>
+								<td>{{this.stockdata.[6].market_cap}}</td>
+								<td>{{this.stockdata.[6].net_debt}}</td>
+								<td>{{this.stockdata.[6].enterprise_value}}</td>
+								<td>{{this.stockdata.[6].nd_aebitda}}</td>
+								<td>{{this.stockdata.[6].revenue}}</td>
+								<td>{{this.stockdata.[6].aebitda}}</td>
+								<td>{{this.stockdata.[6].aebitda_percent}}</td>
+								<td>{{this.stockdata.[6].asset_turnover}}</td>
+								<td>{{this.stockdata.[6].aebitda_at}}</td>
+								<td>{{this.stockdata.[6].roe}}</td>
+								<td>{{this.stockdata.[6].effective_tax}}</td>
+								<td>{{this.stockdata.[6].ev_aebitda}}</td>
+								<td>{{this.stockdata.[6].spice}}</td>
+								<td>{{this.stockdata.[6].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>{{this.stockdata.[7].datestring}}</td>
+								<td>{{this.stockdata.[7].yield}}</td>
+								<td>{{this.stockdata.[7].price}}</td>
+								<td>{{this.stockdata.[7].shares_outstanding}}</td>
+								<td>{{this.stockdata.[7].market_cap}}</td>
+								<td>{{this.stockdata.[7].net_debt}}</td>
+								<td>{{this.stockdata.[7].enterprise_value}}</td>
+								<td>{{this.stockdata.[7].nd_aebitda}}</td>
+								<td>{{this.stockdata.[7].revenue}}</td>
+								<td>{{this.stockdata.[7].aebitda}}</td>
+								<td>{{this.stockdata.[7].aebitda_percent}}</td>
+								<td>{{this.stockdata.[7].asset_turnover}}</td>
+								<td>{{this.stockdata.[7].aebitda_at}}</td>
+								<td>{{this.stockdata.[7].roe}}</td>
+								<td>{{this.stockdata.[7].effective_tax}}</td>
+								<td>{{this.stockdata.[7].ev_aebitda}}</td>
+								<td>{{this.stockdata.[7].spice}}</td>
+								<td>{{this.stockdata.[7].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>{{this.stockdata.[8].datestring}}</td>
+								<td>{{this.stockdata.[8].yield}}</td>
+								<td>{{this.stockdata.[8].price}}</td>
+								<td>{{this.stockdata.[8].shares_outstanding}}</td>
+								<td>{{this.stockdata.[8].market_cap}}</td>
+								<td>{{this.stockdata.[8].net_debt}}</td>
+								<td>{{this.stockdata.[8].enterprise_value}}</td>
+								<td>{{this.stockdata.[8].nd_aebitda}}</td>
+								<td>{{this.stockdata.[8].revenue}}</td>
+								<td>{{this.stockdata.[8].aebitda}}</td>
+								<td>{{this.stockdata.[8].aebitda_percent}}</td>
+								<td>{{this.stockdata.[8].asset_turnover}}</td>
+								<td>{{this.stockdata.[8].aebitda_at}}</td>
+								<td>{{this.stockdata.[8].roe}}</td>
+								<td>{{this.stockdata.[8].effective_tax}}</td>
+								<td>{{this.stockdata.[8].ev_aebitda}}</td>
+								<td>{{this.stockdata.[8].spice}}</td>
+								<td>{{this.stockdata.[8].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>{{this.stockdata.[9].datestring}}</td>
+								<td>{{this.stockdata.[9].yield}}</td>
+								<td>{{this.stockdata.[9].price}}</td>
+								<td>{{this.stockdata.[9].shares_outstanding}}</td>
+								<td>{{this.stockdata.[9].market_cap}}</td>
+								<td>{{this.stockdata.[9].net_debt}}</td>
+								<td>{{this.stockdata.[9].enterprise_value}}</td>
+								<td>{{this.stockdata.[9].nd_aebitda}}</td>
+								<td>{{this.stockdata.[9].revenue}}</td>
+								<td>{{this.stockdata.[9].aebitda}}</td>
+								<td>{{this.stockdata.[9].aebitda_percent}}</td>
+								<td>{{this.stockdata.[9].asset_turnover}}</td>
+								<td>{{this.stockdata.[9].aebitda_at}}</td>
+								<td>{{this.stockdata.[9].roe}}</td>
+								<td>{{this.stockdata.[9].effective_tax}}</td>
+								<td>{{this.stockdata.[9].ev_aebitda}}</td>
+								<td>{{this.stockdata.[9].spice}}</td>
+								<td>{{this.stockdata.[9].roe_mult}}</td>
+							</tr>
+							<tr id="{{ this.symbol }}">
+								<td>{{ this.symbol }}</td>
+								<td>{{ this.stock_name }}</td>
+								<td>{{this.stockdata.[10].datestring}}</td>
+								<td>{{this.stockdata.[10].yield}}</td>
+								<td>{{this.stockdata.[10].price}}</td>
+								<td>{{this.stockdata.[10].shares_outstanding}}</td>
+								<td>{{this.stockdata.[10].market_cap}}</td>
+								<td>{{this.stockdata.[10].net_debt}}</td>
+								<td>{{this.stockdata.[10].enterprise_value}}</td>
+								<td>{{this.stockdata.[10].nd_aebitda}}</td>
+								<td>{{this.stockdata.[10].revenue}}</td>
+								<td>{{this.stockdata.[10].aebitda}}</td>
+								<td>{{this.stockdata.[10].aebitda_percent}}</td>
+								<td>{{this.stockdata.[10].asset_turnover}}</td>
+								<td>{{this.stockdata.[10].aebitda_at}}</td>
+								<td>{{this.stockdata.[10].roe}}</td>
+								<td>{{this.stockdata.[10].effective_tax}}</td>
+								<td>{{this.stockdata.[10].ev_aebitda}}</td>
+								<td>{{this.stockdata.[10].spice}}</td>
+								<td>{{this.stockdata.[10].roe_mult}}</td>
 							</tr>
 						</tbody>
 					</table>`)
