@@ -198,7 +198,8 @@ const arrayAddStockData = async (data) => {
             if (isNaN(data[i].net_debt)) {
                 placeholders.push(`$${params.push(null)}`)
             } else {
-            placeholders.push(`$${params.push(data[i].net_debt)}`)}
+                placeholders.push(`$${params.push(data[i].net_debt)}`)
+            }
         }
         if (data[i].enterprise_value) {
             if (i == 0) columns.push('enterprise_value')
@@ -224,7 +225,8 @@ const arrayAddStockData = async (data) => {
             if (i == 0) columns.push('effective_tax')
             placeholders.push(`$${params.push(data[i].effective_tax)}`)
         }
-        console.log(data[i])
+        if (i == 0) columns.push('ttm')
+        placeholders.push(`$${params.push(data[i].ttm)}`)
     }
 
     let query = `INSERT INTO stockdata (${columns.join(', ')}) VALUES`
@@ -234,19 +236,21 @@ const arrayAddStockData = async (data) => {
     }
     query = _.trimEnd(query, ',')
     query += ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
-    //let query = `INSERT INTO stockdata (${_.trimEnd(columns, ',')}) VALUES (${_.trimEnd(placeholders, ',')});`
     console.log(query)
-    console.log(params)
+    //console.log(params)
+    await runQuery(`DELETE FROM stockdata WHERE ttm = TRUE AND stock_id = $1`, [data[0].stock_id])
     return await runQuery(query, params)
 }
+/* runQuery('update stockdata set date = $1 WHERE date= $2', [new Date(new Date().setDate(new Date().getDate()-1)), new Date()])
+ */
+
+
 
 const addStocks = async (symbol, stock_name, username) => {
     return await runQuery(`INSERT INTO stocks (symbol, stock_name, username) VALUES ($1, $2, $3) RETURNING stock_id`, [symbol, stock_name, username])
 }
 
 const removeStocks = async (symbol, username) => {
-    //console.log(`DELETE from stocks WHERE symbol="${symbol}"`)
-    //process.exit();
     return await runQuery(`DELETE from stocks WHERE symbol=$1 AND username =$2`, [symbol, username])
 }
 
