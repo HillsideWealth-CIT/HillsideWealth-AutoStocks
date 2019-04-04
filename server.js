@@ -87,53 +87,104 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
             // Calculates data before rendering
             res.forEach((stock) => {
                 stock.stockdata.forEach((data) => {
+                    data.yield_format = data.yield + '%'
+                    data.shares_outstanding_format = Math.round(data.shares_outstanding)
+                    data.market_cap_format = Math.round(data.market_cap)
+                    data.enterprise_value_format = Math.round(data.enterprise_value * 10) / 10
+                    data.revenue_format = Math.round(data.revenue)
+                    data.roe_format = Math.round(data.roe * 10) / 10
+                    data.effective_tax_format = Math.round(data.effective_tax * 10) / 10
+
                     data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10
                     data.nd_aebitda = Math.round(data.net_debt / data.aebitda * 100) / 100
                     data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
                     data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
                     data.spice = data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda)
                     data.datestring = moment(data.date).format('MMM DD, YYYY')
+                    data.fcf_yield = data.fcf / data.market_cap
                 })
 
                 // Calculates metric growth rates
                 try {
                     const end_date = stock.stockdata[0].date.getFullYear(),
                         end_price = stock.stockdata[0].price,
-                        end_roe = stock.stockdata[0].roe
-                    var price_10 = null,
+                        end_revenue = stock.stockdata[0].revenue,
+                        end_aebitda = stock.stockdata[0].aebitda,
+                        end_fcf = stock.stockdata[0].fcf,
+                        end_so = stock.stockdata[0].shares_outstanding
+                        var price_10 = null,
                         price_5 = null,
                         price_3 = null,
                         price_1 = null,
-                        roe_10 = null,
-                        roe_5 = null,
-                        roe_3 = null,
-                        roe_1 = null
+                        revenue_10 = null,
+                        revenue_5 = null,
+                        revenue_3 = null,
+                        revenue_1 = null,
+                        aebitda_10 = null,
+                        aebitda_5 = null,
+                        aebitda_3 = null,
+                        aebitda_1 = null
+                        fcf_10 = null,
+                        fcf_5 = null,
+                        fcf_3 = null,
+                        fcf_1 = null,
+                        so_10 = null,
+                        so_5 = null,
+                        so_3 = null,
+                        so_1 = null
                     for (var i = 1; i < stock.stockdata.length; i++) {
                         if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
                             price_10 = stock.stockdata[i].price
-                            roe_10 = stock.stockdata[i].roe
+                            revenue_10 = stock.stockdata[i].revenue
+                            aebitda_10 = stock.stockdata[i].aebitda
+                            fcf_10 = stock.stockdata[i].fcf
+                            so_10 = stock.stockdata[i].shares_outstanding
                         } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
                             price_5 = stock.stockdata[i].price
-                            roe_5 = stock.stockdata[i].roe
+                            revenue_5 = stock.stockdata[i].revenue
+                            aebitda_5 = stock.stockdata[i].aebitda
+                            fcf_5 = stock.stockdata[i].fcf
+                            so_5 = stock.stockdata[i].shares_outstanding
                         } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
                             price_3 = stock.stockdata[i].price
-                            roe_3 = stock.stockdata[i].roe
+                            revenue_3 = stock.stockdata[i].revenue
+                            aebitda_3 = stock.stockdata[i].aebitda
+                            fcf_3 = stock.stockdata[i].fcf
+                            so_3 = stock.stockdata[i].shares_outstanding
                         } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
                             price_1 = stock.stockdata[i].price
-                            roe_1 = stock.stockdata[i].roe
+                            revenue_1 = stock.stockdata[i].revenue
+                            aebitda_1 = stock.stockdata[i].aebitda
+                            fcf_1 = stock.stockdata[i].fcf
+                            so_1 = stock.stockdata[i].shares_outstanding
                         }
                     }
                     // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
-                    stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 10000) / 10000 + '%'
-                    stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 10000) / 10000 + '%'
-                    stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 10000) / 10000 + '%'
-                    stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 10000) / 10000 + '%'
-                    // console.log(stock.symbol, 'ROE', '10y:'+roe_10, '5y:'+roe_5, '3y:'+roe_3, '1y:'+roe_1)
-                    // NaN% signifies a negative ROE
-                    stock.roe_growth_10 = Math.round((Math.pow(end_roe / roe_10, 1 / 10) - 1) * 10000) / 10000 + '%'
-                    stock.roe_growth_5 = Math.round((Math.pow(end_roe / roe_5, 1 / 5) - 1) * 10000) / 10000 + '%'
-                    stock.roe_growth_3 = Math.round((Math.pow(end_roe / roe_3, 1 / 3) - 1) * 10000) / 10000 + '%'
-                    stock.roe_growth_1 = Math.round((Math.pow(end_roe / roe_1, 1 / 1) - 1) * 10000) / 10000 + '%'
+                    // Only 1 decimal required for price growth
+                    stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100) + '%'
+                    stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100) + '%'
+                    stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100) + '%'
+                    stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100) + '%'
+
+                    stock.revenue_growth_10 = Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100) + '%'
+                    stock.revenue_growth_5 = Math.round((Math.pow(end_revenue / revenue_5, 1 / 10) - 1) * 100) + '%'
+                    stock.revenue_growth_3 = Math.round((Math.pow(end_revenue / revenue_3, 1 / 10) - 1) * 100) + '%'
+                    stock.revenue_growth_1 = Math.round((Math.pow(end_revenue / revenue_1, 1 / 10) - 1) * 100) + '%'
+
+                    stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100) + '%'
+                    stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 10) - 1) * 100) + '%'
+                    stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 10) - 1) * 100) + '%'
+                    stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 10) - 1) * 100) + '%'
+
+                    stock.fcf_growth_10 = Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100) + '%'
+                    stock.fcf_growth_5 = Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100) + '%'
+                    stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100) + '%'
+                    stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100) + '%'
+
+                    stock.so_change_10 = Math.round(end_so - so_10)
+                    stock.so_change_5 = Math.round(end_so - so_5)
+                    stock.so_change_3 = Math.round(end_so - so_3)
+                    stock.so_change_1 = Math.round(end_so - so_1)
                 }
                 catch(err){
                     ///
