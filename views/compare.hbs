@@ -27,7 +27,7 @@
 						<tbody>
 							{{#each data}}
 
-							<tr data-val={{Ticker}} data-cur={{"Currency"}} id={{Ticker}}1>
+							<tr data-val={{Ticker}} data-cur={{Exchange}} id={{Ticker}}1>
 								<td></td>
 								<td>New</td>
 								<td>{{ Ticker }}</td>
@@ -135,13 +135,8 @@
 			function add() {
 				$("#myTable1 tbody input:checked").each(function() {
 					var cur = $(this).parents("tr:first").data("cur");
-					if(cur == "CAD"){
-						var sym = "TSX:"+$(this).parents("tr:first").data("val");
+						var sym = `${cur}:`+$(this).parents("tr:first").data("val");
 						alert(sym)
-					}
-					else{
-						var sym = $(this).parents("tr:first").data("val");
-					}
 					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
 					var sym_company = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.company;
 					var sym_exchange = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.ex;
