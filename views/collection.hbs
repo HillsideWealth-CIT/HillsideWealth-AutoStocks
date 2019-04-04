@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Collection</title>
+		<title>Database</title>
 		<meta charset="utf-8">
 		<link rel="icon" type="image/png" href="/imgs/icon.png" />
 		<style>.fixed-table-container{ background-color:white} th:nth-child(3),td:nth-child(3){position:sticky;left:0px;} td:nth-child(3){background-color: #F0F0F0; z-index: 999;}</style>
@@ -224,10 +224,9 @@
 <script>
 
 	function detailFormatter(index, row) {
-    var html = [];
+    var html = {};
 	{{#each dbdata}}
-	html.push(`
-	<table id="table" class="table table-hover">
+	html[`{{ this.stock_name }}`] = `<table id="table" class="table table-hover">
 						<thead class="thead-light" align="center">
 							<tr>
 								<th>Symbol</th>
@@ -474,9 +473,9 @@
 								<td>{{this.stockdata.[10].roe_mult}}</td>
 							</tr>
 						</tbody>
-					</table>`)
+					</table>`
 	{{/each}}
-	return html[index]
+	return html[row[2]];
   }
 
 
