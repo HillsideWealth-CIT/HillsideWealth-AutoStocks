@@ -64,7 +64,7 @@ const gurufocusAdd = async (list, username, summaryCall = true) => {
                 currentStock.company = 'Failed to get company name'
             }
             finally {
-                timer = null
+                clearTimeout(timer)
                 summary = null
             }
 
