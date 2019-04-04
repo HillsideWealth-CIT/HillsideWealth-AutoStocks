@@ -1,9 +1,9 @@
 /* schema for constructing database */
 
-DROP TABLE "codes"
-DROP TABLE "stockdata"
-DROP TABLE "stocks"
-DROP TABLE "users"
+DROP TABLE "codes";
+DROP TABLE "stockdata";
+DROP TABLE "stocks";
+DROP TABLE "users";
 
 
 CREATE TABLE IF NOT EXISTS "users"
@@ -48,6 +48,6 @@ CREATE TABLE IF NOT EXISTS "codes"
     "code_id" serial PRIMARY KEY,
     "code" varchar(32) UNIQUE,
     "type" varchar(32),
-)
+);
 
-INSERT INTO codes (code, type) VALUES ('admin', 'admin'), ('user', 'user')
+INSERT INTO codes (code, type) VALUES ('admin', 'admin'), ('user', 'user');
