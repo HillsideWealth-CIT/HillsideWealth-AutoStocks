@@ -18,6 +18,7 @@
 						<thead class='thead-dark'>
 							<tr>
 								<th data-checkbox="true"></th>
+								<th></th>
 								<th data-sortable="true">Symbol</th>
 								<th data-sortable="true">Stock Name</th>
                                 <th data-sortable="true">My Comment</th>
@@ -64,8 +65,9 @@
 						</thead>
 						<tbody id='db_stocks'>
 							{{#each dbdata}}
-							<tr id="{{ this.symbol }}" data-val={{this.symbol}}>
+							<tr id="{{ this.stock_id }}" data-val={{this.symbol}} {{#unless this.enabled}} class="disabledStock" {{/unless}}>
 								<td></td>
+								<td><button type="button" onclick='toggleStock({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-eye"></span></button></td>
 								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
 								<td>{{ this.stock_name }}</td>
                                 <td><div id="note{{this.stock_id}}">{{this.note}}</div><button type="button" onclick='editNote({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
@@ -101,7 +103,7 @@
 								<td>{{this.stockdata.[0].roe_format}}</td>
 								<td>{{this.stockdata.[0].effective_tax_format}}</td>
 								<td>{{this.stockdata.[0].ev_aebitda}}</td>
-								<td>{{this.stockdata.[0].aebitda_spice}}</td>
+								<td>{{this.stockdata.[0].spice}}</td>
 								<td>{{this.stockdata.[0].roe_mult}}</td>
 								<td>{{this.stockdata.[0].fcf}}</td>
 								<td>{{this.fcf_growth_1}}</td>
@@ -132,6 +134,7 @@
 					<span class="fas fa-sync-alt"></span> Refresh
 				</button>
 			</form>
+			<b><label for="toggleCheck"> Show Hidden </label></b> &nbsp;<input id="toggleCheck" type="checkbox" onclick="toggleHidden()">
 
 		</div>
 
@@ -219,6 +222,7 @@
 	</body>
 
 <script>
+
 	function detailFormatter(index, row) {
     var html = [];
 	{{#each dbdata}}
@@ -475,6 +479,25 @@
 	return html[index]
   }
 
+
+	const toggleHidden = () => {
+		let box = document.getElementById('toggleCheck')
+		let disabledStocks = document.getElementsByClassName('disabledStock')
+		if (box.checked) {
+			for (el of disabledStocks) {
+				el.style.display = ""
+				el.style.backgroundColor = "lightgrey"
+			}
+		} else {
+			for (el of disabledStocks){
+				el.style.display = "none"
+				el.style.backgroundColor = "lightgrey"
+			}
+		}
+	}
+
+
+
   	const editNote = (id) => {
 		let div = document.getElementById(`note${id}`)
 		let parent = div.parentNode
@@ -488,7 +511,33 @@
 					body: JSON.stringify({note: inputDiv.value, stock_id: id})
 				}).then(() => {parent.innerHTML = `<div id="note${id}">${inputDiv.value}</div><button type="button" onclick='editNote(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`})
 			}
-	  })
-  }
+		})
+	}
+
+	const toggleStock = (id) => {
+		fetch('/toggleStock', {
+			method: 'post',
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({stock_id: id})
+		})
+		.then(res => res.json())
+		.then((res) => {
+			document.getElementById(id).className = res ? '' : 'disabledStock'
+			if (res){
+				document.getElementById(id).style.display = ''
+				document.getElementById(id).style.backgroundColor = ''
+			} toggleHidden()
+
+
+		})
+	}
+	$(window).bind("load", function() {
+		toggleHidden()
+		setInterval(() => {toggleHidden()},100)
+	});
+
+
+
+
 </script>
 </html>

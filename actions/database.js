@@ -87,11 +87,10 @@ const showstocks = async (username) => {
     return stockAndData
 }
 
-runQuery('SELECT * from stocks').then((r) => console.log(r.rows))
 /* Parses an array of JSON stockdata and adds it to the database.
 Use this when there's more than one set of data and they all have the same fields.*/
 const arrayAddStockData = async (data) => {
-    if (data == '') {
+    if (data.length == 0) {
         return
     } else {
         let columns = []
@@ -199,7 +198,8 @@ const removeStocks = async (symbol, username) => {
 }
 
 const toggleStock = async (stock_id, username) => {
-    return await runQuery('UPDATE stocks SET enabled = NOT (SELECT enabled FROM stocks WHERE stock_id = $1) WHERE stock_id = $2 AND username = $3 RETURNING *' [stock_id,stock_id, username])
+    console.log(stock_id, username)
+    return await runQuery('UPDATE stocks SET enabled = NOT (SELECT enabled FROM stocks WHERE stock_id = $1) WHERE stock_id = $2 AND username = $3 RETURNING *',[stock_id,stock_id, username])
 }
 
 const retrieveCodes = async () => {
