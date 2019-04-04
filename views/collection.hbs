@@ -137,6 +137,7 @@
 
         <script>
             var rm_list = [];
+			/** Send stocks to server using ajax and displays sweet alerts*/
             function add(){
 				Swal.fire({
 					title: 'Add Stocks',
@@ -145,7 +146,6 @@
 					showCancelButton: true,
 					confirmButtonText: 'Add Stocks',
 					preConfirm: (result) => {
-						console.log(result)
 						let send = []
 						let stockstring = result.replace(/\s/g, "");
 						let stocks = stockstring.split(',')
@@ -164,7 +164,7 @@
 					}
 				})
 			};
-
+			/** Send stocks to server using ajax, removes stocks from database and displays sweet alerts*/
             function remove() {
 				$("#table #db_stocks input:checked").each(function() {
 					var sym = $(this).parents('tr:first').data('val')
@@ -181,6 +181,7 @@
 				});
 				rm_list = [];
 			};
+			/** Send stocks to server using ajax and updates the database entries, shows sweet alerts*/
 			function update() {
 				$("#table #db_stocks input:checked").each(function() {
 					var sym = $(this).parents('tr:first').data('val')
@@ -197,6 +198,11 @@
 				console.log(rm_list)
 				rm_list = [];
 			};
+			
+			/** Used to send data from the front end to the node server
+			*@param list - A list of stock information
+			*@param action - Used to determine what happens in the server
+			 */
             function ajax_func(list, action){
                 var data = {};
                 data.stocks = list;
