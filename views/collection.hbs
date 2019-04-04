@@ -481,6 +481,8 @@
 	{{/each}}
 	return html[index]
   }
+	var hiddenList = []
+	var showList = []
 
 
 	const toggleHidden = () => {
@@ -491,10 +493,26 @@
 				el.style.display = ""
 				el.style.backgroundColor = "lightgrey"
 			}
+			for (id of hiddenList) {
+				document.getElementById(id).style.display = ""
+				document.getElementById(id).style.backgroundColor = "lightgrey"
+			}
+			for (id of showList) {
+				document.getElementById(id).style.display = ""
+				document.getElementById(id).style.backgroundColor = ""
+			}
 		} else {
 			for (el of disabledStocks){
 				el.style.display = "none"
 				el.style.backgroundColor = "lightgrey"
+			}
+			for (id of hiddenList) {
+				document.getElementById(id).style.display = "none"
+				document.getElementById(id).style.backgroundColor = "lightgrey"
+			}
+			for (id of showList) {
+				document.getElementById(id).style.display = ""
+				document.getElementById(id).style.backgroundColor = ""
 			}
 		}
 	}
@@ -527,16 +545,23 @@
 		.then((res) => {
 			document.getElementById(id).className = res ? '' : 'disabledStock'
 			if (res){
+				showList.push(id)
+				hiddenlist.splice( list.indexOf(id), 1 );
 				document.getElementById(id).style.display = ''
 				document.getElementById(id).style.backgroundColor = ''
-			} toggleHidden()
+			} else {
+				hiddenList.push(id)
+				showList.splice( list.indexOf(id), 1 );
+			}
+
+			toggleHidden()
 
 
 		})
 	}
 	$(window).bind("load", function() {
 		toggleHidden()
-		setInterval(() => {toggleHidden()},100)
+		setInterval(() => {toggleHidden()},200)
 	});
 
 
