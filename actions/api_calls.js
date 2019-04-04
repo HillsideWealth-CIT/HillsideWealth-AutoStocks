@@ -38,7 +38,7 @@ const apiTimer = () => {
  */
 const gurufocusAdd = async (list, username, summaryCall = true) => {
     for (i in list) {
-        let timer
+        let timer;
         let currentStock = {
             symbol: list[i].symbol,
             comment: list[i].comment,
