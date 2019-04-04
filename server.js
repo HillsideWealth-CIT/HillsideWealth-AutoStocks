@@ -99,7 +99,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.nd_aebitda = Math.round(data.net_debt / data.aebitda * 100) / 100
                     data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
                     data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
-                    data.spice = data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda)
+                    data.spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
                     data.datestring = moment(data.date).format('MMM DD, YYYY')
                     data.fcf_yield = data.fcf / data.market_cap
                 })
@@ -191,7 +191,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                 }
             })
 
-            console.log(res)
+            //console.log(res)
             response.render("collection.hbs", {
                 dbdata: res,
                 c: true,
@@ -266,6 +266,11 @@ app.post("/entercode", sessionCheck, (request, response) => {
                 error: err
             })
         })
+})
+
+app.post('/toggleStock', sessionCheck, (request, response) => {
+    console.log(request.body)
+    db.toggleStock(request.body.stock_id, request.session.user).then((res) => {console.log(res);response.send(res.rows[0].enabled)}).catch(err => console.log(err))
 })
 
 /* Login */
