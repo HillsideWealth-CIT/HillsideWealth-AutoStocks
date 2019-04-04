@@ -5,7 +5,7 @@ const db = require("../actions/database");
 
 const summaryAPI = (symbol) => {
     return new Promise((resolve, reject) => {
-        apiTimer().then(() => reject('Timeout'))
+        //apiTimer().then(() => reject('Timeout'))
         request({ url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/summary`, json: true }, (err, res, body) => {
             if (err) reject(err)
             resolve(body)
@@ -26,7 +26,7 @@ const apiTimer = () => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve()
-        }, 30000)
+        }, 15000)
     })
 }
 
@@ -39,6 +39,7 @@ const apiTimer = () => {
 const gurufocusAdd = async (list, username, summaryCall = true, financialsCall = true) => {
     var stocksList = []
     for (i in list) {
+        let timer
         let currentStock = {
             symbol: list[i].symbol,
             comment: list[i].comment,
@@ -47,11 +48,19 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
         if (summaryCall) {
             try{
                 let summary = await summaryAPI(list[i].symbol)
+                timer = setTimeout(() => {
+                    throw 'Timeout'
+                }, 15000)
+                //console.log(summary)
                 currentStock.company = summary.summary.general.company
+
             }
             catch (err) {
                 console.log(err)
                 currentStock.company = 'Failed to get company name'
+            }
+            finally {
+                clearTimeout(timer)
             }
 
         }
@@ -61,6 +70,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
 
             for (f in annuals["Fiscal Year"]) {
                 let currentData = {
+                    ttm: annuals["Fiscal Year"][f] === "TTM",
                     date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
                     price: annuals.valuation_and_quality["Month End Stock Price"][f],
