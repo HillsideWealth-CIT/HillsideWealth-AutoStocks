@@ -137,11 +137,9 @@
 					var cur = $(this).parents("tr:first").data("cur");
 					if(cur == "NYSE" || cur == "NAS"){
 						var sym = $(this).parents("tr:first").data("val");
-						alert(sym)
 					}
 					else{
 						var sym = `${cur}:`+$(this).parents("tr:first").data("val");
-						alert(sym)
 					}
 					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
 					var sym_company = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.company;
