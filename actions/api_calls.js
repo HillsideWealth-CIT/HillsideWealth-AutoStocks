@@ -90,6 +90,7 @@ const gurufocusAdd = async (list, username, summaryCall = true) => {
                     effective_tax: annuals.income_statement["Tax Rate %"][f],
                     shares_outstanding: annuals.valuation_and_quality["Shares Outstanding (EOP)"][f],
                     aebitda: Math.round(Number(annuals.cashflow_statement["Stock Based Compensation"][f]) + Number(annuals.income_statement.EBITDA[f])),
+                    fcf: annuals.cashflow_statement["Free Cash Flow"][f]
                 }
                 //console.log(currentData)
                 currentStock.data.push(currentData)
@@ -103,13 +104,12 @@ const gurufocusAdd = async (list, username, summaryCall = true) => {
 
 
         try {
-            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, username)
+            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, username, currentStock.comment)
         }
         catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }
 
         //console.log(stocksList[i].data)
         for (d in currentStock.data) {
-
             currentStock.data[d].stock_id = stocks.rows[0].stock_id
         }
         await db.arrayAddStockData(currentStock.data)

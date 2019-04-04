@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS "stocks"
     "username" varchar(32) REFERENCES users(username) ON DELETE CASCADE,
     "symbol" varchar(10),
     "stock_name" varchar(50),
+    "enabled" boolean DEFAULT TRUE,
+    "note" varchar(500),
     CONSTRAINT unique_stocks UNIQUE (username, symbol)
 );
 
@@ -39,6 +41,7 @@ CREATE TABLE IF NOT EXISTS "stockdata"
     "asset_turnover" numeric,
     "roe" numeric,
     "effective_tax" numeric,
+    "fcf" numeric,
     "ttm" boolean,
     PRIMARY KEY(stock_id, date)
 );
@@ -47,7 +50,7 @@ CREATE TABLE IF NOT EXISTS "codes"
 (
     "code_id" serial PRIMARY KEY,
     "code" varchar(32) UNIQUE,
-    "type" varchar(32),
+    "type" varchar(32)
 );
 
 INSERT INTO codes (code, type) VALUES ('admin', 'admin'), ('user', 'user');

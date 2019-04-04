@@ -88,7 +88,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
             res.forEach((stock) => {
                 stock.stockdata.forEach((data) => {
                     data.yield_format = data.yield + '%'
-                    data.shares_outstanding_format = Math.round(data.shares_outstanding)
+                    data.shares_outstanding_format = Math.round(data.shares_outstanding * 100) / 100
                     data.market_cap_format = Math.round(data.market_cap)
                     data.enterprise_value_format = Math.round(data.enterprise_value * 10) / 10
                     data.revenue_format = Math.round(data.revenue)
@@ -112,7 +112,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                         end_aebitda = stock.stockdata[0].aebitda,
                         end_fcf = stock.stockdata[0].fcf,
                         end_so = stock.stockdata[0].shares_outstanding
-                        var price_10 = null,
+                    var price_10 = null,
                         price_5 = null,
                         price_3 = null,
                         price_1 = null,
@@ -124,7 +124,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                         aebitda_5 = null,
                         aebitda_3 = null,
                         aebitda_1 = null
-                        fcf_10 = null,
+                    fcf_10 = null,
                         fcf_5 = null,
                         fcf_3 = null,
                         fcf_1 = null,
@@ -181,23 +181,23 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100) + '%'
                     stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100) + '%'
 
-                    stock.so_change_10 = Math.round(end_so - so_10)
-                    stock.so_change_5 = Math.round(end_so - so_5)
-                    stock.so_change_3 = Math.round(end_so - so_3)
-                    stock.so_change_1 = Math.round(end_so - so_1)
+                    stock.so_change_10 = Math.round((end_so - so_10) * 10) / 10
+                    stock.so_change_5 = Math.round((end_so - so_5) * 10) / 10
+                    stock.so_change_3 = Math.round((end_so - so_3) * 10) / 10
+                    stock.so_change_1 = Math.round((end_so - so_1) * 10) / 10
                 }
-                catch(err){
+                catch (err) {
                     ///
                 }
             })
 
-
+            console.log(res)
             response.render("collection.hbs", {
                 dbdata: res,
                 c: true,
                 admin: (request.session.status == 'admin')
             })
-        }); 
+        });
 });
 
 app.get("/documentation", sessionCheck, statusCheck, (request, response) => {
@@ -221,7 +221,7 @@ app.get('/admin', sessionCheck, (request, response) => {
         db.retrieveCodes().then((r) => {
             let codes = r.rows
             console.log(codes)
-            response.render('admin.hbs', { codes: codes, a: true})
+            response.render('admin.hbs', { codes: codes, a: true })
 
         })
     }
@@ -230,6 +230,11 @@ app.get('/admin', sessionCheck, (request, response) => {
 
 /** POST **/
 
+app.post('/editNote', sessionCheck, (request, response) => {
+    db.editNote(request.body.note, request.session.user, request.body.stock_id)
+        .then(() => response.send(true))
+        .catch(() => response.send(false))
+})
 
 /* New Code */
 app.post("/newCode", sessionCheck, (request, response) => {
@@ -343,6 +348,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
 app.post('/collection', sessionCheck, statusCheck, (request, response) => {
     switch (request.body.action) {
         case 'Append':
+            console.log(request.body.stocks)
             api_calls.gurufocusAdd(request.body.stocks, request.session.user)
                 .then((resolve) => {
                     response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
