@@ -94,12 +94,14 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.revenue_format = Math.round(data.revenue)
                     data.roe_format = Math.round(data.roe * 10) / 10
                     data.effective_tax_format = Math.round(data.effective_tax * 10) / 10
+                    data.fcf_format = Math.round(data.fcf)
 
                     data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10
                     data.nd_aebitda = Math.round(data.net_debt / data.aebitda * 100) / 100
                     data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
                     data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
-                    data.spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
+                    data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
+                    data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
                     data.datestring = moment(data.date).format('MMM DD, YYYY')
                     data.fcf_yield = data.fcf / data.market_cap
                 })

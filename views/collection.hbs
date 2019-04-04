@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Collection</title>
+		<title>Database</title>
 		<meta charset="utf-8">
 		<link rel="icon" type="image/png" href="/imgs/icon.png" />
 		<style>.fixed-table-container{ background-color:white} th:nth-child(4),td:nth-child(4){position:sticky;left:0px;} td:nth-child(4){background-color: #F0F0F0; z-index: 999;}</style>
@@ -21,7 +21,7 @@
 								<th></th>
 								<th data-sortable="true">Symbol</th>
 								<th data-sortable="true">Stock Name</th>
-                                <th data-sortable="true">My Comment</th>
+                                <th data-sortable="true">Notes</th>
 								<th data-sortable="true">Date</th>
 								<th data-sortable="true">Yield</th>
 								<th data-sortable="true">Price</th>
@@ -103,9 +103,9 @@
 								<td>{{this.stockdata.[0].roe_format}}</td>
 								<td>{{this.stockdata.[0].effective_tax_format}}</td>
 								<td>{{this.stockdata.[0].ev_aebitda}}</td>
-								<td>{{this.stockdata.[0].spice}}</td>
-								<td>{{this.stockdata.[0].roe_mult}}</td>
-								<td>{{this.stockdata.[0].fcf}}</td>
+								<td>{{this.stockdata.[0].aebitda_spice}}</td>
+								<td>{{this.stockdata.[0].roe_spice}}</td>
+								<td>{{this.stockdata.[0].fcf_format}}</td>
 								<td>{{this.fcf_growth_1}}</td>
 								<td>{{this.fcf_growth_3}}</td>
 								<td>{{this.fcf_growth_5}}</td>
@@ -135,7 +135,6 @@
 				</button>
 			</form>
 			<b><label for="toggleCheck"> Show Hidden </label></b> &nbsp;<input id="toggleCheck" type="checkbox" onclick="toggleHidden()">
-
 		</div>
 
         <script>
@@ -479,6 +478,9 @@
 	{{/each}}
 	return html[row[3]];
   }
+	var hiddenList = []
+	var showList = []
+
 	const toggleHidden = () => {
 		let box = document.getElementById('toggleCheck')
 		let disabledStocks = document.getElementsByClassName('disabledStock')
@@ -487,10 +489,26 @@
 				el.style.display = ""
 				el.style.backgroundColor = "lightgrey"
 			}
+			for (id of hiddenList) {
+				document.getElementById(id).style.display = ""
+				document.getElementById(id).style.backgroundColor = "lightgrey"
+			}
+			for (id of showList) {
+				document.getElementById(id).style.display = ""
+				document.getElementById(id).style.backgroundColor = ""
+			}
 		} else {
 			for (el of disabledStocks){
 				el.style.display = "none"
 				el.style.backgroundColor = "lightgrey"
+			}
+			for (id of hiddenList) {
+				document.getElementById(id).style.display = "none"
+				document.getElementById(id).style.backgroundColor = "lightgrey"
+			}
+			for (id of showList) {
+				document.getElementById(id).style.display = ""
+				document.getElementById(id).style.backgroundColor = ""
 			}
 		}
 	}
@@ -521,16 +539,23 @@
 		.then((res) => {
 			document.getElementById(id).className = res ? '' : 'disabledStock'
 			if (res){
+				showList.push(id)
+				hiddenlist.splice( list.indexOf(id), 1 );
 				document.getElementById(id).style.display = ''
 				document.getElementById(id).style.backgroundColor = ''
-			} toggleHidden()
+			} else {
+				hiddenList.push(id)
+				showList.splice( list.indexOf(id), 1 );
+			}
+
+			toggleHidden()
 
 
 		})
 	}
 	$(window).bind("load", function() {
 		toggleHidden()
-		setInterval(() => {toggleHidden()},100)
+		setInterval(() => {toggleHidden()},200)
 	});
 
 
