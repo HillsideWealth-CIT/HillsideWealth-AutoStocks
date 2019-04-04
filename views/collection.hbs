@@ -225,12 +225,10 @@
 	</body>
 
 <script>
-
 	function detailFormatter(index, row) {
-    var html = [];
+    var html = {};
 	{{#each dbdata}}
-	html.push(`
-	<table id="table" class="table table-hover">
+	html[`{{ this.stock_name }}`] = `<table id="table" class="table table-hover">
 						<thead class="thead-light" align="center">
 							<tr>
 								<th>Symbol</th>
@@ -477,12 +475,10 @@
 								<td>{{this.stockdata.[10].roe_mult}}</td>
 							</tr>
 						</tbody>
-					</table>`)
+					</table>`
 	{{/each}}
-	return html[index]
+	return html[row[3]];
   }
-
-
 	const toggleHidden = () => {
 		let box = document.getElementById('toggleCheck')
 		let disabledStocks = document.getElementsByClassName('disabledStock')
@@ -498,8 +494,6 @@
 			}
 		}
 	}
-
-
 
   	const editNote = (id) => {
 		let div = document.getElementById(`note${id}`)
