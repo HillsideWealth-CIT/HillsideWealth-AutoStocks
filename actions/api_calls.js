@@ -95,7 +95,7 @@ const gurufocusAdd = async (list, username, summaryCall = true) => {
                 currentStock.data.push(currentData)
             }
         } catch (err) {
-            console.log('Caught Error:', err)
+            console.log(err)
         } finally {
             currentData = []
         }
@@ -103,7 +103,6 @@ const gurufocusAdd = async (list, username, summaryCall = true) => {
 
 
         try {
-            console.log('hello')
             var stocks = await db.addStocks(currentStock.symbol, currentStock.company, username)
         }
         catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }

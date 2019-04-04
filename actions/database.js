@@ -157,97 +157,95 @@ const addStockData = async (data) => {
 /* Parses an array of JSON stockdata and adds it to the database.
 Use this when there's more than one set of data and they all have the same fields.*/
 const arrayAddStockData = async (data) => {
-    try {
-        if (data.length != 0) {
-            let columns = []
-            let params = []
-            let placeholders = []
-            for (i in data) {
-                if (data[i].stock_id != null) {
-                    if (i == 0) columns.push('stock_id')
-                    placeholders.push(`$${params.push(data[i].stock_id)}`)
-                }
-                if (data[i].date != null) {
-                    if (i == 0) columns.push('date')
-                    placeholders.push(`$${params.push(data[i].date)}`)
-                }
-                if (data[i].notes != null) {
-                    if (i == 0) columns.push('notes')
-                    placeholders.push(`$${params.push(data[i].notes)}`)
-                }
-                if (data[i].dividend != null) {
-                    if (i == 0) columns.push('dividend')
-                    placeholders.push(`$${params.push(parseFloat(data[i].dividend))}`)
-                }
-                if (data[i].yield != null) {
-                    if (i == 0) columns.push('yield')
-                    placeholders.push(`$${params.push(parseFloat(data[i].yield))}`)
-                }
-                if (data[i].price != null) {
-                    if (i == 0) columns.push('price')
-                    placeholders.push(`$${params.push(parseFloat(data[i].price))}`)
-                    console.log(i, 'hi')
-                }
-                if (data[i].shares_outstanding != null) {
-                    if (i == 0) columns.push('shares_outstanding')
-                    placeholders.push(`$${params.push(parseFloat(data[i].shares_outstanding))}`)
-                }
-                if (data[i].market_cap != null) {
-                    if (i == 0) columns.push('market_cap')
-                    placeholders.push(`$${params.push(parseFloat(data[i].market_cap))}`)
-                }
-                if (data[i].net_debt != null) {
-                    if (i == 0) columns.push('net_debt')
-                    placeholders.push(`$${params.push(parseFloat(data[i].net_debt))}`)
+    if (data == '') {
+        return
+    } else {
+        let columns = []
+        let params = []
+        let placeholders = []
+        for (i in data) {
+            if (data[i].stock_id != null) {
+                if (i == 0) columns.push('stock_id')
+                placeholders.push(`$${params.push(data[i].stock_id)}`)
+            }
+            if (data[i].date != null) {
+                if (i == 0) columns.push('date')
+                placeholders.push(`$${params.push(data[i].date)}`)
+            }
+            if (data[i].notes != null) {
+                if (i == 0) columns.push('notes')
+                placeholders.push(`$${params.push(data[i].notes)}`)
+            }
+            if (data[i].dividend != null) {
+                if (i == 0) columns.push('dividend')
+                placeholders.push(`$${params.push(parseFloat(data[i].dividend))}`)
+            }
+            if (data[i].yield != null) {
+                if (i == 0) columns.push('yield')
+                placeholders.push(`$${params.push(parseFloat(data[i].yield))}`)
+            }
+            if (data[i].price != null) {
+                if (i == 0) columns.push('price')
+                placeholders.push(`$${params.push(parseFloat(data[i].price))}`)
+                console.log(i, 'hi')
+            }
+            if (data[i].shares_outstanding != null) {
+                if (i == 0) columns.push('shares_outstanding')
+                placeholders.push(`$${params.push(parseFloat(data[i].shares_outstanding))}`)
+            }
+            if (data[i].market_cap != null) {
+                if (i == 0) columns.push('market_cap')
+                placeholders.push(`$${params.push(parseFloat(data[i].market_cap))}`)
+            }
+            if (data[i].net_debt != null) {
+                if (i == 0) columns.push('net_debt')
+                placeholders.push(`$${params.push(parseFloat(data[i].net_debt))}`)
 
-                }
-                if (data[i].enterprise_value != null) {
-                    if (i == 0) columns.push('enterprise_value')
-                    placeholders.push(`$${params.push(parseFloat(data[i].enterprise_value))}`)
-                }
-                if (data[i].revenue != null) {
-                    if (i == 0) columns.push('revenue')
-                    placeholders.push(`$${params.push(parseFloat(data[i].revenue))}`)
-                }
-                if (data[i].aebitda != null) {
-                    if (i == 0) columns.push('aebitda')
-                    placeholders.push(`$${params.push(parseFloat(data[i].aebitda))}`)
-                }
-                if (data[i].asset_turnover != null) {
-                    if (i == 0) columns.push('asset_turnover')
-                    placeholders.push(`$${params.push(parseFloat(data[i].asset_turnover))}`)
-                }
-                if (data[i].roe != null) {
-                    if (i == 0) columns.push('roe')
-                    placeholders.push(`$${params.push(parseFloat(data[i].roe))}`)
-                }
-                if (data[i].effective_tax != null) {
-                    if (i == 0) columns.push('effective_tax')
-                    placeholders.push(`$${params.push(parseFloat(data[i].effective_tax))}`)
-                }
-                if (i == 0) { columns.push('ttm') }
-                placeholders.push(`$${params.push(data[i].ttm)}`)
             }
-            params.forEach((num) => {
-                if (num === NaN) {
-                    num = null
-                }
-            })
-            let query = `INSERT INTO stockdata (${columns.join(', ')}) VALUES`
-            for (let i = 0; i < ((params.length + 1) / columns.length) - 1; i++) {
-                //console.log(i * columns.length, i * columns.length + columns.length)
-                query += (` (${placeholders.slice(i * columns.length, i * columns.length + columns.length).join(', ')}),`)
+            if (data[i].enterprise_value != null) {
+                if (i == 0) columns.push('enterprise_value')
+                placeholders.push(`$${params.push(parseFloat(data[i].enterprise_value))}`)
             }
-            query = _.trimEnd(query, ',')
-            query += ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
-            console.log(query)
-            //console.log(params)
-            await runQuery(`DELETE FROM stockdata WHERE ttm = TRUE AND stock_id = $1`, [data[0].stock_id])
-            return await runQuery(query, params)
-        } else {
-            return
+            if (data[i].revenue != null) {
+                if (i == 0) columns.push('revenue')
+                placeholders.push(`$${params.push(parseFloat(data[i].revenue))}`)
+            }
+            if (data[i].aebitda != null) {
+                if (i == 0) columns.push('aebitda')
+                placeholders.push(`$${params.push(parseFloat(data[i].aebitda))}`)
+            }
+            if (data[i].asset_turnover != null) {
+                if (i == 0) columns.push('asset_turnover')
+                placeholders.push(`$${params.push(parseFloat(data[i].asset_turnover))}`)
+            }
+            if (data[i].roe != null) {
+                if (i == 0) columns.push('roe')
+                placeholders.push(`$${params.push(parseFloat(data[i].roe))}`)
+            }
+            if (data[i].effective_tax != null) {
+                if (i == 0) columns.push('effective_tax')
+                placeholders.push(`$${params.push(parseFloat(data[i].effective_tax))}`)
+            }
+            if (i == 0) { columns.push('ttm') }
+            placeholders.push(`$${params.push(data[i].ttm)}`)
         }
-    } catch { return }
+        params.forEach((num) => {
+            if (num === NaN) {
+                num = null
+            }
+        })
+        let query = `INSERT INTO stockdata (${columns.join(', ')}) VALUES`
+        for (let i = 0; i < ((params.length + 1) / columns.length) - 1; i++) {
+            //console.log(i * columns.length, i * columns.length + columns.length)
+            query += (` (${placeholders.slice(i * columns.length, i * columns.length + columns.length).join(', ')}),`)
+        }
+        query = _.trimEnd(query, ',')
+        query += ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
+        console.log(query)
+        //console.log(params)
+        await runQuery(`DELETE FROM stockdata WHERE ttm = TRUE AND stock_id = $1`, [data[0].stock_id])
+        return await runQuery(query, params)
+    }
 }
 /* runQuery('update stockdata set date = $1 WHERE date= $2', [new Date(new Date().setDate(new Date().getDate()-1)), new Date()])
  */
