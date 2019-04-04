@@ -4,7 +4,7 @@
 		<title>Collection</title>
 		<meta charset="utf-8">
 		<link rel="icon" type="image/png" href="/imgs/icon.png" />
-		<style>.fixed-table-container{ background-color:white} th:nth-child(3),td:nth-child(3){position:sticky;left:0px;} td:nth-child(3){background-color: #F0F0F0; z-index: 999;}</style>
+		<style>.fixed-table-container{ background-color:white} th:nth-child(4),td:nth-child(4){position:sticky;left:0px;} td:nth-child(4){background-color: #F0F0F0; z-index: 999;}</style>
 	</head>
 	<body>
 		{{>header}}
@@ -201,7 +201,7 @@
 				console.log(rm_list)
 				rm_list = [];
 			};
-			
+
 			/** Used to send data from the front end to the node server
 			*@param list - A list of stock information
 			*@param action - Used to determine what happens in the server
@@ -504,7 +504,7 @@
   	const editNote = (id) => {
 		let div = document.getElementById(`note${id}`)
 		let parent = div.parentNode
-		parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" /">`
+		parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" maxlength="250" /">`
 		inputDiv = document.getElementById(`noteInput${id}`)
 		inputDiv.addEventListener("keydown", (e) => {
 			if (e.keyCode == 13) {
