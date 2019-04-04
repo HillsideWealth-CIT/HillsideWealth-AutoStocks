@@ -20,6 +20,7 @@
 								<th data-checkbox="true"></th>
 								<th data-sortable="true">Symbol</th>
 								<th data-sortable="true">Stock Name</th>
+                                <th data-sortable="true">My Comment</th>
 								<th data-sortable="true">Date</th>
 								<th data-sortable="true">Yield</th>
 								<th data-sortable="true">Price</th>
@@ -67,6 +68,7 @@
 								<td></td>
 								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
 								<td>{{ this.stock_name }}</td>
+                                <td><div id="note{{this.stock_id}}">{{this.note}}</div><button type="button" onclick='editNote({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td>{{this.stockdata.[0].datestring}}</td>
 								<td>{{this.stockdata.[0].yield}}</td>
 								<td>{{this.stockdata.[0].price}}</td>
@@ -470,6 +472,22 @@
 					</table>`
 	{{/each}}
 	return html[row[2]];
+  }
+
+  	const editNote = (id) => {
+		let div = document.getElementById(`note${id}`)
+		let parent = div.parentNode
+		parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" /">`
+		inputDiv = document.getElementById(`noteInput${id}`)
+		inputDiv.addEventListener("keydown", (e) => {
+			if (e.keyCode == 13) {
+				fetch('/editNote', {
+					method: 'post',
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({note: inputDiv.value, stock_id: id})
+				}).then(() => {parent.innerHTML = `<div id="note${id}">${inputDiv.value}</div><button type="button" onclick='editNote(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`})
+			}
+	  })
   }
 </script>
 </html>

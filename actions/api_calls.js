@@ -8,6 +8,7 @@ const summaryAPI = (symbol) => {
         //apiTimer().then(() => reject('Timeout'))
         request({ url: `https://api.gurufocus.com/public/user/${process.env.GURU_API}/stock/${symbol}/summary`, json: true }, (err, res, body) => {
             if (err) reject(err)
+            if (body.summary == undefined) reject('No Stock Retrieved')
             resolve(body)
         })
     })
@@ -34,10 +35,8 @@ const apiTimer = () => {
  * Accepts list of stock symbols, does a gurufocus search on them, and returns a list of objects with stock data.
  * @param {Array} list List of stock symbols
  * @param {Boolean} summary_call Whether summary call should be used.
- * @param {Boolean} financials_call Whether fincancials call should be used.
  */
-const gurufocusAdd = async (list, username, summaryCall = true, financialsCall = true) => {
-    var stocksList = []
+const gurufocusAdd = async (list, username, summaryCall = true) => {
     for (i in list) {
         let timer
         let currentStock = {
@@ -46,13 +45,18 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
             data: []
         }
         if (summaryCall) {
-            try{
+            try {
                 let summary = await summaryAPI(list[i].symbol)
                 timer = setTimeout(() => {
                     throw 'Timeout'
-                }, 15000)
-                //console.log(summary)
-                currentStock.company = summary.summary.general.company
+                }, 10000)
+
+                if (summary.summary) {
+                    currentStock.company = summary.summary.general.company
+                } else {
+                    throw 'Error: No API Response'
+                }
+
 
             }
             catch (err) {
@@ -61,10 +65,11 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
             }
             finally {
                 clearTimeout(timer)
+                summary = null
             }
 
         }
-        if (financialsCall) {
+        try {
             let financials = await financialsAPI(list[i].symbol)
             let annuals = financials.financials.annuals
 
@@ -85,28 +90,30 @@ const gurufocusAdd = async (list, username, summaryCall = true, financialsCall =
                     effective_tax: annuals.income_statement["Tax Rate %"][f],
                     shares_outstanding: annuals.valuation_and_quality["Shares Outstanding (EOP)"][f],
                     aebitda: Math.round(Number(annuals.cashflow_statement["Stock Based Compensation"][f]) + Number(annuals.income_statement.EBITDA[f])),
+                    fcf: annuals.cashflow_statement["Free Cash Flow"][f]
                 }
                 //console.log(currentData)
                 currentStock.data.push(currentData)
             }
+        } catch (err) {
+            console.log(err)
+        } finally {
+            currentData = []
+        }
 
-        }
-        stocksList.push(currentStock)
-    }
-    for (i in stocksList) {
+
+
         try {
-            var stocks = await db.addStocks(stocksList[i].symbol, stocksList[i].company, username)
+            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, username, currentStock.comment)
         }
-        catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks') }
+        catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }
 
         //console.log(stocksList[i].data)
-        for (d in stocksList[i].data) {
-            stocksList[i].data[d].stock_id = stocks.rows[0].stock_id
+        for (d in currentStock.data) {
+            currentStock.data[d].stock_id = stocks.rows[0].stock_id
         }
-        db.arrayAddStockData(stocksList[i].data)
+        await db.arrayAddStockData(currentStock.data)
     }
-
-    return stocksList
 }
 
 /*
