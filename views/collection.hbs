@@ -201,7 +201,7 @@
 				console.log(rm_list)
 				rm_list = [];
 			};
-			
+
 			/** Used to send data from the front end to the node server
 			*@param list - A list of stock information
 			*@param action - Used to determine what happens in the server
@@ -503,7 +503,7 @@
   	const editNote = (id) => {
 		let div = document.getElementById(`note${id}`)
 		let parent = div.parentNode
-		parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" /">`
+		parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" maxlength="250" /">`
 		inputDiv = document.getElementById(`noteInput${id}`)
 		inputDiv.addEventListener("keydown", (e) => {
 			if (e.keyCode == 13) {
