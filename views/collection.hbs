@@ -137,7 +137,6 @@
 				</button>
 			</form>
 			<b><label for="toggleCheck"> Show Hidden </label></b> &nbsp;<input id="toggleCheck" type="checkbox" onclick="toggleHidden()">
-
 		</div>
 
         <script>
@@ -227,7 +226,6 @@
 	</body>
 
 <script>
-
 	function detailFormatter(index, row) {
     var html = {};
 	{{#each dbdata}}
@@ -507,7 +505,6 @@
 	var hiddenList = []
 	var showList = []
 
-
 	const toggleHidden = () => {
 		let box = document.getElementById('toggleCheck')
 		let disabledStocks = document.getElementsByClassName('disabledStock')
@@ -539,8 +536,6 @@
 			}
 		}
 	}
-
-
 
   	const editNote = (id) => {
 		let div = document.getElementById(`note${id}`)
