@@ -48,6 +48,11 @@ app.use(
 
 /*** Functions ***/
 
+// Add comma separator to numbers in thousands
+function formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+}
+
 /* Checks session */
 const sessionCheck = (req, res, next) => {
     if (req.session.user) {
@@ -82,11 +87,6 @@ app.get("/login", (request, response) => {
 });
 
 app.get("/collection", sessionCheck, statusCheck, (request, response) => {
-    // Add comma separator to numbers in thousands
-    function formatNumber(num) {
-        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-    }
-
     db.showstocks(request.session.user)
         .then(res => {
             // Calculates data before rendering
