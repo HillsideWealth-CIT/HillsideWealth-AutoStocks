@@ -72,25 +72,24 @@ const gurufocusAdd = async (list, username, summaryCall = true) => {
         try {
             let financials = await financialsAPI(list[i].symbol)
             let annuals = financials.financials.annuals
-
             for (f in annuals["Fiscal Year"]) {
                 let currentData = {
                     ttm: annuals["Fiscal Year"][f] === "TTM",
                     date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
-                    price: annuals.valuation_and_quality["Month End Stock Price"][f],
-                    net_debt: annuals.balance_sheet["Long-Term Debt"][f] + annuals.balance_sheet["Current Portion of Long-Term Debt"][f] + annuals.balance_sheet["Minority Interest"][f] - annuals.balance_sheet["Cash And Cash Equivalents"][f] - annuals.balance_sheet["Marketable Securities"][f],
-                    market_cap: annuals.valuation_and_quality["Market Cap"][f],
-                    roe: annuals.common_size_ratios["ROE %"][f],
-                    yield: annuals.valuation_ratios["Dividend Yield %"][f],
-                    dividend: annuals.common_size_ratios["Dividend Payout Ratio"][f],
-                    asset_turnover: annuals.common_size_ratios["Asset Turnover"][f],
-                    revenue: annuals.income_statement.Revenue[f],
-                    enterprise_value: annuals.valuation_and_quality["Enterprise Value"][f],
-                    effective_tax: annuals.income_statement["Tax Rate %"][f],
-                    shares_outstanding: annuals.valuation_and_quality["Shares Outstanding (EOP)"][f],
-                    aebitda: Math.round(Number(annuals.cashflow_statement["Stock Based Compensation"][f]) + Number(annuals.income_statement.EBITDA[f])),
-                    fcf: annuals.cashflow_statement["Free Cash Flow"][f]
+                    price: parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f]),
+                    net_debt: parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Current Portion of Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Minority Interest"][f]) - parseFloat(annuals.balance_sheet["Cash And Cash Equivalents"][f]) - parseFloat(annuals.balance_sheet["Marketable Securities"][f]),
+                    market_cap: parseFloat(annuals.valuation_and_quality["Market Cap"][f]),
+                    roe: parseFloat(annuals.common_size_ratios["ROE %"][f]),
+                    yield: parseFloat(annuals.valuation_ratios["Dividend Yield %"][f]),
+                    dividend: parseFloat(annuals.common_size_ratios["Dividend Payout Ratio"][f]),
+                    asset_turnover: parseFloat(annuals.common_size_ratios["Asset Turnover"][f]),
+                    revenue: parseFloat(annuals.income_statement.Revenue[f]),
+                    enterprise_value: parseFloat(annuals.valuation_and_quality["Enterprise Value"][f]),
+                    effective_tax: parseFloat(annuals.income_statement["Tax Rate %"][f]),
+                    shares_outstanding: parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f]),
+                    aebitda: Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f])),
+                    fcf: parseFloat(annuals.cashflow_statement["Free Cash Flow"][f])
                 }
                 //console.log(currentData)
                 currentStock.data.push(currentData)

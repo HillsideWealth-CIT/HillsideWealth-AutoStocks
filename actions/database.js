@@ -166,7 +166,7 @@ const arrayAddStockData = async (data) => {
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
         params.forEach((num) => {
-            if (num === NaN) {
+            if (Number.isNaN(num)) {
                 num = null
             }
         })
