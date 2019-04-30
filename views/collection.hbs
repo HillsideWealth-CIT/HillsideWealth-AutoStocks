@@ -237,7 +237,7 @@
 					var data = {};
 					data.stocks = list;
 					data.action = action;
-					console.log(data)
+					//console.log(data)
 					$.ajax({
 						type: "POST",
 						data: JSON.stringify(data),
@@ -248,7 +248,7 @@
 						if(action === "Update"){
 							update_counter += 1;
 							let Ndata = JSON.parse(returned_data);
-							console.log(Ndata[0].symbol)
+							//console.log(Ndata[0].symbol)
 							Swal.update({
 								text: `Progress: (${update_counter}/${rm_list.length})`,
 							});
