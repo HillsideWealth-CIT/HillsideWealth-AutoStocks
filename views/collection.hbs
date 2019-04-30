@@ -140,6 +140,7 @@
 		</div>
 
         <script>
+			var update_counter = 0;
             var rm_list = [];
 			/** Send stocks to server using ajax and displays sweet alerts*/
             function add(){
@@ -156,7 +157,9 @@
 						for(let i in stocks){
 							send.push({'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''})
 						}
-						ajax_func(send, 'Append')
+						ajax_func(send, 'Append').then((resolved) => {
+							location.reload();
+						})
 					}
 				}).then((result) => {
 					if(!result.dismiss){
@@ -175,7 +178,6 @@
 					rm_list.push({"symbol" : sym.toString()});
 					//$(`#${sym.toString()}`).remove();
 				});
-                ajax_func(rm_list, 'Remove');
 				Swal.fire({
 					position:'center',
 					type: 'success',
@@ -183,24 +185,47 @@
 					text: 'The page will reload shortly.',
 					showConfirmButton: false,
 				});
+				ajax_func(rm_list, 'Remove').then((resolved) => {
+					location.reload()
+				})
 				rm_list = [];
 			};
 			/** Send stocks to server using ajax and updates the database entries, shows sweet alerts*/
 			function update() {
+				update_counter = 0;
 				$("#table #db_stocks input:checked").each(function() {
 					var sym = $(this).parents('tr:first').data('val')
 					rm_list.push({"symbol" : sym.toString()});
 				});
-                ajax_func(rm_list, 'Update');
+				let promises = [];
+
 				Swal.fire({
 					position:'center',
-					type: 'success',
+					type: 'question',
 					title: 'The selected stocks are currently being updated!',
-					text: 'The page will reload shortly.',
+					text: 'Progress will be shown here',
+					footer: 'This might take a while, you might want to do something else',
 					showConfirmButton: false,
 				});
-				console.log(rm_list)
-				rm_list = [];
+
+				for(sym in rm_list){
+					promises.push(ajax_func([rm_list[sym]], 'Update'))
+				}
+
+				Promise.all(promises)
+				.then((resolve) => {
+					swal.update({
+						type: 'success',
+						title: 'Refresh Completed',
+						text: 'This page will reload in three seconds'
+					});
+					rm_list = [];
+					setTimeout(function(){
+						location.reload();
+						 }, 3000);
+				})
+				
+				//ajax_func(rm_list, 'Update');
 			};
 
 			/** Used to send data from the front end to the node server
@@ -208,19 +233,31 @@
 			*@param action - Used to determine what happens in the server
 			 */
             function ajax_func(list, action){
-                var data = {};
-                data.stocks = list;
-                data.action = action;
-                console.log(data)
-                $.ajax({
-                    type: "POST",
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    url: "/collection",
-                }).done(function(returned_data){
-                    location.reload()
-                })
+				return new Promise((resolve, reject) => {
+					var data = {};
+					data.stocks = list;
+					data.action = action;
+					//console.log(data)
+					$.ajax({
+						type: "POST",
+						data: JSON.stringify(data),
+						contentType: 'application/json',
+						url: "/collection",
+						async: false,
+					}).done(function(returned_data){
+						if(action === "Update"){
+							update_counter += 1;
+							let Ndata = JSON.parse(returned_data);
+							//console.log(Ndata[0].symbol)
+							Swal.update({
+								text: `Progress: (${update_counter}/${rm_list.length})`,
+							});
+						}		
+						resolve("returned_data")
+					})
+					})
                 }
+
         </script>
 
 	</body>

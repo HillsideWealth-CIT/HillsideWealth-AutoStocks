@@ -383,9 +383,10 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
             break;
 
         case 'Update':
+            console.log(request.body.stocks)
             api_calls.gurufocusAdd(request.body.stocks, request.session.user, summaryCall = false)
                 .then((r) => {
-                    response.send(JSON.stringify(request.body))
+                    response.send(JSON.stringify(request.body.stocks))
                 })
 
 
