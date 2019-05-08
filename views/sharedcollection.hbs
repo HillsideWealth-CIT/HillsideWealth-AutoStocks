@@ -136,11 +136,7 @@
 					<span class="fas fa-sync-alt"></span> Refresh
 				</button>
 			</form>
-			<form class="px-2">
-				<button type="button" onclick='share();' class="btn btn-info btn-sm">
-					<span class="fas fa-share"></span> Share
-				</button>
-			</form>
+
 			<b><label for="toggleCheck"> Show Hidden </label></b> &nbsp;<input id="toggleCheck" type="checkbox" onclick="toggleHidden()">
 		</div>
 
@@ -214,7 +210,7 @@
 				});
 
 				for(sym in rm_list){
-					promises.push(ajax_func([rm_list[sym]], 'Update', false))
+					promises.push(ajax_func([rm_list[sym]], 'Update', false, '/collection'))
 				}
 
 				Promise.all(promises)
@@ -232,48 +228,12 @@
 				
 				//ajax_func(rm_list, 'Update');
 			};
-			
-			function share() {
-				update_counter = 0;
-				$("#table #db_stocks input:checked").each(function() {
-					var sym = $(this).parents('tr:first').data('val')
-					rm_list.push({"symbol" : sym.toString()});
-				});
-				let promises = [];
-
-				Swal.fire({
-					position:'center',
-					type: 'question',
-					title: 'The selected stocks are currently being shared!',
-					text: 'Progress will be shown here',
-					showConfirmButton: false,
-				});
-
-				for(sym in rm_list){
-					promises.push(ajax_func(rm_list[sym], 'Share', false))
-				}
-
-				Promise.all(promises)
-				.then((resolve) => {
-					swal.update({
-						type: 'success',
-						title: 'Sharing Completed',
-						text: 'This page will reload in three seconds'
-					});
-					rm_list = [];
-					setTimeout(function(){
-						location.reload();
-						 }, 3000);
-				})
-				
-				//ajax_func(rm_list, 'Update');
-			};
 
 			/** Used to send data from the front end to the node server
 			*@param list - A list of stock information
 			*@param action - Used to determine what happens in the server
 			 */
-            function ajax_func(list, action, asyncbool=true){
+            function ajax_func(list, action, asyncbool=true, link = "/shared"){
 				return new Promise((resolve, reject) => {
 					var data = {};
 					data.stocks = list;
@@ -283,7 +243,7 @@
 						type: "POST",
 						data: JSON.stringify(data),
 						contentType: 'application/json',
-						url: "/collection",
+						url: link,
 						async: asyncbool,
 					}).done(function(returned_data){
 						if(action === "Update"){
