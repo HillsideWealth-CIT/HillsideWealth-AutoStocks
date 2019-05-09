@@ -210,130 +210,6 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
         });
 });
 
-app.get("/shared", sessionCheck, statusCheck, (request, response) => {
-    db.showshared(request.session.user)
-        .then(res => {
-            // Calculates data before rendering
-            res.forEach((stock) => {
-                stock.stockdata.forEach((data) => {
-                    data.yield_format = data.yield + '%'
-                    data.price_format = '$' + formatNumber(data.price)
-                    data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100)
-                    data.market_cap_format = formatNumber(Math.round(data.market_cap))
-                    data.net_debt_format = formatNumber(Math.round(data.net_debt))
-                    data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10)
-                    data.revenue_format = formatNumber(Math.round(data.revenue))
-                    data.aebitda_format = formatNumber(data.aebitda)
-                    data.roe_format = Math.round(data.roe * 10) / 10 + '%'
-                    data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
-                    data.fcf_format = formatNumber(Math.round(data.fcf))
-
-                    data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
-                    data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
-                    data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
-                    data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
-                    data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
-                    data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
-                    data.datestring = moment(data.date).format('MMM DD, YYYY')
-                    data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
-                })
-
-                // Calculates metric growth rates
-                try {
-                    const end_date = stock.stockdata[0].date.getFullYear(),
-                        end_price = stock.stockdata[0].price,
-                        end_revenue = stock.stockdata[0].revenue,
-                        end_aebitda = stock.stockdata[0].aebitda,
-                        end_fcf = stock.stockdata[0].fcf,
-                        end_so = stock.stockdata[0].shares_outstanding
-                    var price_10 = null,
-                        price_5 = null,
-                        price_3 = null,
-                        price_1 = null,
-                        revenue_10 = null,
-                        revenue_5 = null,
-                        revenue_3 = null,
-                        revenue_1 = null,
-                        aebitda_10 = null,
-                        aebitda_5 = null,
-                        aebitda_3 = null,
-                        aebitda_1 = null
-                    fcf_10 = null,
-                        fcf_5 = null,
-                        fcf_3 = null,
-                        fcf_1 = null,
-                        so_10 = null,
-                        so_5 = null,
-                        so_3 = null,
-                        so_1 = null
-                    for (var i = 1; i < stock.stockdata.length; i++) {
-                        if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
-                            price_10 = stock.stockdata[i].price
-                            revenue_10 = stock.stockdata[i].revenue
-                            aebitda_10 = stock.stockdata[i].aebitda
-                            fcf_10 = stock.stockdata[i].fcf
-                            so_10 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
-                            price_5 = stock.stockdata[i].price
-                            revenue_5 = stock.stockdata[i].revenue
-                            aebitda_5 = stock.stockdata[i].aebitda
-                            fcf_5 = stock.stockdata[i].fcf
-                            so_5 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
-                            price_3 = stock.stockdata[i].price
-                            revenue_3 = stock.stockdata[i].revenue
-                            aebitda_3 = stock.stockdata[i].aebitda
-                            fcf_3 = stock.stockdata[i].fcf
-                            so_3 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
-                            price_1 = stock.stockdata[i].price
-                            revenue_1 = stock.stockdata[i].revenue
-                            aebitda_1 = stock.stockdata[i].aebitda
-                            fcf_1 = stock.stockdata[i].fcf
-                            so_1 = stock.stockdata[i].shares_outstanding
-                        }
-                    }
-                    // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
-                    // Only 1 decimal required for price growth
-                    stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100) + '%'
-                    stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100) + '%'
-                    stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100) + '%'
-                    stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.revenue_growth_10 = Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100) + '%'
-                    stock.revenue_growth_5 = Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100) + '%'
-                    stock.revenue_growth_3 = Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100) + '%'
-                    stock.revenue_growth_1 = Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100) + '%'
-                    stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100) + '%'
-                    stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100) + '%'
-                    stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.fcf_growth_10 = Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100) + '%'
-                    stock.fcf_growth_5 = Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100) + '%'
-                    stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100) + '%'
-                    stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.so_change_10 = formatNumber(Math.round((end_so - so_10) * 10) / 10)
-                    stock.so_change_5 = formatNumber(Math.round((end_so - so_5) * 10) / 10)
-                    stock.so_change_3 = formatNumber(Math.round((end_so - so_3) * 10) / 10)
-                    stock.so_change_1 = formatNumber(Math.round((end_so - so_1) * 10) / 10)
-                }
-                catch (err) {
-                    ///
-                }
-            })
-
-            //console.log(res)
-            response.render("sharedcollection.hbs", {
-                dbdata: res,
-                sc: true,
-                admin: (request.session.status == 'admin')
-            })
-        });
-});
-
 app.get("/documentation", sessionCheck, statusCheck, (request, response) => {
     response.render("documentation.hbs", { d: true, admin: (request.session.status == 'admin') });
 });
@@ -487,6 +363,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
 app.post('/collection', sessionCheck, statusCheck, (request, response) => {
     switch (request.body.action) {
         case 'Append':
+            console.log(request.body.stocks)
             api_calls.gurufocusAdd(request.body.stocks, request.session.user)
                 .then((resolve) => {
                     response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
@@ -504,17 +381,9 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
                     response.send(JSON.stringify(request.body));
                 })
             break;
-        
-        case 'Share':
-                db.sharestock(request.body.stocks.symbol, request.session.user)
-                .then((resolve) => {
-                    response.send(JSON.stringify(request.body.stocks));
-                })
-
-            break;
 
         case 'Update':
-            //console.log(request.body.stocks)
+            console.log(request.body.stocks)
             api_calls.gurufocusAdd(request.body.stocks, request.session.user, summaryCall = false)
                 .then((r) => {
                     response.send(JSON.stringify(request.body.stocks))
@@ -534,32 +403,6 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
                     response.send(JSON.stringify({'Status': 'Complete'}))
                 });
             }); */
-            break;
-
-    }
-})
-
-app.post("/shared", (request, response) => {
-    console.log(request.body.stocks)
-    switch(request.body.action){
-        case 'Remove':
-        let promises = [];
-        for (let i = 0; i < request.body.stocks.length; i++) {
-            promises.push(db.unsharestock(request.body.stocks[i].symbol, request.session.user));
-        }
-        Promise.all(promises)
-            .then((returned) => {
-                response.send(JSON.stringify(request.body));
-            })
-        break;
-
-        case 'Append':
-        console.log(request.body.stocks)
-        api_calls.gurufocusAdd(request.body.stocks, request.session.user, true, true)
-            .then((resolve) => {
-                response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
-            })
-            .catch((reason) => console.log(reason))
             break;
     }
 })

@@ -36,7 +36,7 @@ const apiTimer = () => {
  * @param {Array} list List of stock symbols
  * @param {Boolean} summary_call Whether summary call should be used.
  */
-const gurufocusAdd = async (list, username, summaryCall = true, shared = false) => {
+const gurufocusAdd = async (list, username, summaryCall = true) => {
     for (i in list) {
         let timer;
         let currentStock = {
@@ -103,7 +103,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
 
 
         try {
-            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, username, currentStock.comment, shared)
+            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, username, currentStock.comment)
         }
         catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }
 

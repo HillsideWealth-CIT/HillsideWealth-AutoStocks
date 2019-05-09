@@ -87,36 +87,6 @@ const showstocks = async (username) => {
     return stockAndData
 }
 
-const showshared = async (username) => {
-    let stockAndData = []
-    let stocks = await runQuery("SELECT * FROM stocks WHERE shared ='t'")
-    //console.log(stocks)
-    let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
-    for (i in stocks.rows) {
-
-        stockAndData.push({
-            stock_id: stocks.rows[i].stock_id,
-            symbol: stocks.rows[i].symbol,
-            stock_name: stocks.rows[i].stock_name,
-            note: stocks.rows[i].note,
-            enabled: stocks.rows[i].enabled,
-            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id)
-        })
-    }
-    return stockAndData
-}
-
-const sharestock = async(symbol, user) => {
-    await runQuery(`UPDATE stocks SET shared='True' where symbol='${symbol}' and username='${user}';`);
-    return symbol
-}
-
-const unsharestock = async(symbol, user) => {
-    await runQuery(`UPDATE stocks SET shared='False' where symbol='${symbol}' and username='${user}';`);
-    return symbol
-}
-
-
 /* Parses an array of JSON stockdata and adds it to the database.
 Use this when there's more than one set of data and they all have the same fields.*/
 const arrayAddStockData = async (data) => {
@@ -218,8 +188,8 @@ const arrayAddStockData = async (data) => {
 
 
 
-const addStocks = async (symbol, stock_name, username, note, shared = false) => {
-    return await runQuery(`INSERT INTO stocks (symbol, stock_name, username, note, shared) VALUES ($1, $2, $3, $4, $5) RETURNING stock_id`, [symbol, stock_name, username, note, shared])
+const addStocks = async (symbol, stock_name, username, note) => {
+    return await runQuery(`INSERT INTO stocks (symbol, stock_name, username, note) VALUES ($1, $2, $3, $4) RETURNING stock_id`, [symbol, stock_name, username, note])
 }
 
 
@@ -258,7 +228,6 @@ module.exports = {
     usernameAvailable,
     retrieveUser,
     showstocks,
-    showshared,
     addStocks,
     removeStocks,
     runQuery,
@@ -268,7 +237,5 @@ module.exports = {
     retrieveAllUsers,
     changeCode,
     toggleStock,
-    editNote,
-    sharestock,
-    unsharestock
+    editNote
 }
