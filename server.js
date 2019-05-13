@@ -202,6 +202,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
             })
 
             //console.log(res)
+            //fs.writeFileSync('test.json', JSON.stringify(res));
             response.render("collection.hbs", {
                 dbdata: res,
                 c: true,
@@ -512,10 +513,19 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
                 })
 
             break;
+        
+        case 'Update_Prices':
+                console.log(request.body.stocks);
+                api_calls.update_prices(request.body.stocks, request.session.user)
+                .then((resolve) => {
+                    console.log('it worked')
+                    response.send(JSON.stringify(request.body.stocks));
+                })
+                break;
 
         case 'Update':
             //console.log(request.body.stocks)
-            api_calls.gurufocusAdd(request.body.stocks, request.session.user, summaryCall = true)
+            api_calls.gurufocusAdd(request.body.stocks, request.session.user, summaryCall = false)
                 .then((r) => {
                     response.send(JSON.stringify(request.body.stocks))
                 })
