@@ -131,7 +131,9 @@
 		<script>
 			var add_list = [];
 			var rm_list = [];
-			/** Adds stock info from the page to the server and opens a sweet alert */
+			/** Adds stock info from the page to the server and opens a sweet alert
+				Note: Stock exchange is a required column
+			 */
 			function add() {
 				$("#myTable1 tbody input:checked").each(function() {
 					var cur = $(this).parents("tr:first").data("cur");
