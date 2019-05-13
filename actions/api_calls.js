@@ -31,6 +31,34 @@ const apiTimer = () => {
     })
 }
 
+const update_prices = async (list, username) => {
+    for (i in list){
+        let timer;
+        let currentStock = {};
+        let summary = await summaryAPI(list[i].symbol)
+        timer = setTimeout(() => {
+            throw 'Timeout';
+        }, 10000);
+
+        try{
+            if (summary.summary){
+                currentStock.company = summary.summary.general.company;
+                currentStock.sector = summary.summary.general.sector;
+                currentStock.current_price = parseFloat(summary.summary.general.price);
+            }
+            else{
+                throw 'no Api response'
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+        db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price);
+        clearTimeout(timer);
+    }
+    return;
+}
+
 /**
  * Accepts list of stock symbols, does a gurufocus search on them, and returns a list of objects with stock data.
  * @param {Array} list List of stock symbols
@@ -52,8 +80,9 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                 }, 10000)
 
                 if (summary.summary) {
-                    currentStock.company = summary.summary.general.company
-                    var currentprice = summary.summary.general.price
+                    currentStock.company = summary.summary.general.company;
+                    currentStock.sector = summary.summary.general.sector;
+                    currentStock.current_price = parseFloat(summary.summary.general.price);
                 } else {
                     throw 'Error: No API Response'
                 }
@@ -78,11 +107,9 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     ttm: annuals["Fiscal Year"][f] === "TTM",
                     date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
-                    //price: parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f]),
-                    price: currentprice,
+                    price: parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f]),
                     net_debt: parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Current Portion of Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Minority Interest"][f]) - parseFloat(annuals.balance_sheet["Cash And Cash Equivalents"][f]) - parseFloat(annuals.balance_sheet["Marketable Securities"][f]),
                     market_cap: parseFloat(annuals.valuation_and_quality["Market Cap"][f]),
-                    //roe: parseFloat(annuals.common_size_ratios["ROE %"][f]),
                     yield: parseFloat(annuals.valuation_ratios["Dividend Yield %"][f]),
                     dividend: parseFloat(annuals.common_size_ratios["Dividend Payout Ratio"][f]),
                     asset_turnover: parseFloat(annuals.common_size_ratios["Asset Turnover"][f]),
@@ -111,7 +138,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
 
 
         try {
-            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, username, currentStock.comment, shared)
+            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, currentStock.sector, currentStock.current_price, username, currentStock.comment, shared)
         }
         catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }
 
@@ -201,5 +228,6 @@ const financials_call = (symbol, callback) => {
  */
 
 module.exports = {
-    gurufocusAdd
+    gurufocusAdd,
+    update_prices
 }

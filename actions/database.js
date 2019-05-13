@@ -79,9 +79,11 @@ const showstocks = async (username) => {
             stock_id: stocks.rows[i].stock_id,
             symbol: stocks.rows[i].symbol,
             stock_name: stocks.rows[i].stock_name,
+            stocksector:stocks.rows[i].sector,
+            stock_current_price: `$${stocks.rows[i].current_price}`,
             note: stocks.rows[i].note,
             enabled: stocks.rows[i].enabled,
-            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id)
+            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
         })
     }
     return stockAndData
@@ -216,10 +218,12 @@ const arrayAddStockData = async (data) => {
 /* runQuery('update stockdata set date = $1 WHERE date= $2', [new Date(new Date().setDate(new Date().getDate()-1)), new Date()])
  */
 
+const updatePrices = async(stock, username, sector, current_price) => {
+    return await runQuery(`UPDATE stocks SET sector = '${sector}', current_price = ${current_price} where username = '${username}' and symbol = '${stock}'`)
+}
 
-
-const addStocks = async (symbol, stock_name, username, note, shared = false) => {
-    return await runQuery(`INSERT INTO stocks (symbol, stock_name, username, note, shared) VALUES ($1, $2, $3, $4, $5) RETURNING stock_id`, [symbol, stock_name, username, note, shared])
+const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, shared = false) => {
+    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, shared) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING stock_id`, [symbol, stock_name, stock_sector, current_price, username, note, shared])
 }
 
 
@@ -270,5 +274,6 @@ module.exports = {
     toggleStock,
     editNote,
     sharestock,
-    unsharestock
+    unsharestock,
+    updatePrices
 }
