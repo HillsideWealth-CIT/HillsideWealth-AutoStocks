@@ -375,10 +375,10 @@
 <script>
 	function currencysorter(a, b) {
 		if(a == 'Infinity%' || a == 'NaN%' || a == '-Infinity'){
-			a = '100.0%'
+			a = '100000.0%'
 		}
 		if(b == 'Infinity%' || b == 'NaN%' || b == '-Infinity'){
-			b = '100.0%'
+			b = '100000.0%'
 		}
 		a = parseFloat(a.replace(/[^\d.-]/g, ''));
 		b = parseFloat(b.replace(/[^\d.-]/g, ''));

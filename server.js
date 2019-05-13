@@ -210,7 +210,13 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
             })
         });
 });
-
+/***
+ * Things that need to be changed when copying collection
+ * 1. get link
+ * 2. showstocks -> showshared
+ * 3. collection.hbs -> sharedcollection.hbs
+ * 4. c -> sc
+ */
 app.get("/shared", sessionCheck, statusCheck, (request, response) => {
     db.showshared(request.session.user)
         .then(res => {
@@ -327,6 +333,7 @@ app.get("/shared", sessionCheck, statusCheck, (request, response) => {
             })
 
             //console.log(res)
+            //fs.writeFileSync('test.json', JSON.stringify(res));
             response.render("sharedcollection.hbs", {
                 dbdata: res,
                 sc: true,
@@ -515,10 +522,10 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
             break;
         
         case 'Update_Prices':
-                console.log(request.body.stocks);
+                //console.log(request.body.stocks);
                 api_calls.update_prices(request.body.stocks, request.session.user)
                 .then((resolve) => {
-                    console.log('it worked')
+                    //console.log('it worked')
                     response.send(JSON.stringify(request.body.stocks));
                 })
                 break;
@@ -550,7 +557,7 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
 })
 
 app.post("/shared", (request, response) => {
-    console.log(request.body.stocks)
+    //console.log(request.body.stocks)
     switch(request.body.action){
         case 'Remove':
         let promises = [];
@@ -564,7 +571,7 @@ app.post("/shared", (request, response) => {
         break;
 
         case 'Append':
-        console.log(request.body.stocks)
+        //console.log(request.body.stocks)
         api_calls.gurufocusAdd(request.body.stocks, request.session.user, true, true)
             .then((resolve) => {
                 response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
