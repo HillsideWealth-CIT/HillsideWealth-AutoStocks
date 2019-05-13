@@ -53,7 +53,6 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
 
                 if (summary.summary) {
                     currentStock.company = summary.summary.general.company
-                    var currentprice = summary.summary.general.price
                 } else {
                     throw 'Error: No API Response'
                 }
@@ -78,11 +77,10 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     ttm: annuals["Fiscal Year"][f] === "TTM",
                     date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
-                    //price: parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f]),
-                    price: currentprice,
+                    price: parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f]),
                     net_debt: parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Current Portion of Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Minority Interest"][f]) - parseFloat(annuals.balance_sheet["Cash And Cash Equivalents"][f]) - parseFloat(annuals.balance_sheet["Marketable Securities"][f]),
                     market_cap: parseFloat(annuals.valuation_and_quality["Market Cap"][f]),
-                    //roe: parseFloat(annuals.common_size_ratios["ROE %"][f]),
+                    roe: parseFloat(annuals.common_size_ratios["ROE %"][f]),
                     yield: parseFloat(annuals.valuation_ratios["Dividend Yield %"][f]),
                     dividend: parseFloat(annuals.common_size_ratios["Dividend Payout Ratio"][f]),
                     asset_turnover: parseFloat(annuals.common_size_ratios["Asset Turnover"][f]),
@@ -93,12 +91,6 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     aebitda: Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f])),
                     fcf: parseFloat(annuals.cashflow_statement["Free Cash Flow"][f])
                 }
-                    try{
-                        currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f])
-                    }
-                    catch{
-                        currentData.roe = parseFloat(annuals.common_size_ratios["ROA %"][f])
-                    }
                 //console.log(currentData)
                 currentStock.data.push(currentData)
             }

@@ -267,7 +267,7 @@
 	function detailFormatter(index, row) {
     var html = {};
 	{{#each dbdata}}
-	html[`{{ this.stock_name }}`] = `<table id="table" class="table table-sm table-hover">
+	html[`{{ this.stock_name }}`] = `<table id="table" class="table table-hover">
 						<thead class="thead-light" align="center">
 							<tr>
 								<th>Symbol</th>
@@ -511,7 +511,7 @@
 								<td>{{this.stockdata.[9].fcf_format}}</td>
 								<td>{{this.stockdata.[9].fcf_yield}}</td>
 							</tr>
-														<tr id="{{ this.symbol }}">
+							<tr id="{{ this.symbol }}">
 								<td>{{ this.symbol }}</td>
 								<td>{{ this.stock_name }}</td>
 								<td>{{this.stockdata.[10].aebitda_spice}}</td>
@@ -534,126 +534,6 @@
 								<td>{{this.stockdata.[10].roe_spice}}</td>
 								<td>{{this.stockdata.[10].fcf_format}}</td>
 								<td>{{this.stockdata.[10].fcf_yield}}</td>
-							</tr>
-							<tr id="{{ this.symbol }}">
-								<td>{{ this.symbol }}</td>
-								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[11].aebitda_spice}}</td>
-								<td>{{this.stockdata.[11].datestring}}</td>
-								<td>{{this.stockdata.[11].yield_format}}</td>
-								<td>{{this.stockdata.[11].price_format}}</td>
-								<td>{{this.stockdata.[11].shares_outstanding_format}}</td>
-								<td>{{this.stockdata.[11].market_cap_format}}</td>
-								<td>{{this.stockdata.[11].net_debt_format}}</td>
-								<td>{{this.stockdata.[11].enterprise_value_format}}</td>
-								<td>{{this.stockdata.[11].nd_aebitda}}</td>
-								<td>{{this.stockdata.[11].revenue_format}}</td>
-								<td>{{this.stockdata.[11].aebitda_format}}</td>
-								<td>{{this.stockdata.[11].aebitda_percent}}</td>
-								<td>{{this.stockdata.[11].asset_turnover}}</td>
-								<td>{{this.stockdata.[11].aebitda_at}}</td>
-								<td>{{this.stockdata.[11].roe_format}}</td>
-								<td>{{this.stockdata.[11].effective_tax_format}}</td>
-								<td>{{this.stockdata.[11].ev_aebitda}}</td>
-								<td>{{this.stockdata.[11].roe_spice}}</td>
-								<td>{{this.stockdata.[11].fcf_format}}</td>
-								<td>{{this.stockdata.[11].fcf_yield}}</td>
-							</tr>
-							<tr id="{{ this.symbol }}">
-								<td>{{ this.symbol }}</td>
-								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[12].aebitda_spice}}</td>
-								<td>{{this.stockdata.[12].datestring}}</td>
-								<td>{{this.stockdata.[12].yield_format}}</td>
-								<td>{{this.stockdata.[12].price_format}}</td>
-								<td>{{this.stockdata.[12].shares_outstanding_format}}</td>
-								<td>{{this.stockdata.[12].market_cap_format}}</td>
-								<td>{{this.stockdata.[12].net_debt_format}}</td>
-								<td>{{this.stockdata.[12].enterprise_value_format}}</td>
-								<td>{{this.stockdata.[12].nd_aebitda}}</td>
-								<td>{{this.stockdata.[12].revenue_format}}</td>
-								<td>{{this.stockdata.[12].aebitda_format}}</td>
-								<td>{{this.stockdata.[12].aebitda_percent}}</td>
-								<td>{{this.stockdata.[12].asset_turnover}}</td>
-								<td>{{this.stockdata.[12].aebitda_at}}</td>
-								<td>{{this.stockdata.[12].roe_format}}</td>
-								<td>{{this.stockdata.[12].effective_tax_format}}</td>
-								<td>{{this.stockdata.[12].ev_aebitda}}</td>
-								<td>{{this.stockdata.[12].roe_spice}}</td>
-								<td>{{this.stockdata.[12].fcf_format}}</td>
-								<td>{{this.stockdata.[12].fcf_yield}}</td>
-							</tr>
-							<tr id="{{ this.symbol }}">
-								<td>{{ this.symbol }}</td>
-								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[13].aebitda_spice}}</td>
-								<td>{{this.stockdata.[13].datestring}}</td>
-								<td>{{this.stockdata.[13].yield_format}}</td>
-								<td>{{this.stockdata.[13].price_format}}</td>
-								<td>{{this.stockdata.[13].shares_outstanding_format}}</td>
-								<td>{{this.stockdata.[13].market_cap_format}}</td>
-								<td>{{this.stockdata.[13].net_debt_format}}</td>
-								<td>{{this.stockdata.[13].enterprise_value_format}}</td>
-								<td>{{this.stockdata.[13].nd_aebitda}}</td>
-								<td>{{this.stockdata.[13].revenue_format}}</td>
-								<td>{{this.stockdata.[13].aebitda_format}}</td>
-								<td>{{this.stockdata.[13].aebitda_percent}}</td>
-								<td>{{this.stockdata.[13].asset_turnover}}</td>
-								<td>{{this.stockdata.[13].aebitda_at}}</td>
-								<td>{{this.stockdata.[13].roe_format}}</td>
-								<td>{{this.stockdata.[13].effective_tax_format}}</td>
-								<td>{{this.stockdata.[13].ev_aebitda}}</td>
-								<td>{{this.stockdata.[13].roe_spice}}</td>
-								<td>{{this.stockdata.[13].fcf_format}}</td>
-								<td>{{this.stockdata.[13].fcf_yield}}</td>
-							</tr>
-							<tr id="{{ this.symbol }}">
-								<td>{{ this.symbol }}</td>
-								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[14].aebitda_spice}}</td>
-								<td>{{this.stockdata.[14].datestring}}</td>
-								<td>{{this.stockdata.[14].yield_format}}</td>
-								<td>{{this.stockdata.[14].price_format}}</td>
-								<td>{{this.stockdata.[14].shares_outstanding_format}}</td>
-								<td>{{this.stockdata.[14].market_cap_format}}</td>
-								<td>{{this.stockdata.[14].net_debt_format}}</td>
-								<td>{{this.stockdata.[14].enterprise_value_format}}</td>
-								<td>{{this.stockdata.[14].nd_aebitda}}</td>
-								<td>{{this.stockdata.[14].revenue_format}}</td>
-								<td>{{this.stockdata.[14].aebitda_format}}</td>
-								<td>{{this.stockdata.[14].aebitda_percent}}</td>
-								<td>{{this.stockdata.[14].asset_turnover}}</td>
-								<td>{{this.stockdata.[14].aebitda_at}}</td>
-								<td>{{this.stockdata.[14].roe_format}}</td>
-								<td>{{this.stockdata.[14].effective_tax_format}}</td>
-								<td>{{this.stockdata.[14].ev_aebitda}}</td>
-								<td>{{this.stockdata.[14].roe_spice}}</td>
-								<td>{{this.stockdata.[14].fcf_format}}</td>
-								<td>{{this.stockdata.[14].fcf_yield}}</td>
-							</tr>
-							<tr id="{{ this.symbol }}">
-								<td>{{ this.symbol }}</td>
-								<td>{{ this.stock_name }}</td>
-								<td>{{this.stockdata.[15].aebitda_spice}}</td>
-								<td>{{this.stockdata.[15].datestring}}</td>
-								<td>{{this.stockdata.[15].yield_format}}</td>
-								<td>{{this.stockdata.[15].price_format}}</td>
-								<td>{{this.stockdata.[15].shares_outstanding_format}}</td>
-								<td>{{this.stockdata.[15].market_cap_format}}</td>
-								<td>{{this.stockdata.[15].net_debt_format}}</td>
-								<td>{{this.stockdata.[15].enterprise_value_format}}</td>
-								<td>{{this.stockdata.[15].nd_aebitda}}</td>
-								<td>{{this.stockdata.[15].revenue_format}}</td>
-								<td>{{this.stockdata.[15].aebitda_format}}</td>
-								<td>{{this.stockdata.[15].aebitda_percent}}</td>
-								<td>{{this.stockdata.[15].asset_turnover}}</td>
-								<td>{{this.stockdata.[15].aebitda_at}}</td>
-								<td>{{this.stockdata.[15].roe_format}}</td>
-								<td>{{this.stockdata.[15].effective_tax_format}}</td>
-								<td>{{this.stockdata.[15].ev_aebitda}}</td>
-								<td>{{this.stockdata.[15].roe_spice}}</td>
-								<td>{{this.stockdata.[15].fcf_format}}</td>
-								<td>{{this.stockdata.[15].fcf_yield}}</td>
 							</tr>
 						</tbody>
 					</table>`
