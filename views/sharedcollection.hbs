@@ -13,7 +13,7 @@
 				<div class="table-responsive p-3">
 					<table id="table" data-toggle="table"
 						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-search="true" data-detail-formatter="detailFormatter"
-						data-show-columns="false" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks" }'
+						data-show-columns="false" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
 						class="table table1 table-hover">
 						<thead class='thead-dark'>
 							<tr>
@@ -23,6 +23,7 @@
 								<th data-sortable="true">Stock Name</th>
 								<th data-sortable="true">aEBITDA Spice</th>
                                 <th data-sortable="true">My Comment</th>
+								<th data-sortable="true">Guru Rating</th>
 								<th data-sortable="true">Sector</th>
 								<th data-sorter="currencysorter" data-sortable="true">Current Price</th>
 								<th data-sortable="true">Yield</th>
@@ -75,6 +76,7 @@
 								<td>{{ this.stock_name }}</td>
 								<td>{{this.stockdata.[0].aebitda_spice}}</td>
                                 <td><div id="note{{this.stock_id}}">{{this.note}}</div><button type="button" onclick='editNote({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td>{{this.gfrating}}</td>
 								<td>{{this.stocksector}}</td>
 								<td>{{this.stock_current_price}}</td>
 								<td>{{this.stockdata.[0].yield_format}}</td>

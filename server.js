@@ -50,7 +50,12 @@ app.use(
 
 // Add comma separator to numbers in thousands
 function formatNumber(num) {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    try{
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+    catch {
+        return "Missing Required information to format"
+    }
 }
 
 /* Checks session */

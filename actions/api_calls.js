@@ -45,6 +45,7 @@ const update_prices = async (list, username) => {
                 currentStock.company = summary.summary.general.company;
                 currentStock.sector = summary.summary.general.sector;
                 currentStock.current_price = parseFloat(summary.summary.general.price);
+                currentStock.gfrating = summary.summary.general.rating;
             }
             else{
                 throw 'no Api response'
@@ -53,7 +54,7 @@ const update_prices = async (list, username) => {
         catch (err) {
             console.log(err)
         }
-        db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price);
+        db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating);
         clearTimeout(timer);
     }
     return;
