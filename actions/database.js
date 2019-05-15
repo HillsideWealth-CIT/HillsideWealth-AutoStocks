@@ -198,6 +198,14 @@ const arrayAddStockData = async (data) => {
                 if (i == 0) columns.push('fcf')
                 placeholders.push(`$${params.push(parseFloat(data[i].fcf))}`)
             }
+            if (data[i].roic != null) {
+                if (i == 0) columns.push('roic')
+                placeholders.push(`$${params.push(parseFloat(data[i].roic))}`)
+            }
+            if (data[i].wacc != null) {
+                if (i == 0) columns.push('wacc')
+                placeholders.push(`$${params.push(parseFloat(data[i].wacc))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
@@ -215,7 +223,8 @@ const arrayAddStockData = async (data) => {
         query += ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
         //console.log(query)
         //console.log(params)
-        await runQuery(`DELETE FROM stockdata WHERE ttm = TRUE AND stock_id = $1`, [data[0].stock_id])
+        //await runQuery(`DELETE FROM stockdata WHERE ttm = TRUE AND stock_id = $1`, [data[0].stock_id])
+        await runQuery(`DELETE FROM stockdata WHERE stock_id = $1`, [data[0].stock_id])
         return await runQuery(query, params)
     }
 }
