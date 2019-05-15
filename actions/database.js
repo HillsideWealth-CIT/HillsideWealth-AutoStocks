@@ -84,6 +84,7 @@ const showstocks = async (username) => {
             note: stocks.rows[i].note,
             enabled: stocks.rows[i].enabled,
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
+            gfrating: stocks.rows[i].gfrating + '/5'
         })
     }
     return stockAndData
@@ -100,9 +101,12 @@ const showshared = async (username) => {
             stock_id: stocks.rows[i].stock_id,
             symbol: stocks.rows[i].symbol,
             stock_name: stocks.rows[i].stock_name,
+            stocksector:stocks.rows[i].sector,
+            stock_current_price: `$${stocks.rows[i].current_price}`,
             note: stocks.rows[i].note,
             enabled: stocks.rows[i].enabled,
-            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id)
+            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
+            gfrating: stocks.rows[i].gfrating + '/5'
         })
     }
     return stockAndData
@@ -194,6 +198,14 @@ const arrayAddStockData = async (data) => {
                 if (i == 0) columns.push('fcf')
                 placeholders.push(`$${params.push(parseFloat(data[i].fcf))}`)
             }
+            if (data[i].roic != null) {
+                if (i == 0) columns.push('roic')
+                placeholders.push(`$${params.push(parseFloat(data[i].roic))}`)
+            }
+            if (data[i].wacc != null) {
+                if (i == 0) columns.push('wacc')
+                placeholders.push(`$${params.push(parseFloat(data[i].wacc))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
@@ -211,15 +223,16 @@ const arrayAddStockData = async (data) => {
         query += ` ON CONFLICT (stock_id, date) DO UPDATE SET stock_id = excluded.stock_id, date = excluded.date`
         //console.log(query)
         //console.log(params)
-        await runQuery(`DELETE FROM stockdata WHERE ttm = TRUE AND stock_id = $1`, [data[0].stock_id])
+        //await runQuery(`DELETE FROM stockdata WHERE ttm = TRUE AND stock_id = $1`, [data[0].stock_id])
+        await runQuery(`DELETE FROM stockdata WHERE stock_id = $1`, [data[0].stock_id])
         return await runQuery(query, params)
     }
 }
 /* runQuery('update stockdata set date = $1 WHERE date= $2', [new Date(new Date().setDate(new Date().getDate()-1)), new Date()])
  */
 
-const updatePrices = async(stock, username, sector, current_price) => {
-    return await runQuery(`UPDATE stocks SET sector = '${sector}', current_price = ${current_price} where username = '${username}' and symbol = '${stock}'`)
+const updatePrices = async(stock, username, sector, current_price, gfrating) => {
+    return await runQuery(`UPDATE stocks SET sector = '${sector}', current_price = ${current_price}, gfrating = '${gfrating}' where username = '${username}' and symbol = '${stock}'`)
 }
 
 const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, shared = false) => {

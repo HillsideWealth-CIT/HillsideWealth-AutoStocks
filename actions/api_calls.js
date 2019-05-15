@@ -45,6 +45,7 @@ const update_prices = async (list, username) => {
                 currentStock.company = summary.summary.general.company;
                 currentStock.sector = summary.summary.general.sector;
                 currentStock.current_price = parseFloat(summary.summary.general.price);
+                currentStock.gfrating = summary.summary.general.rating;
             }
             else{
                 throw 'no Api response'
@@ -53,7 +54,7 @@ const update_prices = async (list, username) => {
         catch (err) {
             console.log(err)
         }
-        db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price);
+        db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating);
         clearTimeout(timer);
     }
     return;
@@ -118,14 +119,23 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     effective_tax: parseFloat(annuals.income_statement["Tax Rate %"][f]),
                     shares_outstanding: parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f]),
                     aebitda: Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f])),
-                    fcf: parseFloat(annuals.cashflow_statement["Free Cash Flow"][f])
+                    roic: parseFloat(annuals.common_size_ratios["ROIC %"][f]),
+                    wacc: parseFloat(annuals.common_size_ratios["WACC %"][f])
                 }
-                    try{
+                    try {
                         currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f])
                     }
-                    catch{
+                    catch {
                         currentData.roe = parseFloat(annuals.common_size_ratios["ROA %"][f])
                     }
+
+                    try {
+                        currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f])
+                    }
+                    catch {
+                        currentData.fcf = NaN;
+                    }
+
                 //console.log(currentData)
                 currentStock.data.push(currentData)
             }

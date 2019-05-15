@@ -50,7 +50,12 @@ app.use(
 
 // Add comma separator to numbers in thousands
 function formatNumber(num) {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    try{
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+    catch {
+        return "Missing Required information to format"
+    }
 }
 
 /* Checks session */
@@ -103,6 +108,10 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.roe_format = Math.round(data.roe * 10) / 10 + '%'
                     data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
                     data.fcf_format = formatNumber(Math.round(data.fcf))
+
+                    data.roic_format = formatNumber(data.roic);
+                    data.wacc_format = formatNumber(data.wacc);
+                    data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
 
                     data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
                     data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
