@@ -5,6 +5,7 @@
 		<meta charset="utf-8">
 		<link rel="icon" type="image/png" href="/imgs/icon.png" />
 		<style>.fixed-table-container{ background-color:white} th:nth-child(4),td:nth-child(4){position:sticky;left:0px;} td:nth-child(4){background-color: #F0F0F0; z-index: 999;}</style>
+		<style>#table{table-layout: fixed; word-wrap: break-word;} th {width: 250px;}</style>
 	</head>
 	<body>
 		{{>header}}
@@ -13,9 +14,9 @@
 				<div class="table-responsive p-3">
 					<table id="table" data-toggle="table"
 						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-search="true" data-detail-formatter="detailFormatter"
-						data-show-columns="false" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
+						data-show-columns="true" data-pagination="true" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
 						class="table table1 table-hover">
-						<thead class='thead-dark'>
+						<thead class='thead-dark' align="center">
 							<tr>
 								<th data-checkbox="true"></th>
 								<th>hidden</th>
@@ -70,7 +71,7 @@
 								<th data-sortable="true">Date</th>
 							</tr>
 						</thead>
-						<tbody id='db_stocks'>
+						<tbody id='db_stocks' align="center">
 							{{#each dbdata}}
 							<tr id="{{ this.stock_id }}" data-val={{this.symbol}} {{#unless this.enabled}} class="disabledStock" {{/unless}}>
 								<td></td>
