@@ -84,7 +84,7 @@ const showstocks = async (username) => {
             note: stocks.rows[i].note,
             enabled: stocks.rows[i].enabled,
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
-            gfrating: stocks.rows[i].gfrating + '/5'
+            gfrating: stocks.rows[i].gfrating
         })
     }
     return stockAndData
@@ -106,7 +106,7 @@ const showshared = async (username) => {
             note: stocks.rows[i].note,
             enabled: stocks.rows[i].enabled,
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
-            gfrating: stocks.rows[i].gfrating + '/5'
+            gfrating: stocks.rows[i].gfrating
         })
     }
     return stockAndData
