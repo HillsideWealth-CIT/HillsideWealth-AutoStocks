@@ -27,10 +27,11 @@
 								<th data-sortable="true">Guru Rating</th>
 								<th data-sortable="true">Sector</th>
 								<th data-sorter="currencysorter" data-sortable="true">Current Price</th>
-								<th data-sorter="currencysorter" data-sortable="true">MS Fair Value</th>
-								<th data-sorter="currencysorter" data-sortable="true">MS 1-Star price</th>
-								<th data-sorter="currencysorter" data-sortable="true">MS 5-Star price</th>
-								<th>MS Moat</th>
+								<th data-sorter="currencysorter" data-sortable="true">MS FV Est</th>
+								<th data-sorter="currencysorter" data-sortable="true">MS 5* price</th>
+								<th data-sorter="currencysorter" data-sortable="true">MS 1* price</th>
+								<th data-sortable="true">MS Moat Rating</th>
+								<th data-sorter="currencysorter" data-sortable="true">JDV Rating</th>
 								<th data-sorter="currencysorter" data-sortable="true">ROIC %</th>
 								<th data-sorter="currencysorter" data-sortable="true">WACC %</th>
 								<th data-sorter="currencysorter" data-sortable="true">ROIC - WACC %</th>			
@@ -88,9 +89,10 @@
 								<td>{{this.stocksector}}</td>
 								<td><div id="current_price{{this.stock_id}}">{{this.stock_current_price}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "current_price")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td><div id="fairvalue{{this.stock_id}}">{{this.fairvalue}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "fairvalue")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
-								<td><div id="onestar{{this.stock_id}}">{{this.onestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "onestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td><div id="fivestar{{this.stock_id}}">{{this.fivestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "fivestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="onestar{{this.stock_id}}">{{this.onestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "onestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td><div id="moat{{this.stock_id}}">{{this.moat}}</div><button type="button" onclick='editMoat({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="jdv{{this.stock_id}}">{{this.jdv}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "jdv")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td>{{this.stockdata.[0].roic_format}}</td>
 								<td>{{this.stockdata.[0].wacc_format}}</td>
 								<td>{{this.stockdata.[0].roicwacc_format}}</td>
@@ -339,6 +341,7 @@
 				})
 			}
 
+
 			const editPrice = (id, action) => {
 				let div = document.getElementById(`${action}${id}`);
 				let parent = div.parentNode;
@@ -355,8 +358,11 @@
 					}
 				}).then((result) => {
 					if(!result.dismiss){
-						if(Number.isNaN(parseFloat(result.value)) === false) {
+						if(Number.isNaN(parseFloat(result.value)) === false && action != 'jdv') {
 							parent.innerHTML = `<div id="${action}${id}">$${result.value}</div><button type="button" onclick='editPrice(${id}, ${action})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+						}
+						if(Number.isNaN(parseFloat(result.value)) === false && action == 'jdv') {
+							parent.innerHTML = `<div id="${action}${id}">${result.value}</div><button type="button" onclick='editPrice(${id}, ${action})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
 						}
 						if(Number.isNaN(parseFloat(result.value)) === true) {
 							Swal.fire({
