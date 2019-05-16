@@ -14,12 +14,12 @@
 				<div class="table-responsive p-3">
 					<table id="table" data-toggle="table"
 						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-search="true" data-detail-formatter="detailFormatter"
-						data-show-columns="true" data-pagination="true" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
+						data-show-columns="true" data-pagination="true" data-click-to-select="true" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
 						class="table table1 table-hover">
 						<thead class='thead-dark' align="center">
 							<tr>
 								<th data-checkbox="true"></th>
-								<th>hidden</th>
+								<th class="smallheader">hidden</th>
 								<th data-sortable="true">Symbol</th>
 								<th data-sortable="true">Stock Name</th>
 								<th data-sortable="true">aEBITDA Spice</th>
@@ -27,6 +27,9 @@
 								<th data-sortable="true">Guru Rating</th>
 								<th data-sortable="true">Sector</th>
 								<th data-sorter="currencysorter" data-sortable="true">Current Price</th>
+								<th data-sorter="currencysorter" data-sortable="true">MS 1-Star price</th>
+								<th data-sorter="currencysorter" data-sortable="true">MS 5-Star price</th>
+								<th>MS Moat</th>
 								<th data-sorter="currencysorter" data-sortable="true">ROIC %</th>
 								<th data-sorter="currencysorter" data-sortable="true">WACC %</th>
 								<th data-sorter="currencysorter" data-sortable="true">ROIC - WACC %</th>			
@@ -82,7 +85,10 @@
                                 <td><div id="note{{this.stock_id}}">{{this.note}}</div><button type="button" onclick='editNote({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td>{{this.gfrating}}</td>
 								<td>{{this.stocksector}}</td>
-								<td>{{this.stock_current_price}}</td>
+								<td><div id="current_price{{this.stock_id}}">{{this.stock_current_price}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "current_price")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="onestar{{this.stock_id}}">{{this.onestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "onestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="fivestar{{this.stock_id}}">{{this.fivestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "fivestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="moat{{this.stock_id}}">{{this.moat}}</div><button type="button" onclick='editMoat({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td>{{this.stockdata.[0].roic_format}}</td>
 								<td>{{this.stockdata.[0].wacc_format}}</td>
 								<td>{{this.stockdata.[0].roicwacc_format}}</td>
@@ -346,6 +352,95 @@
 
 				rm_list = [];
 			}
+			
+			const editNote = (id) => {
+				let div = document.getElementById(`note${id}`)
+				let parent = div.parentNode
+				parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" maxlength="250" /">`
+				inputDiv = document.getElementById(`noteInput${id}`)
+				inputDiv.addEventListener("keydown", (e) => {
+					if (e.keyCode == 13) {
+						fetch('/editNote', {
+							method: 'post',
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({note: inputDiv.value, stock_id: id})
+						}).then(() => {parent.innerHTML = `<div id="note${id}">${inputDiv.value}</div><button type="button" onclick='editNote(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`})
+					}
+				})
+			}
+			
+			const editMoat = (id) => {
+				let div = document.getElementById(`moat${id}`);
+				let parent = div.parentNode;
+				swal.fire({
+					title: "Select Moat",
+					input: "select",
+					inputOptions: {
+						'Wide': 'Wide',
+						'Narrow': 'Narrow',
+					},
+					inputPlaceholder: 'Select a moat',
+					showCancelButton: true,
+					preConfirm: (inputText) => {
+						ajax_edit("moat", id, inputText)
+						.then((resolved) => {
+							return resolved
+						})
+					}
+				}).then((result) => {
+					if(!result.dismiss){
+						parent.innerHTML = `<div id="moat${id}">${result.value}</div><button type="button" onclick='editMoat(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+					}
+				})
+			}
+
+			const editPrice = (id, action) => {
+				let div = document.getElementById(`${action}${id}`);
+				let parent = div.parentNode;
+				//parent.innerHTML=`<input id="priceInput${id}" value="${div.innerHTML}" maxlength="250/">`
+				swal.fire({
+					title: "Edit The Price",
+					input: 'text',
+					showConfirmButton: true,
+					showCancelButton: true,
+					preConfirm: (inputText) => {
+						ajax_edit(action, id, inputText).then((resolved) => {
+							return resolved
+						})
+					}
+				}).then((result) => {
+					if(!result.dismiss){
+						if(Number.isNaN(parseFloat(result.value)) === false) {
+							parent.innerHTML = `<div id="${action}${id}">$${result.value}</div><button type="button" onclick='editPrice(${id}, ${action})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+						}
+						if(Number.isNaN(parseFloat(result.value)) === true) {
+							Swal.fire({
+								title: "INVALID INPUT",
+								text: 'Please enter in a valid number',
+								type: 'error',
+							})
+						}
+					}
+				})
+			}
+
+			function ajax_edit(action, id, userInput){
+				return new Promise ((resolve, reject) => {
+					var data = {};
+					data.action = action;
+					data.edit = userInput;
+					data.id = id;
+					$.ajax({
+						type: "POST",
+						data: JSON.stringify(data),
+						contentType: 'application/json',
+						url: "/edit",
+					}).done(function(returned_data){
+						resolve(returned_data);
+					})
+				})
+			}
+
 
 			/** Used to send data from the front end to the node server
 			*@param list - A list of stock information
@@ -873,22 +968,6 @@
 				document.getElementById(id).style.backgroundColor = ""
 			}
 		}
-	}
-
-  	const editNote = (id) => {
-		let div = document.getElementById(`note${id}`)
-		let parent = div.parentNode
-		parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" maxlength="250" /">`
-		inputDiv = document.getElementById(`noteInput${id}`)
-		inputDiv.addEventListener("keydown", (e) => {
-			if (e.keyCode == 13) {
-				fetch('/editNote', {
-					method: 'post',
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({note: inputDiv.value, stock_id: id})
-				}).then(() => {parent.innerHTML = `<div id="note${id}">${inputDiv.value}</div><button type="button" onclick='editNote(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`})
-			}
-		})
 	}
 
 	const toggleStock = (id) => {

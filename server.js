@@ -391,6 +391,35 @@ app.post('/editNote', sessionCheck, (request, response) => {
         .catch(() => response.send(false))
 })
 
+app.post('/edit', sessionCheck, (request, response) => {
+    console.log(request.body)
+    //response.send({errors: 'none'})
+    if(request.body.action === 'current_price'){
+        db.editPrices(request.body.edit, request.body.id, request.session.user)
+            .then(() => {response.send(true)})
+            .catch((err) => {
+                response.send(false)})
+        }
+    if(request.body.action === 'onestar'){
+        db.editOnestar(request.body.edit, request.body.id, request.session.user)
+        .then(() => {response.send(true)})
+        .catch((err) => {
+            response.send(false)})
+        }
+    if(request.body.action === 'fivestar'){
+        db.editFivestar(request.body.edit, request.body.id, request.session.user)
+        .then(() => {response.send(true)})
+        .catch((err) => {
+            response.send(false)})
+    }
+    if(request.body.action === 'moat'){
+        db.editMoat(request.body.edit, request.body.id, request.session.user)
+        .then(() => {response.send(true)})
+        .catch((err) => {
+            response.send(false)})
+    }
+})
+
 /* New Code */
 app.post("/newCode", sessionCheck, (request, response) => {
     console.log(request.body)
