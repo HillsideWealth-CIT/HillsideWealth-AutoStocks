@@ -89,6 +89,7 @@ const showstocks = async (username) => {
             fivestar: `$${stocks.rows[i].fivestar}`,
             moat: stocks.rows[i].moat,
             fairvalue: `$${stocks.rows[i].fairvalue}`,
+            jdv: stocks.rows[i].jdv,
         })
     }
     return stockAndData
@@ -297,6 +298,10 @@ const editMoat = async (edit, stock_id, username) => {
     return await runQuery(`UPDATE stocks SET moat = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
 }
 
+const editJdv = async (edit, stock_id, username) => {
+    return await runQuery(`UPDATE stocks SET jdv = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
+}
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -321,4 +326,5 @@ module.exports = {
     editFivestar,
     editFairvalue,
     editMoat,
+    editJdv,
 }
