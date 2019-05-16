@@ -400,6 +400,12 @@ app.post('/edit', sessionCheck, (request, response) => {
             .catch((err) => {
                 response.send(false)})
         }
+    if(request.body.action === 'fairvalue'){
+        db.editFairvalue(request.body.edit, request.body.id, request.session.user)
+        .then(() => {response.send(true)})
+        .catch((err) => {
+            response.send(false)})
+        }
     if(request.body.action === 'onestar'){
         db.editOnestar(request.body.edit, request.body.id, request.session.user)
         .then(() => {response.send(true)})
