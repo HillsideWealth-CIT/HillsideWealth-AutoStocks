@@ -88,6 +88,7 @@ const showstocks = async (username) => {
             onestar: `$${stocks.rows[i].onestar}`,
             fivestar: `$${stocks.rows[i].fivestar}`,
             moat: stocks.rows[i].moat,
+            fairvalue: `$${stocks.rows[i].fairvalue}`,
         })
     }
     return stockAndData
@@ -113,6 +114,7 @@ const showshared = async (username) => {
             onestar: stocks.rows[i].onestar,
             fivestar: stocks.rows[i].fivestar,
             moat: stocks.rows[i].moat,
+            fairvalue: `$${stocks.rows[i].fairvalue}`,
         })
     }
     return stockAndData
@@ -287,6 +289,10 @@ const editFivestar = async (edit, stock_id, username) => {
     return await runQuery(`UPDATE stocks SET fivestar = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
 }
 
+const editFairvalue = async (edit, stock_id, username) => {
+    return await runQuery(`UPDATE stocks SET fairvalue = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
+}
+
 const editMoat = async (edit, stock_id, username) => {
     return await runQuery(`UPDATE stocks SET moat = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
 }
@@ -313,5 +319,6 @@ module.exports = {
     editPrices,
     editOnestar,
     editFivestar,
+    editFairvalue,
     editMoat,
 }
