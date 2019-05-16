@@ -84,7 +84,10 @@ const showstocks = async (username) => {
             note: stocks.rows[i].note,
             enabled: stocks.rows[i].enabled,
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
-            gfrating: stocks.rows[i].gfrating
+            gfrating: stocks.rows[i].gfrating,
+            onestar: `$${stocks.rows[i].onestar}`,
+            fivestar: `$${stocks.rows[i].fivestar}`,
+            moat: stocks.rows[i].moat,
         })
     }
     return stockAndData
@@ -106,7 +109,10 @@ const showshared = async (username) => {
             note: stocks.rows[i].note,
             enabled: stocks.rows[i].enabled,
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
-            gfrating: stocks.rows[i].gfrating
+            gfrating: stocks.rows[i].gfrating,
+            onestar: stocks.rows[i].onestar,
+            fivestar: stocks.rows[i].fivestar,
+            moat: stocks.rows[i].moat,
         })
     }
     return stockAndData
@@ -266,9 +272,24 @@ const retrieveAllUsers = async () => {
 }
 
 const editNote = async (note, username, stock_id) => {
-    return await runQuery(`UPDATE stocks SET note = $1 WHERE username = $2 AND stock_id = $3`, [note, username, stock_id])
+    return await runQuery(`UPDATE stocks SET note = $1 WHERE stock_id = $2`, [note, stock_id])
 }
 
+const editPrices = async (edit, stock_id, username) => {
+    return await runQuery(`UPDATE stocks SET current_price = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
+}
+
+const editOnestar = async (edit, stock_id, username) => {
+    return await runQuery(`UPDATE stocks SET onestar = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
+}
+
+const editFivestar = async (edit, stock_id, username) => {
+    return await runQuery(`UPDATE stocks SET fivestar = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
+}
+
+const editMoat = async (edit, stock_id, username) => {
+    return await runQuery(`UPDATE stocks SET moat = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
+}
 
 module.exports = {
     addUser,
@@ -288,5 +309,9 @@ module.exports = {
     editNote,
     sharestock,
     unsharestock,
-    updatePrices
+    updatePrices,
+    editPrices,
+    editOnestar,
+    editFivestar,
+    editMoat,
 }
