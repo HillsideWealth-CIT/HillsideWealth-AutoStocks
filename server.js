@@ -392,7 +392,7 @@ app.post('/editNote', sessionCheck, (request, response) => {
 })
 
 app.post('/edit', sessionCheck, (request, response) => {
-    console.log(request.body)
+    //console.log(request.body)
     //response.send({errors: 'none'})
     if(request.body.action === 'current_price'){
         db.editPrices(request.body.edit, request.body.id, request.session.user)
@@ -426,6 +426,12 @@ app.post('/edit', sessionCheck, (request, response) => {
     }
     if(request.body.action === 'jdv'){
         db.editJdv(request.body.edit, request.body.id, request.session.user)
+        .then(() => {response.send(true)})
+        .catch((err) => {
+            response.send(false)})
+    }
+    if(request.body.action === 'emote'){
+        db.editEmoticon(request.body.edit, request.body.id, request.session.user)
         .then(() => {response.send(true)})
         .catch((err) => {
             response.send(false)})
