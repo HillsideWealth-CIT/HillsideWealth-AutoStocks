@@ -5,17 +5,17 @@
 		<meta charset="utf-8">
 		<link rel="icon" type="image/png" href="/imgs/icon.png" />
 		<style>.fixed-table-container{ background-color:white} th:nth-child(4),td:nth-child(4){position:sticky;left:0px;} td:nth-child(4){background-color: #F0F0F0; z-index: 999;}</style>
-		<style>#table{table-layout: fixed; word-wrap: break-word;} th {width: 250px;}</style>
+		<style>#table{table-layout: fixed; word-wrap: break-word;} th {width: 200px;}</style>
 	</head>
 	<body>
 		{{>header}}
 		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
-				<table id="table" data-toggle="table"
+<table id="table" data-toggle="table"
 						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-search="true" data-detail-formatter="detailFormatter"
 						data-show-columns="true" data-pagination="true" data-click-to-select="true" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
-						class="table table1 table-hover">
+						class="table table1 table-sm table-hover">
 						<thead class='thead-dark' align="center">
 							<tr>
 								<th data-checkbox="true"></th>
@@ -24,6 +24,7 @@
 								<th data-sortable="true">Stock Name</th>
 								<th data-sortable="true">aEBITDA Spice</th>
                                 <th data-sortable="true">My Comment</th>
+								<th>Emoticon</th>
 								<th data-sortable="true">Guru Rating</th>
 								<th data-sortable="true">Sector</th>
 								<th data-sorter="currencysorter" data-sortable="true">Current Price</th>
@@ -85,6 +86,7 @@
 								<td>{{ this.stock_name }}</td>
 								<td>{{this.stockdata.[0].aebitda_spice}}</td>
                                 <td><div id="note{{this.stock_id}}">{{this.note}}</div><button type="button" onclick='editNote({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div style="font-size: 30px" id="emoticon{{this.stock_id}}">{{this.emoticon}}</div><button type="button" onclick='editEmoticon({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td>{{this.gfrating}}</td>
 								<td>{{this.stocksector}}</td>
 								<td><div id="current_price{{this.stock_id}}">{{this.stock_current_price}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "current_price")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
@@ -337,6 +339,33 @@
 				}).then((result) => {
 					if(!result.dismiss){
 						parent.innerHTML = `<div id="moat${id}">${result.value}</div><button type="button" onclick='editMoat(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+					}
+				})
+			}
+
+			const editEmoticon = (id) => {
+				let div = document.getElementById(`emoticon${id}`);
+				let parent = div.parentNode;
+				swal.fire({
+					title: "Select Emote",
+					input: "select",
+					inputOptions: {
+						'😃': '😃',
+						'🤑':'🤑',
+						'😫':'😫',
+						'💩': '💩',
+					},
+					inputPlaceholder: 'Select an emote',
+					showCancelButton: true,
+					preConfirm: (inputText) => {
+						ajax_edit("emote", id, inputText)
+						.then((resolved) => {
+							return resolved
+						})
+					}
+				}).then((result) => {
+					if(!result.dismiss){
+						parent.innerHTML = `<div style="font-size: 30px" id="emoticon${id}">${result.value}</div><button type="button" onclick='editEmoticon(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
 					}
 				})
 			}

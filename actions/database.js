@@ -90,6 +90,7 @@ const showstocks = async (username) => {
             moat: stocks.rows[i].moat,
             fairvalue: `$${stocks.rows[i].fairvalue}`,
             jdv: stocks.rows[i].jdv,
+            emoticon: stocks.rows[i].emoticons,
         })
     }
     return stockAndData
@@ -116,6 +117,8 @@ const showshared = async (username) => {
             fivestar: stocks.rows[i].fivestar,
             moat: stocks.rows[i].moat,
             fairvalue: `$${stocks.rows[i].fairvalue}`,
+            jdv: stocks.rows[i].jdv,
+            emoticon: stocks.rows[i].emoticons,
         })
     }
     return stockAndData
@@ -302,6 +305,10 @@ const editJdv = async (edit, stock_id, username) => {
     return await runQuery(`UPDATE stocks SET jdv = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
 }
 
+const editEmoticon = async (edit, stock_id, username) => {
+    return await runQuery(`UPDATE stocks SET emoticons = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
+}
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -327,4 +334,5 @@ module.exports = {
     editFairvalue,
     editMoat,
     editJdv,
+    editEmoticon
 }
