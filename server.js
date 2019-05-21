@@ -112,6 +112,10 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.roic_format = formatNumber(data.roic);
                     data.wacc_format = formatNumber(data.wacc);
                     data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
+                    data.capex_format = formatNumber(data.capex)
+                    data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
+                    data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
+                    data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf)*100) / 100)
 
                     data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
                     data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
@@ -247,6 +251,10 @@ app.get("/shared", sessionCheck, statusCheck, (request, response) => {
                     data.roic_format = formatNumber(data.roic);
                     data.wacc_format = formatNumber(data.wacc);
                     data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
+                    data.capex_format = formatNumber(data.capex)
+                    data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
+                    data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
+                    data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf)*100) / 100)
 
                     data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
                     data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)

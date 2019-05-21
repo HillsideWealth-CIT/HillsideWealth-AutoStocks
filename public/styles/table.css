@@ -1,0 +1,30 @@
+.fixed-table-container { 
+    background-color:white
+}
+
+.StickyCol {
+    position:sticky;
+    left:0px;
+}
+
+.smallheader {
+    width: 80px;
+}
+
+.detailheaders {
+    width: 100px;
+}
+
+td:nth-child(4) {
+    background-color: #F0F0F0;
+    z-index: 999;
+}
+
+#table {
+    table-layout: fixed;
+    word-wrap: break-word;
+} 
+
+th {
+    width: 200px;
+}

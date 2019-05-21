@@ -84,6 +84,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     currentStock.company = summary.summary.general.company;
                     currentStock.sector = summary.summary.general.sector;
                     currentStock.current_price = parseFloat(summary.summary.general.price);
+                    currentStock.gfrating = summary.summary.general.rating;
                 } else {
                     throw 'Error: No API Response'
                 }
@@ -120,7 +121,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     shares_outstanding: parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f]),
                     aebitda: Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f])),
                     roic: parseFloat(annuals.common_size_ratios["ROIC %"][f]),
-                    wacc: parseFloat(annuals.common_size_ratios["WACC %"][f])
+                    wacc: parseFloat(annuals.common_size_ratios["WACC %"][f]),
+                    capex: parseFloat(annuals.cashflow_statement["Capital Expenditure"][f])
                 }
                     try {
                         currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f])
