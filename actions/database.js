@@ -113,8 +113,8 @@ const showshared = async (username) => {
             enabled: stocks.rows[i].enabled,
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
             gfrating: stocks.rows[i].gfrating,
-            onestar: stocks.rows[i].onestar,
-            fivestar: stocks.rows[i].fivestar,
+            onestar: `$${stocks.rows[i].onestar}`,
+            fivestar: `$${stocks.rows[i].fivestar}`,
             moat: stocks.rows[i].moat,
             fairvalue: `$${stocks.rows[i].fairvalue}`,
             jdv: stocks.rows[i].jdv,
@@ -217,6 +217,10 @@ const arrayAddStockData = async (data) => {
             if (data[i].wacc != null) {
                 if (i == 0) columns.push('wacc')
                 placeholders.push(`$${params.push(parseFloat(data[i].wacc))}`)
+            }
+            if (data[i].capex != null) {
+                if (i == 0) columns.push('capex')
+                placeholders.push(`$${params.push(parseFloat(data[i].capex))}`)
             }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
