@@ -53,11 +53,11 @@ function config_man(input_text){
             revg();
             break;
         case 'aEBITDA Growth':
-            revg();
+            aebitdag();
             break;  
         case 'DCF':
-                dcf();
-                break;  
+            dcf();
+            break;  
     }
     
 }

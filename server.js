@@ -92,6 +92,7 @@ app.get("/login", (request, response) => {
 });
 
 app.get("/collection", sessionCheck, statusCheck, (request, response) => {
+    let period_num = 1;
     db.showstocks(request.session.user)
         .then(res => {
             // Calculates data before rendering
@@ -116,7 +117,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
                     data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
                     data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf)*100) / 100)
-
+                    
                     data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
                     data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
                     data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
@@ -126,6 +127,8 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.datestring = moment(data.date).format('MMM DD, YYYY')
                     data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
                 })
+
+                period_num ++;
 
                 // Calculates metric growth rates
                 try {
