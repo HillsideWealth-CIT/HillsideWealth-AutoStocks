@@ -42,13 +42,18 @@
 					<span class="fas fa-eye"></span> Show Selected
 				</button>
 			</form>
+			<form class="px-2">
+				<button type="button" onclick='config();' class="btn btn-secondary btn-sm">
+					<span class="fas fa-cog"></span> Config
+				</button>
+			</form>
 			<b><label for="toggleCheck"> Show Hidden </label></b> &nbsp;<input id="toggleCheck" type="checkbox" onclick="toggleHidden()">
 		</div>
-
-        
-
+		<script src="/js/table.js"></script>
 	</body>
-	{{>sdbscripts}}
+	{{>sdb_ajax}}
+	{{>editscripts}}
+	{{>dbscripts}}
 	{{>detailformatter}}
 
 </html>

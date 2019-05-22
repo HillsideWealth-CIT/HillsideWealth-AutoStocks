@@ -122,7 +122,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     aebitda: Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f])),
                     roic: parseFloat(annuals.common_size_ratios["ROIC %"][f]),
                     wacc: parseFloat(annuals.common_size_ratios["WACC %"][f]),
-                    capex: parseFloat(annuals.cashflow_statement["Capital Expenditure"][f])
+                    capex: parseFloat(annuals.cashflow_statement["Capital Expenditure"][f]),
                 }
                     try {
                         currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f])
