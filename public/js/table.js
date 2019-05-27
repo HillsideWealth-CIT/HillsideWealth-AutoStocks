@@ -2,10 +2,6 @@ var columns = ['checkbox', 'hide', 'eps','gy','gp','ty','tg','dp','dcf_growth','
 var permanent_col = ['checkbox', 'hide', 'symbol', 'date']
 var $table = $('#table')
 
-$( document ).ready(function() {
-    select_dcf();
-})
-
 function config() {
     Swal.fire({
         title: 'Select a configuration',
