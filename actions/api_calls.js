@@ -123,6 +123,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     roic: parseFloat(annuals.common_size_ratios["ROIC %"][f]),
                     wacc: parseFloat(annuals.common_size_ratios["WACC %"][f]),
                     capex: parseFloat(annuals.cashflow_statement["Capital Expenditure"][f]),
+                    eps_basic: parseFloat(annuals.income_statement["EPS (Basic)"][f]),
+                    eps_without_nri: parseFloat(annuals.per_share_data_array["EPS without NRI"][f])
                 }
                     try {
                         currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f])
