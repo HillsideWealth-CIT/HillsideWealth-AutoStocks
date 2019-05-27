@@ -1,6 +1,10 @@
-var columns = ['checkbox', 'hide', 'symbol', 'spice', 'comment', 'emoji','rating','sector','curprice','msfv','msfive','msone','moat','jdv','roic','wacc','roicwacc','yield','price','shares','cap', 'capex', 'capXfcf','capXae', 'aEXshar','netdebt','enterp','nd','revenue','aebitda','aebitdapercent','asset','at','roe','tax','ev','roespice','fcf','fcfyield','fcfone','fcfthree','fcffive', 'fcften','pgone','pgthree', 'pgfive', 'pgten', 'soone', 'sothree', 'sofive', 'soten','rgone','rgthree','rgfive','rgten','agone','agthree','agfive','agten', 'date']
+var columns = ['checkbox', 'hide', 'eps','gy','gp','ty','tg','dp','dcf_growth','dcf_terminal','dcf_fair','symbol', 'spice', 'comment', 'emoji','rating','sector','curprice','msfv','msfive','msone','moat','jdv','roic','wacc','roicwacc','yield','price','shares','cap', 'capex', 'capXfcf','capXae', 'aEXshar','netdebt','enterp','nd','revenue','aebitda','aebitdapercent','asset','at','roe','tax','ev','roespice','fcf','fcfyield','fcfone','fcfthree','fcffive', 'fcften','pgone','pgthree', 'pgfive', 'pgten', 'soone', 'sothree', 'sofive', 'soten','rgone','rgthree','rgfive','rgten','agone','agthree','agfive','agten', 'date']
 var permanent_col = ['checkbox', 'hide', 'symbol', 'date']
 var $table = $('#table')
+
+$( document ).ready(function() {
+    select_dcf();
+})
 
 function config() {
     Swal.fire({
@@ -26,7 +30,7 @@ function config() {
 }
 
 function config_man(input_text){
-
+    console.log(input_text)
     switch(input_text){
         case 'Show All':
             show_all();
@@ -56,7 +60,7 @@ function config_man(input_text){
             aebitdag();
             break;  
         case 'DCF':
-            dcf();
+            select_dcf();
             break;  
     }
     
@@ -118,11 +122,14 @@ function aebitdag(){
     loopthrough(to_show)
 }
 
-function dcf(){
+function select_dcf(){
     reset();
-    let to_show = ['capex', 'capXfcf','capXae', 'aEXshar'];
+    let to_show = ['eps','gy','gp','ty','tg','dp','dcf_growth','dcf_terminal','dcf_fair'];
     loopthrough(to_show)
 }
+
+
+
 
 
 function show_all(){
