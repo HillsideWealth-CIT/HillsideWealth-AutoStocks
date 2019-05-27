@@ -93,7 +93,6 @@ app.get("/login", (request, response) => {
 });
 
 app.get("/collection", sessionCheck, statusCheck, (request, response) => {
-    let period_num = 1;
         db.showstocks(request.session.user)
         .then(res => {
             // Calculates data before rendering
@@ -147,8 +146,6 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.datestring = moment(data.date).format('MMM DD, YYYY')
                     data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
                 })
-
-                period_num ++;
 
                 // Calculates metric growth rates
                 try {
@@ -255,39 +252,58 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
  */
 app.get("/shared", sessionCheck, statusCheck, (request, response) => {
     db.showshared(request.session.user)
-        .then(res => {
-            // Calculates data before rendering
-            res.forEach((stock) => {
-                stock.stockdata.forEach((data) => {
-                    data.yield_format = data.yield + '%'
-                    data.price_format = '$' + formatNumber(data.price)
-                    data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100)
-                    data.market_cap_format = formatNumber(Math.round(data.market_cap))
-                    data.net_debt_format = formatNumber(Math.round(data.net_debt))
-                    data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10)
-                    data.revenue_format = formatNumber(Math.round(data.revenue))
-                    data.aebitda_format = formatNumber(data.aebitda)
-                    data.roe_format = Math.round(data.roe * 10) / 10 + '%'
-                    data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
-                    data.fcf_format = formatNumber(Math.round(data.fcf))
+    .then(res => {
+        // Calculates data before rendering
+        res.forEach((stock) => {
+            stock.stockdata.forEach((data) => {
+                data.yield_format = data.yield + '%'
+                data.price_format = '$' + formatNumber(data.price)
+                data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100)
+                data.market_cap_format = formatNumber(Math.round(data.market_cap))
+                data.net_debt_format = formatNumber(Math.round(data.net_debt))
+                data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10)
+                data.revenue_format = formatNumber(Math.round(data.revenue))
+                data.aebitda_format = formatNumber(data.aebitda)
+                data.roe_format = Math.round(data.roe * 10) / 10 + '%'
+                data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
+                data.fcf_format = formatNumber(Math.round(data.fcf))
 
-                    data.roic_format = formatNumber(data.roic);
-                    data.wacc_format = formatNumber(data.wacc);
-                    data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
-                    data.capex_format = formatNumber(data.capex)
-                    data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
-                    data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
-                    data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf)*100) / 100)
+                data.roic_format = formatNumber(data.roic);
+                data.wacc_format = formatNumber(data.wacc);
+                data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
+                data.capex_format = formatNumber(data.capex)
+                data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
+                data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
+                data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf)*100) / 100)
 
-                    data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
-                    data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
-                    data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
-                    data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
-                    data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
-                    data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
-                    data.datestring = moment(data.date).format('MMM DD, YYYY')
-                    data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
-                })
+                if(data.eps_without_nri<= 1) {
+                    data.eps_without_nri_format = (data.eps_without_nri/10);
+                } 
+                else {
+                    data.eps_without_nri_format = (data.eps_without_nri/100);
+                }
+
+                data.eps_basic_format = Math.round((data.eps_basic)*100)/100;
+                data.growth_years_format = data.growth_years;
+                data.terminal_years_format = data.terminal_years;
+                data.terminal_growth_rate_format = (data.terminal_growth_rate);
+                data.discount_rate_format = (data.discount_rate);
+                
+                let dcf_calc = calc.dcf(data.eps_basic , data.eps_without_nri/10, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
+                data.eps_without_nri_format = data.eps_without_nri/10;
+                data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
+                data.dcf_terminal = formatNumber(Math.round((dcf_calc.terminal_value)*100) / 100)
+                data.dcf_fair = '$' + formatNumber(dcf_calc.fair_value)
+
+                data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
+                data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
+                data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
+                data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
+                data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
+                data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
+                data.datestring = moment(data.date).format('MMM DD, YYYY')
+                data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
+            })
 
                 // Calculates metric growth rates
                 try {
