@@ -23,6 +23,7 @@ const auth = require("./actions/auth");
 const xlsx_parse = require("./actions/xlsx_parse");
 const db = require("./actions/database");
 const email = require('./actions/node_mailer');
+const calc = require('./actions/calculations')
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -93,7 +94,7 @@ app.get("/login", (request, response) => {
 
 app.get("/collection", sessionCheck, statusCheck, (request, response) => {
     let period_num = 1;
-    db.showstocks(request.session.user)
+        db.showstocks(request.session.user)
         .then(res => {
             // Calculates data before rendering
             res.forEach((stock) => {
@@ -117,7 +118,26 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
                     data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
                     data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf)*100) / 100)
+
+                    if(data.eps_without_nri<= 1) {
+                        data.eps_without_nri_format = (data.eps_without_nri/10);
+                    } 
+                    else {
+                        data.eps_without_nri_format = (data.eps_without_nri/100);
+                    }
+
+                    data.eps_basic_format = Math.round((data.eps_basic)*100)/100;
+                    data.growth_years_format = data.growth_years;
+                    data.terminal_years_format = data.terminal_years;
+                    data.terminal_growth_rate_format = (data.terminal_growth_rate);
+                    data.discount_rate_format = (data.discount_rate);
                     
+                    let dcf_calc = calc.dcf(data.eps_basic , data.eps_without_nri/10, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
+                    data.eps_without_nri_format = data.eps_without_nri/10;
+                    data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
+                    data.dcf_terminal = formatNumber(Math.round((dcf_calc.terminal_value)*100) / 100)
+                    data.dcf_fair = '$' + formatNumber(dcf_calc.fair_value)
+
                     data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
                     data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
                     data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
@@ -447,6 +467,23 @@ app.post('/edit', sessionCheck, (request, response) => {
         .catch((err) => {
             response.send(false)})
     }
+    if(request.body.action === 'emote'){
+        db.editEmoticon(request.body.edit, request.body.id, request.session.user)
+        .then(() => {response.send(true)})
+        .catch((err) => {
+            response.send(false)})
+    }
+    if(request.body.action === 'emote'){
+        db.editEmoticon(request.body.edit, request.body.id, request.session.user)
+        .then(() => {response.send(true)})
+        .catch((err) => {
+            response.send(false)})
+    }
+    if(request.body.action === 'Calculate'){
+        let edit = request.body.edit
+        db.editDfc(request.body.edit, request.body.id)
+        response.send(calc.dcf(edit.eps, edit.gr, edit.tgr, edit.dr, edit.gy, edit.ty))
+    }
 })
 
 /* New Code */
@@ -589,8 +626,15 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
                 .then((resolve) => {
                     response.send(JSON.stringify(request.body.stocks));
                 })
-
             break;
+
+        case 'DFC':
+            let condition = calc.multi_dfc_string(request.body.stocks.list)
+            db.updatemultidfc(condition, request.body.stocks.values).then((resolve) => {
+                console.log("hello")
+                response.send(resolve)
+            })
+        break;
         
         case 'Update_Prices':
                 //console.log(request.body.stocks);
