@@ -483,18 +483,6 @@ app.post('/edit', sessionCheck, (request, response) => {
         .catch((err) => {
             response.send(false)})
     }
-    if(request.body.action === 'emote'){
-        db.editEmoticon(request.body.edit, request.body.id, request.session.user)
-        .then(() => {response.send(true)})
-        .catch((err) => {
-            response.send(false)})
-    }
-    if(request.body.action === 'emote'){
-        db.editEmoticon(request.body.edit, request.body.id, request.session.user)
-        .then(() => {response.send(true)})
-        .catch((err) => {
-            response.send(false)})
-    }
     if(request.body.action === 'Calculate'){
         let edit = request.body.edit
         db.editDfc(request.body.edit, request.body.id)
@@ -647,7 +635,6 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
         case 'DFC':
             let condition = calc.multi_dfc_string(request.body.stocks.list)
             db.updatemultidfc(condition, request.body.stocks.values).then((resolve) => {
-                console.log("hello")
                 response.send(resolve)
             })
         break;
