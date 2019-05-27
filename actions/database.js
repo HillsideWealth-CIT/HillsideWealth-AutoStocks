@@ -68,7 +68,6 @@ const retrieveUser = async (username) => {
     {<etc>}
     ]
 */
-
 const showstocks = async (username) => {
     let stockAndData = []
     let stocks = await runQuery('SELECT * FROM stocks WHERE username = $1', [username])
@@ -223,14 +222,6 @@ const arrayAddStockData = async (data) => {
                 if (i == 0) columns.push('capex')
                 placeholders.push(`$${params.push(parseFloat(data[i].capex))}`)
             }
-            if (data[i].eps_basic != null) {
-                if (i == 0) columns.push('eps_basic')
-                placeholders.push(`$${params.push(parseFloat(data[i].eps_basic))}`)
-            }
-            if (data[i].eps_without_nri != null) {
-                if (i == 0) columns.push('eps_without_nri')
-                placeholders.push(`$${params.push(parseFloat(data[i].eps_without_nri))}`)
-            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
@@ -258,10 +249,6 @@ const arrayAddStockData = async (data) => {
 
 const updatePrices = async(stock, username, sector, current_price, gfrating) => {
     return await runQuery(`UPDATE stocks SET sector = '${sector}', current_price = ${current_price}, gfrating = '${gfrating}' where username = '${username}' and symbol = '${stock}'`)
-}
-
-const updatemultidfc = async(conditions, edit) => {
-    return await runQuery(`UPDATE stockdata SET eps_basic = $1, eps_without_nri = $2, growth_years=$3, terminal_growth_rate = $4, terminal_years = $5, discount_rate = $6 Where ${conditions}`, [edit.eps, edit.gr, edit.gy, edit.tgr, edit.ty,edit.dr,])
 }
 
 const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, shared = false) => {
@@ -326,10 +313,6 @@ const editEmoticon = async (edit, stock_id, username) => {
     return await runQuery(`UPDATE stocks SET emoticons = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
 }
 
-const editDfc = async(edit, stock_id) => {
-    return await runQuery(`UPDATE stockdata SET eps_basic = $2,  eps_without_nri = $3, growth_years=$4, terminal_growth_rate = $5, terminal_years = $6, discount_rate = $7 Where stock_id = $1`, [stock_id, edit.eps, edit.gr, edit.gy, edit.tgr, edit.ty,edit.dr,])
-}
-
 module.exports = {
     addUser,
     usernameAvailable,
@@ -355,7 +338,5 @@ module.exports = {
     editFairvalue,
     editMoat,
     editJdv,
-    editEmoticon,
-    editDfc,
-    updatemultidfc
+    editEmoticon
 }
