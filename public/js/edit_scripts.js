@@ -1,5 +1,3 @@
-<script>
-    
     const editNote = (id) => {
         let div = document.getElementById(`note${id}`)
         let parent = div.parentNode
@@ -199,4 +197,3 @@
             })
         })
     }
-</script>

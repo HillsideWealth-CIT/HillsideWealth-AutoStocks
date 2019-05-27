@@ -1,7 +1,6 @@
-<script>
 var update_counter = 0;
 var rm_list = [];
-/** Send stocks to server using ajax and displays sweet alerts*/
+
 function add(){
     Swal.fire({
         title: 'Add Stocks',
@@ -30,7 +29,6 @@ function add(){
         }
     })
 };
-
 /** Send stocks to server using ajax, removes stocks from database and displays sweet alerts*/
 function remove() {
     $("#table #db_stocks input:checked").each(function() {
@@ -58,7 +56,6 @@ function update() {
         rm_list.push({"symbol" : sym.toString()});
     });
     let promises = [];
-
     Swal.fire({
         position:'center',
         type: 'question',
@@ -67,11 +64,9 @@ function update() {
         footer: 'This might take a while, you might want to do something else',
         showConfirmButton: false,
     });
-
     for(sym in rm_list){
-        promises.push(ajax_func([rm_list[sym]], 'Update', false))
+        promises.push(ajax_func([rm_list[sym]], 'Update', false, '/collection'))
     }
-
     Promise.all(promises)
     .then((resolve) => {
         swal.update({
@@ -82,43 +77,7 @@ function update() {
         rm_list = [];
         setTimeout(function(){
             location.reload();
-                }, 3000);
-    })
-    
-    //ajax_func(rm_list, 'Update');
-};
-
-function share() {
-    update_counter = 0;
-    $("#table #db_stocks input:checked").each(function() {
-        var sym = $(this).parents('tr:first').data('val')
-        rm_list.push({"symbol" : sym.toString()});
-    });
-    let promises = [];
-
-    Swal.fire({
-        position:'center',
-        type: 'question',
-        title: 'The selected stocks are currently being shared!',
-        text: 'Progress will be shown here',
-        showConfirmButton: false,
-    });
-
-    for(sym in rm_list){
-        promises.push(ajax_func(rm_list[sym], 'Share', false))
-    }
-
-    Promise.all(promises)
-    .then((resolve) => {
-        swal.update({
-            type: 'success',
-            title: 'Sharing Completed',
-            text: 'This page will reload in three seconds'
-        });
-        rm_list = [];
-        setTimeout(function(){
-            location.reload();
-                }, 3000);
+             }, 3000);
     })
     
     //ajax_func(rm_list, 'Update');
@@ -142,7 +101,7 @@ function refresh_prices(){
     let promises = [];
     for (sym in rm_list){
         //console.log(rm_list[sym])
-        promises.push(ajax_func([rm_list[sym]],'Update_Prices',false))
+        promises.push(ajax_func([rm_list[sym]],'Update_Prices',false, '/collection'))
     }
 
     Promise.all(promises)
@@ -187,7 +146,7 @@ function multi_dfc() {
     });
     if(dfc_list.length != 0){
         multi_dfc_calc().then((result) => {
-            ajax_func({list: dfc_list, values: result}, 'DFC', false).then((resolve) => {
+            ajax_func({list: dfc_list, values: result}, 'DFC', false, '/collection').then((resolve) => {
                 location.reload();
             })
         })
@@ -328,4 +287,33 @@ $(window).bind("load", function() {
     toggleHidden()
     setInterval(() => {toggleHidden()},200)
 });
-</script>
+
+/** Used to send data from the front end shared db to the node server
+*@param list - A list of stock information
+*@param action - Used to determine what happens in the server
+    */
+function ajax_func(list, action, asyncbool = true, link = "/shared") {
+    return new Promise((resolve, reject) => {
+        var data = {};
+        data.stocks = list;
+        data.action = action;
+        //console.log(data)
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: link,
+            async: asyncbool,
+        }).done(function (returned_data) {
+            if (action === "Update" || action === "Update_Prices") {
+                update_counter += 1;
+                let Ndata = JSON.parse(returned_data);
+                //console.log(Ndata[0].symbol)
+                Swal.update({
+                    text: `Progress: (${update_counter}/${rm_list.length})`,
+                });
+            }
+            resolve("returned_data")
+        })
+    })
+}

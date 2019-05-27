@@ -1,6 +1,5 @@
 var update_counter = 0;
 var rm_list = [];
-
 /** Send stocks to server using ajax and displays sweet alerts*/
 function add(){
     Swal.fire({
@@ -50,7 +49,6 @@ function remove() {
     })
     rm_list = [];
 };
-
 /** Send stocks to server using ajax and updates the database entries, shows sweet alerts*/
 function update() {
     update_counter = 0;
@@ -119,7 +117,7 @@ function share() {
         rm_list = [];
         setTimeout(function(){
             location.reload();
-             }, 3000);
+                }, 3000);
     })
     
     //ajax_func(rm_list, 'Update');
@@ -179,154 +177,77 @@ function show_selected(){
     rm_list = [];
 }
 
-const editNote = (id) => {
-    let div = document.getElementById(`note${id}`)
-    let parent = div.parentNode
-    parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" maxlength="250" /">`
-    inputDiv = document.getElementById(`noteInput${id}`)
-    inputDiv.addEventListener("keydown", (e) => {
-        if (e.keyCode == 13) {
-            fetch('/editNote', {
-                method: 'post',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({note: inputDiv.value, stock_id: id})
-            }).then(() => {parent.innerHTML = `<div id="note${id}">${inputDiv.value}</div><button type="button" onclick='editNote(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`})
-        }
-    })
-}
-
-const editMoat = (id) => {
-    let div = document.getElementById(`moat${id}`);
-    let parent = div.parentNode;
-    swal.fire({
-        title: "Select Moat",
-        input: "select",
-        inputOptions: {
-            'No Moat': 'No Moat',
-            'Wide': 'Wide',
-            'Narrow': 'Narrow',
-        },
-        inputPlaceholder: 'Select a moat',
-        showCancelButton: true,
-        preConfirm: (inputText) => {
-            ajax_edit("moat", id, inputText)
-            .then((resolved) => {
-                return resolved
+function multi_dfc() {
+    let dfc_list = [];
+    let send = {};
+    $("#table #db_stocks input:checked").each(function() {
+        var sym = $(this).parents('tr:first').attr('id')
+        dfc_list.push(sym.toString());
+    });
+    if(dfc_list.length != 0){
+        multi_dfc_calc().then((result) => {
+            ajax_func({list: dfc_list, values: result}, 'DFC', false).then((resolve) => {
+                location.reload();
             })
-        }
-    }).then((result) => {
-        if(!result.dismiss){
-            parent.innerHTML = `<div id="moat${id}">${result.value}</div><button type="button" onclick='editMoat(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
-        }
-    })
+        })
+    }
+    else {
+        alert("Requires at least one row selected")
+    }
 }
 
-const editEmoticon = (id) => {
-    let div = document.getElementById(`emoticon${id}`);
-    let parent = div.parentNode;
+function multi_dfc_calc(){
+    return new Promise ((resolve, reject) => {
+    let user_input = {};
     swal.fire({
-        title: "Select Emote",
-        input: "select",
-        inputOptions: {
-            '😃': '😃',
-            '🤑':'🤑',
-            '😫':'😫',
-            '💩': '💩',
-        },
-        inputPlaceholder: 'Select an emote',
-        showCancelButton: true,
-        preConfirm: (inputText) => {
-            ajax_edit("emote", id, inputText)
-            .then((resolved) => {
-                return resolved
-            })
-        }
-    }).then((result) => {
-        if(!result.dismiss){
-            parent.innerHTML = `<div style="font-size: 30px" id="emoticon${id}">${result.value}</div><button type="button" onclick='editEmoticon(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
-        }
-    })
-}
-
-const editPrice = (id, action) => {
-    let div = document.getElementById(`${action}${id}`);
-    let parent = div.parentNode;
-    //parent.innerHTML=`<input id="priceInput${id}" value="${div.innerHTML}" maxlength="250/">`
-    swal.fire({
-        title: "Edit The Price",
-        input: 'text',
+        title: 'DCF INPUTS',
         showConfirmButton: true,
         showCancelButton: true,
-        preConfirm: (inputText) => {
-            ajax_edit(action, id, inputText).then((resolved) => {
-                return resolved
-            })
-        }
-    }).then((result) => {
-        if(!result.dismiss){
-            if(Number.isNaN(parseFloat(result.value)) === false && action != 'jdv') {
-                parent.innerHTML = `<div id="${action}${id}">$${result.value}</div><button type="button" onclick='editPrice(${id}, ${action})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        html:
+            `<div class="row">
+                <div class="col">
+                    <label for="eps_form">EPS ($)</label>
+                    <input id="eps_form" type="text" class="form-control" value = "1">
+                </div>
+                <div class="col">
+                    <label for="gr_form">Growth Rate (%)</label>
+                    <input id="gr_form" type="text" class="form-control" value="0.095">
+                </div>        
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="tgr_form">Terminal Growth Rate (%)</label>
+                    <input id="tgr_form" type="text" class="form-control" value="0.04">
+                </div>
+                <div class="col">
+                    <label for="dr_form">Discount Rate(%)</label>
+                    <input id="dr_form" type="text" class="form-control" value="0.12">
+                </div>        
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="gy_form">Growth Years</label>
+                    <input id="gy_form" id="eps_form" type="text" class="form-control" value="10">
+                </div>
+                <div class="col">
+                    <label for="ty_form">Terminal Years</label>
+                    <input id="ty_form" type="text" class="form-control" value="10">
+                </div>        
+            </div>
+            `,
+        }).then((result) => {
+            if(result.value == true){
+                user_input.eps = $('#eps_form').val();
+                user_input.gr = $('#gr_form').val();
+                user_input.tgr = $('#tgr_form').val();
+                user_input.dr = $('#dr_form').val();
+                user_input.gy = $('#gy_form').val();
+                user_input.ty = $('#ty_form').val();
+                resolve(user_input);
             }
-            if(Number.isNaN(parseFloat(result.value)) === false && action == 'jdv') {
-                parent.innerHTML = `<div id="${action}${id}">${result.value}</div><button type="button" onclick='editPrice(${id}, ${action})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
-            }
-            if(Number.isNaN(parseFloat(result.value)) === true) {
-                Swal.fire({
-                    title: "INVALID INPUT",
-                    text: 'Please enter in a valid number',
-                    type: 'error',
-                })
-            }
-        }
-    })
-}
-
-function ajax_edit(action, id, userInput){
-    return new Promise ((resolve, reject) => {
-        var data = {};
-        data.action = action;
-        data.edit = userInput;
-        data.id = id;
-        $.ajax({
-            type: "POST",
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            url: "/edit",
-        }).done(function(returned_data){
-            resolve(returned_data);
         })
     })
 }
-
-/** Used to send data from the front end to the node server
-*@param list - A list of stock information
-*@param action - Used to determine what happens in the server
-*/
-function ajax_func(list, action, asyncbool=true){
-    return new Promise((resolve, reject) => {
-        var data = {};
-        data.stocks = list;
-        data.action = action;
-        //console.log(data)
-        $.ajax({
-            type: "POST",
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            url: "/collection",
-            async: asyncbool,
-        }).done(function(returned_data){
-            if(action === "Update" || action === "Update_Prices"){
-                update_counter += 1;
-                let Ndata = JSON.parse(returned_data);
-                //console.log(Ndata[0].symbol)
-                Swal.update({
-                    text: `Progress: (${update_counter}/${rm_list.length})`,
-                });
-            }		
-            resolve("returned_data")
-        })
-    })
-}   
 
 function currencysorter(a, b) {
     if(a == 'Infinity%' || a == 'NaN%' || a == '-Infinity'){
@@ -341,6 +262,7 @@ function currencysorter(a, b) {
     if(a < b) return 1
     return 0
 }
+
 
 var hiddenList = []
 var showList = []
@@ -405,3 +327,33 @@ $(window).bind("load", function() {
     toggleHidden()
     setInterval(() => {toggleHidden()},200)
 });
+
+/** Used to send data from the front end to the node server
+*@param list - A list of stock information
+*@param action - Used to determine what happens in the server
+    */
+   function ajax_func(list, action, asyncbool=true){
+    return new Promise((resolve, reject) => {
+        var data = {};
+        data.stocks = list;
+        data.action = action;
+        //console.log(data)
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: "/collection",
+            async: asyncbool,
+        }).done(function(returned_data){
+            if(action === "Update" || action === "Update_Prices"){
+                update_counter += 1;
+                let Ndata = JSON.parse(returned_data);
+                //console.log(Ndata[0].symbol)
+                Swal.update({
+                    text: `Progress: (${update_counter}/${rm_list.length})`,
+                });
+            }		
+            resolve("returned_data")
+        })
+    })
+}

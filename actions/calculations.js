@@ -32,7 +32,7 @@ dcf_terminal = (x, y, eps, g_years ,t_years) => {
     return terminal_value
 }
 
-function multi_dfc_string(list, values) {
+function multi_dfc_string(list) {
     let conditions = "";
     for(i in list){
         if (i >= 1){
@@ -43,7 +43,7 @@ function multi_dfc_string(list, values) {
         }
         
     }
-    console.log(conditions)
+    //console.log(conditions)
     return conditions
 }
 
