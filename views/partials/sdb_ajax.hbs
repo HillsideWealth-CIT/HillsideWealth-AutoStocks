@@ -1,0 +1,32 @@
+<script>
+    /** Used to send data from the front end to the node server
+    *@param list - A list of stock information
+    *@param action - Used to determine what happens in the server
+        */
+    function ajax_func(list, action, asyncbool = true, link = "/shared") {
+        console.log('/shared')
+        return new Promise((resolve, reject) => {
+            var data = {};
+            data.stocks = list;
+            data.action = action;
+            //console.log(data)
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                url: link,
+                async: asyncbool,
+            }).done(function (returned_data) {
+                if (action === "Update" || action === "Update_Prices") {
+                    update_counter += 1;
+                    let Ndata = JSON.parse(returned_data);
+                    //console.log(Ndata[0].symbol)
+                    Swal.update({
+                        text: `Progress: (${update_counter}/${rm_list.length})`,
+                    });
+                }
+                resolve("returned_data")
+            })
+        })
+    }
+</script>    
