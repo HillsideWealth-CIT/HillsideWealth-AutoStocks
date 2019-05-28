@@ -78,7 +78,7 @@
 						</thead>
 						<tbody id='db_stocks' align="center">
 							{{#each dbdata}}
-							<tr id="{{ this.stock_id }}" data-val={{this.symbol}} {{#unless this.enabled}} class="disabledStock" {{/unless}}>
+							<tr id="{{ this.stock_id }}" data-unique-id="{{this.stock_id}}" data-val={{this.symbol}} {{#unless this.enabled}} class="disabledStock" {{/unless}}>
 								<td></td>
 								<td><button type="button" onclick='toggleStock({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-eye"></span></button></td>
 								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>

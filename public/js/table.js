@@ -1,6 +1,7 @@
-var columns = ['checkbox', 'hide', 'eps','gy','gp','ty','tg','dp','dcf_growth','dcf_terminal','dcf_fair','symbol', 'spice', 'comment', 'emoji','rating','sector','curprice','msfv','msfive','msone','moat','jdv','roic','wacc','roicwacc','yield','price','shares','cap', 'capex', 'capXfcf','capXae', 'aEXshar','netdebt','enterp','nd','revenue','aebitda','aebitdapercent','asset','at','roe','tax','ev','roespice','fcf','fcfyield','fcfone','fcfthree','fcffive', 'fcften','pgone','pgthree', 'pgfive', 'pgten', 'soone', 'sothree', 'sofive', 'soten','rgone','rgthree','rgfive','rgten','agone','agthree','agfive','agten', 'date']
+var columns = ['checkbox', 'hide', 'eps', 'gy', 'gp', 'ty', 'tg', 'dp', 'dcf_growth', 'dcf_terminal', 'dcf_fair', 'symbol', 'spice', 'comment', 'emoji', 'rating', 'sector', 'curprice', 'msfv', 'msfive', 'msone', 'moat', 'jdv', 'roic', 'wacc', 'roicwacc', 'yield', 'price', 'shares', 'cap', 'capex', 'capXfcf', 'capXae', 'aEXshar', 'netdebt', 'enterp', 'nd', 'revenue', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'tax', 'ev', 'roespice', 'fcf', 'fcfyield', 'fcfone', 'fcfthree', 'fcffive', 'fcften', 'pgone', 'pgthree', 'pgfive', 'pgten', 'soone', 'sothree', 'sofive', 'soten', 'rgone', 'rgthree', 'rgfive', 'rgten', 'agone', 'agthree', 'agfive', 'agten', 'date']
 var permanent_col = ['checkbox', 'hide', 'symbol', 'date']
 var $table = $('#table')
+var hide = false;
 
 function config() {
     Swal.fire({
@@ -12,7 +13,7 @@ function config() {
             'Basic Info': 'Basic Info',
             'MS/Guru': 'MS/Guru',
             'Current Price/ MS FV Est': 'Current Price/ MS FV Est',
-            'Financials':'Financials',
+            'Financials': 'Financials',
             'FCF & FCF Growth': 'FCF & FCF Growth',
             'Price Growth': 'Price Growth',
             'Revenue Growth': 'Revenue Growth',
@@ -22,12 +23,12 @@ function config() {
         preConfirm: (inputText) => {
             config_man(inputText);
         }
-        })
+    })
 }
 
-function config_man(input_text){
+function config_man(input_text) {
     console.log(input_text)
-    switch(input_text){
+    switch (input_text) {
         case 'Show All':
             show_all();
             break;
@@ -54,84 +55,107 @@ function config_man(input_text){
             break;
         case 'aEBITDA Growth':
             aebitdag();
-            break;  
+            break;
         case 'DCF':
             select_dcf();
-            break;  
+            break;
     }
-    
+
 }
 
-function loopthrough(col_list){
-    for (i in columns){
-        if (col_list.indexOf(columns[i]) != -1 || permanent_col.indexOf(columns[i]) != -1){
+function loopthrough(col_list) {
+    for (i in columns) {
+        if (col_list.indexOf(columns[i]) != -1 || permanent_col.indexOf(columns[i]) != -1) {
             $table.bootstrapTable('showColumn', `${columns[i]}`)
         }
     }
 }
 
-function basic(){
+function basic() {
     reset();
-    let to_show = ['spice', 'sector','price', 'yield','cap', 'jdv', 'emoji']
+    let to_show = ['spice', 'sector', 'price', 'yield', 'cap', 'jdv', 'emoji']
     loopthrough(to_show)
 }
 
-function msguru(){
+function msguru() {
     reset();
-    let to_show = ['rating','moat','msfv','msfive','msone'];
+    let to_show = ['rating', 'moat', 'msfv', 'msfive', 'msone'];
     loopthrough(to_show)
 }
 
-function curoic(){
+function curoic() {
     reset();
-    let to_show = ['curprice', 'roic','wacc','roicwacc'];
+    let to_show = ['curprice', 'roic', 'wacc', 'roicwacc'];
     loopthrough(to_show)
 }
 
-function financials(){
+function financials() {
     reset();
-    let to_show = ['shares','revenue', 'enterp', 'nd','aebitda','aebitdapercent','asset','at','roe','capXfcf','roespice','capex','fcf','fcfyield','tax'];
+    let to_show = ['shares', 'revenue', 'enterp', 'nd', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'capXfcf', 'roespice', 'capex', 'fcf', 'fcfyield', 'tax'];
     loopthrough(to_show)
 }
 
-function fcf(){
+function fcf() {
     reset();
-    let to_show = ['fcf','capXfcf','fcfyield','fcfone','fcfthree','fcffive','fcften'];
+    let to_show = ['fcf', 'capXfcf', 'fcfyield', 'fcfone', 'fcfthree', 'fcffive', 'fcften'];
     loopthrough(to_show)
 }
 
-function priceg(){
+function priceg() {
     reset();
-    let to_show = ['price','pgone','pgthree','pgfive','pgten'];
+    let to_show = ['price', 'pgone', 'pgthree', 'pgfive', 'pgten'];
     loopthrough(to_show)
 }
 
-function revg(){
+function revg() {
     reset();
-    let to_show = ['revenue','rgone','rgthree','rgfive','rgten'];
+    let to_show = ['revenue', 'rgone', 'rgthree', 'rgfive', 'rgten'];
     loopthrough(to_show)
 }
 
-function aebitdag(){
+function aebitdag() {
     reset();
-    let to_show = ['aebitda','agone','agthree','agfive','agten'];
+    let to_show = ['aebitda', 'agone', 'agthree', 'agfive', 'agten'];
     loopthrough(to_show)
 }
 
-function select_dcf(){
+function select_dcf() {
     reset();
-    let to_show = ['eps','gy','gp','ty','tg','dp','dcf_growth','dcf_terminal','dcf_fair'];
+    let to_show = ['eps', 'gy', 'gp', 'ty', 'tg', 'dp', 'dcf_growth', 'dcf_terminal', 'dcf_fair'];
     loopthrough(to_show)
 }
 
-
-
-
-
-function show_all(){
+function show_all() {
     $table.bootstrapTable('showAllColumns')
 }
 
-function reset(){
-        $table.bootstrapTable('hideAllColumns')
+function reset() {
+    $table.bootstrapTable('hideAllColumns')
+}
+
+
+function show_selected() {
+    let count = 0;
+    if (hide == false) {
+        hide = true;
+
+        $("#table #db_stocks input:checked").each(function () {
+            var sym = $(this).parents('tr:first').attr('id')
+            rm_list.push(sym.toString());
+            $(this).prop("checked", false);
+        });
+
+        $("#table #db_stocks input:not(checked)").each(function () {
+            der = $(this).parents('tr:first').attr('id');
+            if (rm_list.indexOf(der) == -1) {
+                $table.bootstrapTable('hideRow', { index: count })
+            }
+            count += 1
+        })
+    }
+    else {
+        $table.bootstrapTable('getHiddenRows', true)
+        hide = false;
+    }
+    rm_list = [];
 }

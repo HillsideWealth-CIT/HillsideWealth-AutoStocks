@@ -264,8 +264,8 @@ const updatemultidfc = async(conditions, edit) => {
     return await runQuery(`UPDATE stockdata SET eps_basic = $1, eps_without_nri = $2, growth_years=$3, terminal_growth_rate = $4, terminal_years = $5, discount_rate = $6 Where ${conditions}`, [edit.eps, edit.gr, edit.gy, edit.tgr, edit.ty,edit.dr,])
 }
 
-const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, shared = false) => {
-    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, shared) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING stock_id`, [symbol, stock_name, stock_sector, current_price, username, note, shared])
+const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, gfrating ,shared = false) => {
+    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, gfrating,shared) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING stock_id`, [symbol, stock_name, stock_sector, current_price, username, note, gfrating,shared])
 }
 
 

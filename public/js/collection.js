@@ -159,24 +159,6 @@ function refresh_prices(){
 
 }
 
-function show_selected(){
-    $("#table #db_stocks input:checked").each(function() {
-        var sym = $(this).parents('tr:first').data('val')
-        rm_list.push(sym.toString());
-        $(this).prop("checked", false);
-    });
-    console.log(rm_list)
-
-    $("#table #db_stocks input:not(checked)").each(function(){
-        der = $(this).parents('tr:first').data('val').toString()
-        if(rm_list.indexOf(der) == -1){
-            $(this).parents('tr:first').hide();
-        }
-    })
-
-    rm_list = [];
-}
-
 function multi_dfc() {
     let dfc_list = [];
     let send = {};
