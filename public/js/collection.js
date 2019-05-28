@@ -123,6 +123,10 @@ function share() {
     //ajax_func(rm_list, 'Update');
 };
 
+/**
+ * Refreshes the following columns
+ * [current price, gurufocus rating]
+ */
 function refresh_prices(){
     update_counter = 0;
     $("#table #db_stocks input:checked").each(function() {
@@ -160,6 +164,10 @@ function refresh_prices(){
 }
 
 
+/**
+ * alter all selected dfc columns and calculations
+ * sends formatted json to server
+ */
 function multi_dfc() {
     let dfc_list = [];
     let send = {};
@@ -178,7 +186,10 @@ function multi_dfc() {
         alert("Requires at least one row selected")
     }
 }
-
+/**
+ * Creates an alert with input fields
+ * @returns {JSON} formatted json data of all inputs
+ */
 function multi_dfc_calc(){
     return new Promise ((resolve, reject) => {
     let user_input = {};
@@ -232,6 +243,12 @@ function multi_dfc_calc(){
     })
 }
 
+/**
+ * Remotes extra characters in a string and leavs the numbers to be used to compare
+ * @param {String} a 
+ * @param {String} b 
+ * @returns {int} deterines if a is bigger than b or not
+ */
 function currencysorter(a, b) {
     if(a == 'Infinity%' || a == 'NaN%' || a == '-Infinity'){
         a = '100000.0%'
@@ -249,7 +266,7 @@ function currencysorter(a, b) {
 
 var hiddenList = []
 var showList = []
-
+/**Toggles if hidden stocks are displayed or not */
 const toggleHidden = () => {
     let box = document.getElementById('toggleCheck')
     let disabledStocks = document.getElementsByClassName('disabledStock')
@@ -282,6 +299,10 @@ const toggleHidden = () => {
     }
 }
 
+/**
+ * Sends data to the server when a stock gets hidden
+ * @param {String} id - id of the stock 
+ */
 const toggleStock = (id) => {
     fetch('/toggleStock', {
         method: 'post',

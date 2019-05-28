@@ -4,6 +4,9 @@ var $table = $('#table')
 var hidden_id = [];
 var hide = false;
 
+/**
+ * Creates a sweetalert2 popup that displays table column options
+ */
 function config() {
     Swal.fire({
         title: 'Select a configuration',
@@ -27,6 +30,10 @@ function config() {
     })
 }
 
+/**
+ * Reads user input and gets the correct function to display the correct columns
+ * @param {String} input_text - what the user inputs
+ */
 function config_man(input_text) {
     console.log(input_text)
     switch (input_text) {
@@ -67,6 +74,10 @@ function config_man(input_text) {
 
 }
 
+/**
+ * Loops through the list of all headers and hides any that arent on col_list
+ * @param {Array} col_list - list of column names
+ */
 function loopthrough(col_list) {
     for (i in columns) {
         if (col_list.indexOf(columns[i]) != -1 || permanent_col.indexOf(columns[i]) != -1) {
@@ -75,68 +86,103 @@ function loopthrough(col_list) {
     }
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function basic() {
     reset();
     let to_show = ['spice', 'sector', 'price', 'yield', 'cap', 'jdv', 'emoji']
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function msguru() {
     reset();
     let to_show = ['rating', 'moat', 'msfv', 'msfive', 'msone'];
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function curoic() {
     reset();
     let to_show = ['curprice', 'roic', 'wacc', 'roicwacc'];
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function financials() {
     reset();
     let to_show = ['shares', 'revenue', 'enterp', 'nd', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'capXfcf', 'roespice', 'capex', 'fcf', 'fcfyield', 'tax'];
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function fcf() {
     reset();
     let to_show = ['fcf', 'capXfcf', 'fcfyield', 'fcfone', 'fcfthree', 'fcffive', 'fcften'];
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function priceg() {
     reset();
     let to_show = ['price', 'pgone', 'pgthree', 'pgfive', 'pgten'];
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function revg() {
     reset();
     let to_show = ['revenue', 'rgone', 'rgthree', 'rgfive', 'rgten'];
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function aebitdag() {
     reset();
     let to_show = ['aebitda', 'agone', 'agthree', 'agfive', 'agten'];
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that hides all columns but the columns in to show
+ */
 function select_dcf() {
     reset();
     let to_show = ['eps', 'gy', 'gp', 'ty', 'tg', 'dp', 'dcf_growth', 'dcf_terminal', 'dcf_fair'];
     loopthrough(to_show)
 }
 
+/**
+ * Configuration that displays all avaialble table columns
+ */
 function show_all() {
     $table.bootstrapTable('showAllColumns')
 }
-
+/**
+ * Hides all columns once a configuration column is called
+ */
 function reset() {
     $table.bootstrapTable('hideAllColumns')
 }
 
+/**
+ * Hides rows that the user selects
+ */
 function hiderows() {
     $("#table #db_stocks input:checked").each(function() {
         var sym = $(this).parents('tr:first').attr('id')
@@ -157,6 +203,9 @@ function hiderows() {
     rm_list = [];
 }
 
+/**
+ * Shows all hidden rows
+ */
 function showrows(){
     for(id in hidden_id){
         $(`#${hidden_id[id]}`).show();
@@ -164,6 +213,9 @@ function showrows(){
     hide = false;
 }
 
+/**
+ * selects which function would be ran
+ */
 function show_selected(){
     if(hide == false){
         hiderows();
