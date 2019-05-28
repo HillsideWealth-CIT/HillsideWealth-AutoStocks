@@ -1,6 +1,7 @@
 var columns = ['checkbox', 'hide', 'eps', 'gy', 'gp', 'ty', 'tg', 'dp', 'dcf_growth', 'dcf_terminal', 'dcf_fair', 'symbol', 'spice', 'comment', 'emoji', 'rating', 'sector', 'curprice', 'msfv', 'msfive', 'msone', 'moat', 'jdv', 'roic', 'wacc', 'roicwacc', 'yield', 'price', 'shares', 'cap', 'capex', 'capXfcf', 'capXae', 'aEXshar', 'netdebt', 'enterp', 'nd', 'revenue', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'tax', 'ev', 'roespice', 'fcf', 'fcfyield', 'fcfone', 'fcfthree', 'fcffive', 'fcften', 'pgone', 'pgthree', 'pgfive', 'pgten', 'soone', 'sothree', 'sofive', 'soten', 'rgone', 'rgthree', 'rgfive', 'rgten', 'agone', 'agthree', 'agfive', 'agten', 'date']
 var permanent_col = ['checkbox', 'hide', 'symbol', 'date']
 var $table = $('#table')
+var hidden_id = [];
 var hide = false;
 
 function config() {
@@ -59,6 +60,9 @@ function config_man(input_text) {
         case 'DCF':
             select_dcf();
             break;
+    }
+    if(hide == true){
+        hiderows();
     }
 
 }
@@ -133,29 +137,39 @@ function reset() {
     $table.bootstrapTable('hideAllColumns')
 }
 
+function hiderows() {
+    $("#table #db_stocks input:checked").each(function() {
+        var sym = $(this).parents('tr:first').attr('id')
+        rm_list.push(sym.toString());
+        $(this).prop("checked", false);
+    });
+    console.log(rm_list)
 
-function show_selected() {
-    let count = 0;
-    if (hide == false) {
-        hide = true;
-
-        $("#table #db_stocks input:checked").each(function () {
-            var sym = $(this).parents('tr:first').attr('id')
-            rm_list.push(sym.toString());
-            $(this).prop("checked", false);
-        });
-
-        $("#table #db_stocks input:not(checked)").each(function () {
-            der = $(this).parents('tr:first').attr('id');
-            if (rm_list.indexOf(der) == -1) {
-                $table.bootstrapTable('hideRow', { index: count })
-            }
-            count += 1
-        })
-    }
-    else {
-        $table.bootstrapTable('getHiddenRows', true)
-        hide = false;
-    }
+    $("#table #db_stocks input:not(checked)").each(function(){
+        der = $(this).parents('tr:first').attr('id')
+        console.log(der)
+        if(rm_list.indexOf(der) == -1){
+            hidden_id.push(der)
+            $(this).parents('tr:first').hide();
+        }
+    })
+    hide = true;
     rm_list = [];
 }
+
+function showrows(){
+    for(id in hidden_id){
+        $(`#${hidden_id[id]}`).show();
+    }
+    hide = false;
+}
+
+function show_selected(){
+    if(hide == false){
+        hiderows();
+    }
+    else{
+        showrows();
+    }
+}
+
