@@ -159,6 +159,7 @@ function refresh_prices(){
 
 }
 
+
 function multi_dfc() {
     let dfc_list = [];
     let send = {};
