@@ -152,7 +152,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
 
 
         try {
-            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, currentStock.sector, currentStock.current_price, username, currentStock.comment, shared)
+            var stocks = await db.addStocks(currentStock.symbol, currentStock.company, currentStock.sector, currentStock.current_price, username, currentStock.comment, currentStock.gfrating, shared)
         }
         catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }
 
