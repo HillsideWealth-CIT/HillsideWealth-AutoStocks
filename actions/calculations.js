@@ -1,3 +1,13 @@
+/**
+ * Calculates the dcf using the following parameters
+ * @param {String} eps - earnings per share
+ * @param {String} growth_rate
+ * @param {String} terminal_growth - terminal growth rate
+ * @param {String} discount_rate 
+ * @param {Integer} g_years - growth years
+ * @param {Integer} t_years - terminal growth years
+ * @returns {JSON} results
+ */
 dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10) => {
     //console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate}`)
     //process.exit();
@@ -10,7 +20,15 @@ dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10
     return results;
 }
 
-//growth_rate, discount_rate
+//console.log(dcf(0.94, 0.091, 0.04, 0.12, 10, 10))
+
+/**
+ * calculates the growth value
+ * @param {float} x - growth rate devided by discount rate
+ * @param {float} eps - earnings per share
+ * @param {Integer} years 
+ * @returns {float} growth_value
+ */
 function dfc_growth(x, eps, years){
     let growth_value = 0;
     //console.log(`X: ${x} ; Y: ${y}`)
@@ -20,7 +38,14 @@ function dfc_growth(x, eps, years){
     }
     return growth_value;
 }
-
+/**
+ * @param {float} x - growth rate devided by discount rate
+ * @param {float} y - terminal growth rate devided by discount rate
+ * @param {float} eps - earning per share
+ * @param {float} g_years - growth years
+ * @param {float} t_years - terminal growth years
+ * @returns {float} terminal_value
+ */
 dcf_terminal = (x, y, eps, g_years ,t_years) => {
     let terminal_value = 0;
     for (let i = 1; i <= t_years; i ++){
@@ -31,7 +56,11 @@ dcf_terminal = (x, y, eps, g_years ,t_years) => {
     }
     return terminal_value
 }
-
+/**
+ * creates a giant query string using a list of stocks
+ * @param {Array} list - list of stock ids 
+ * @returns {String} conditions
+ */
 function multi_dfc_string(list) {
     let conditions = "";
     for(i in list){
@@ -47,7 +76,7 @@ function multi_dfc_string(list) {
     return conditions
 }
 
-//console.log(dcf(0.94, 0.091, 0.04, 0.12, 10, 10))
+
 
 module.exports={
     dcf,
