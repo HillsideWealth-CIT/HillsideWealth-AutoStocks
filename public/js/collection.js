@@ -250,10 +250,10 @@ function multi_dfc_calc(){
  * @returns {int} deterines if a is bigger than b or not
  */
 function currencysorter(a, b) {
-    if(a == 'Infinity%' || a == 'NaN%' || a == '-Infinity'){
+    if(a == 'Infinity%' || a == 'NaN%' || a == '-Infinity' || a=='Missing Required information to format'){
         a = '100000.0%'
     }
-    if(b == 'Infinity%' || b == 'NaN%' || b == '-Infinity'){
+    if(b == 'Infinity%' || b == 'NaN%' || b == '-Infinity' || b=='Missing Required information to format'){
         b = '100000.0%'
     }
     a = parseFloat(a.replace(/[^\d.-]/g, ''));

@@ -50,6 +50,7 @@ const update_prices = async (list, username) => {
             else{
                 throw 'no Api response'
             }
+            //console.log(currentStock)
         }
         catch (err) {
             console.log(err)
@@ -120,25 +121,17 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     effective_tax: parseFloat(annuals.income_statement["Tax Rate %"][f]),
                     shares_outstanding: parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f]),
                     aebitda: Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f])),
-                    roic: parseFloat(annuals.common_size_ratios["ROIC %"][f]),
                     wacc: parseFloat(annuals.common_size_ratios["WACC %"][f]),
                     capex: parseFloat(annuals.cashflow_statement["Capital Expenditure"][f]),
                     eps_basic: parseFloat(annuals.income_statement["EPS (Basic)"][f]),
                     eps_without_nri: parseFloat(annuals.per_share_data_array["EPS without NRI"][f])
                 }
-                    try {
-                        currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f])
-                    }
-                    catch {
-                        currentData.roe = parseFloat(annuals.common_size_ratios["ROA %"][f])
-                    }
-
-                    try {
-                        currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f])
-                    }
-                    catch {
-                        currentData.fcf = NaN;
-                    }
+                    try { currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f]); }
+                    catch { currentData.roe = "Does not exist" }
+                    try{ currentData.roic = parseFloat(annuals.common_size_ratios["ROIC %"][f]); }
+                    catch{ currentData.roic = NaN; }
+                    try { currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f]); }
+                    catch { currentData.fcf = NaN; }
 
                 //console.log(currentData)
                 currentStock.data.push(currentData)

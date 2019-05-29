@@ -1,4 +1,4 @@
-var columns = ['checkbox', 'hide', 'eps', 'gy', 'gp', 'ty', 'tg', 'dp', 'dcf_growth', 'dcf_terminal', 'dcf_fair', 'symbol', 'spice', 'comment', 'emoji', 'rating', 'sector', 'curprice', 'msfv', 'msfive', 'msone', 'moat', 'jdv', 'roic', 'wacc', 'roicwacc', 'yield', 'price', 'shares', 'cap', 'capex', 'capXfcf', 'capXae', 'aEXshar', 'netdebt', 'enterp', 'nd', 'revenue', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'tax', 'ev', 'roespice', 'fcf', 'fcfyield', 'fcfone', 'fcfthree', 'fcffive', 'fcften', 'pgone', 'pgthree', 'pgfive', 'pgten', 'soone', 'sothree', 'sofive', 'soten', 'rgone', 'rgthree', 'rgfive', 'rgten', 'agone', 'agthree', 'agfive', 'agten', 'date']
+var columns = ['checkbox', 'hide', 'fcfXae','eps', 'gy', 'gp', 'ty', 'tg', 'dp', 'dcf_growth', 'dcf_terminal', 'dcf_fair', 'symbol', 'spice', 'comment', 'emoji', 'rating', 'sector', 'curprice', 'msfv', 'msfive', 'msone', 'moat', 'jdv', 'roic', 'wacc', 'roicwacc', 'yield', 'price', 'shares', 'cap', 'capex', 'capXfcf', 'capXfcf5', 'capXfcf10', 'capXae', 'capXae5', 'capXae10', 'aEXshar', 'netdebt', 'enterp', 'nd', 'revenue', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'tax', 'ev', 'roespice', 'fcf', 'fcfyield', 'fcfone', 'fcfthree', 'fcffive', 'fcften', 'pgone', 'pgthree', 'pgfive', 'pgten', 'soone', 'sothree', 'sofive', 'soten', 'rgone', 'rgthree', 'rgfive', 'rgten', 'agone', 'agthree', 'agfive', 'agten', 'date']
 var permanent_col = ['checkbox', 'hide', 'symbol', 'date']
 var $table = $('#table')
 var hidden_id = [];
@@ -118,7 +118,7 @@ function curoic() {
  */
 function financials() {
     reset();
-    let to_show = ['shares', 'revenue', 'enterp', 'nd', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'capXfcf', 'roespice', 'capex', 'fcf', 'fcfyield', 'tax'];
+    let to_show = ['shares', 'revenue', 'enterp', 'nd', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'capXfcf', 'capXfcf5', 'capXfcf10', 'capXae', 'capXae5', 'capXae10', 'roespice', 'capex', 'fcf', 'fcfyield', 'tax'];
     loopthrough(to_show)
 }
 
