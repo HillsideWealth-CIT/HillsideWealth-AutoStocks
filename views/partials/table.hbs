@@ -1,6 +1,6 @@
 <table id="table" data-toggle="table"
 						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-search="true" data-detail-formatter="detailFormatter"
-						data-show-columns="true" data-pagination="true" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
+						data-show-columns="true" data-pagination="true" data-page-size="All" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
 						class="table table1 table-sm table-hover">
 						<thead class='thead-dark' align="center">
 							<tr>
@@ -35,10 +35,15 @@
 								<th data-field="price" data-sorter="currencysorter" data-sortable="true">Price</th>
 								<th data-field="shares" data-sorter="currencysorter" data-sortable="true">Shares Outstanding (M)</th>
 								<th data-field="cap" data-sorter="currencysorter" data-sortable="true">Market Cap (M)</th>
-								<th data-field="capex" data-sorter="currencysorter" data-sortable="true">Capex</th>
+								<th data-field="capex" data-sorter="currencysorter" data-sortable="true">Capex (M)</th>
 								<th data-field="capXfcf" data-sorter="currencysorter" data-sortable="true">Capex/FCF</th>
+								<th data-field="capXfcf5" data-sorter="currencysorter" data-sortable="true">Capex/FCF 5Y</th>
+								<th data-field="capXfcf10" data-sorter="currencysorter" data-sortable="true">Capex/FCF 10Y</th>
 								<th data-field="capXae" data-sorter="currencysorter" data-sortable="true">Capex/aEBITDA</th>
+								<th data-field="capXae5" data-sorter="currencysorter" data-sortable="true">Capex/aEBITDA 5Y</th>
+								<th data-field="capXae10" data-sorter="currencysorter" data-sortable="true">Capex/aEBITDA 10Y</th>
 								<th data-field="aEXshar" data-sorter="currencysorter" data-sortable="true">aEBITDA/Share</th>
+								<th data-field="fcfXaE" data-sorter="currencysorter" data-sortable="true">FCF/aEBITDA</th>
 								<th data-field="netdebt" data-sorter="currencysorter" data-sortable="true">Net Debt (M)</th>
 								<th data-field="enterp" data-sorter="currencysorter" data-sortable="true">Enterprise Value (M)</th>
 								<th data-field="nd" data-sorter="currencysorter" data-sortable="true">ND/aEBITDA</th>
@@ -114,8 +119,13 @@
 								<td>{{this.stockdata.[0].market_cap_format}}</td>
 								<td>{{this.stockdata.[0].capex_format}}</td>
 								<td>{{this.stockdata.[0].capeXfcf_format}}</td>
+								<td>{{Averages this.stockdata 'capeXfcf_format' 5}}</td>
+								<td>{{Averages this.stockdata 'capeXfcf_format' 10}}</td>
 								<td>{{this.stockdata.[0].capeXae_format}}</td>
+								<td>{{Averages this.stockdata 'capeXae_format' 5}}</td>
+								<td>{{Averages this.stockdata 'capeXae_format' 10}}</td>
 								<td>{{this.stockdata.[0].aeXsho_format}}</td>
+								<td>{{this.stockdata.[0].fcfXae_format}}</td>
 								<td>{{this.stockdata.[0].net_debt_format}}</td>
 								<td>{{this.stockdata.[0].enterprise_value_format}}</td>
 								<td>{{this.stockdata.[0].nd_aebitda}}</td>

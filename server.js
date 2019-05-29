@@ -76,6 +76,19 @@ const statusCheck = (req, res, next) => {
     }
 };
 
+hbs.registerHelper('Averages', function(data, column, years){
+    try{
+    let total = 0;
+    for(let i = 0; i < years; i++){
+        total += parseFloat(data[i][`${column}`])
+    }
+    return Math.round((total/years)*1000)/1000
+    }
+    catch{
+        return 'Missing Values'
+    }
+})
+
 /*** HTTP Requests ***/
 
 /** GET **/
@@ -113,10 +126,11 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
                     data.roic_format = formatNumber(data.roic);
                     data.wacc_format = formatNumber(data.wacc);
                     data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
-                    data.capex_format = formatNumber(data.capex)
+                    data.capex_format = formatNumber(data.capex * -1)
                     data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
                     data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
-                    data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf)*100) / 100)
+                    data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf) * 100) / 100)
+                    data.fcfXae_format = formatNumber(Math.round((data.fcf/data.aebitda) * 100) / 100)
 
                     if(data.eps_without_nri<= 1) {
                         data.eps_without_nri_format = (data.eps_without_nri/10);
@@ -645,6 +659,9 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
                 .then((resolve) => {
                     //console.log('it worked')
                     response.send(JSON.stringify(request.body.stocks));
+                }).catch(function(err) {
+                    console.log(err)
+                    response.send(JSON.stringify({'Error': `${request.body.stocks[0].symbol}`}))
                 })
                 break;
 
