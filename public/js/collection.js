@@ -16,9 +16,14 @@ function add(){
                 send.push({'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''})
             }
             ajax_func(send, 'Append').then((resolved) => {
-                console.log(format_returned(resolved))
-                
-                //location.reload();
+                try{
+                    $table.bootstrapTable("insertRow", {index: 0, row:format_returned(resolved)})
+                    
+                }
+                catch{
+                    console.log("did not retrieve any stocks")
+                }
+
             })
         }
     }).then((result) => {
@@ -34,11 +39,15 @@ function add(){
 
 /** Send stocks to server using ajax, removes stocks from database and displays sweet alerts*/
 function remove() {
-    $("#table #db_stocks input:checked").each(function() {
-        var sym = $(this).parents('tr:first').data('val')
-        rm_list.push({"symbol" : sym.toString()});
-        //$(`#${sym.toString()}`).remove();
-    });
+    let to_remove = [];
+    let selected = $table.bootstrapTable('getSelections')
+    for (i in selected) {
+        let linkedString = selected[i].symbol
+        let part1 = linkedString.substring(linkedString.indexOf('>') + 1)
+        let part2 = part1.substring(0, part1.indexOf('<'))
+        to_remove.push({symbol:part2})
+    }
+    console.log(to_remove)
     Swal.fire({
         position:'center',
         type: 'success',
@@ -46,18 +55,20 @@ function remove() {
         text: 'The page will reload shortly.',
         showConfirmButton: false,
     });
-    ajax_func(rm_list, 'Remove').then((resolved) => {
+    ajax_func(to_remove, 'Remove').then((resolved) => {
         location.reload()
     })
-    rm_list = [];
 };
 /** Send stocks to server using ajax and updates the database entries, shows sweet alerts*/
 function update() {
     update_counter = 0;
-    $("#table #db_stocks input:checked").each(function() {
-        var sym = $(this).parents('tr:first').data('val')
-        rm_list.push({"symbol" : sym.toString()});
-    });
+    let selected = $table.bootstrapTable('getSelections')
+    for (i in selected) {
+        let linkedString = selected[i].symbol
+        let part1 = linkedString.substring(linkedString.indexOf('>') + 1)
+        let part2 = part1.substring(0, part1.indexOf('<'))
+        rm_list.push({symbol:part2})
+    }
     let promises = [];
 
     Swal.fire({
@@ -165,7 +176,6 @@ function refresh_prices(){
 
 }
 
-
 /**
  * alter all selected dfc columns and calculations
  * sends formatted json to server
@@ -188,6 +198,7 @@ function multi_dfc() {
         alert("Requires at least one row selected")
     }
 }
+
 /**
  * Creates an alert with input fields
  * @returns {JSON} formatted json data of all inputs
@@ -265,7 +276,6 @@ function currencysorter(a, b) {
     return 0
 }
 
-
 var hiddenList = []
 var showList = []
 /**Toggles if hidden stocks are displayed or not */
@@ -338,7 +348,6 @@ function format_returned(data){
     let row = {};
     //console.log(data)
     for(i in columns){
-
         if (columns[i] == "capXfcf5"){
             row[columns[i]] = calculate_averages(data[0].stockdata, 'capeXfcf_format', 5)
         }
@@ -358,10 +367,15 @@ function format_returned(data){
             row[columns[i]] = `<div id="note${data[0].stock_id}">${data[0].note}</div><button type="button" onclick='editNote(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         }
         else if (columns[i] == "emoticon"){
-            row[columns[i]] = `<div style="font-size: 30px" id="emoticon${data[0].stock_id}">${data[0].emoticon}</div><button type="button" onclick='editEmoticon(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            if(data[0].emoticon == null){
+                row[columns[i]] = `<div style="font-size: 30px" id="emoticon${data[0].stock_id}"></div><button type="button" onclick='editEmoticon(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            }
+            else {
+                row[columns[i]] = `<div style="font-size: 30px" id="emoticon${data[0].stock_id}">${data[0].emoticon}</div><button type="button" onclick='editEmoticon(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            }
         }
         else if (columns[i] == "stock_current_price"){
-            row[columns[i]] = `<div id="current_price${data[0].stock_id}">${data[0].stock_current_price}</div><button type="button" onclick='editPrice(${data[0]}, "stock_current_price")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            row[columns[i]] = `<div id="current_price${data[0].stock_id}">${data[0].stock_current_price}</div><button type="button" onclick='editPrice(${data[0].stock_id}, "stock_current_price")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         }
         else if (columns[i] == "fairvalue"){
             row[columns[i]] = `<div id="fairvalue${data[0].stock_id}">${data[0].fairvalue}</div><button type="button" onclick='editPrice(${data[0].stock_id}, "fairvalue")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
@@ -379,7 +393,40 @@ function format_returned(data){
             row[columns[i]] = `<div id="jdv${data[0].stock_id}">${data[0].jdv}</div><button type="button" onclick='editPrice(${data[0].stock_id}, "jdv")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         }
         else if (columns[i] == "dcf_fair"){
-            row[columns[i]] = `<div id="dcf_fair${data[0].stock_id}">${data[0].stockdata[0].dcf_fair}</div><button type="button" onclick='edit_dcf(${this.stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            row[columns[i]] = `<div id="dcf_fair${data[0].stock_id}">${data[0].stockdata[0].dcf_fair}</div><button type="button" onclick='edit_dcf(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "hide"){
+            row[columns[i]] = `<button type="button" onclick='toggleStock(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-eye"></span></button>`
+        }
+        else if (columns[i] == "symbol"){
+            row[columns[i]] = ` <a data-val="${data[0].symbol}" href='https://www.gurufocus.com/chart/${data[0].symbol}' target="_blank">${ data[0].symbol }</a>`
+        }
+        else if (columns[i] == "eps_basic_format"){
+            row[columns[i]] = `<div id="dcf_eps_basic${data[0].stock_id}">${data[0].stockdata[0].eps_basic_format}</div>`
+        }
+        else if (columns[i] == "growth_years_format"){
+            row[columns[i]] = `<div id="dcf_gy${data[0].stock_id}">${data[0].stockdata[0].growth_years_format}</div>`
+        }
+        else if (columns[i] == "eps_without_nri_format"){
+            row[columns[i]] = `<div id="dcf_eps_no_nri${data[0].stock_id}">${data[0].stockdata[0].eps_without_nri_format}</div>`
+        }
+        else if (columns[i] == "terminal_years_format"){
+            row[columns[i]] = `<div id="dcf_ty${data[0].stock_id}">${data[0].stockdata[0].growth_years_format}</div>`
+        }
+        else if (columns[i] == "terminal_growth_rate_format"){
+            row[columns[i]] = `<div id="dcf_tgr${data[0].stock_id}">${data[0].stockdata[0].terminal_growth_rate_format}</div>`
+        }
+        else if (columns[i] == "discount_rate_format"){
+            row[columns[i]] = `<div id="dcf_dr${data[0].stock_id}">${data[0].stockdata[0].discount_rate_format}</div>`
+        }
+        else if (columns[i] == "dcf_growth"){
+            row[columns[i]] = `<div id="dcf_growth_val${data[0].stock_id}">${data[0].stockdata[0].dcf_growth}</div>`
+        }
+        else if (columns[i] == "dcf_terminal"){
+            row[columns[i]] = `<div id="dcf_terminal_val${data[0].stock_id}">${data[0].stockdata[0].dcf_terminal}</div>`
+        }
+        else if (columns[i] == "dcf_fair"){
+            row[columns[i]] = `<div id="dcf_fair${data[0].stock_id}">${data[0].stockdata[0].dcf_fair}</div><button type="button" onclick='edit_dcf(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         }
         else if (data[0][columns[i]]){
            row[columns[i]] = data[0][columns[i]]
@@ -397,7 +444,7 @@ function format_returned(data){
         //     console.log(`${columns[i]}: ${data[0].stockdata[0]}`)
         // }
     }
-    console.log(row)
+    return (row);
 }
 
 function calculate_averages(stockdata, column, years){

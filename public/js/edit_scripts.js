@@ -3,8 +3,8 @@
  */
 const editNote = (id) => {
     let div = document.getElementById(`note${id}`)
-    let index = document.getElementById(`${id}`).getAttribute('data-index')
-    let parent = div.parentNode
+    let parent = div.parentElement
+    let index = parent.parentElement.getAttribute('data-index')
     parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" maxlength="250" /">`
     inputDiv = document.getElementById(`noteInput${id}`)
     inputDiv.addEventListener("keydown", (e) => {
@@ -26,7 +26,7 @@ const editNote = (id) => {
  * @param {string} id - The Stock id of the selected row
  */
 const editMoat = (id) => {
-    let index = document.getElementById(`${id}`).getAttribute('data-index')
+    let index = document.getElementById(`moat${id}`).parentElement.parentElement.getAttribute('data-index')
     swal.fire({
         title: "Select Moat",
         input: "select",
@@ -101,12 +101,12 @@ function dcf_calc(eps, gr, tgr, dr, gy, ty) {
                 `,
         }).then((result) => {
             if (result.value == true) {
-                user_input.eps = $('#eps_form').val();
-                user_input.gr = $('#gr_form').val();
-                user_input.tgr = $('#tgr_form').val();
-                user_input.dr = $('#dr_form').val();
-                user_input.gy = $('#gy_form').val();
-                user_input.ty = $('#ty_form').val();
+                user_input.eps_without_nri_format = $('#eps_form').val();
+                user_input.eps_basic_format = $('#gr_form').val();
+                user_input.terminal_growth_rate_format = $('#tgr_form').val();
+                user_input.discount_rate_format = $('#dr_form').val();
+                user_input.growth_years_format = $('#gy_form').val();
+                user_input.terminal_years_format = $('#ty_form').val();
                 resolve(user_input);
             }
         })
@@ -121,8 +121,7 @@ function dcf_calc(eps, gr, tgr, dr, gy, ty) {
  * @param {string} id - The Stock id of the selected row
  */
 const edit_dcf = (id) => {
-    let div = document.getElementById(`dcf_fair${id}`);
-    let parent = div.parentNode;
+    let index = document.getElementById(`dcf_fair${id}`).parentElement.parentElement.getAttribute('data-index');
     let eps = $(`#dcf_eps_basic${id}`)
     let gy = $(`#dcf_gy${id}`)
     let gr = $(`#dcf_eps_no_nri${id}`)
@@ -132,18 +131,35 @@ const edit_dcf = (id) => {
     let gv = $(`#dcf_growth_val${id}`)
     let tv = $(`#dcf_terminal_val${id}`)
     $(`#dcf_terminal_val${id}`).text()
+    console.log(index)
     dcf_calc(eps, gr, tgr, dr, gy, ty).then((resolve1) => {
         console.log(resolve1)
         ajax_edit("Calculate", id, resolve1).then((resolve2) => {
-            parent.innerHTML = `<div id="dcf_fair${id}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
-            gv.text(`${Math.round((resolve2.growth_value) * 100) / 100}`)
-            tv.text(`${Math.round((resolve2.terminal_value) * 100) / 100}`)
-            eps.text(`${resolve1.eps}`)
-            gy.text(`${resolve1.gy}`)
-            gr.text(`${resolve1.gr}`)
-            ty.text(`${resolve1.ty}`)
-            tgr.text(`${resolve1.tgr}`)
-            dr.text(`${resolve1.dr}`)
+            console.log(resolve2)
+            resolve1.dcf_growth = resolve2.growth_value
+            resolve1.dfc_terminal = resolve2.terminal_value
+            resolve1.dcf_fair = resolve2.dcf_fair
+
+            $table.bootstrapTable('updateRow', {index: index, row:{
+                eps_basic_format:`<div id="dcf_eps_basic${id}">${resolve1.eps_basic_format}</div>`,
+                growth_years_format:`<div id="dcf_gy${id}">${resolve1.growth_years_format}</div>`,
+                eps_without_nri_format:`<div id="dcf_eps_no_nri${id}">${resolve1.eps_without_nri_format}</div>`,
+                terminal_years_format:`<div id="dcf_ty${id}">${resolve1.terminal_years_format}</div>`,
+                terminal_growth_rate_format:`<div id="dcf_tgr${id}">${resolve1.terminal_growth_rate_format}</div>`,
+                discount_rate_format:`<div id="dcf_dr${id}">${resolve1.discount_rate_format}</div>`,
+                dcf_growth:`<div id="dcf_growth_val${id}">${Math.round((resolve2.growth_value) * 100) / 100}</div>`,
+                dcf_terminal:`<div id="dcf_terminal_val${id}">${Math.round((resolve2.terminal_value) * 100) / 100}</div>`,
+                dcf_fair:`<div id="dcf_fair${id}">${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`,
+            }})
+            // parent.innerHTML = `<div id="dcf_fair${id}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            // gv.text(`${Math.round((resolve2.growth_value) * 100) / 100}`)
+            // tv.text(`${Math.round((resolve2.terminal_value) * 100) / 100}`)
+            // eps.text(`${resolve1.eps}`)
+            // gy.text(`${resolve1.gy}`)
+            // gr.text(`${resolve1.gr}`)
+            // ty.text(`${resolve1.ty}`)
+            // tgr.text(`${resolve1.tgr}`)
+            // dr.text(`${resolve1.dr}`)
         })
     })
 }
@@ -153,7 +169,8 @@ const edit_dcf = (id) => {
  * @param {string} id - The Stock id of the selected row
  */
 const editEmoticon = (id) => {
-    let index = document.getElementById(`${id}`).getAttribute('data-index')
+    let index = document.getElementById(`moat${id}`).parentElement.parentElement.getAttribute('data-index')
+    console.log()
     swal.fire({
         title: "Select Emote",
         input: "select",
@@ -174,7 +191,7 @@ const editEmoticon = (id) => {
     }).then((result) => {
         if (!result.dismiss) {
             input_string = `<div style="font-size: 30px" id="emoticon${id}">${result.value}</div><button type="button" onclick='editEmoticon(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
-            $table.bootstrapTable('updateRow', {index: index, row: {emoji:input_string}}) 
+            $table.bootstrapTable('updateRow', {index: index, row: {emoticon:input_string}}) 
         }
     })
 }
@@ -186,7 +203,7 @@ const editEmoticon = (id) => {
  */
 const editPrice = (id, action) => {
     let row_edit = {};
-    let index = document.getElementById(`${id}`).getAttribute('data-index')
+    let index = document.getElementById(`moat${id}`).parentElement.parentElement.getAttribute('data-index')
     //parent.innerHTML=`<input id="priceInput${id}" value="${div.innerHTML}" maxlength="250/">`
     swal.fire({
         title: "Edit The Price",

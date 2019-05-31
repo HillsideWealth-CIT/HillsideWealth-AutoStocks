@@ -162,25 +162,25 @@ app.post('/editNote', sessionCheck, (request, response) => {
 app.post('/edit', sessionCheck, (request, response) => {
     //console.log(request.body)
     //response.send({errors: 'none'})
-    if(request.body.action === 'curprice'){
+    if(request.body.action === 'stock_current_price'){
         db.editPrices(request.body.edit, request.body.id, request.session.user)
             .then(() => {response.send(true)})
             .catch((err) => {
                 response.send(false)})
         }
-    if(request.body.action === 'msfv'){
+    if(request.body.action === 'fairvalue'){
         db.editFairvalue(request.body.edit, request.body.id, request.session.user)
         .then(() => {response.send(true)})
         .catch((err) => {
             response.send(false)})
         }
-    if(request.body.action === 'msone'){
+    if(request.body.action === 'onestar'){
         db.editOnestar(request.body.edit, request.body.id, request.session.user)
         .then(() => {response.send(true)})
         .catch((err) => {
             response.send(false)})
         }
-    if(request.body.action === 'msfive'){
+    if(request.body.action === 'fivestar'){
         db.editFivestar(request.body.edit, request.body.id, request.session.user)
         .then(() => {response.send(true)})
         .catch((err) => {
@@ -207,7 +207,7 @@ app.post('/edit', sessionCheck, (request, response) => {
     if(request.body.action === 'Calculate'){
         let edit = request.body.edit
         db.editDfc(request.body.edit, request.body.id)
-        response.send(calc.dcf(edit.eps, edit.gr, edit.tgr, edit.dr, edit.gy, edit.ty))
+        response.send(calc.dcf(edit.eps_without_nri_format, edit.growth_years_format, edit.terminal_growth_rate_format, edit.discount_rate_format, edit.growth_years_format, edit.terminal_years_format))
     }
 })
 

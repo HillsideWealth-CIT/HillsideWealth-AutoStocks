@@ -1,6 +1,6 @@
 <table id="table" data-toggle="table"
 						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-search="true" data-detail-formatter="detailFormatter"
-						data-show-columns="true" data-pagination="true" data-page-size="All" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
+						data-show-columns="true" data-row-attrubutes="rowattr" data-pagination="true" data-page-size="All" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
 						class="table table1 table-sm table-hover">
 						<thead class='thead-dark' align="center">
 							<tr id = "wassup">
@@ -103,14 +103,14 @@
 								<td>{{this.stockdata.[0].wacc_format}}</td>
 								<td>{{this.stockdata.[0].roicwacc_format}}</td>
 								
-								<td id="dcf_eps_basic{{this.stock_id}}">{{this.stockdata.[0].eps_basic_format}}</td>
-								<td id="dcf_gy{{this.stock_id}}">{{this.stockdata.[0].growth_years_format}}</td>
-								<td id="dcf_eps_no_nri{{this.stock_id}}">{{this.stockdata.[0].eps_without_nri_format}}</td>
-								<td id="dcf_ty{{this.stock_id}}">{{this.stockdata.[0].terminal_years_format}}</td>
-								<td id="dcf_tgr{{this.stock_id}}">{{this.stockdata.[0].terminal_growth_rate_format}}</td>
-								<td id="dcf_dr{{this.stock_id}}">{{this.stockdata.[0].discount_rate_format}}</td>
-								<td id="dcf_growth_val{{this.stock_id}}">{{this.stockdata.[0].dcf_growth}}</td>
-								<td id="dcf_terminal_val{{this.stock_id}}">{{this.stockdata.[0].dcf_terminal}}</td>
+								<td> <div id="dcf_eps_basic{{this.stock_id}}">{{this.stockdata.[0].eps_basic_format}}</div> </td>
+								<td> <div id="dcf_gy{{this.stock_id}}">{{this.stockdata.[0].growth_years_format}}</div> </td>
+								<td> <div id="dcf_eps_no_nri{{this.stock_id}}">{{this.stockdata.[0].eps_without_nri_format}}</div> </td>
+								<td> <div id="dcf_ty{{this.stock_id}}">{{this.stockdata.[0].terminal_years_format}}</div> </td>
+								<td> <div id="dcf_tgr{{this.stock_id}}">{{this.stockdata.[0].terminal_growth_rate_format}}</div> </td>
+								<td> <div id="dcf_dr{{this.stock_id}}">{{this.stockdata.[0].discount_rate_format}}</div> </td>
+								<td> <div id="dcf_growth_val{{this.stock_id}}">{{this.stockdata.[0].dcf_growth}}</div> </td>
+								<td> <div id="dcf_terminal_val{{this.stock_id}}">{{this.stockdata.[0].dcf_terminal}}</div> </td>
 								<td><div id="dcf_fair{{this.stock_id}}">{{this.stockdata.[0].dcf_fair}}</div><button type="button" onclick='edit_dcf({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 
 								<td>{{this.stockdata.[0].yield_format}}</td>

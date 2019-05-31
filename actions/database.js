@@ -291,7 +291,7 @@ const editEmoticon = async (edit, stock_id, username) => {
 }
 
 const editDfc = async(edit, stock_id) => {
-    return await runQuery(`UPDATE stockdata SET eps_basic = $2,  eps_without_nri = $3, growth_years=$4, terminal_growth_rate = $5, terminal_years = $6, discount_rate = $7 Where stock_id = $1`, [stock_id, edit.eps, edit.gr, edit.gy, edit.tgr, edit.ty,edit.dr,])
+    return await runQuery(`UPDATE stockdata SET eps_basic = $2,  eps_without_nri = $3, growth_years=$4, terminal_growth_rate = $5, terminal_years = $6, discount_rate = $7 Where stock_id = $1`, [stock_id, edit.eps_without_nri_format, edit.eps_basic_format, edit.growth_years_format, edit.terminal_growth_rate_format, edit.terminal_growth_rate_format,edit.discount_rate_format,])
 }
 
 module.exports = {

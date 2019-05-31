@@ -4,12 +4,10 @@ var $table = $('#table')
 var hidden_id = [];
 var hide = false;
 
-
 /**
  * Creates a sweetalert2 popup that displays table column options
  */
 function config() {
-    //$table.bootstrapTable("insertRow", {index: 0, row:{symbol:'Hello', roic_format:'Greetings',comment: `<div id="note{{this.stock_id}}">{{this.note}}</div><button type="button" onclick='editNote({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`}})
     Swal.fire({
         title: 'Select a configuration',
         input: 'select',
