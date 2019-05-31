@@ -3,82 +3,82 @@
 						data-show-columns="true" data-pagination="true" data-page-size="All" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
 						class="table table1 table-sm table-hover">
 						<thead class='thead-dark' align="center">
-							<tr>
+							<tr id = "wassup">
 								<th data-field="checkbox" data-checkbox="true"></th>
 								<th data-field="hide" class="smallheader">hidden</th>
 								<th data-field="symbol" class="StickyCol" data-sortable="true">Symbol</th>
 								<th data-sortable="true">Stock Name</th>
-								<th data-field="spice" data-sortable="true">aEBITDA Spice</th>
+								<th data-field="aebitda_spice" data-sortable="true">aEBITDA Spice</th>
                                 <th data-field="comment" data-sortable="true">My Comment</th>
-								<th data-field="emoji">Emoticon</th>
-								<th data-field="rating" data-sortable="true">Guru Rating</th>
-								<th data-field="sector" data-sortable="true">Sector</th>
-								<th data-field="curprice" data-sorter="currencysorter" data-sortable="true">Current Price</th>
-								<th data-field="msfv" data-sorter="currencysorter" data-sortable="true">MS FV Est</th>
-								<th data-field="msfive" data-sorter="currencysorter" data-sortable="true">MS 5* price</th>
-								<th data-field="msone" data-sorter="currencysorter" data-sortable="true">MS 1* price</th>
+								<th data-field="emoticon">Emoticon</th>
+								<th data-field="gfrating" data-sortable="true">Guru Rating</th>
+								<th data-field="stocksector" data-sortable="true">Sector</th>
+								<th data-field="stock_current_price" data-sorter="currencysorter" data-sortable="true">Current Price</th>
+								<th data-field="fairvalue" data-sorter="currencysorter" data-sortable="true">MS FV Est</th>
+								<th data-field="fivestar" data-sorter="currencysorter" data-sortable="true">MS 5* price</th>
+								<th data-field="onestar" data-sorter="currencysorter" data-sortable="true">MS 1* price</th>
 								<th data-field="moat" data-sortable="true">MS Moat Rating</th>
 								<th data-field="jdv" data-sorter="currencysorter" data-sortable="true">JDV Rating</th>
-								<th data-field="roic" data-sorter="currencysorter" data-sortable="true">ROIC %</th>
-								<th data-field="wacc" data-sorter="currencysorter" data-sortable="true">WACC %</th>
-								<th data-field="roicwacc" data-sorter="currencysorter" data-sortable="true">ROIC - WACC %</th>
-								<th data-field="eps" data-sorter="currencysorter" data-sortable="true">EPS</th>
-								<th data-field="gy" data-sorter="currencysorter" data-sortable="true">Growth Years</th>
-								<th data-field="gp" data-sorter="currencysorter" data-sortable="true">Growth %</th>
-								<th data-field="ty" data-sorter="currencysorter" data-sortable="true">Terminal Years</th>
-								<th data-field="tg" data-sorter="currencysorter" data-sortable="true">Terminal Growth %</th>
-								<th data-field="dp" data-sorter="currencysorter" data-sortable="true">Discount %</th>
+								<th data-field="roic_format" data-sorter="currencysorter" data-sortable="true">ROIC %</th>
+								<th data-field="wacc_format" data-sorter="currencysorter" data-sortable="true">WACC %</th>
+								<th data-field="roicwacc_format" data-sorter="currencysorter" data-sortable="true">ROIC - WACC %</th>
+								<th data-field="eps_without_nri_format" data-sorter="currencysorter" data-sortable="true">EPS</th>
+								<th data-field="growth_years_format" data-sorter="currencysorter" data-sortable="true">Growth Years</th>
+								<th data-field="eps_basic_format" data-sorter="currencysorter" data-sortable="true">Growth %</th>
+								<th data-field="terminal_years_format" data-sorter="currencysorter" data-sortable="true">Terminal Years</th>
+								<th data-field="terminal_growth_rate_format" data-sorter="currencysorter" data-sortable="true">Terminal Growth %</th>
+								<th data-field="discount_rate_format" data-sorter="currencysorter" data-sortable="true">Discount %</th>
 								<th data-field='dcf_growth' data-sorter="curencysorter" data-sortable="true">Growth Value</th>
 								<th data-field='dcf_terminal' data-sorter="curencysorter" data-sortable="true">Terminal Value</th>
 								<th data-field='dcf_fair' data-sorter="curencysorter" data-sortable="true">DCF Fair Value</th>
-								<th data-field="yield" data-sorter="currencysorter" data-sortable="true">Yield</th>
-								<th data-field="price" data-sorter="currencysorter" data-sortable="true">Price</th>
-								<th data-field="shares" data-sorter="currencysorter" data-sortable="true">Shares Outstanding (M)</th>
-								<th data-field="cap" data-sorter="currencysorter" data-sortable="true">Market Cap (M)</th>
-								<th data-field="capex" data-sorter="currencysorter" data-sortable="true">Capex (M)</th>
-								<th data-field="capXfcf" data-sorter="currencysorter" data-sortable="true">Capex/FCF</th>
+								<th data-field="yield_format" data-sorter="currencysorter" data-sortable="true">Yield</th>
+								<th data-field="price_format" data-sorter="currencysorter" data-sortable="true">Price</th>
+								<th data-field="shares_outstanding_format" data-sorter="currencysorter" data-sortable="true">Shares Outstanding (M)</th>
+								<th data-field="market_cap_format" data-sorter="currencysorter" data-sortable="true">Market Cap (M)</th>
+								<th data-field="capex_format" data-sorter="currencysorter" data-sortable="true">Capex (M)</th>
+								<th data-field="capeXfcf_format" data-sorter="currencysorter" data-sortable="true">Capex/FCF</th>
 								<th data-field="capXfcf5" data-sorter="currencysorter" data-sortable="true">Capex/FCF 5Y</th>
 								<th data-field="capXfcf10" data-sorter="currencysorter" data-sortable="true">Capex/FCF 10Y</th>
-								<th data-field="capXae" data-sorter="currencysorter" data-sortable="true">Capex/aEBITDA</th>
+								<th data-field="capeXae_format" data-sorter="currencysorter" data-sortable="true">Capex/aEBITDA</th>
 								<th data-field="capXae5" data-sorter="currencysorter" data-sortable="true">Capex/aEBITDA 5Y</th>
 								<th data-field="capXae10" data-sorter="currencysorter" data-sortable="true">Capex/aEBITDA 10Y</th>
-								<th data-field="aEXshar" data-sorter="currencysorter" data-sortable="true">aEBITDA/Share</th>
-								<th data-field="fcfXaE" data-sorter="currencysorter" data-sortable="true">FCF/aEBITDA</th>
-								<th data-field="netdebt" data-sorter="currencysorter" data-sortable="true">Net Debt (M)</th>
-								<th data-field="enterp" data-sorter="currencysorter" data-sortable="true">Enterprise Value (M)</th>
-								<th data-field="nd" data-sorter="currencysorter" data-sortable="true">ND/aEBITDA</th>
-								<th data-field="revenue" data-sorter="currencysorter" data-sortable="true">Revenue (M)</th>
-								<th data-field="aebitda" data-sorter="currencysorter" data-sortable="true">aEBITDA (M)</th>
-								<th data-field="aebitdapercent" data-sorter="currencysorter" data-sortable="true">aEBITDA %</th>
-								<th data-field="asset" data-sorter="currencysorter" data-sortable="true">Asset Turnover</th>
-								<th data-field="at" data-sorter="currencysorter" data-sortable="true">aEBITDA AT (%)</th>
-								<th data-field="roe" data-sorter="currencysorter" data-sortable="true">ROE</th>
-								<th data-field="tax" data-sorter="currencysorter" data-sortable="true">Effective Tax</th>
-								<th data-field="ev" data-sorter="currencysorter" data-sortable="true">EV/aEBITDA</th>
-								<th data-field="roespice" data-sorter="currencysorter" data-sortable="true">ROE Spice</th>
-								<th data-field="fcf" data-sorter="currencysorter" data-sortable="true">FCF (M)</th>
-								<th data-field="fcfyield" data-sorter="currencysorter" data-sortable="true">FCF Yield</th>
-								<th data-field="fcfone" data-sorter="currencysorter" data-sortable="true">FCF Growth (1y)</th>
-								<th data-field="fcfthree" data-sorter="currencysorter" data-sortable="true">FCF Growth (3y)</th>
-								<th data-field="fcffive" data-sorter="currencysorter" data-sortable="true">FCF Growth (5y)</th>
-								<th data-field="fcften" data-sorter="currencysorter" data-sortable="true">FCF Growth (10y)</th>
-								<th data-field="pgone" data-sorter="currencysorter" data-sortable="true">Price Growth (1y)</th>
-								<th data-field="pgthree" data-sorter="currencysorter" data-sortable="true">Price Growth (3y)</th>
-								<th data-field="pgfive" data-sorter="currencysorter" data-sortable="true">Price Growth (5y)</th>
-								<th data-field="pgten" data-sorter="currencysorter" data-sortable="true">Price Growth (10y)</th>
-								<th data-field="soone" data-sorter="currencysorter" data-sortable="true">S/O Change (1y)(M)</th>
-								<th data-field="sothree" data-sorter="currencysorter" data-sortable="true">S/O Change (3y)(M)</th>
-								<th data-field="sofive" data-sorter="currencysorter" data-sortable="true">S/O Change (5y)(M)</th>
-								<th data-field="soten" data-sorter="currencysorter" data-sortable="true">S/O Change (10y)(M)</th>
-								<th data-field="rgone" data-sorter="currencysorter" data-sortable="true">Revenue Growth (1y)</th>
-								<th data-field="rgthree" data-sorter="currencysorter" data-sortable="true">Revenue Growth (3y)</th>
-								<th data-field="rgfive" data-sorter="currencysorter" data-sortable="true">Revenue Growth (5y)</th>
-								<th data-field="rgten" data-sorter="currencysorter" data-sortable="true">Revenue Growth (10y)</th>
-								<th data-field="agone" data-sorter="currencysorter" data-sortable="true">aEBITDA Growth (1y)</th>
-								<th data-field="agthree" data-sorter="currencysorter" data-sortable="true">aEBITDA Growth (3y)</th>
-								<th data-field="agfive" data-sorter="currencysorter" data-sortable="true">aEBITDA Growth (5y)</th>
-								<th data-field="agten" data-sorter="currencysorter" data-sortable="true">aEBITDA Growth (10y)</th>
-								<th data-field="date" data-sortable="true">Date</th>
+								<th data-field="aeXsho_format" data-sorter="currencysorter" data-sortable="true">aEBITDA/Share</th>
+								<th data-field="fcfXae_format" data-sorter="currencysorter" data-sortable="true">FCF/aEBITDA</th>
+								<th data-field="net_debt_format" data-sorter="currencysorter" data-sortable="true">Net Debt (M)</th>
+								<th data-field="enterprise_value_format" data-sorter="currencysorter" data-sortable="true">Enterprise Value (M)</th>
+								<th data-field="nd_aebitda" data-sorter="currencysorter" data-sortable="true">ND/aEBITDA</th>
+								<th data-field="revenue_format" data-sorter="currencysorter" data-sortable="true">Revenue (M)</th>
+								<th data-field="aebitda_format" data-sorter="currencysorter" data-sortable="true">aEBITDA (M)</th>
+								<th data-field="aebitda_percent" data-sorter="currencysorter" data-sortable="true">aEBITDA %</th>
+								<th data-field="asset_turnover" data-sorter="currencysorter" data-sortable="true">Asset Turnover</th>
+								<th data-field="aebitda_at" data-sorter="currencysorter" data-sortable="true">aEBITDA AT (%)</th>
+								<th data-field="roe_format" data-sorter="currencysorter" data-sortable="true">ROE</th>
+								<th data-field="effective_tax_format" data-sorter="currencysorter" data-sortable="true">Effective Tax</th>
+								<th data-field="ev_aebitda" data-sorter="currencysorter" data-sortable="true">EV/aEBITDA</th>
+								<th data-field="roe_spice" data-sorter="currencysorter" data-sortable="true">ROE Spice</th>
+								<th data-field="fcf_format" data-sorter="currencysorter" data-sortable="true">FCF (M)</th>
+								<th data-field="fcf_yield" data-sorter="currencysorter" data-sortable="true">FCF Yield</th>
+								<th data-field="fcf_growth_1" data-sorter="currencysorter" data-sortable="true">FCF Growth (1y)</th>
+								<th data-field="fcf_growth_3" data-sorter="currencysorter" data-sortable="true">FCF Growth (3y)</th>
+								<th data-field="fcf_growth_5" data-sorter="currencysorter" data-sortable="true">FCF Growth (5y)</th>
+								<th data-field="fcf_growth_10" data-sorter="currencysorter" data-sortable="true">FCF Growth (10y)</th>
+								<th data-field="price_growth_1" data-sorter="currencysorter" data-sortable="true">Price Growth (1y)</th>
+								<th data-field="price_growth_3" data-sorter="currencysorter" data-sortable="true">Price Growth (3y)</th>
+								<th data-field="price_growth_5" data-sorter="currencysorter" data-sortable="true">Price Growth (5y)</th>
+								<th data-field="price_growth_10" data-sorter="currencysorter" data-sortable="true">Price Growth (10y)</th>
+								<th data-field="so_change_1" data-sorter="currencysorter" data-sortable="true">S/O Change (1y)(M)</th>
+								<th data-field="so_change_3" data-sorter="currencysorter" data-sortable="true">S/O Change (3y)(M)</th>
+								<th data-field="so_change_5" data-sorter="currencysorter" data-sortable="true">S/O Change (5y)(M)</th>
+								<th data-field="so_change_10" data-sorter="currencysorter" data-sortable="true">S/O Change (10y)(M)</th>
+								<th data-field="revenue_growth_1" data-sorter="currencysorter" data-sortable="true">Revenue Growth (1y)</th>
+								<th data-field="revenue_growth_3" data-sorter="currencysorter" data-sortable="true">Revenue Growth (3y)</th>
+								<th data-field="revenue_growth_5" data-sorter="currencysorter" data-sortable="true">Revenue Growth (5y)</th>
+								<th data-field="revenue_growth_10" data-sorter="currencysorter" data-sortable="true">Revenue Growth (10y)</th>
+								<th data-field="aebitda_growth_1" data-sorter="currencysorter" data-sortable="true">aEBITDA Growth (1y)</th>
+								<th data-field="aebitda_growth_3" data-sorter="currencysorter" data-sortable="true">aEBITDA Growth (3y)</th>
+								<th data-field="aebitda_growth_5" data-sorter="currencysorter" data-sortable="true">aEBITDA Growth (5y)</th>
+								<th data-field="aebitda_growth_10" data-sorter="currencysorter" data-sortable="true">aEBITDA Growth (10y)</th>
+								<th data-field="datestring" data-sortable="true">Date</th>
 							</tr>
 						</thead>
 						<tbody id='db_stocks' align="center">
@@ -93,10 +93,10 @@
 								<td><div style="font-size: 30px" id="emoticon{{this.stock_id}}">{{this.emoticon}}</div><button type="button" onclick='editEmoticon({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td>{{this.gfrating}}</td>
 								<td>{{this.stocksector}}</td>
-								<td><div id="current_price{{this.stock_id}}">{{this.stock_current_price}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "current_price")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
-								<td><div id="fairvalue{{this.stock_id}}">{{this.fairvalue}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "fairvalue")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
-								<td><div id="fivestar{{this.stock_id}}">{{this.fivestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "fivestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
-								<td><div id="onestar{{this.stock_id}}">{{this.onestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "onestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="current_price{{this.stock_id}}">{{this.stock_current_price}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "curprice")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="fairvalue{{this.stock_id}}">{{this.fairvalue}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "msfv")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="fivestar{{this.stock_id}}">{{this.fivestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "msfive")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td><div id="onestar{{this.stock_id}}">{{this.onestar}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "msone")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td><div id="moat{{this.stock_id}}">{{this.moat}}</div><button type="button" onclick='editMoat({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td><div id="jdv{{this.stock_id}}">{{this.jdv}}</div><button type="button" onclick='editPrice({{this.stock_id}}, "jdv")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 								<td>{{this.stockdata.[0].roic_format}}</td>

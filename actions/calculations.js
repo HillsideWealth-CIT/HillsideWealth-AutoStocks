@@ -1,5 +1,4 @@
-/**
- * Calculates the dcf using the following parameters
+/**Calculates the dcf using the following parameters
  * @param {String} eps - earnings per share
  * @param {String} growth_rate
  * @param {String} terminal_growth - terminal growth rate

@@ -70,59 +70,23 @@ const retrieveUser = async (username) => {
 */
 
 const showstocks = async (username) => {
-    let stockAndData = []
     let stocks = await runQuery('SELECT * FROM stocks WHERE username = $1', [username])
     //console.log(stocks)
     let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
-    for (i in stocks.rows) {
-
-        stockAndData.push({
-            stock_id: stocks.rows[i].stock_id,
-            symbol: stocks.rows[i].symbol,
-            stock_name: stocks.rows[i].stock_name,
-            stocksector:stocks.rows[i].sector,
-            stock_current_price: `$${stocks.rows[i].current_price}`,
-            note: stocks.rows[i].note,
-            enabled: stocks.rows[i].enabled,
-            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
-            gfrating: stocks.rows[i].gfrating,
-            onestar: `$${stocks.rows[i].onestar}`,
-            fivestar: `$${stocks.rows[i].fivestar}`,
-            moat: stocks.rows[i].moat,
-            fairvalue: `$${stocks.rows[i].fairvalue}`,
-            jdv: stocks.rows[i].jdv,
-            emoticon: stocks.rows[i].emoticons,
-        })
-    }
-    return stockAndData
+    return getdata(stocks, stockdata)
 }
 
 const showshared = async (username) => {
-    let stockAndData = []
     let stocks = await runQuery("SELECT * FROM stocks WHERE shared ='t'")
     //console.log(stocks)
     let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
-    for (i in stocks.rows) {
+    return getdata(stocks, stockdata)
+}
 
-        stockAndData.push({
-            stock_id: stocks.rows[i].stock_id,
-            symbol: stocks.rows[i].symbol,
-            stock_name: stocks.rows[i].stock_name,
-            stocksector:stocks.rows[i].sector,
-            stock_current_price: `$${stocks.rows[i].current_price}`,
-            note: stocks.rows[i].note,
-            enabled: stocks.rows[i].enabled,
-            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
-            gfrating: stocks.rows[i].gfrating,
-            onestar: `$${stocks.rows[i].onestar}`,
-            fivestar: `$${stocks.rows[i].fivestar}`,
-            moat: stocks.rows[i].moat,
-            fairvalue: `$${stocks.rows[i].fairvalue}`,
-            jdv: stocks.rows[i].jdv,
-            emoticon: stocks.rows[i].emoticons,
-        })
-    }
-    return stockAndData
+const get_added = async (symbol, username) => {
+    let stocks = await runQuery('SELECT * from stocks WHERE symbol = $1 AND username = $2', [symbol, username])
+    let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
+    return getdata(stocks, stockdata)
 }
 
 const sharestock = async(symbol, user) => {
@@ -357,5 +321,30 @@ module.exports = {
     editJdv,
     editEmoticon,
     editDfc,
-    updatemultidfc
+    updatemultidfc,
+    get_added
+}
+
+function getdata(stocks, stockdata){
+    let stockAndData = []
+    for (i in stocks.rows) {
+        stockAndData.push({
+            stock_id: stocks.rows[i].stock_id,
+            symbol: stocks.rows[i].symbol,
+            stock_name: stocks.rows[i].stock_name,
+            stocksector:stocks.rows[i].sector,
+            stock_current_price: `$${stocks.rows[i].current_price}`,
+            note: stocks.rows[i].note,
+            enabled: stocks.rows[i].enabled,
+            stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),
+            gfrating: stocks.rows[i].gfrating,
+            onestar: `$${stocks.rows[i].onestar}`,
+            fivestar: `$${stocks.rows[i].fivestar}`,
+            moat: stocks.rows[i].moat,
+            fairvalue: `$${stocks.rows[i].fairvalue}`,
+            jdv: stocks.rows[i].jdv,
+            emoticon: stocks.rows[i].emoticons,
+        })
+    }
+    return stockAndData
 }

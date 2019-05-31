@@ -3,6 +3,7 @@
  */
 const editNote = (id) => {
     let div = document.getElementById(`note${id}`)
+    let index = document.getElementById(`${id}`).getAttribute('data-index')
     let parent = div.parentNode
     parent.innerHTML = `<input id="noteInput${id}" value="${div.innerHTML}" maxlength="250" /">`
     inputDiv = document.getElementById(`noteInput${id}`)
@@ -12,17 +13,20 @@ const editNote = (id) => {
                 method: 'post',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ note: inputDiv.value, stock_id: id })
-            }).then(() => { parent.innerHTML = `<div id="note${id}">${inputDiv.value}</div><button type="button" onclick='editNote(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>` })
+            }).then(() => { 
+                let input_string = `<div id="note${id}">${inputDiv.value}</div><button type="button" onclick='editNote(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+                $table.bootstrapTable('updateRow', {index: index, row: {comment:input_string}}) 
+            })
         }
     })
 }
+
 
 /**Displays and stores any edits made to the moat rating column
  * @param {string} id - The Stock id of the selected row
  */
 const editMoat = (id) => {
-    let div = document.getElementById(`moat${id}`);
-    let parent = div.parentNode;
+    let index = document.getElementById(`${id}`).getAttribute('data-index')
     swal.fire({
         title: "Select Moat",
         input: "select",
@@ -41,7 +45,8 @@ const editMoat = (id) => {
         }
     }).then((result) => {
         if (!result.dismiss) {
-            parent.innerHTML = `<div id="moat${id}">${result.value}</div><button type="button" onclick='editMoat(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            let input_string = `<div id="moat${id}">${result.value}</div><button type="button" onclick='editMoat(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            $table.bootstrapTable('updateRow', {index: index, row: {moat:input_string}}) 
         }
     })
 }
@@ -148,8 +153,7 @@ const edit_dcf = (id) => {
  * @param {string} id - The Stock id of the selected row
  */
 const editEmoticon = (id) => {
-    let div = document.getElementById(`emoticon${id}`);
-    let parent = div.parentNode;
+    let index = document.getElementById(`${id}`).getAttribute('data-index')
     swal.fire({
         title: "Select Emote",
         input: "select",
@@ -169,7 +173,8 @@ const editEmoticon = (id) => {
         }
     }).then((result) => {
         if (!result.dismiss) {
-            parent.innerHTML = `<div style="font-size: 30px" id="emoticon${id}">${result.value}</div><button type="button" onclick='editEmoticon(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            input_string = `<div style="font-size: 30px" id="emoticon${id}">${result.value}</div><button type="button" onclick='editEmoticon(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            $table.bootstrapTable('updateRow', {index: index, row: {emoji:input_string}}) 
         }
     })
 }
@@ -180,8 +185,8 @@ const editEmoticon = (id) => {
  * @param {string} action - What happens to the request on the server
  */
 const editPrice = (id, action) => {
-    let div = document.getElementById(`${action}${id}`);
-    let parent = div.parentNode;
+    let row_edit = {};
+    let index = document.getElementById(`${id}`).getAttribute('data-index')
     //parent.innerHTML=`<input id="priceInput${id}" value="${div.innerHTML}" maxlength="250/">`
     swal.fire({
         title: "Edit The Price",
@@ -196,10 +201,14 @@ const editPrice = (id, action) => {
     }).then((result) => {
         if (!result.dismiss) {
             if (Number.isNaN(parseFloat(result.value)) === false && action != 'jdv') {
-                parent.innerHTML = `<div id="${action}${id}">$${result.value}</div><button type="button" onclick='editPrice(${id}, ${action})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+                let input_string = `<div id="${action}${id}">$${result.value}</div><button type="button" onclick='editPrice("${id}", "${action}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+                row_edit[`${action}`] = input_string;
+                console.log(row_edit)
+                $table.bootstrapTable('updateRow', {index: index, row: row_edit}) 
             }
             if (Number.isNaN(parseFloat(result.value)) === false && action == 'jdv') {
-                parent.innerHTML = `<div id="${action}${id}">${result.value}</div><button type="button" onclick='editPrice(${id}, ${action})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+                let input_string = `<div id="${action}${id}">${result.value}</div><button type="button" onclick='editPrice("${id}", "${action}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+                $table.bootstrapTable('updateRow', {index: index, row: {jdv:input_string}})     
             }
             if (Number.isNaN(parseFloat(result.value)) === true) {
                 Swal.fire({

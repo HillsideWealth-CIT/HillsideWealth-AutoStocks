@@ -16,7 +16,9 @@ function add(){
                 send.push({'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''})
             }
             ajax_func(send, 'Append').then((resolved) => {
-                location.reload();
+                console.log(format_returned(resolved))
+                
+                //location.reload();
             })
         }
     }).then((result) => {
@@ -332,6 +334,86 @@ $(window).bind("load", function() {
     setInterval(() => {toggleHidden()},200)
 });
 
+function format_returned(data){
+    let row = {};
+    //console.log(data)
+    for(i in columns){
+
+        if (columns[i] == "capXfcf5"){
+            row[columns[i]] = calculate_averages(data[0].stockdata, 'capeXfcf_format', 5)
+        }
+        else if (columns[i] == "capXfcf10"){
+            row[columns[i]] = calculate_averages(data[0].stockdata, 'capeXfcf_format', 10)
+        }
+        else if (columns[i] == "capXae5"){
+            row[columns[i]] = calculate_averages(data[0].stockdata, 'capeXfcf_format', 5)
+        }
+        else if (columns[i] == "capXae10"){
+            row[columns[i]] = calculate_averages(data[0].stockdata, 'capeXfcf_format', 10)
+        }
+        else if(columns[i] == "3"){
+            row[columns[i]] = data[0].stock_name
+        }
+        else if (columns[i] == 'comment'){
+            row[columns[i]] = `<div id="note${data[0].stock_id}">${data[0].note}</div><button type="button" onclick='editNote(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "emoticon"){
+            row[columns[i]] = `<div style="font-size: 30px" id="emoticon${data[0].stock_id}">${data[0].emoticon}</div><button type="button" onclick='editEmoticon(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "stock_current_price"){
+            row[columns[i]] = `<div id="current_price${data[0].stock_id}">${data[0].stock_current_price}</div><button type="button" onclick='editPrice(${data[0]}, "stock_current_price")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "fairvalue"){
+            row[columns[i]] = `<div id="fairvalue${data[0].stock_id}">${data[0].fairvalue}</div><button type="button" onclick='editPrice(${data[0].stock_id}, "fairvalue")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "fivestar"){
+            row[columns[i]] = `<div id="fivestar${data[0].stock_id}">${data[0].fivestar}</div><button type="button" onclick='editPrice(${data[0].stock_id}, "fivestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "onestar"){
+            row[columns[i]] = `<div id="onestar${data[0].stock_id}">${data[0].onestar}</div><button type="button" onclick='editPrice(${data[0].stock_id}, "onestar")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "moat"){
+            row[columns[i]] = `<div id="moat${data[0].stock_id}">${data[0].moat}</div><button type="button" onclick='editMoat(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "jdv"){
+            row[columns[i]] = `<div id="jdv${data[0].stock_id}">${data[0].jdv}</div><button type="button" onclick='editPrice(${data[0].stock_id}, "jdv")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "dcf_fair"){
+            row[columns[i]] = `<div id="dcf_fair${data[0].stock_id}">${data[0].stockdata[0].dcf_fair}</div><button type="button" onclick='edit_dcf(${this.stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (data[0][columns[i]]){
+           row[columns[i]] = data[0][columns[i]]
+        }
+        else{
+            row[columns[i]] = data[0].stockdata[0][columns[i]]
+        }
+
+        // Needs to update stuff
+
+        // try{
+        //     console.log(`${columns[i]}: ${data[0][columns[i]]}`)
+        // }
+        // catch{
+        //     console.log(`${columns[i]}: ${data[0].stockdata[0]}`)
+        // }
+    }
+    console.log(row)
+}
+
+function calculate_averages(stockdata, column, years){
+    //console.log(stockdata)
+    let total = 0;
+    try{
+        for(let i = 0;i < years; i++ ){
+            total += parseFloat(stockdata[i][column])
+        }
+        return Math.round((total/years)*1000)/1000
+    }
+    catch{
+        return "required values Missing"
+    }
+}
+
 /** Used to send data from the front end to the node server
 *@param list - A list of stock information
 *@param action - Used to determine what happens in the server
@@ -357,7 +439,7 @@ $(window).bind("load", function() {
                     text: `Progress: (${update_counter}/${rm_list.length})`,
                 });
             }		
-            resolve("returned_data")
+            resolve(returned_data.data)
         })
     })
 }
