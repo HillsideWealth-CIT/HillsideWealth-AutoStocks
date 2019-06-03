@@ -1,5 +1,4 @@
-/**
- * Calculates the dcf using the following parameters
+/**Calculates the dcf using the following parameters
  * @param {String} eps - earnings per share
  * @param {String} growth_rate
  * @param {String} terminal_growth - terminal growth rate
@@ -9,7 +8,7 @@
  * @returns {JSON} results
  */
 dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10) => {
-    //console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate}`)
+    //console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate} ${g_years} ${t_years}`)
     //process.exit();
     let results = {};
     let x = (1+parseFloat(growth_rate))/(1+parseFloat(discount_rate));
@@ -19,8 +18,6 @@ dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10
     results['fair_value'] = Math.round((results.growth_value + results.terminal_value) * 100)/100;
     return results;
 }
-
-//console.log(dcf(0.94, 0.091, 0.04, 0.12, 10, 10))
 
 /**
  * calculates the growth value
@@ -76,6 +73,8 @@ function multi_dfc_string(list) {
     return conditions
 }
 
+//console.log(dcf(1, 2, 3, 4, 5, 6))
+// console.log(dcf(0.94, 0.091, 0.04, 0.12, 10, 10))
 
 
 module.exports={

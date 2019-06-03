@@ -1,5 +1,5 @@
-var columns = ['checkbox', 'hide', 'fcfXae','eps', 'gy', 'gp', 'ty', 'tg', 'dp', 'dcf_growth', 'dcf_terminal', 'dcf_fair', 'symbol', 'spice', 'comment', 'emoji', 'rating', 'sector', 'curprice', 'msfv', 'msfive', 'msone', 'moat', 'jdv', 'roic', 'wacc', 'roicwacc', 'yield', 'price', 'shares', 'cap', 'capex', 'capXfcf', 'capXfcf5', 'capXfcf10', 'capXae', 'capXae5', 'capXae10', 'aEXshar', 'netdebt', 'enterp', 'nd', 'revenue', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'tax', 'ev', 'roespice', 'fcf', 'fcfyield', 'fcfone', 'fcfthree', 'fcffive', 'fcften', 'pgone', 'pgthree', 'pgfive', 'pgten', 'soone', 'sothree', 'sofive', 'soten', 'rgone', 'rgthree', 'rgfive', 'rgten', 'agone', 'agthree', 'agfive', 'agten', 'date']
-var permanent_col = ['checkbox', 'hide', 'symbol', 'date']
+var columns = ["checkbox","hide","symbol","3","aebitda_spice","comment","emoticon","gfrating","stocksector","stock_current_price","fairvalue","fivestar","onestar","moat","jdv","roic_format","wacc_format","roicwacc_format","eps_without_nri_format","growth_years_format","eps_basic_format","terminal_years_format","terminal_growth_rate_format","discount_rate_format","dcf_growth","dcf_terminal","dcf_fair","yield_format","price_format","shares_outstanding_format","market_cap_format","capex_format","capeXfcf_format","capXfcf5","capXfcf10","capeXae_format","capXae5","capXae10","aeXsho_format","fcfXae_format","net_debt_format","enterprise_value_format","nd_aebitda","revenue_format","aebitda_format","aebitda_percent","asset_turnover","aebitda_at","roe_format","effective_tax_format","ev_aebitda","roe_spice","fcf_format","fcf_yield","fcf_growth_1","fcf_growth_3","fcf_growth_5","fcf_growth_10","price_growth_1","price_growth_3","price_growth_5","price_growth_10","so_change_1","so_change_3","so_change_5","so_change_10","revenue_growth_1","revenue_growth_3","revenue_growth_5","revenue_growth_10","aebitda_growth_1","aebitda_growth_3","aebitda_growth_5","aebitda_growth_10","datestring"]
+var permanent_col = ['checkbox', 'hide', 'symbol', "datestring"]
 var $table = $('#table')
 var hidden_id = [];
 var hide = false;
@@ -91,7 +91,7 @@ function loopthrough(col_list) {
  */
 function basic() {
     reset();
-    let to_show = ['spice', 'sector', 'price', 'yield', 'cap', 'jdv', 'emoji']
+    let to_show = ['aebitda_spice', '3','stocksector', 'stock_current_price', 'yield_format', 'market_cap_format', 'jdv', 'emoticon']
     loopthrough(to_show)
 }
 
@@ -100,7 +100,7 @@ function basic() {
  */
 function msguru() {
     reset();
-    let to_show = ['rating', 'moat', 'msfv', 'msfive', 'msone'];
+    let to_show = ['gfrating', 'moat', 'fairvalue', 'fivestar', 'onestar'];
     loopthrough(to_show)
 }
 
@@ -109,7 +109,7 @@ function msguru() {
  */
 function curoic() {
     reset();
-    let to_show = ['curprice', 'roic', 'wacc', 'roicwacc'];
+    let to_show = ['stock_current_price', 'roic_format', 'wacc_format', 'roicwacc_format'];
     loopthrough(to_show)
 }
 
@@ -118,7 +118,7 @@ function curoic() {
  */
 function financials() {
     reset();
-    let to_show = ['shares', 'revenue', 'enterp', 'nd', 'aebitda', 'aebitdapercent', 'asset', 'at', 'roe', 'capXfcf', 'capXfcf5', 'capXfcf10', 'capXae', 'capXae5', 'capXae10', 'roespice', 'capex', 'fcf', 'fcfyield', 'tax'];
+    let to_show = ['shares_outstanding_format', 'revenue_format', 'enterprise_value_format', 'nd_aebitda', 'aebitda_format', 'aebitda_percent', 'asset_turnover', 'aebitda_at', 'roe_format', 'capeXfcf_format', 'capXfcf5', 'capXfcf10', 'capeXae_format', 'capXae5', 'capXae10', 'roe_format', 'capex_format', 'fcf_format', 'fcf_yield', 'effective_tax_format'];
     loopthrough(to_show)
 }
 
@@ -127,7 +127,7 @@ function financials() {
  */
 function fcf() {
     reset();
-    let to_show = ['fcf', 'capXfcf', 'fcfyield', 'fcfone', 'fcfthree', 'fcffive', 'fcften'];
+    let to_show = ['fcf_format', 'capXfcf_format', 'fcf_yield', 'fcf_growth_1', 'fcf_growth_3', 'fcf_growth_5', 'fcf_growth_10'];
     loopthrough(to_show)
 }
 
@@ -136,7 +136,7 @@ function fcf() {
  */
 function priceg() {
     reset();
-    let to_show = ['price', 'pgone', 'pgthree', 'pgfive', 'pgten'];
+    let to_show = ['price_format', 'price_growth_1', 'price_growth_3', 'price_growth_5', 'price_growth_10'];
     loopthrough(to_show)
 }
 
@@ -145,7 +145,7 @@ function priceg() {
  */
 function revg() {
     reset();
-    let to_show = ['revenue', 'rgone', 'rgthree', 'rgfive', 'rgten'];
+    let to_show = ['revenue_format', 'revenue_growth_1', 'revenue_growth_3', 'revenue_growth_5', 'revenue_growth_10'];
     loopthrough(to_show)
 }
 
@@ -154,7 +154,7 @@ function revg() {
  */
 function aebitdag() {
     reset();
-    let to_show = ['aebitda', 'agone', 'agthree', 'agfive', 'agten'];
+    let to_show = ['aebitda_format', 'aebitda_growth_1', 'aebitda_growth_3', 'aebitda_growth_5', 'aebitda_growth_10'];
     loopthrough(to_show)
 }
 
@@ -163,7 +163,7 @@ function aebitdag() {
  */
 function select_dcf() {
     reset();
-    let to_show = ['eps', 'gy', 'gp', 'ty', 'tg', 'dp', 'dcf_growth', 'dcf_terminal', 'dcf_fair'];
+    let to_show = ['eps_basic_format', 'growth_years_format', 'eps_without_nri_format', 'terminal_years_format', 'terminal_growth_rate', 'discount_rate_format', 'dcf_growth', 'dcf_terminal', 'dcf_fair'];
     loopthrough(to_show)
 }
 
@@ -223,5 +223,14 @@ function show_selected(){
     else{
         showrows();
     }
+}
+
+
+function makecolumn_arr(){
+    let list = [];
+    $("#table th").each(function(head){
+        list.push($(this).attr('data-field'))
+    })
+    alert(JSON.stringify(list))
 }
 

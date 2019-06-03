@@ -47,18 +47,6 @@ app.use(
     })
 );
 
-/*** Functions ***/
-
-// Add comma separator to numbers in thousands
-function formatNumber(num) {
-    try{
-        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-    }
-    catch {
-        return "Missing Required information to format"
-    }
-}
-
 /* Checks session */
 const sessionCheck = (req, res, next) => {
     if (req.session.user) {
@@ -76,18 +64,6 @@ const statusCheck = (req, res, next) => {
     }
 };
 
-hbs.registerHelper('Averages', function(data, column, years){
-    try{
-    let total = 0;
-    for(let i = 0; i < years; i++){
-        total += parseFloat(data[i][`${column}`])
-    }
-    return Math.round((total/years)*1000)/1000
-    }
-    catch{
-        return 'Missing Values'
-    }
-})
 
 /*** HTTP Requests ***/
 
@@ -110,142 +86,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
         .then(res => {
             // Calculates data before rendering
             res.forEach((stock) => {
-                stock.stockdata.forEach((data) => {
-                    data.yield_format = data.yield + '%'
-                    data.price_format = '$' + formatNumber(data.price)
-                    data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100)
-                    data.market_cap_format = formatNumber(Math.round(data.market_cap))
-                    data.net_debt_format = formatNumber(Math.round(data.net_debt))
-                    data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10)
-                    data.revenue_format = formatNumber(Math.round(data.revenue))
-                    data.aebitda_format = formatNumber(data.aebitda)
-                    data.roe_format = Math.round(data.roe * 10) / 10 + '%'
-                    data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
-                    data.fcf_format = formatNumber(Math.round(data.fcf))
-
-                    data.roic_format = formatNumber(data.roic);
-                    data.wacc_format = formatNumber(data.wacc);
-                    data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
-                    data.capex_format = formatNumber(data.capex * -1)
-                    data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
-                    data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
-                    data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf) * 100) / 100)
-                    data.fcfXae_format = formatNumber(Math.round((data.fcf/data.aebitda) * 100) / 100)
-
-                    if(data.eps_without_nri<= 1) {
-                        data.eps_without_nri_format = (data.eps_without_nri/10);
-                    } 
-                    else {
-                        data.eps_without_nri_format = (data.eps_without_nri/100);
-                    }
-
-                    data.eps_basic_format = Math.round((data.eps_basic)*100)/100;
-                    data.growth_years_format = data.growth_years;
-                    data.terminal_years_format = data.terminal_years;
-                    data.terminal_growth_rate_format = (data.terminal_growth_rate);
-                    data.discount_rate_format = (data.discount_rate);
-                    
-                    let dcf_calc = calc.dcf(data.eps_basic , data.eps_without_nri/10, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
-                    data.eps_without_nri_format = data.eps_without_nri/10;
-                    data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
-                    data.dcf_terminal = formatNumber(Math.round((dcf_calc.terminal_value)*100) / 100)
-                    data.dcf_fair = '$' + formatNumber(dcf_calc.fair_value)
-
-                    data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
-                    data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
-                    data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
-                    data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
-                    data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
-                    data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
-                    data.datestring = moment(data.date).format('MMM DD, YYYY')
-                    data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
-                })
-
-                // Calculates metric growth rates
-                try {
-                    const end_date = stock.stockdata[0].date.getFullYear(),
-                        end_price = stock.stockdata[0].price,
-                        end_revenue = stock.stockdata[0].revenue,
-                        end_aebitda = stock.stockdata[0].aebitda,
-                        end_fcf = stock.stockdata[0].fcf,
-                        end_so = stock.stockdata[0].shares_outstanding
-                    var price_10 = null,
-                        price_5 = null,
-                        price_3 = null,
-                        price_1 = null,
-                        revenue_10 = null,
-                        revenue_5 = null,
-                        revenue_3 = null,
-                        revenue_1 = null,
-                        aebitda_10 = null,
-                        aebitda_5 = null,
-                        aebitda_3 = null,
-                        aebitda_1 = null
-                    fcf_10 = null,
-                        fcf_5 = null,
-                        fcf_3 = null,
-                        fcf_1 = null,
-                        so_10 = null,
-                        so_5 = null,
-                        so_3 = null,
-                        so_1 = null
-                    for (var i = 1; i < stock.stockdata.length; i++) {
-                        if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
-                            price_10 = stock.stockdata[i].price
-                            revenue_10 = stock.stockdata[i].revenue
-                            aebitda_10 = stock.stockdata[i].aebitda
-                            fcf_10 = stock.stockdata[i].fcf
-                            so_10 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
-                            price_5 = stock.stockdata[i].price
-                            revenue_5 = stock.stockdata[i].revenue
-                            aebitda_5 = stock.stockdata[i].aebitda
-                            fcf_5 = stock.stockdata[i].fcf
-                            so_5 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
-                            price_3 = stock.stockdata[i].price
-                            revenue_3 = stock.stockdata[i].revenue
-                            aebitda_3 = stock.stockdata[i].aebitda
-                            fcf_3 = stock.stockdata[i].fcf
-                            so_3 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
-                            price_1 = stock.stockdata[i].price
-                            revenue_1 = stock.stockdata[i].revenue
-                            aebitda_1 = stock.stockdata[i].aebitda
-                            fcf_1 = stock.stockdata[i].fcf
-                            so_1 = stock.stockdata[i].shares_outstanding
-                        }
-                    }
-                    // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
-                    // Only 1 decimal required for price growth
-                    stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100) + '%'
-                    stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100) + '%'
-                    stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100) + '%'
-                    stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.revenue_growth_10 = Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100) + '%'
-                    stock.revenue_growth_5 = Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100) + '%'
-                    stock.revenue_growth_3 = Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100) + '%'
-                    stock.revenue_growth_1 = Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100) + '%'
-                    stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100) + '%'
-                    stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100) + '%'
-                    stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.fcf_growth_10 = Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100) + '%'
-                    stock.fcf_growth_5 = Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100) + '%'
-                    stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100) + '%'
-                    stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.so_change_10 = formatNumber(Math.round((end_so - so_10) * 10) / 10)
-                    stock.so_change_5 = formatNumber(Math.round((end_so - so_5) * 10) / 10)
-                    stock.so_change_3 = formatNumber(Math.round((end_so - so_3) * 10) / 10)
-                    stock.so_change_1 = formatNumber(Math.round((end_so - so_1) * 10) / 10)
-                }
-                catch (err) {
-                    ///
-                }
+               format_data(stock)
             })
 
             //console.log(res)
@@ -269,141 +110,7 @@ app.get("/shared", sessionCheck, statusCheck, (request, response) => {
     .then(res => {
         // Calculates data before rendering
         res.forEach((stock) => {
-            stock.stockdata.forEach((data) => {
-                data.yield_format = data.yield + '%'
-                data.price_format = '$' + formatNumber(data.price)
-                data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100)
-                data.market_cap_format = formatNumber(Math.round(data.market_cap))
-                data.net_debt_format = formatNumber(Math.round(data.net_debt))
-                data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10)
-                data.revenue_format = formatNumber(Math.round(data.revenue))
-                data.aebitda_format = formatNumber(data.aebitda)
-                data.roe_format = Math.round(data.roe * 10) / 10 + '%'
-                data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
-                data.fcf_format = formatNumber(Math.round(data.fcf))
-
-                data.roic_format = formatNumber(data.roic);
-                data.wacc_format = formatNumber(data.wacc);
-                data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
-                data.capex_format = formatNumber(data.capex)
-                data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
-                data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
-                data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf)*100) / 100)
-
-                if(data.eps_without_nri<= 1) {
-                    data.eps_without_nri_format = (data.eps_without_nri/10);
-                } 
-                else {
-                    data.eps_without_nri_format = (data.eps_without_nri/100);
-                }
-
-                data.eps_basic_format = Math.round((data.eps_basic)*100)/100;
-                data.growth_years_format = data.growth_years;
-                data.terminal_years_format = data.terminal_years;
-                data.terminal_growth_rate_format = (data.terminal_growth_rate);
-                data.discount_rate_format = (data.discount_rate);
-                
-                let dcf_calc = calc.dcf(data.eps_basic , data.eps_without_nri/10, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
-                data.eps_without_nri_format = data.eps_without_nri/10;
-                data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
-                data.dcf_terminal = formatNumber(Math.round((dcf_calc.terminal_value)*100) / 100)
-                data.dcf_fair = '$' + formatNumber(dcf_calc.fair_value)
-
-                data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
-                data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
-                data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
-                data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
-                data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
-                data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
-                data.datestring = moment(data.date).format('MMM DD, YYYY')
-                data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
-            })
-
-                // Calculates metric growth rates
-                try {
-                    const end_date = stock.stockdata[0].date.getFullYear(),
-                        end_price = stock.stockdata[0].price,
-                        end_revenue = stock.stockdata[0].revenue,
-                        end_aebitda = stock.stockdata[0].aebitda,
-                        end_fcf = stock.stockdata[0].fcf,
-                        end_so = stock.stockdata[0].shares_outstanding
-                    var price_10 = null,
-                        price_5 = null,
-                        price_3 = null,
-                        price_1 = null,
-                        revenue_10 = null,
-                        revenue_5 = null,
-                        revenue_3 = null,
-                        revenue_1 = null,
-                        aebitda_10 = null,
-                        aebitda_5 = null,
-                        aebitda_3 = null,
-                        aebitda_1 = null
-                    fcf_10 = null,
-                        fcf_5 = null,
-                        fcf_3 = null,
-                        fcf_1 = null,
-                        so_10 = null,
-                        so_5 = null,
-                        so_3 = null,
-                        so_1 = null
-                    for (var i = 1; i < stock.stockdata.length; i++) {
-                        if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
-                            price_10 = stock.stockdata[i].price
-                            revenue_10 = stock.stockdata[i].revenue
-                            aebitda_10 = stock.stockdata[i].aebitda
-                            fcf_10 = stock.stockdata[i].fcf
-                            so_10 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
-                            price_5 = stock.stockdata[i].price
-                            revenue_5 = stock.stockdata[i].revenue
-                            aebitda_5 = stock.stockdata[i].aebitda
-                            fcf_5 = stock.stockdata[i].fcf
-                            so_5 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
-                            price_3 = stock.stockdata[i].price
-                            revenue_3 = stock.stockdata[i].revenue
-                            aebitda_3 = stock.stockdata[i].aebitda
-                            fcf_3 = stock.stockdata[i].fcf
-                            so_3 = stock.stockdata[i].shares_outstanding
-                        } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
-                            price_1 = stock.stockdata[i].price
-                            revenue_1 = stock.stockdata[i].revenue
-                            aebitda_1 = stock.stockdata[i].aebitda
-                            fcf_1 = stock.stockdata[i].fcf
-                            so_1 = stock.stockdata[i].shares_outstanding
-                        }
-                    }
-                    // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
-                    // Only 1 decimal required for price growth
-                    stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100) + '%'
-                    stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100) + '%'
-                    stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100) + '%'
-                    stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.revenue_growth_10 = Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100) + '%'
-                    stock.revenue_growth_5 = Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100) + '%'
-                    stock.revenue_growth_3 = Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100) + '%'
-                    stock.revenue_growth_1 = Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100) + '%'
-                    stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100) + '%'
-                    stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100) + '%'
-                    stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.fcf_growth_10 = Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100) + '%'
-                    stock.fcf_growth_5 = Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100) + '%'
-                    stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100) + '%'
-                    stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100) + '%'
-
-                    stock.so_change_10 = formatNumber(Math.round((end_so - so_10) * 10) / 10)
-                    stock.so_change_5 = formatNumber(Math.round((end_so - so_5) * 10) / 10)
-                    stock.so_change_3 = formatNumber(Math.round((end_so - so_3) * 10) / 10)
-                    stock.so_change_1 = formatNumber(Math.round((end_so - so_1) * 10) / 10)
-                }
-                catch (err) {
-                    ///
-                }
+            format_data(stock)
             })
 
             //console.log(res)
@@ -455,7 +162,7 @@ app.post('/editNote', sessionCheck, (request, response) => {
 app.post('/edit', sessionCheck, (request, response) => {
     //console.log(request.body)
     //response.send({errors: 'none'})
-    if(request.body.action === 'current_price'){
+    if(request.body.action === 'stock_current_price'){
         db.editPrices(request.body.edit, request.body.id, request.session.user)
             .then(() => {response.send(true)})
             .catch((err) => {
@@ -498,6 +205,7 @@ app.post('/edit', sessionCheck, (request, response) => {
             response.send(false)})
     }
     if(request.body.action === 'Calculate'){
+        console.log(request.body)
         let edit = request.body.edit
         db.editDfc(request.body.edit, request.body.id)
         response.send(calc.dcf(edit.eps, edit.gr, edit.tgr, edit.dr, edit.gy, edit.ty))
@@ -621,9 +329,17 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
 app.post('/collection', sessionCheck, statusCheck, (request, response) => {
     switch (request.body.action) {
         case 'Append':
+            console.log(request.body.stocks)
             api_calls.gurufocusAdd(request.body.stocks, request.session.user)
                 .then((resolve) => {
-                    response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
+                    db.get_added(request.body.stocks[0].symbol, request.session.user)
+                    .then((res) => {
+                        res.forEach((stock) => {
+                            format_data(stock)
+                            })
+                        //fs.writeFileSync('test.json', JSON.stringify(res))
+                        response.send({data: res})
+                    })
                 })
                 .catch((reason) => console.log(reason));
             break;
@@ -654,11 +370,16 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
         break;
         
         case 'Update_Prices':
-                //console.log(request.body.stocks);
+                console.log(request.body.stocks);
                 api_calls.update_prices(request.body.stocks, request.session.user)
                 .then((resolve) => {
-                    //console.log('it worked')
-                    response.send(JSON.stringify(request.body.stocks));
+                    db.get_added(request.body.stocks[0].symbol, request.session.user)
+                    .then((res) => {
+                        res.forEach((stock) => {
+                            format_data(stock)
+                        })
+                        response.send({data:res})
+                    })
                 }).catch(function(err) {
                     console.log(err)
                     response.send(JSON.stringify({'Error': `${request.body.stocks[0].symbol}`}))
@@ -669,23 +390,15 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
             //console.log(request.body.stocks)
             api_calls.gurufocusAdd(request.body.stocks, request.session.user, summaryCall = false)
                 .then((r) => {
-                    response.send(JSON.stringify(request.body.stocks))
-                })
-
-
-
-            /* db.showstocks(request.session.user)
-            .then((resolve) => {
-                for(let i in resolve){
-                    Promises.push(db.removeStocks(resolve[i], request.session.user));
-                    Promises_add.push({symbol: resolve[i].symbol, comment: '', company: '', exchange: ''});
-                }
-                Promise.all(Promises)
-                .then((returned) => {
-                    api_calls.gurufocusAdd(Promises_add, request.session.user);
-                    response.send(JSON.stringify({'Status': 'Complete'}))
+                    db.get_added(request.body.stocks[0].symbol, request.session.user)
+                    .then((res) => {
+                        res.forEach((stock) => {
+                            format_data(stock)
+                            })
+                        //fs.writeFileSync('test.json', JSON.stringify(res))
+                        response.send({data: res})
+                    })
                 });
-            }); */
             break;
 
     }
@@ -705,14 +418,14 @@ app.post("/shared", (request, response) => {
             })
         break;
 
-        case 'Append':
-        //console.log(request.body.stocks)
-        api_calls.gurufocusAdd(request.body.stocks, request.session.user, true, true)
-            .then((resolve) => {
-                response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
-            })
-            .catch((reason) => console.log(reason))
-            break;
+        // case 'Append':
+        // //console.log(request.body.stocks)
+        // api_calls.gurufocusAdd(request.body.stocks, request.session.user, true, true)
+        //     .then((resolve) => {
+        //         response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
+        //     })
+        //     .catch((reason) => console.log(reason))
+        //     break;
     }
 })
 
@@ -733,3 +446,176 @@ app.listen(port, () => {
 })
 quarter_updates;
  */
+
+
+
+
+/*** HBS HELPERS ***/
+hbs.registerHelper('Averages', function(data, column, years){
+    return calculate_average(data,column,years)
+})
+
+
+ /*** Functions ***/
+
+// Add comma separator to numbers in thousands
+function formatNumber(num) {
+    try{
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+    catch {
+        return "Missing Required information to format"
+    }
+}
+
+function calculate_average(data, column, years){
+    try{
+        let total = 0;
+        for(let i = 0; i < years; i++){
+            total += parseFloat(data[i][`${column}`])
+        }
+        return Math.round((total/years)*1000)/1000
+        }
+        catch{
+            return 'Missing Values'
+        }
+}
+
+function format_data(stock){
+    stock.stockdata.forEach((data) => {
+        data.yield_format = data.yield + '%'
+        data.price_format = '$' + formatNumber(data.price)
+        data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100)
+        data.market_cap_format = formatNumber(Math.round(data.market_cap))
+        data.net_debt_format = formatNumber(Math.round(data.net_debt))
+        data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10)
+        data.revenue_format = formatNumber(Math.round(data.revenue))
+        data.aebitda_format = formatNumber(data.aebitda)
+        data.roe_format = Math.round(data.roe * 10) / 10 + '%'
+        data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
+        data.fcf_format = formatNumber(Math.round(data.fcf))
+
+        data.roic_format = formatNumber(data.roic);
+        data.wacc_format = formatNumber(data.wacc);
+        data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
+        data.capex_format = formatNumber(data.capex * -1)
+        data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
+        data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
+        data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf) * 100) / 100)
+        data.fcfXae_format = formatNumber(Math.round((data.fcf/data.aebitda) * 100) / 100)
+
+        // if(data.eps_without_nri<= 1) {
+        //     data.eps_without_nri_format = (data.eps_without_nri/10);
+        // } 
+        // else {
+        //     data.eps_without_nri_format = (data.eps_without_nri/100);
+        // }
+        data.eps_without_nri_format = (data.eps_without_nri);
+        data.eps_basic_format = Math.round((data.eps_basic)*100)/100;
+        data.growth_years_format = data.growth_years;
+        data.terminal_years_format = data.terminal_years;
+        data.terminal_growth_rate_format = (data.terminal_growth_rate);
+        data.discount_rate_format = (data.discount_rate);
+        
+        let dcf_calc = calc.dcf(data.eps_basic , data.eps_without_nri, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
+        data.eps_without_nri_format = data.eps_without_nri;
+        data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
+        data.dcf_terminal = formatNumber(Math.round((dcf_calc.terminal_value)*100) / 100)
+        data.dcf_fair = '$' + formatNumber(dcf_calc.fair_value)
+
+        data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
+        data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
+        data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%'
+        data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100
+        data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
+        data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
+        data.datestring = moment(data.date).format('MMM DD, YYYY')
+        data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
+    })
+
+    // Calculates metric growth rates
+    try {
+        const end_date = stock.stockdata[0].date.getFullYear(),
+            end_price = stock.stockdata[0].price,
+            end_revenue = stock.stockdata[0].revenue,
+            end_aebitda = stock.stockdata[0].aebitda,
+            end_fcf = stock.stockdata[0].fcf,
+            end_so = stock.stockdata[0].shares_outstanding
+        var price_10 = null,
+            price_5 = null,
+            price_3 = null,
+            price_1 = null,
+            revenue_10 = null,
+            revenue_5 = null,
+            revenue_3 = null,
+            revenue_1 = null,
+            aebitda_10 = null,
+            aebitda_5 = null,
+            aebitda_3 = null,
+            aebitda_1 = null
+        fcf_10 = null,
+            fcf_5 = null,
+            fcf_3 = null,
+            fcf_1 = null,
+            so_10 = null,
+            so_5 = null,
+            so_3 = null,
+            so_1 = null
+        for (var i = 1; i < stock.stockdata.length; i++) {
+            if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
+                price_10 = stock.stockdata[i].price
+                revenue_10 = stock.stockdata[i].revenue
+                aebitda_10 = stock.stockdata[i].aebitda
+                fcf_10 = stock.stockdata[i].fcf
+                so_10 = stock.stockdata[i].shares_outstanding
+            } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
+                price_5 = stock.stockdata[i].price
+                revenue_5 = stock.stockdata[i].revenue
+                aebitda_5 = stock.stockdata[i].aebitda
+                fcf_5 = stock.stockdata[i].fcf
+                so_5 = stock.stockdata[i].shares_outstanding
+            } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
+                price_3 = stock.stockdata[i].price
+                revenue_3 = stock.stockdata[i].revenue
+                aebitda_3 = stock.stockdata[i].aebitda
+                fcf_3 = stock.stockdata[i].fcf
+                so_3 = stock.stockdata[i].shares_outstanding
+            } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
+                price_1 = stock.stockdata[i].price
+                revenue_1 = stock.stockdata[i].revenue
+                aebitda_1 = stock.stockdata[i].aebitda
+                fcf_1 = stock.stockdata[i].fcf
+                so_1 = stock.stockdata[i].shares_outstanding
+            }
+        }
+        // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
+        // Only 1 decimal required for price growth
+        stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100) + '%'
+        stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100) + '%'
+        stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100) + '%'
+        stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100) + '%'
+
+        stock.revenue_growth_10 = Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100) + '%'
+        stock.revenue_growth_5 = Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100) + '%'
+        stock.revenue_growth_3 = Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100) + '%'
+        stock.revenue_growth_1 = Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100) + '%'
+
+        stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100) + '%'
+        stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100) + '%'
+        stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100) + '%'
+        stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100) + '%'
+
+        stock.fcf_growth_10 = Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100) + '%'
+        stock.fcf_growth_5 = Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100) + '%'
+        stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100) + '%'
+        stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100) + '%'
+
+        stock.so_change_10 = formatNumber(Math.round((end_so - so_10) * 10) / 10)
+        stock.so_change_5 = formatNumber(Math.round((end_so - so_5) * 10) / 10)
+        stock.so_change_3 = formatNumber(Math.round((end_so - so_3) * 10) / 10)
+        stock.so_change_1 = formatNumber(Math.round((end_so - so_1) * 10) / 10)
+    }
+    catch (err) {
+        ///
+    }
+}
