@@ -21,6 +21,7 @@ function add(){
                 for(let i in resolve){
                     try{
                         $table.bootstrapTable("insertRow", {index: 0, row: format_returned(resolve[i])})
+                        $("#db_stocks tr:first").attr("data-uniqueid",resolve[i][0].stock_id)
                     }
                     catch(e){
                         console.log(e)
@@ -77,12 +78,14 @@ function remove() {
 /** Send stocks to server using ajax and updates the database entries, shows sweet alerts*/
 function update() {
     update_counter = 0;
-    let selected = $table.bootstrapTable('getSelections')
+    let selected = $table.bootstrapTable('getSelections');
+    let indices = {};
     for (i in selected) {
         let linkedString = selected[i].symbol
         let part1 = linkedString.substring(linkedString.indexOf('>') + 1)
         let part2 = part1.substring(0, part1.indexOf('<'))
         rm_list.push({symbol:part2})
+        indices[part2] = document.getElementById(`${part2}`).parentElement.parentElement.getAttribute('data-index')
     }
     let promises = [];
 
@@ -106,13 +109,16 @@ function update() {
             title: 'Refresh Completed',
             text: 'This page will reload in three seconds'
         });
+        console.log(resolve)
+        for( let i in resolve){
+            console.log(indices[resolve[i][0].symbol])
+            $table.bootstrapTable('updateRow', {index: indices[resolve[i][0].symbol], row: format_returned(resolve[i])})
+        }
         rm_list = [];
         // setTimeout(function(){
         //     location.reload();
         //         }, 3000);
     })
-    
-    //ajax_func(rm_list, 'Update');
 };
 
 function share() {
@@ -157,20 +163,26 @@ function share() {
  */
 function refresh_prices(){
     update_counter = 0;
-    $("#table #db_stocks input:checked").each(function() {
-        var sym = $(this).parents('tr:first').data('val')
-        rm_list.push({"symbol" : sym.toString()});
-    });
+    let selected = $table.bootstrapTable('getSelections');
+    let indices = {};
+    for (i in selected) {
+        let linkedString = selected[i].symbol
+        let part1 = linkedString.substring(linkedString.indexOf('>') + 1)
+        let part2 = part1.substring(0, part1.indexOf('<'))
+        rm_list.push({symbol:part2})
+        indices[part2] = document.getElementById(`${part2}`).parentElement.parentElement.getAttribute('data-index')
+    }
+    let promises = [];
+
     Swal.fire({
-        position:'center',
-        type: 'question',
-        title: 'The selected stocks are currently being updated!',
-        text: 'Progress will be shown here',
-        footer: 'This might take a while, you might want to do something else',
-        showConfirmButton: false,
+            position:'center',
+            type: 'question',
+            title: 'The selected stocks are currently being updated!',
+            text: 'Progress will be shown here',
+            footer: 'This might take a while, you might want to do something else',
+            showConfirmButton: false,
     });
     //console.log(rm_list)
-    let promises = [];
     for (sym in rm_list){
         //console.log(rm_list[sym])
         promises.push(ajax_func([rm_list[sym]],'Update_Prices',false))
@@ -181,12 +193,14 @@ function refresh_prices(){
         swal.update({
             type: 'success',
             title: 'Refresh Completed',
-            text: 'This page will reload in two seconds'
+            text: 'This page will reload in three seconds'
         });
+        console.log(resolve)
+        for( let i in resolve){
+            console.log(indices[resolve[i][0].symbol])
+            $table.bootstrapTable('updateRow', {index: indices[resolve[i][0].symbol], row: format_returned(resolve[i])})
+        }
         rm_list = [];
-        setTimeout(function(){
-            location.reload();
-        }, 2000)
     })
 
 }
@@ -359,9 +373,13 @@ $(window).bind("load", function() {
     setInterval(() => {toggleHidden()},200)
 });
 
+/**
+ * 
+ * @param {array} data - stock information
+ */
 function format_returned(data){
     let row = {};
-    //console.log(data)
+    console.log(data)
     for(i in columns){
         if (columns[i] == "capXfcf5"){
             row[columns[i]] = calculate_averages(data[0].stockdata, 'capeXfcf_format', 5)
@@ -414,7 +432,7 @@ function format_returned(data){
             row[columns[i]] = `<button type="button" onclick='toggleStock(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-eye"></span></button>`
         }
         else if (columns[i] == "symbol"){
-            row[columns[i]] = ` <a data-val="${data[0].symbol}" href='https://www.gurufocus.com/chart/${data[0].symbol}' target="_blank">${ data[0].symbol }</a>`
+            row[columns[i]] = ` <a id="${data[0].symbol}" data-val="${data[0].symbol}" href='https://www.gurufocus.com/chart/${data[0].symbol}' target="_blank">${ data[0].symbol }</a>`
         }
         else if (columns[i] == "eps_basic_format"){
             row[columns[i]] = `<div id="dcf_eps_basic${data[0].stock_id}">${data[0].stockdata[0].eps_basic_format}</div>`
@@ -495,7 +513,7 @@ function calculate_averages(stockdata, column, years){
         }).done(function(returned_data){
             if(action === "Update" || action === "Update_Prices"){
                 update_counter += 1;
-                let Ndata = JSON.parse(returned_data);
+                //console.log(returned_data.data)
                 //console.log(Ndata[0].symbol)
                 Swal.update({
                     text: `Progress: (${update_counter}/${rm_list.length})`,

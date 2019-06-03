@@ -370,11 +370,16 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
         break;
         
         case 'Update_Prices':
-                //console.log(request.body.stocks);
+                console.log(request.body.stocks);
                 api_calls.update_prices(request.body.stocks, request.session.user)
                 .then((resolve) => {
-                    //console.log('it worked')
-                    response.send(JSON.stringify(request.body.stocks));
+                    db.get_added(request.body.stocks[0].symbol, request.session.user)
+                    .then((res) => {
+                        res.forEach((stock) => {
+                            format_data(stock)
+                        })
+                        response.send({data:res})
+                    })
                 }).catch(function(err) {
                     console.log(err)
                     response.send(JSON.stringify({'Error': `${request.body.stocks[0].symbol}`}))
@@ -385,7 +390,14 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
             //console.log(request.body.stocks)
             api_calls.gurufocusAdd(request.body.stocks, request.session.user, summaryCall = false)
                 .then((r) => {
-                    response.send(JSON.stringify(request.body.stocks))
+                    db.get_added(request.body.stocks[0].symbol, request.session.user)
+                    .then((res) => {
+                        res.forEach((stock) => {
+                            format_data(stock)
+                            })
+                        //fs.writeFileSync('test.json', JSON.stringify(res))
+                        response.send({data: res})
+                    })
                 });
             break;
 

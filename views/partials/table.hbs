@@ -86,7 +86,7 @@
 							<tr id="{{ this.stock_id }}" data-uniqueid="{{this.stock_id}}" data-val={{this.symbol}} {{#unless this.enabled}} class="disabledStock" {{/unless}}>
 								<td></td>
 								<td><button type="button" onclick='toggleStock({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-eye"></span></button></td>
-								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
+								<td> <a id="{{this.symbol}}" href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>
 								<td>{{ this.stock_name }}</td>
 								<td>{{this.stockdata.[0].aebitda_spice}}</td>
                                 <td><div id="note{{this.stock_id}}">{{this.note}}</div><button type="button" onclick='editNote({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
