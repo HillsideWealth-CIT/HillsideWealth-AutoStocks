@@ -27,18 +27,10 @@ function add(){
                         console.log(e)
                     }
                 }
+                setTimeout(function(){
+                    Swal.close();
+                }, 1500)
             })
- 
-            // ajax_func(send, 'Append').then((resolved) => {
-            //     try{
-            //         $table.bootstrapTable("insertRow", {index: 0, row:format_returned(resolved)})
-            //         $('#db_stocks tr:first').attr('data-uniqueid', resolved[0].stock_id)
-            //     }
-            //     catch{
-            //         console.log("did not retrieve any stocks")
-            //     }
-
-            // })
         }
     }).then((result) => {
         if(!result.dismiss){
@@ -73,6 +65,9 @@ function remove() {
         for (i in selected){
             $table.bootstrapTable('remove', {field: 'symbol', values: selected[i].symbol})
         }
+        setTimeout(function(){
+            Swal.close();
+        }, 1500)
     })
 };
 /** Send stocks to server using ajax and updates the database entries, shows sweet alerts*/
@@ -107,13 +102,13 @@ function update() {
         swal.update({
             type: 'success',
             title: 'Refresh Completed',
-            text: 'This page will reload in three seconds'
         });
-        console.log(resolve)
         for( let i in resolve){
-            console.log(indices[resolve[i][0].symbol])
             $table.bootstrapTable('updateRow', {index: indices[resolve[i][0].symbol], row: format_returned(resolve[i])})
         }
+        setTimeout(function(){
+            Swal.close();
+        }, 1500)
         rm_list = [];
         // setTimeout(function(){
         //     location.reload();
@@ -146,15 +141,12 @@ function share() {
         swal.update({
             type: 'success',
             title: 'Sharing Completed',
-            text: 'This page will reload in three seconds'
         });
         rm_list = [];
         setTimeout(function(){
-            location.reload();
+            Swal.close();
                 }, 3000);
     })
-    
-    //ajax_func(rm_list, 'Update');
 };
 
 /**
@@ -195,11 +187,12 @@ function refresh_prices(){
             title: 'Refresh Completed',
             text: 'This page will reload in three seconds'
         });
-        console.log(resolve)
         for( let i in resolve){
-            console.log(indices[resolve[i][0].symbol])
             $table.bootstrapTable('updateRow', {index: indices[resolve[i][0].symbol], row: format_returned(resolve[i])})
         }
+        setTimeout(function(){
+            Swal.close();
+        }, 1500)
         rm_list = [];
     })
 

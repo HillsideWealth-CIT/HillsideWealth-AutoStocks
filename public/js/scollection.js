@@ -1,34 +1,34 @@
 var update_counter = 0;
 var rm_list = [];
 
-function add(){
-    Swal.fire({
-        title: 'Add Stocks',
-        text: 'Formats: American Stocks: [SYMBOL], Canadian stocks: [EXCHANGE:SYMBOL]',
-        input: 'text',
-        showCancelButton: true,
-        confirmButtonText: 'Add Stocks',
-        preConfirm: (result) => {
-            let send = []
-            let stockstring = result.replace(/\s/g, "");
-            let stocks = stockstring.split(',')
-            for(let i in stocks){
-                send.push({'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''})
-            }
-            ajax_func(send, 'Append').then((resolved) => {
-                location.reload();
-            })
-        }
-    }).then((result) => {
-        if(!result.dismiss){
-            Swal.fire({
-            type: 'success',
-            title: 'Currently Saving To Database!',
-            showConfirmButton: false
-        })
-        }
-    })
-};
+// function add(){
+//     Swal.fire({
+//         title: 'Add Stocks',
+//         text: 'Formats: American Stocks: [SYMBOL], Canadian stocks: [EXCHANGE:SYMBOL]',
+//         input: 'text',
+//         showCancelButton: true,
+//         confirmButtonText: 'Add Stocks',
+//         preConfirm: (result) => {
+//             let send = []
+//             let stockstring = result.replace(/\s/g, "");
+//             let stocks = stockstring.split(',')
+//             for(let i in stocks){
+//                 send.push({'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''})
+//             }
+//             ajax_func(send, 'Append').then((resolved) => {
+//                 location.reload();
+//             })
+//         }
+//     }).then((result) => {
+//         if(!result.dismiss){
+//             Swal.fire({
+//             type: 'success',
+//             title: 'Currently Saving To Database!',
+//             showConfirmButton: false
+//         })
+//         }
+//     })
+// };
 /** Send stocks to server using ajax, removes stocks from database and displays sweet alerts*/
 function remove() {
     $("#table #db_stocks input:checked").each(function() {

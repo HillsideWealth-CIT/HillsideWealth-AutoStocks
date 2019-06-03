@@ -418,14 +418,14 @@ app.post("/shared", (request, response) => {
             })
         break;
 
-        case 'Append':
-        //console.log(request.body.stocks)
-        api_calls.gurufocusAdd(request.body.stocks, request.session.user, true, true)
-            .then((resolve) => {
-                response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
-            })
-            .catch((reason) => console.log(reason))
-            break;
+        // case 'Append':
+        // //console.log(request.body.stocks)
+        // api_calls.gurufocusAdd(request.body.stocks, request.session.user, true, true)
+        //     .then((resolve) => {
+        //         response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
+        //     })
+        //     .catch((reason) => console.log(reason))
+        //     break;
     }
 })
 
