@@ -1,9 +1,9 @@
 <table id="table" data-toggle="table"
-						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-search="true" data-detail-formatter="detailFormatter"
+						data-toolbar="#toolbar" data-height="800" data-detail-view="true" data-search="true" data-detail-formatter="detailFormatter" data-uniqueid="stockdata"
 						data-show-columns="true" data-row-attrubutes="rowattr" data-pagination="true" data-page-size="All" data-page-list="[10,20,50,100,All]" data-show-export="true" data-export-options='{"fileName" : "DB_Stocks", "preventInjection": false }'
 						class="table table1 table-sm table-hover">
 						<thead class='thead-dark' align="center">
-							<tr id = "wassup">
+							<tr>
 								<th data-field="checkbox" data-checkbox="true"></th>
 								<th data-field="hide" class="smallheader">hidden</th>
 								<th data-field="symbol" class="StickyCol" data-sortable="true">Symbol</th>
@@ -83,7 +83,7 @@
 						</thead>
 						<tbody id='db_stocks' align="center">
 							{{#each dbdata}}
-							<tr id="{{ this.stock_id }}" data-unique-id="{{this.stock_id}}" data-val={{this.symbol}} {{#unless this.enabled}} class="disabledStock" {{/unless}}>
+							<tr id="{{ this.stock_id }}" data-uniqueid="{{this.stock_id}}" data-val={{this.symbol}} {{#unless this.enabled}} class="disabledStock" {{/unless}}>
 								<td></td>
 								<td><button type="button" onclick='toggleStock({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-eye"></span></button></td>
 								<td> <a href='https://www.gurufocus.com/chart/{{this.symbol}}' target="_blank">{{ this.symbol }}</a></td>

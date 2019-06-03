@@ -101,18 +101,17 @@ function dcf_calc(eps, gr, tgr, dr, gy, ty) {
                 `,
         }).then((result) => {
             if (result.value == true) {
-                user_input.eps_without_nri_format = $('#eps_form').val();
-                user_input.eps_basic_format = $('#gr_form').val();
-                user_input.terminal_growth_rate_format = $('#tgr_form').val();
-                user_input.discount_rate_format = $('#dr_form').val();
-                user_input.growth_years_format = $('#gy_form').val();
-                user_input.terminal_years_format = $('#ty_form').val();
+                user_input.eps = $('#eps_form').val();
+                user_input.gr = $('#gr_form').val();
+                user_input.tgr = $('#tgr_form').val();
+                user_input.dr = $('#dr_form').val();
+                user_input.gy = $('#gy_form').val();
+                user_input.ty = $('#ty_form').val();
                 resolve(user_input);
             }
         })
     })
 }
-
 /**
  * Displays alerts that accept user input
  * sends input data to the server for calculations and updates database
@@ -121,7 +120,9 @@ function dcf_calc(eps, gr, tgr, dr, gy, ty) {
  * @param {string} id - The Stock id of the selected row
  */
 const edit_dcf = (id) => {
-    let index = document.getElementById(`dcf_fair${id}`).parentElement.parentElement.getAttribute('data-index');
+    let index = document.getElementById(`moat${id}`).parentElement.parentElement.getAttribute('data-index')
+    let div = document.getElementById(`dcf_fair${id}`);
+    let parent = div.parentNode;
     let eps = $(`#dcf_eps_basic${id}`)
     let gy = $(`#dcf_gy${id}`)
     let gr = $(`#dcf_eps_no_nri${id}`)
@@ -131,35 +132,22 @@ const edit_dcf = (id) => {
     let gv = $(`#dcf_growth_val${id}`)
     let tv = $(`#dcf_terminal_val${id}`)
     $(`#dcf_terminal_val${id}`).text()
-    console.log(index)
     dcf_calc(eps, gr, tgr, dr, gy, ty).then((resolve1) => {
         console.log(resolve1)
         ajax_edit("Calculate", id, resolve1).then((resolve2) => {
-            console.log(resolve2)
-            resolve1.dcf_growth = resolve2.growth_value
-            resolve1.dfc_terminal = resolve2.terminal_value
-            resolve1.dcf_fair = resolve2.dcf_fair
 
-            $table.bootstrapTable('updateRow', {index: index, row:{
-                eps_basic_format:`<div id="dcf_eps_basic${id}">${resolve1.eps_basic_format}</div>`,
-                growth_years_format:`<div id="dcf_gy${id}">${resolve1.growth_years_format}</div>`,
-                eps_without_nri_format:`<div id="dcf_eps_no_nri${id}">${resolve1.eps_without_nri_format}</div>`,
-                terminal_years_format:`<div id="dcf_ty${id}">${resolve1.terminal_years_format}</div>`,
-                terminal_growth_rate_format:`<div id="dcf_tgr${id}">${resolve1.terminal_growth_rate_format}</div>`,
-                discount_rate_format:`<div id="dcf_dr${id}">${resolve1.discount_rate_format}</div>`,
-                dcf_growth:`<div id="dcf_growth_val${id}">${Math.round((resolve2.growth_value) * 100) / 100}</div>`,
-                dcf_terminal:`<div id="dcf_terminal_val${id}">${Math.round((resolve2.terminal_value) * 100) / 100}</div>`,
-                dcf_fair:`<div id="dcf_fair${id}">${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`,
+            $table.bootstrapTable('updateRow', {index: index, row: {
+                eps_without_nri_format: resolve1.eps,
+                growth_years_format: resolve1.gy,
+                eps_basic_format: resolve1.gr,
+                terminal_years_format: resolve1.ty,
+                terminal_growth_rate_format: resolve1.tgr,
+                discount_rate_format: resolve1.dr,
+                dcf_growth: Math.round((resolve2.growth_value) * 100) / 100,
+                dcf_terminal: Math.round((resolve2.terminal_value) * 100) / 100,
+                dcf_fair: `<div id="dcf_fair${id}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+
             }})
-            // parent.innerHTML = `<div id="dcf_fair${id}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
-            // gv.text(`${Math.round((resolve2.growth_value) * 100) / 100}`)
-            // tv.text(`${Math.round((resolve2.terminal_value) * 100) / 100}`)
-            // eps.text(`${resolve1.eps}`)
-            // gy.text(`${resolve1.gy}`)
-            // gr.text(`${resolve1.gr}`)
-            // ty.text(`${resolve1.ty}`)
-            // tgr.text(`${resolve1.tgr}`)
-            // dr.text(`${resolve1.dr}`)
         })
     })
 }

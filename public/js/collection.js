@@ -1,6 +1,7 @@
 var update_counter = 0;
 var rm_list = [];
 /** Send stocks to server using ajax and displays sweet alerts*/
+// CAN ALREADY ADDED STOCKS TO THE DATABASE
 function add(){
     Swal.fire({
         title: 'Add Stocks',
@@ -9,22 +10,34 @@ function add(){
         showCancelButton: true,
         confirmButtonText: 'Add Stocks',
         preConfirm: (result) => {
-            let send = []
+            let promises = []
             let stockstring = result.replace(/\s/g, "");
             let stocks = stockstring.split(',')
             for(let i in stocks){
-                send.push({'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''})
+                promises.push(ajax_func([{'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''}], 'Append'))
             }
-            ajax_func(send, 'Append').then((resolved) => {
-                try{
-                    $table.bootstrapTable("insertRow", {index: 0, row:format_returned(resolved)})
-                    
+ 
+            Promise.all(promises).then((resolve) => {
+                for(let i in resolve){
+                    try{
+                        $table.bootstrapTable("insertRow", {index: 0, row: format_returned(resolve[i])})
+                    }
+                    catch(e){
+                        console.log(e)
+                    }
                 }
-                catch{
-                    console.log("did not retrieve any stocks")
-                }
-
             })
+ 
+            // ajax_func(send, 'Append').then((resolved) => {
+            //     try{
+            //         $table.bootstrapTable("insertRow", {index: 0, row:format_returned(resolved)})
+            //         $('#db_stocks tr:first').attr('data-uniqueid', resolved[0].stock_id)
+            //     }
+            //     catch{
+            //         console.log("did not retrieve any stocks")
+            //     }
+
+            // })
         }
     }).then((result) => {
         if(!result.dismiss){
@@ -56,7 +69,9 @@ function remove() {
         showConfirmButton: false,
     });
     ajax_func(to_remove, 'Remove').then((resolved) => {
-        location.reload()
+        for (i in selected){
+            $table.bootstrapTable('remove', {field: 'symbol', values: selected[i].symbol})
+        }
     })
 };
 /** Send stocks to server using ajax and updates the database entries, shows sweet alerts*/
@@ -92,9 +107,9 @@ function update() {
             text: 'This page will reload in three seconds'
         });
         rm_list = [];
-        setTimeout(function(){
-            location.reload();
-                }, 3000);
+        // setTimeout(function(){
+        //     location.reload();
+        //         }, 3000);
     })
     
     //ajax_func(rm_list, 'Update');

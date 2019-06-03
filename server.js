@@ -205,9 +205,10 @@ app.post('/edit', sessionCheck, (request, response) => {
             response.send(false)})
     }
     if(request.body.action === 'Calculate'){
+        console.log(request.body)
         let edit = request.body.edit
         db.editDfc(request.body.edit, request.body.id)
-        response.send(calc.dcf(edit.eps_without_nri_format, edit.growth_years_format, edit.terminal_growth_rate_format, edit.discount_rate_format, edit.growth_years_format, edit.terminal_years_format))
+        response.send(calc.dcf(edit.eps, edit.gr, edit.tgr, edit.dr, edit.gy, edit.ty))
     }
 })
 
@@ -491,21 +492,21 @@ function format_data(stock){
         data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf) * 100) / 100)
         data.fcfXae_format = formatNumber(Math.round((data.fcf/data.aebitda) * 100) / 100)
 
-        if(data.eps_without_nri<= 1) {
-            data.eps_without_nri_format = (data.eps_without_nri/10);
-        } 
-        else {
-            data.eps_without_nri_format = (data.eps_without_nri/100);
-        }
-
+        // if(data.eps_without_nri<= 1) {
+        //     data.eps_without_nri_format = (data.eps_without_nri/10);
+        // } 
+        // else {
+        //     data.eps_without_nri_format = (data.eps_without_nri/100);
+        // }
+        data.eps_without_nri_format = (data.eps_without_nri);
         data.eps_basic_format = Math.round((data.eps_basic)*100)/100;
         data.growth_years_format = data.growth_years;
         data.terminal_years_format = data.terminal_years;
         data.terminal_growth_rate_format = (data.terminal_growth_rate);
         data.discount_rate_format = (data.discount_rate);
         
-        let dcf_calc = calc.dcf(data.eps_basic , data.eps_without_nri/10, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
-        data.eps_without_nri_format = data.eps_without_nri/10;
+        let dcf_calc = calc.dcf(data.eps_basic , data.eps_without_nri, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
+        data.eps_without_nri_format = data.eps_without_nri;
         data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
         data.dcf_terminal = formatNumber(Math.round((dcf_calc.terminal_value)*100) / 100)
         data.dcf_fair = '$' + formatNumber(dcf_calc.fair_value)
