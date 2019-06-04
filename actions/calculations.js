@@ -8,14 +8,15 @@
  * @returns {JSON} results
  */
 dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10) => {
-    //console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate} ${g_years} ${t_years}`)
-    //process.exit();
+    // console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate} ${g_years} ${t_years}`)
     let results = {};
     let x = (1+parseFloat(growth_rate))/(1+parseFloat(discount_rate));
     let y = (1+parseFloat(terminal_growth))/(1+parseFloat(discount_rate));
     results['growth_value'] = dfc_growth(x, parseFloat(eps), g_years);
     results['terminal_value'] = dcf_terminal(x, y, parseFloat(eps), g_years,t_years);
     results['fair_value'] = Math.round((results.growth_value + results.terminal_value) * 100)/100;
+    results['growth_value'] = Math.round((results.growth_value) * 100 ) / 100;
+    results['terminal_value'] = Math.round((results.terminal_value) * 100 ) / 100 ;
     return results;
 }
 

@@ -207,7 +207,7 @@ app.post('/edit', sessionCheck, (request, response) => {
     if(request.body.action === 'Calculate'){
         console.log(request.body)
         let edit = request.body.edit
-        db.editDfc(request.body.edit, request.body.id)
+        //db.editDfc(request.body.edit, request.body.id)
         response.send(calc.dcf(edit.eps, edit.gr, edit.tgr, edit.dr, edit.gy, edit.ty))
     }
 })
@@ -481,6 +481,27 @@ function calculate_average(data, column, years){
         }
 }
 
+hbs.registerHelper('calculate_default_growth', function(years, ttm, eps){
+    return calculate_default_growth_func(years, ttm, eps)
+})
+
+function initial_values_calc(years, id, ttm, prev_eps, terminal_growth, discount, growth_years, terminal_years){
+        // console.log(`${years} ${id} ${ttm} ${prev_eps} ${terminal_growth} ${discount} ${growth_years} ${terminal_years} `)
+        let growth_rate = (calculate_default_growth_func(years, ttm, prev_eps))/100
+        // console.log(growth_rate)
+        let calculated = calc.dcf(ttm, growth_rate, terminal_growth, discount, growth_years, terminal_years)
+        //console.log(calculated)
+        return calculated
+}
+
+function calculate_default_growth_func(years, ttm, eps){
+    let part1 = parseFloat(ttm) / parseFloat(eps)
+    let part2 = (Math.pow(part1, 1/years)-1) * 100
+    // console.log(`${years}, ${ttm}, ${epi}`)
+    // console.log(math.nthRoot(part1, years)-1)
+    return Math.round((part2) * 100) / 100
+}
+
 function format_data(stock){
     stock.stockdata.forEach((data) => {
         data.yield_format = data.yield + '%'
@@ -510,18 +531,17 @@ function format_data(stock){
         // else {
         //     data.eps_without_nri_format = (data.eps_without_nri/100);
         // }
-        data.eps_without_nri_format = (data.eps_without_nri);
-        data.eps_basic_format = Math.round((data.eps_basic)*100)/100;
+        data.eps_without_nri_format = data.eps_without_nri;
+        data.eps_growth_rate = Math.round((data.eps_basic)*100)/100;
         data.growth_years_format = data.growth_years;
         data.terminal_years_format = data.terminal_years;
         data.terminal_growth_rate_format = (data.terminal_growth_rate);
         data.discount_rate_format = (data.discount_rate);
         
-        let dcf_calc = calc.dcf(data.eps_basic , data.eps_without_nri, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
-        data.eps_without_nri_format = data.eps_without_nri;
-        data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
-        data.dcf_terminal = formatNumber(Math.round((dcf_calc.terminal_value)*100) / 100)
-        data.dcf_fair = '$' + formatNumber(dcf_calc.fair_value)
+        // let dcf_calc5 = calc.dcf(data.eps_without_nri, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
+        // data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
+        // data.dcf_terminal = formatNumber(Math.round((dcf_calc.terminal_value)*100) / 100)
+        // data.dcf_fair_5y = '$' + formatNumber(dcf_calc.fair_value)
 
         data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%'
         data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100)
@@ -532,6 +552,16 @@ function format_data(stock){
         data.datestring = moment(data.date).format('MMM DD, YYYY')
         data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
     })
+
+    stock.growth_rate_5y = calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format)
+    stock.dcf_values_5y = initial_values_calc( 5, stock.stock_id, 
+        stock.stockdata[0].eps_without_nri_format,
+        stock.stockdata[4].eps_without_nri,
+        stock.stockdata[0].terminal_growth_rate,
+        stock.stockdata[0].discount_rate,
+        stock.stockdata[0].growth_years,
+        stock.stockdata[0].terminal_years
+        );
 
     // Calculates metric growth rates
     try {
@@ -614,6 +644,7 @@ function format_data(stock){
         stock.so_change_5 = formatNumber(Math.round((end_so - so_5) * 10) / 10)
         stock.so_change_3 = formatNumber(Math.round((end_so - so_3) * 10) / 10)
         stock.so_change_1 = formatNumber(Math.round((end_so - so_1) * 10) / 10)
+
     }
     catch (err) {
         ///
