@@ -165,7 +165,7 @@ function refresh_prices(){
         indices[part2] = document.getElementById(`${part2}`).parentElement.parentElement.getAttribute('data-index')
     }
     let promises = [];
-
+    console.log(selected)
     Swal.fire({
             position:'center',
             type: 'question',
@@ -204,21 +204,45 @@ function refresh_prices(){
  */
 function multi_dfc() {
     let dfc_list = [];
+    let index_list = []
     let send = {};
     $("#table #db_stocks input:checked").each(function() {
-        var sym = $(this).parents('tr:first').attr('id')
-        dfc_list.push(sym.toString());
+        let index = $(this).parents('tr:first').attr('data-index')
+        let id = $(this).parents('tr:first').attr('id')
+        dfc_list.push(id);
+        index_list.push(index)
     });
-    if(dfc_list.length != 0){
-        multi_dfc_calc().then((result) => {
-            ajax_func({list: dfc_list, values: result}, 'DFC', false).then((resolve) => {
-                location.reload();
-            })
+    console.log(dfc_list)
+    console.log(index_list)
+    multi_dfc_calc().then((input) => {
+        console.log(input)
+        ajax_func(input ,'DFC').then((resolve2) => {
+            console.log(input)
+            console.log(resolve2)
+            for( let i in index_list ){
+                //console.log(i)
+                $table.bootstrapTable('updateRow', {index:index_list[i], row: {
+                    eps_without_nri_format: `<div id="dcf_eps_basic${dfc_list[i]}">${input.eps}</div>`,
+                    eps_growth_rate: `<div id="dcf_growth_rate_5y${dfc_list[i]}">${input.gr}</div>`,
+                    eps_growth_rate_10y: `<div id="dcf_growth_rate_10y${dfc_list[i]}">${input.gr}</div>`,
+                    eps_growth_rate_15y: `<div id="dcf_growth_rate_15y${dfc_list[i]}">${input.gr}</div>`,
+                    terminal_growth_rate_format: `<div id="dcf_tgr${dfc_list[i]}">${input.tgr}</div>`,
+                    discount_rate_format: `<div id="dcf_dr${dfc_list[i]}">${input.dr}</div>`,
+                    growth_years_format: `<div id="dcf_gy${dfc_list[i]}">${input.gy}</div>`,
+                    terminal_years_format: `<div id="dcf_ty${dfc_list[i]}">${input.ty}</div>`,
+                    dcf_growth_5y: resolve2.growth_value,
+                    dcf_terminal_5y: resolve2.terminal_value,
+                    dcf_fair_5y: `<div id="dcf_fair_5y${dfc_list[i]}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${dfc_list[i]}, 5)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`,
+                    dcf_growth_10y: resolve2.growth_value,
+                    dcf_terminal_10y: resolve2.terminal_value ,
+                    dcf_fair_10y: `<div id="dcf_fair_10y${dfc_list[i]}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${dfc_list[i]}, 10)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`,
+                    dcf_growth_15y: resolve2.growth_value,
+                    dcf_terminal_15y: resolve2.terminal_value ,
+                    dcf_fair_15y: `<div id="dcf_fair_15y${dfc_list[i]}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${dfc_list[i]}, 15)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+                }})
+            }
         })
-    }
-    else {
-        alert("Requires at least one row selected")
-    }
+    })
 }
 
 /**

@@ -363,10 +363,13 @@ app.post('/collection', sessionCheck, statusCheck, (request, response) => {
             break;
 
         case 'DFC':
-            let condition = calc.multi_dfc_string(request.body.stocks.list)
-            db.updatemultidfc(condition, request.body.stocks.values).then((resolve) => {
-                response.send(resolve)
-            })
+            let rj = request.body.stocks
+            let returned = calc.dcf(rj.eps, rj.gr, rj.tgr, rj.dr, rj.gy, rj.ty)
+            response.send({data:returned})
+            // let condition = calc.multi_dfc_string(request.body.stocks.list)
+            // db.updatemultidfc(condition, request.body.stocks.values).then((resolve) => {
+            //     response.send(resolve)
+            // })
         break;
         
         case 'Update_Prices':

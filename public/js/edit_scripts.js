@@ -222,6 +222,7 @@ const editPrice = (id, action) => {
     }).then((result) => {
         if (!result.dismiss) {
             if (Number.isNaN(parseFloat(result.value)) === false && action != 'jdv') {
+
                 let input_string = `<div id="${action}${id}">$${result.value}</div><button type="button" onclick='editPrice("${id}", "${action}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
                 row_edit[`${action}`] = input_string;
                 console.log(row_edit)
