@@ -22,15 +22,25 @@
 								<th data-field="roic_format" data-sorter="currencysorter" data-sortable="true">ROIC %</th>
 								<th data-field="wacc_format" data-sorter="currencysorter" data-sortable="true">WACC %</th>
 								<th data-field="roicwacc_format" data-sorter="currencysorter" data-sortable="true">ROIC - WACC %</th>
+
 								<th data-field="eps_without_nri_format" data-sorter="currencysorter" data-sortable="true">EPS</th>
-								<th data-field="growth_years_format" data-sorter="currencysorter" data-sortable="true">Growth Years</th>
-								<th data-field="eps_growth_rate" data-sorter="currencysorter" data-sortable="true">Growth %</th>
-								<th data-field="terminal_years_format" data-sorter="currencysorter" data-sortable="true">Terminal Years</th>
+								<th data-field="eps_growth_rate" data-sorter="currencysorter" data-sortable="true">Growth % 5Y</th>
+								<th data-field="eps_growth_rate_10y" data-sorter="currencysorter" data-sortable="true">Growth % 10Y</th>
+								<th data-field="eps_growth_rate_15y" data-sorter="currencysorter" data-sortable="true">Growth % 15Y</th>
 								<th data-field="terminal_growth_rate_format" data-sorter="currencysorter" data-sortable="true">Terminal Growth %</th>
 								<th data-field="discount_rate_format" data-sorter="currencysorter" data-sortable="true">Discount %</th>
-								<th data-field='dcf_growth' data-sorter="curencysorter" data-sortable="true">Growth Value</th>
-								<th data-field='dcf_terminal' data-sorter="curencysorter" data-sortable="true">Terminal Value</th>
-								<th data-field='dcf_fair_5y' data-sorter="curencysorter" data-sortable="true">DCF Fair Value</th>
+								<th data-field="growth_years_format" data-sorter="currencysorter" data-sortable="true">Growth Years</th>
+								<th data-field="terminal_years_format" data-sorter="currencysorter" data-sortable="true">Terminal Years</th>
+								<th data-field='dcf_growth_5y' data-sorter="curencysorter" data-sortable="true">Growth Value 5Y</th>
+								<th data-field='dcf_terminal_5y' data-sorter="curencysorter" data-sortable="true">Terminal Value 5Y</th>
+								<th data-field='dcf_fair_5y' data-sorter="curencysorter" data-sortable="true">DCF Fair Value 5Y</th>
+								<th data-field='dcf_growth_10y' data-sorter="curencysorter" data-sortable="true">Growth Value 10Y</th>
+								<th data-field='dcf_terminal_10y' data-sorter="curencysorter" data-sortable="true">Terminal Value 10Y</th>
+								<th data-field='dcf_fair_10y' data-sorter="curencysorter" data-sortable="true">DCF Fair Value 10Y</th>
+								<th data-field='dcf_growth_15y' data-sorter="curencysorter" data-sortable="true">Growth Value 15Y</th>
+								<th data-field='dcf_terminal_15y' data-sorter="curencysorter" data-sortable="true">Terminal Value 15Y</th>
+								<th data-field='dcf_fair_15y' data-sorter="curencysorter" data-sortable="true">DCF Fair Value 15Y</th>
+
 								<th data-field="yield_format" data-sorter="currencysorter" data-sortable="true">Yield</th>
 								<th data-field="price_format" data-sorter="currencysorter" data-sortable="true">Price</th>
 								<th data-field="shares_outstanding_format" data-sorter="currencysorter" data-sortable="true">Shares Outstanding (M)</th>
@@ -104,14 +114,22 @@
 								<td>{{this.stockdata.[0].roicwacc_format}}</td>
 								
 								<td> <div id="dcf_eps_basic{{this.stock_id}}">{{this.stockdata.[0].eps_without_nri_format}}</div> </td>
-								<td> <div id="dcf_gy{{this.stock_id}}">{{this.stockdata.[0].growth_years_format}}</div> </td>
 								<td> <div id="dcf_growth_rate_5y{{this.stock_id}}">{{this.growth_rate_5y}}</div> </td>
-								<td> <div id="dcf_ty{{this.stock_id}}">{{this.stockdata.[0].terminal_years_format}}</div> </td>
+								<td> <div id="dcf_growth_rate_10y{{this.stock_id}}">{{this.growth_rate_10y}}</div> </td>
+								<td> <div id="dcf_growth_rate_15y{{this.stock_id}}">{{this.growth_rate_15y}}</div> </td>
 								<td> <div id="dcf_tgr{{this.stock_id}}">{{this.stockdata.[0].terminal_growth_rate_format}}</div> </td>
 								<td> <div id="dcf_dr{{this.stock_id}}">{{this.stockdata.[0].discount_rate_format}}</div> </td>
+								<td> <div id="dcf_gy{{this.stock_id}}">{{this.stockdata.[0].growth_years_format}}</div> </td>
+								<td> <div id="dcf_ty{{this.stock_id}}">{{this.stockdata.[0].terminal_years_format}}</div> </td>
 								<td> <div id="dcf_growth_val_5y{{this.stock_id}}">{{this.dcf_values_5y.growth_value}}</div> </td>
 								<td> <div id="dcf_terminal_val_5y{{this.stock_id}}">{{this.dcf_values_5y.terminal_value}}</div> </td>
-								<td> <div id="dcf_fair_5y{{this.stock_id}}">${{this.dcf_values_5y.fair_value}}</div><button type="button" onclick='edit_dcf({{this.stock_id}})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td> <div id="dcf_fair_5y{{this.stock_id}}">${{this.dcf_values_5y.fair_value}}</div><button type="button" onclick='edit_dcf({{this.stock_id}}, 5)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td> <div id="dcf_growth_val_5y{{this.stock_id}}">{{this.dcf_values_10y.growth_value}}</div> </td>
+								<td> <div id="dcf_terminal_val_5y{{this.stock_id}}">{{this.dcf_values_10y.terminal_value}}</div> </td>
+								<td> <div id="dcf_fair_10y{{this.stock_id}}">${{this.dcf_values_10y.fair_value}}</div><button type="button" onclick='edit_dcf({{this.stock_id}}, 10)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
+								<td> <div id="dcf_growth_val_5y{{this.stock_id}}">{{this.dcf_values_15y.growth_value}}</div> </td>
+								<td> <div id="dcf_terminal_val_5y{{this.stock_id}}">{{this.dcf_values_15y.terminal_value}}</div> </td>
+								<td> <div id="dcf_fair_15y{{this.stock_id}}">${{this.dcf_values_15y.fair_value}}</div><button type="button" onclick='edit_dcf({{this.stock_id}}, 15)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button></td>
 
 								<td>{{this.stockdata.[0].yield_format}}</td>
 								<td>{{this.stockdata.[0].price_format}}</td>

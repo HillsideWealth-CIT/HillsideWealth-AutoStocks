@@ -119,35 +119,51 @@ function dcf_calc(eps, gr, tgr, dr, gy, ty) {
  * 
  * @param {string} id - The Stock id of the selected row
  */
-const edit_dcf = (id) => {
+const edit_dcf = (id, years) => {
     let index = $(`#dcf_fair_5y${id}`).parent().parent().attr('data-index');
-    console.log(index)
     let div = document.getElementById(`dcf_fair_5y${id}`);
     let eps = $(`#dcf_eps_basic${id}`)
+    let gr = $(`#dcf_growth_rate_${years}y${id}`)
     let gy = $(`#dcf_gy${id}`)
-    let gr = $(`#dcf_growth_rate${id}`)
     let ty = $(`#dcf_ty${id}`)
     let tgr = $(`#dcf_tgr${id}`)
     let dr = $(`#dcf_dr${id}`)
-    let gv = $(`#dcf_growth_val_5y${id}`)
-    let tv = $(`#dcf_terminal_val_5y${id}`)
+    let gv = $(`#dcf_growth_val_${years}y${id}`)
+    let tv = $(`#dcf_terminal_val_${years}y${id}`)
+
     $(`#dcf_terminal_val_5y${id}`).text()
     dcf_calc(eps, gr, tgr, dr, gy, ty).then((resolve1) => {
         console.log(resolve1)
         ajax_edit("Calculate", id, resolve1).then((resolve2) => {
+            console.log(resolve2)
 
             $table.bootstrapTable('updateRow', {index: index, row: {
                 eps_without_nri_format: `<div id="dcf_eps_basic${id}">${resolve1.eps}</div>`,
                 growth_years_format: `<div id="dcf_gy${id}">${resolve1.gy}</div>`,
-                eps_growth_rate: `<div id="dcf_growth_rate${id}">${resolve1.gr}</div>`,
                 terminal_years_format: `<div id="dcf_ty${id}">${resolve1.ty}</div>`,
                 terminal_growth_rate_format: `<div id="dcf_tgr${id}">${resolve1.tgr}</div>`,
                 discount_rate_format: `<div id="dcf_dr${id}">${resolve1.dr}</div>`,
                 dcf_growth: `<div id="">${Math.round((resolve2.growth_value) * 100) / 100}</div>`,
                 dcf_terminal: `<div id="">${Math.round((resolve2.terminal_value) * 100) / 100}</div>`,
-                dcf_fair_5y: `<div id="dcf_fair_5y${id}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
-
             }})
+            if(years == 5){
+                $table.bootstrapTable('updateRow', {index: index, row:{
+                    eps_growth_rate: `<div id="dcf_growth_rate${id}">${resolve1.gr * 100}</div>`,
+                    dcf_fair_5y: `<div id="dcf_fair_5y${id}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id}, 5)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`,
+                }})
+            }
+            else if(years == 10){
+                $table.bootstrapTable('updateRow', {index: index, row:{
+                    eps_growth_rate_10y: `<div id="dcf_growth_rate_10y${id}">${resolve1.gr * 100}</div>`,
+                    dcf_fair_10y: `<div id="dcf_fair_10y${id}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id}, 10)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`,
+                }})
+            }
+            else if(years == 15){
+                $table.bootstrapTable('updateRow', {index: index, row:{
+                    eps_growth_rate_15y: `<div id="dcf_growth_rate_15y${id}">${resolve1.gr * 100}</div>`,
+                    dcf_fair_15y: `<div id="dcf_fair_15y${id}">$${resolve2.fair_value}</div><button type="button" onclick='edit_dcf(${id}, 15)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`,
+                }})
+            }
         })
     })
 }

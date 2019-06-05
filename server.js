@@ -205,7 +205,7 @@ app.post('/edit', sessionCheck, (request, response) => {
             response.send(false)})
     }
     if(request.body.action === 'Calculate'){
-        console.log(request.body)
+        // console.log(request.body)
         let edit = request.body.edit
         //db.editDfc(request.body.edit, request.body.id)
         response.send(calc.dcf(edit.eps, edit.gr, edit.tgr, edit.dr, edit.gy, edit.ty))
@@ -553,15 +553,55 @@ function format_data(stock){
         data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
     })
 
-    stock.growth_rate_5y = calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format)
-    stock.dcf_values_5y = initial_values_calc( 5, stock.stock_id, 
-        stock.stockdata[0].eps_without_nri_format,
-        stock.stockdata[4].eps_without_nri,
-        stock.stockdata[0].terminal_growth_rate,
-        stock.stockdata[0].discount_rate,
-        stock.stockdata[0].growth_years,
-        stock.stockdata[0].terminal_years
-        );
+    try{
+        stock.growth_rate_5y = calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format)
+        stock.dcf_values_5y = initial_values_calc( 5, stock.stock_id, 
+            stock.stockdata[0].eps_without_nri_format,
+            stock.stockdata[4].eps_without_nri,
+            stock.stockdata[0].terminal_growth_rate,
+            stock.stockdata[0].discount_rate,
+            stock.stockdata[0].growth_years,
+            stock.stockdata[0].terminal_years
+            );
+    }
+    catch{
+        stock.growth_rate_5y = "N/A"
+        stock.dcf_values_5y = {fair_value: "NA", growth_value: "NA", terminal_value: "N/A"}
+    }      
+
+    try{
+        stock.growth_rate_10y = calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format)
+        stock.dcf_values_10y = initial_values_calc( 10, stock.stock_id, 
+            stock.stockdata[0].eps_without_nri_format,
+            stock.stockdata[9].eps_without_nri,
+            stock.stockdata[0].terminal_growth_rate,
+            stock.stockdata[0].discount_rate,
+            stock.stockdata[0].growth_years,
+            stock.stockdata[0].terminal_years
+            );
+    }
+    catch(err){
+        //console.log(err)
+        stock.growth_rate_10y = "N/A"
+        stock.dcf_values_10y = {fair_value: "NA", growth_value: "NA", terminal_value: "N/A"}
+    }
+
+    try{
+        stock.growth_rate_15y = calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format)
+        stock.dcf_values_15y = initial_values_calc( 15, stock.stock_id, 
+            stock.stockdata[0].eps_without_nri_format,
+            stock.stockdata[14].eps_without_nri,
+            stock.stockdata[0].terminal_growth_rate,
+            stock.stockdata[0].discount_rate,
+            stock.stockdata[0].growth_years,
+            stock.stockdata[0].terminal_years
+            );
+    }
+    catch(err){
+        //console.log(err)
+        stock.growth_rate_15y = "N/A"
+        stock.dcf_values_15y = {fair_value: "NA", growth_value: "NA", terminal_value: "N/A"}
+    }
 
     // Calculates metric growth rates
     try {
