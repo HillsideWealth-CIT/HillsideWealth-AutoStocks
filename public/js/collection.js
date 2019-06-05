@@ -374,6 +374,7 @@ function format_returned(data){
     let row = {};
     console.log(data)
     for(i in columns){
+        console.log(columns[i])
         if (columns[i] == "capXfcf5"){
             row[columns[i]] = calculate_averages(data[0].stockdata, 'capeXfcf_format', 5)
         }
@@ -418,23 +419,26 @@ function format_returned(data){
         else if (columns[i] == "jdv"){
             row[columns[i]] = `<div id="jdv${data[0].stock_id}">${data[0].jdv}</div><button type="button" onclick='editPrice(${data[0].stock_id}, "jdv")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         }
-        else if (columns[i] == "dcf_fair"){
-            row[columns[i]] = `<div id="dcf_fair${data[0].stock_id}">${data[0].stockdata[0].dcf_fair}</div><button type="button" onclick='edit_dcf(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
-        }
         else if (columns[i] == "hide"){
             row[columns[i]] = `<button type="button" onclick='toggleStock(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-eye"></span></button>`
         }
         else if (columns[i] == "symbol"){
             row[columns[i]] = ` <a id="${data[0].symbol}" data-val="${data[0].symbol}" href='https://www.gurufocus.com/chart/${data[0].symbol}' target="_blank">${ data[0].symbol }</a>`
         }
-        else if (columns[i] == "eps_basic_format"){
-            row[columns[i]] = `<div id="dcf_eps_basic${data[0].stock_id}">${data[0].stockdata[0].eps_basic_format}</div>`
+        else if (columns[i] == "eps_growth_rate"){
+            row[columns[i]] = `<div id="dcf_growth_rate_5y${data[0].stock_id}">${data[0].growth_rate_5y}</div>`
+        }
+        else if (columns[i] == "eps_growth_rate_10y"){
+            row[columns[i]] = `<div id="dcf_growth_rate_10y${data[0].stock_id}">${data[0].growth_rate_10y}</div>`
+        }
+        else if (columns[i] == "eps_growth_rate_15y"){
+            row[columns[i]] = `<div id="dcf_growth_rate_15y${data[0].stock_id}">${data[0].growth_rate_15y}</div>`
         }
         else if (columns[i] == "growth_years_format"){
             row[columns[i]] = `<div id="dcf_gy${data[0].stock_id}">${data[0].stockdata[0].growth_years_format}</div>`
         }
         else if (columns[i] == "eps_without_nri_format"){
-            row[columns[i]] = `<div id="dcf_eps_no_nri${data[0].stock_id}">${data[0].stockdata[0].eps_without_nri_format}</div>`
+            row[columns[i]] = `<div id="dcf_eps_basic${data[0].stock_id}">${data[0].stockdata[0].eps_without_nri_format}</div>`
         }
         else if (columns[i] == "terminal_years_format"){
             row[columns[i]] = `<div id="dcf_ty${data[0].stock_id}">${data[0].stockdata[0].growth_years_format}</div>`
@@ -445,14 +449,32 @@ function format_returned(data){
         else if (columns[i] == "discount_rate_format"){
             row[columns[i]] = `<div id="dcf_dr${data[0].stock_id}">${data[0].stockdata[0].discount_rate_format}</div>`
         }
-        else if (columns[i] == "dcf_growth"){
-            row[columns[i]] = `<div id="dcf_growth_val${data[0].stock_id}">${data[0].stockdata[0].dcf_growth}</div>`
+        else if (columns[i] == "dcf_growth_5y"){
+            row[columns[i]] = `<div id="dcf_growth_val_5y${data[0].stock_id}">${data[0].dcf_values_5y.growth_value}</div>`
         }
-        else if (columns[i] == "dcf_terminal"){
-            row[columns[i]] = `<div id="dcf_terminal_val${data[0].stock_id}">${data[0].stockdata[0].dcf_terminal}</div>`
+        else if (columns[i] == "dcf_terminal_5y"){
+            row[columns[i]] = `<div id="dcf_terminal_val_5y${data[0].stock_id}">${data[0].dcf_values_5y.terminal_value}</div>`
         }
-        else if (columns[i] == "dcf_fair"){
-            row[columns[i]] = `<div id="dcf_fair${data[0].stock_id}">${data[0].stockdata[0].dcf_fair}</div><button type="button" onclick='edit_dcf(${data[0].stock_id})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        else if (columns[i] == "dcf_fair_5y"){
+            row[columns[i]] = `<div id="dcf_fair_5y${data[0].stock_id}">$${data[0].dcf_values_5y.fair_value}</div><button type="button" onclick='edit_dcf(${data[0].stock_id}, 5)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "dcf_growth_10y"){
+            row[columns[i]] = `<div id="dcf_growth_val_10y${data[0].stock_id}">${data[0].dcf_values_10y.growth_value}</div>`
+        }
+        else if (columns[i] == "dcf_terminal_10y"){
+            row[columns[i]] = `<div id="dcf_terminal_val_10y${data[0].stock_id}">${data[0].dcf_values_10y.terminal_value}</div>`
+        }
+        else if (columns[i] == "dcf_fair_10y"){
+            row[columns[i]] = `<div id="dcf_fair_10y${data[0].stock_id}">$${data[0].dcf_values_10y.fair_value}</div><button type="button" onclick='edit_dcf(${data[0].stock_id}, 10)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+        }
+        else if (columns[i] == "dcf_growth_15y"){
+            row[columns[i]] = `<div id="dcf_growth_val_15y${data[0].stock_id}">${data[0].dcf_values_15y.growth_value}</div>`
+        }
+        else if (columns[i] == "dcf_terminal_15y"){
+            row[columns[i]] = `<div id="dcf_terminal_val_15y${data[0].stock_id}">${data[0].dcf_values_15y.terminal_value}</div>`
+        }
+        else if (columns[i] == "dcf_fair_15y"){
+            row[columns[i]] = `<div id="dcf_fair_15y${data[0].stock_id}">$${data[0].dcf_values_15y.fair_value}</div><button type="button" onclick='edit_dcf(${data[0].stock_id}, 15)' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         }
         else if (data[0][columns[i]]){
            row[columns[i]] = data[0][columns[i]]

@@ -1,8 +1,12 @@
-var columns = ["checkbox","hide","symbol","3","aebitda_spice","comment","emoticon","gfrating","stocksector","stock_current_price","fairvalue","fivestar","onestar","moat","jdv","roic_format","wacc_format","roicwacc_format","eps_without_nri_format","growth_years_format","eps_basic_format","terminal_years_format","terminal_growth_rate_format","discount_rate_format","dcf_growth","dcf_terminal","dcf_fair","yield_format","price_format","shares_outstanding_format","market_cap_format","capex_format","capeXfcf_format","capXfcf5","capXfcf10","capeXae_format","capXae5","capXae10","aeXsho_format","fcfXae_format","net_debt_format","enterprise_value_format","nd_aebitda","revenue_format","aebitda_format","aebitda_percent","asset_turnover","aebitda_at","roe_format","effective_tax_format","ev_aebitda","roe_spice","fcf_format","fcf_yield","fcf_growth_1","fcf_growth_3","fcf_growth_5","fcf_growth_10","price_growth_1","price_growth_3","price_growth_5","price_growth_10","so_change_1","so_change_3","so_change_5","so_change_10","revenue_growth_1","revenue_growth_3","revenue_growth_5","revenue_growth_10","aebitda_growth_1","aebitda_growth_3","aebitda_growth_5","aebitda_growth_10","datestring"]
+var columns = ["checkbox","hide","symbol","3","aebitda_spice","comment","emoticon","gfrating","stocksector","stock_current_price","fairvalue","fivestar","onestar","moat","jdv","roic_format","wacc_format","roicwacc_format","eps_without_nri_format","eps_growth_rate","eps_growth_rate_10y","eps_growth_rate_15y","terminal_growth_rate_format","discount_rate_format","terminal_years_format","growth_years_format","dcf_growth_5y","dcf_terminal_5y","dcf_fair_5y","dcf_growth_10y","dcf_terminal_10y","dcf_fair_10y","dcf_growth_15y","dcf_terminal_15y","dcf_fair_15y","yield_format","price_format","shares_outstanding_format","market_cap_format","capex_format","capeXfcf_format","capXfcf5","capXfcf10","capeXae_format","capXae5","capXae10","aeXsho_format","fcfXae_format","net_debt_format","enterprise_value_format","nd_aebitda","revenue_format","aebitda_format","aebitda_percent","asset_turnover","aebitda_at","roe_format","effective_tax_format","ev_aebitda","roe_spice","fcf_format","fcf_yield","fcf_growth_1","fcf_growth_3","fcf_growth_5","fcf_growth_10","price_growth_1","price_growth_3","price_growth_5","price_growth_10","so_change_1","so_change_3","so_change_5","so_change_10","revenue_growth_1","revenue_growth_3","revenue_growth_5","revenue_growth_10","aebitda_growth_1","aebitda_growth_3","aebitda_growth_5","aebitda_growth_10","datestring"]
 var permanent_col = ['checkbox', 'hide', 'symbol', "datestring"]
 var $table = $('#table')
 var hidden_id = [];
 var hide = false;
+
+$( document ).ready(function(){
+    //select_dcf();
+}) 
 
 /**
  * Creates a sweetalert2 popup that displays table column options
@@ -163,7 +167,7 @@ function aebitdag() {
  */
 function select_dcf() {
     reset();
-    let to_show = ['eps_basic_format', 'growth_years_format', 'eps_without_nri_format', 'terminal_years_format', 'terminal_growth_rate', 'discount_rate_format', 'dcf_growth', 'dcf_terminal', 'dcf_fair'];
+    let to_show = ['eps_growth_rate', 'eps_growth_rate_10y', 'eps_growth_rate_15y', 'growth_years_format', 'eps_without_nri_format', 'terminal_years_format', 'terminal_growth_rate_format', 'discount_rate_format', 'dcf_growth_5y', , 'dcf_terminal_5y', 'dcf_fair_5y', 'dcf_growth_10y', 'dcf_terminal_10y', 'dcf_fair_10y', 'dcf_growth_15y', 'dcf_termainl_15y', 'dcf_fair_15y'];
     loopthrough(to_show)
 }
 
