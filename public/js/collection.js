@@ -165,7 +165,7 @@ function refresh_prices(){
         indices[part2] = document.getElementById(`${part2}`).parentElement.parentElement.getAttribute('data-index')
     }
     let promises = [];
-
+    console.log(selected)
     Swal.fire({
             position:'center',
             type: 'question',

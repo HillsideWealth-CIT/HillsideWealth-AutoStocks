@@ -5,7 +5,7 @@ var hidden_id = [];
 var hide = false;
 
 $( document ).ready(function(){
-    select_dcf();
+    // select_dcf();
 }) 
 
 /**
