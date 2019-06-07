@@ -1,8 +1,19 @@
 body {
 	margin:0;
+	height:100vh;
 	font-family: sans-serif;
 	background-color: #d8d8d8;
 }
+
+a{
+	text-decoration: none;
+	color: black;
+	/* margin: 10px; */
+}
+p{
+	margin: 3px;
+}
+
 #header {
 	background-color: #255A85;
 }
@@ -16,14 +27,10 @@ body {
 	text-align: center;
 	padding: 5px;
 }
-a{
-	text-decoration: none;
-	color: black;
-	/* margin: 10px; */
+#toolbar{
+	padding-top: 20px;
 }
-p{
-	margin: 3px;
-}
+
 #logout {
 	position: absolute;
     right: 0px;
@@ -90,6 +97,15 @@ p{
 
 #cancel:hover{
 	background-color: rgb(168, 168, 168);
+}
+
+.checkbox_column{
+	width: 25px;
+}
+
+.table_column{
+	min-width: 100px;
+	max-width: 200px;
 }
 
 .dropzone {

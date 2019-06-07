@@ -92,7 +92,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
             //console.log(res)
             //fs.writeFileSync('test.json', JSON.stringify(res));
             response.render("collection.hbs", {
-                dbdata: res,
+                //dbdata: res,
                 c: true,
                 admin: (request.session.status == 'admin')
             })
@@ -325,9 +325,22 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
 
 });
 
+//Initialize Table
+app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
+    //console.log(request.body.action)
+    if(request.body.action == "init_user"){
+        db.showstocks(request.session.user).then(resolve => {
+            resolve.forEach((stock) => {
+                format_data(stock)
+            })
+            response.send({data: resolve})
+        })
+    }
+})
+
 // update DB
 app.post('/collection', sessionCheck, statusCheck, (request, response) => {
-    switch (request.body.action) {
+    switch (request.body.action) {        
         case 'Append':
             console.log(request.body.stocks)
             api_calls.gurufocusAdd(request.body.stocks, request.session.user)
