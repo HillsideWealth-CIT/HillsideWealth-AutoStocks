@@ -14,6 +14,14 @@ p{
 	margin: 3px;
 }
 
+table th {
+	text-align: center;
+}
+
+table td {
+	text-align: center;
+}
+
 #header {
 	background-color: #255A85;
 }
@@ -111,3 +119,8 @@ p{
 .dropzone {
 	padding: 1%;
 }
+
+div.DTFC_LeftWrapper table,
+div.DTFC_RightWrapper table {
+  z-index: 2;
+} 
