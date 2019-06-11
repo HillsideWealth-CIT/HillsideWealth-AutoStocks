@@ -3,21 +3,23 @@ var stockdb
 
 $(document).ready(function(){
 Initialize_table();
-
 })
 
 function Initialize_table(){
     ajax_Call("init_user", "/init_table").then((resolve) => {
         stockdb = resolve.data
         $table = fill_table(resolve.data)
+        console.log(stockdb)
     })
 }
 function fill_table(data){
     var datatable = $('#datatable').DataTable({
         processing : true,
         data : data,
+        dom : 'Bfrtip',
+        buttons : button_builder(),
         rowId : `symbol`,
-        select : { style: 'os', selector: 'td:first-child', style : 'multi' },
+        select : { selector: 'td:first-child', style : 'multi' },
         columns : column_builder(),
         fixedColumns: { leftColumns: 2 },
         scrollX : true,
@@ -29,9 +31,27 @@ function fill_table(data){
     return datatable
 }
 
+function button_builder(page){
+    let buttons = [
+        'selectAll', 'selectNone',
+        {text: '<span class="fas fa-plus"></span> Add', className:"btn-success btn-sm", action: function(){add();}},
+        {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-success btn-sm", action: function(){remove();}},
+        {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-dark btn-sm"},
+        {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-dark btn-sm"},
+       
+        {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-info btn-sm"},
+        {text: '<span class="fas fa-share"></span> Share', className:"btn-info btn-sm"},
+        {text: '<span class="fas fa-calculator"></span> DFC', className:"btn-secondary btn-sm"},
+        {text: '<span class="fas fa-cog"></span> Config', className:"btn-secondary btn-sm"},
+    ];
+    return buttons
+
+    //  ['selectAll', 'selectNone']
+}
+
 function column_builder(){
     let columns = [
-        { data : null , defaultContent: '', orderable: false, targets:0, className: 'select-checkbox'},
+        { data : null , defaultContent: '', checkboxes : { selectRow : true } ,orderable: false, targets:0, className: 'select-checkbox'},
         { data : "symbol" },
         {   data : null,
             orderable : false,

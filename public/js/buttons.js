@@ -1,6 +1,10 @@
 function open_chart(symbol){
     window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`)
     return
+    // console.log($('#BUTTS').length)
+    // console.log($('#MSFT').length)
+    // console.log(stockdb[1])
+    // $table.row.add(row_columns()).draw();
 }
 
 function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv){
@@ -230,6 +234,7 @@ function show_financials(symbol, stockdata, years){
     console.log(stockdata)
     let financials = ""
     for(let i = 1; i <= years; i++){
+        try{
         financials +=  `<tr>
             <td>${stockdata[i].datestring}</td>
             <td>${stockdata[i].price_format}</td>
@@ -253,6 +258,10 @@ function show_financials(symbol, stockdata, years){
             <td>${stockdata[i].capeXae_format}</td>
             </tr>
             `
+        }
+        catch{
+            break;
+        }
     }
     swal.fire({
         title: `${symbol} Historical Data`,
@@ -289,5 +298,63 @@ function show_financials(symbol, stockdata, years){
                 ${financials}
             </table>
             `
+    })
+}
+
+function add(){
+    Swal.fire({
+        title: 'Add Stocks',
+        text: 'Formats: American Stocks: [SYMBOL], Canadian stocks: [EXCHANGE:SYMBOL]',
+        input: 'text',
+        showCancelButton: true,
+        confirmButtonText: 'Add Stocks',
+        preConfirm: (result) => {
+            let promises = []
+            let stockstring = result.replace(/\s/g, "");
+            let stocks = stockstring.split(',')
+            for(let i in stocks){
+                if($(`#${stocks[i].toUpperCase()}`).length == 0) {
+                    promises.push(ajax_Call([{'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''}], '/append'))
+                }
+            }
+ 
+            Promise.all(promises).then((resolve) => {
+                for(i in resolve){
+                    $table.row.add(resolve[i].data[0]).draw();
+                }
+            })
+            setTimeout(function(){
+                swal.close()
+            }, 5000)
+            
+        }
+    }).then((result) => {
+        if(!result.dismiss){
+            Swal.fire({
+            type: 'success',
+            title: 'Currently Saving To Database!',
+            showConfirmButton: false
+        })
+        }
+    })
+};
+
+function remove(){
+    let to_remove = [];
+    let selected = $table.rows('.selected').data()
+    for( i in selected ){
+        if(selected[i].symbol){
+        to_remove.push(selected[i].symbol)
+        }   
+        else{
+            break;
+        }
+    }
+    ajax_Call(to_remove, '/remove').then((resolved) => {
+        console.log(resolved)
+            for(i in to_remove){
+                console.log(i)
+                $table.row($(`#${to_remove[i]}`)).remove().draw()
+            }
     })
 }
