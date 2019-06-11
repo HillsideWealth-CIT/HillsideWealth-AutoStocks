@@ -338,6 +338,13 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
     }
 })
 
+app.post('/edits', sessionCheck, statusCheck, (request, response) => {
+    // console.log(request.body)
+    db.edits(request.body.action).then(() => {
+        response.send({status:'OK'})
+    })
+})
+
 // update DB
 app.post('/collection', sessionCheck, statusCheck, (request, response) => {
     switch (request.body.action) {        

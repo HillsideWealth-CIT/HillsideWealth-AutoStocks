@@ -294,6 +294,11 @@ const editDfc = async(edit, stock_id) => {
     return await runQuery(`UPDATE stockdata SET eps_basic = $2,  eps_without_nri = $3, growth_years=$4, terminal_growth_rate = $5, terminal_years = $6, discount_rate = $7 Where stock_id = $1`, [stock_id, edit.eps, edit.gr, edit.gy, edit.tgr, edit.ty,edit.dr,])
 }
 
+const edits = async(edit) => {
+    console.log(edit)
+    return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7 where stock_id = $8`, [edit.comment, edit.ms_moat, edit.ms_fair_value, edit.ms_5_star, edit.ms_1_star, edit.emoticon, edit.jdv, edit.id])
+}
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -322,7 +327,8 @@ module.exports = {
     editEmoticon,
     editDfc,
     updatemultidfc,
-    get_added
+    get_added,
+    edits
 }
 
 function getdata(stocks, stockdata){

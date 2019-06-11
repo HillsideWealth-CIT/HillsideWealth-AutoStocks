@@ -8,7 +8,7 @@ Initialize_table();
 
 function Initialize_table(){
     ajax_Call("init_user", "/init_table").then((resolve) => {
-        stockdb =resolve.data
+        stockdb = resolve.data
         $table = fill_table(resolve.data)
     })
 }
@@ -16,14 +16,15 @@ function fill_table(data){
     var datatable = $('#datatable').DataTable({
         processing : true,
         data : data,
-        select : { style: 'os', selector: 'td:first-child'},
+        rowId : `symbol`,
+        select : { style: 'os', selector: 'td:first-child', style : 'multi' },
         columns : column_builder(),
-        fixedColumns: { leftColumns: 3 },
+        fixedColumns: { leftColumns: 2 },
         scrollX : true,
         scrollY : '75vh',
         deferRender : true,
         scroller: true,
-        order : [[4, 'desc']],
+        order : [[7, 'desc']],
     });
     return datatable
 }
@@ -35,18 +36,29 @@ function column_builder(){
         {   data : null,
             orderable : false,
             render: function( data, type, row, meta){
-                /*
-                    button function reminders
-                        button 1: takes user to gurufocus graph
-                        button 2: Comments, emoticon, morning star, guru rating, JDV
-                        button 3: DCF calculator
-                        button 4: 15 Year historical Financial Data
-                */
-                return `<button type="button" class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>
-                        <button type="button" class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
-                        <button type="button" class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>
-                        <button type="button" class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>
-                        `
+                // button 1: takes user to gurufocus graph
+                return `<button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>`
+            }    
+        },
+        {   data : null,
+            orderable : false,
+            render: function( data, type, row, meta){
+                // button 2: Comments, emoticon, morning star, guru rating, JDV
+                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", ${row.jdv})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+            }    
+        },
+        {   data : null,
+            orderable : false,
+            render: function( data, type, row, meta){
+                // button 3: DCF calculator
+                return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`
+            }    
+        },
+        {   data : null,
+            orderable : false,
+            render: function( data, type, row, meta){
+                // button 4: 15 Year historical Financial Data
+                return `<button type="button" onclick='show_financials( "${row.symbol}" , ${JSON.stringify(row.stockdata)}, 15)' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`
             }    
         },
         { data : "stock_name"},
@@ -74,40 +86,85 @@ function column_builder(){
 
         { data : "stockdata.0.eps_without_nri_format" },
         { data : "stockdata.0.growth_years_format" },
-        { data : "stockdata.0.growth_rate_5y" },
-        { data : "stockdata.0.growth_rate_10y" },
-        { data : "stockdata.0.growth_rate_15y" },
+        { data : "growth_rate_5y" },
+        { data : "growth_rate_10y" },
+        { data : "growth_rate_15y" },
         { data : "stockdata.0.terminal_years_format" },
         { data : "stockdata.0.terminal_growth_rate_format" },
         { data : "stockdata.0.discount_rate_format" },
-        { data : "stockdata.dcf_values_5Y.growth_value" },
-        { data : "stockdata.dcf_values_5Y.terminal_value" },
-        { data : "stockdata.dcf_values_5Y.fair_value" },
-        { data : "stockdata.dcf_values_10Y.growth_value" },
-        { data : "stockdata.dcf_values_10Y.terminal_value" },
-        { data : "stockdata.dcf_values_10Y.fair_value" },
-        { data : "stockdata.dcf_values_15Y.growth_value" },
-        { data : "stockdata.dcf_values_15Y.terminal_value" },
-        { data : "stockdata.dcf_values_15Y.fair_value" },
+        { data : "dcf_values_5y.growth_value" },
+        { data : "dcf_values_5y.terminal_value" },
+        { data : "dcf_values_5y.fair_value" },
+        { data : "dcf_values_10y.growth_value" },
+        { data : "dcf_values_10y.terminal_value" },
+        { data : "dcf_values_10y.fair_value" },
+        { data : "dcf_values_15y.growth_value" },
+        { data : "dcf_values_15y.terminal_value" },
+        { data : "dcf_values_15y.fair_value" },
         
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
-        { data : "" },
+        { data : "stockdata.0.fcf_format" },
+        { data : "stockdata.0.fcf_yield" },
+        { data : "fcf_growth_1" },
+        { data : "fcf_growth_3" },
+        { data : "fcf_growth_5" },
+        { data : "fcf_growth_10" },
+        { data : "stockdata.0.capex_format" },
+        {   data : null ,
+            render : function(data, type, row, meta){
+                return calculate_average(row.stockdata, 'capeXfcf_format', 5)
+            }
+        },
+        {   data : null ,
+            render : function(data, type, row, meta){
+                return calculate_average(row.stockdata, 'capeXfcf_format', 10)
+            }
+        },
+        { data : "stockdata.0.capeXae_format" },
+        {   data : null ,
+            render : function(data, type, row, meta){
+                return calculate_average(row.stockdata, 'capeXae_format', 5)
+            }
+        },
+        {   data : null ,
+            render : function(data, type, row, meta){
+                return calculate_average(row.stockdata, 'capeXae_format', 10)
+            }
+        },
+        { data : "stockdata.0.fcfXae_format" },
+        { data : "price_growth_1" },
+        { data : "price_growth_3" },
+        { data : "price_growth_5" },
+        { data : "price_growth_10" },
+        { data : "so_change_1" },
+        { data : "so_change_3" },
+        { data : "so_change_5" },
+        { data : "so_change_10" },
+        { data : "revenue_growth_1" },
+        { data : "revenue_growth_3" },
+        { data : "revenue_growth_5" },
+        { data : "revenue_growth_10" },
+        { data : "aebitda_growth_1" },
+        { data : "aebitda_growth_3" },
+        { data : "aebitda_growth_5" },
+        { data : "aebitda_growth_10" },
+        { data : "stockdata.0.roic_format"},
+        { data : "stockdata.0.wacc_format"},
+        { data : "stockdata.0.roicwacc_format"},
     ]
     return columns
+}
+
+function calculate_average(data, column, years){
+    try{
+        let total = 0;
+        for(let i = 0; i < years; i++){
+            total += parseFloat(data[i][`${column}`])
+        }
+        return Math.round((total/years)*1000)/1000
+        }
+        catch{
+            return 'Missing Values'
+        }
 }
 
 /**
