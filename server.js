@@ -373,6 +373,38 @@ app.post('/remove', sessionCheck, statusCheck, (request, response) => {
             })
 })
 
+app.post('/update_financials', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)
+                .then((r) => {
+                    db.get_added(request.body.action[0].symbol, request.session.user)
+                    .then((res) => {
+                        res.forEach((stock) => {
+                            format_data(stock)
+                            })
+                        //fs.writeFileSync('test.json', JSON.stringify(res))
+                        response.send({data: res})
+                    })
+                });
+})
+
+app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body);
+        api_calls.update_prices(request.body.action, request.session.user)
+        .then((resolve) => {
+                db.get_added(request.body.action[0].symbol, request.session.user)
+                .then((res) => {
+                    res.forEach((stock) => {
+                    format_data(stock)
+                    })
+                response.send({data:res})
+                })
+        }).catch(function(err) {
+            console.log(err)
+            response.send(JSON.stringify({'Error': `${request.body.action[0].symbol}`}))
+    })
+})
+
 // update DB
 app.post('/collection', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)

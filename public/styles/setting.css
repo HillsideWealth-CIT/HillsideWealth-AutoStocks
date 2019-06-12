@@ -114,3 +114,7 @@ p{
 .dropzone {
 	padding: 1%;
 }
+
+.hidden_tr{
+	display:none;
+}

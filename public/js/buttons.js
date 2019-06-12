@@ -1,13 +1,19 @@
+var update_counter = 0;
+var to_update = [];
+
 function open_chart(symbol){
     window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`)
     return
+
+    // console.log($table.row($('#LMT')).index())
+
     // console.log($('#BUTTS').length)
     // console.log($('#MSFT').length)
     // console.log(stockdb[1])
     // $table.row.add(row_columns()).draw();
-}
+};
 
-function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv){
+function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price){
     //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
     let edits = {};
     return new Promise ((resolve, reject) => {
@@ -64,6 +70,10 @@ function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv){
                     <label for="Comment">Comment</label>
                     <input id="Comment" type="text" class="form-control" value="${comment}">
                 </div>
+                <div class="col">
+                    <label for="cur_price">Current Price</label>
+                    <input id="cur_price" type="text" class="form-control" value="${price}">
+                </div>
             </div>
             `,
     }
@@ -72,34 +82,36 @@ function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv){
             edits.id = id;
             edits.comment = $('#Comment').val();
             edits.ms_moat = $('#ms_moat').val();
-            edits.ms_fair_value = $('#ms_fair_value').val().replace(/[^a-zA-Z0-9]/g, '');
-            edits.ms_5_star = $('#ms_5_star').val().replace(/[^a-zA-Z0-9]/g, '');
-            edits.ms_1_star = $('#ms_1_star').val().replace(/[^a-zA-Z0-9]/g, '');
+            edits.ms_fair_value = $('#ms_fair_value').val().replace(/[^a-z0-9,. ]/gi, '');
+            edits.ms_5_star = $('#ms_5_star').val().replace(/[^a-z0-9,. ]/gi, '');
+            edits.ms_1_star = $('#ms_1_star').val().replace(/[^a-z0-9,. ]/gi, '');
             edits.emoticon = $('#emote').val();
             edits.jdv = $('#jdv').val();
+            edits.price = $('#cur_price').val().replace(/[^a-z0-9,. ]/gi, '');
             resolve(edits)
             }
         })
     })
-}
+};
 
-function open_edit(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv){
+function open_edit(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price){
     let selected = $(`#edit${id}`).parent().parent()
     let test_selected = $(`#edit${id}`).parent()
     let row_index = $table.row(selected).index()
-    edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv).then((resolve) => {
-        let setting_string = `<button type="button" id="edit${id}" onclick='open_edit("${id}", "${resolve.comment}", "${resolve.emoticon}", "${resolve.ms_1_star}" , "${resolve.ms_5_star}", "${resolve.ms_fair_value}","${resolve.ms_moat}", ${resolve.jdv})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+    edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price).then((resolve) => {
+        let setting_string = `<button type="button" id="edit${id}" onclick='open_edit("${id}", "${resolve.comment}", "${resolve.emoticon}", "${resolve.ms_1_star}" , "${resolve.ms_5_star}", "${resolve.ms_fair_value}","${resolve.ms_moat}", "${resolve.jdv}", "${resolve.price}" )' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         ajax_Call(resolve, '/edits').then((server_resolve) => {
             if(server_resolve.status == "OK"){
                 test_selected.html(setting_string)
                 $table.cell({row:row_index, column: 2}).invalidate().draw()
+                $table.cell({row:row_index, column: 10}).data(`$${resolve.price}`).invalidate();   
             }
             else{
                 alert(`ERROR ${server_resolve.status}`)
             }
         })
     })
-}
+};
 
 /** DCF CALCULATOR */
 function calc_menu(eps, gr, tgr, dr, gy, ty, fv) {
@@ -157,14 +169,14 @@ function calc_menu(eps, gr, tgr, dr, gy, ty, fv) {
                 `,
         })
     })
-}
+};
 
 function open_calc(eps, gr, tgr, dr, gy, ty){
     //console.log(`${eps} ${gr} ${tgr} ${dr} ${gy} ${ty} `)
     let fv = dcf(eps, Math.round((gr/100) * 100000)/100000, tgr, dr, gy, ty)
     console.log(fv)
     calc_menu(eps, gr, tgr, dr, gy, ty, fv)
-}
+};
 
 function eps_onchange(){
     dcf_results = dcf(
@@ -179,7 +191,7 @@ function eps_onchange(){
     $('#gv_form').val(dcf_results.growth_value)
     $('#tv_form').val(dcf_results.terminal_value)
     $('#fv_form').val(dcf_results.fair_value)
-}
+};
 
 dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10) => {
     console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate} ${g_years} ${t_years}`)
@@ -192,7 +204,7 @@ dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10
     results['growth_value'] = Math.round((results.growth_value) * 100 ) / 100;
     results['terminal_value'] = Math.round((results.terminal_value) * 100 ) / 100 ;
     return results;
-}
+};
 
 /**
  * calculates the growth value
@@ -209,7 +221,7 @@ function dfc_growth(x, eps, years){
         growth_value += pow * eps
     }
     return growth_value;
-}
+};
 
 /**
  * @param {float} x - growth rate devided by discount rate
@@ -228,7 +240,7 @@ function dcf_terminal(x, y, eps, g_years ,t_years){
         //console.log(part1*part2*eps)
     }
     return terminal_value
-}
+};
 
 function show_financials(symbol, stockdata, years){
     console.log(stockdata)
@@ -299,7 +311,7 @@ function show_financials(symbol, stockdata, years){
             </table>
             `
     })
-}
+};
 
 function add(){
     Swal.fire({
@@ -357,4 +369,85 @@ function remove(){
                 $table.row($(`#${to_remove[i]}`)).remove().draw()
             }
     })
+};
+
+function update(link){
+    to_update = [];
+    let selected = $table.rows('.selected').data()
+    for( i in selected ){
+        if(selected[i].symbol){
+        to_update.push(selected[i].symbol)
+        }   
+        else{
+            break;
+        }
+    }
+    let promises = [];
+
+    Swal.fire({
+        position:'center',
+        type: 'question',
+        title: 'The selected stocks are currently being updated!',
+        text: `Progress: ${update_counter}/${to_update.length}`,
+        footer: 'This might take a while, you might want to do something else',
+        showConfirmButton: false,
+    });
+
+    for ( i in to_update ) {
+        promises.push(counter_ajax(
+            [{symbol: to_update[i]}],
+            `/${link}`,
+            false
+        ))
+    }
+
+    Promise.all(promises).then((resolve) => {
+        Swal.update({type: 'success'})
+        for(i in resolve){
+            //console.log(resolve[i].data[0])
+            $table.row(document.getElementById(`${resolve[i].data[0].symbol}`)).data(resolve[i].data[0]).invalidate();
+        }
+        update_counter = 0;
+        setTimeout(function(){
+            Swal.close();
+        }, 3000)
+    })
+
+};
+
+function counter_ajax(action, link, async){
+    return new Promise ((resolve, reject ) => {
+        let data = {};
+        data.action = action
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: link,
+            async: async,
+        }).done(function(returned_data){
+            update_counter += 1;
+            swal.update({
+                text: `Progress: ${update_counter}/${to_update.length}`
+            })
+            resolve(returned_data)
+        })
+    })
+}
+
+function show_selected(){
+    to_show = [];
+    let selected = $table.rows('.selected').data()
+    for( i in selected ){
+        if(selected[i].symbol){
+        to_show.push(selected[i].symbol)
+        }   
+        else{
+            break;
+        }
+    }
+    console.log(to_show)
+    let mergedVal = to_show.join('|')
+    $table.column(1).search(mergedVal, true).draw();
+    // $table.column(1).search("GOOGL|MSFT", true).draw();
 }

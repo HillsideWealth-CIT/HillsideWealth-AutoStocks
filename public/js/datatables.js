@@ -26,7 +26,7 @@ function fill_table(data){
         scrollY : '75vh',
         deferRender : true,
         scroller: true,
-        order : [[7, 'desc']],
+        order : [[8, 'desc']],
     });
     return datatable
 }
@@ -34,15 +34,14 @@ function fill_table(data){
 function button_builder(page){
     let buttons = [
         'selectAll', 'selectNone',
-        {text: '<span class="fas fa-plus"></span> Add', className:"btn-success btn-sm", action: function(){add();}},
-        {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-success btn-sm", action: function(){remove();}},
-        {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-dark btn-sm"},
-        {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-dark btn-sm"},
+        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
+        {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove();}},
+        {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-sm", action: function(){update('update_prices')}},
+        {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-sm", action: function(){update('update_financials');}},
        
-        {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-info btn-sm"},
-        {text: '<span class="fas fa-share"></span> Share', className:"btn-info btn-sm"},
-        {text: '<span class="fas fa-calculator"></span> DFC', className:"btn-secondary btn-sm"},
-        {text: '<span class="fas fa-cog"></span> Config', className:"btn-secondary btn-sm"},
+        {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
+        {text: '<span class="fas fa-share"></span> Share', className:"btn-sm"},
+        {text: '<span class="fas fa-cog"></span> Config', className:"btn-sm"},
     ];
     return buttons
 
@@ -64,7 +63,7 @@ function column_builder(){
             orderable : false,
             render: function( data, type, row, meta){
                 // button 2: Comments, emoticon, morning star, guru rating, JDV
-                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", ${row.jdv})' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
             }    
         },
         {   data : null,
