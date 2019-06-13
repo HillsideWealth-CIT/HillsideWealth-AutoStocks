@@ -12,7 +12,6 @@ function Initialize_table(){
         $table = fill_table(resolve.data)
         console.log(stockdb)
         total_columns = $table.columns().header().length;
-        test()
     })
 }
 function fill_table(data){
@@ -56,10 +55,11 @@ function button_builder(page){
                 { text:'Price Growth', action: function(){price_growth()}},
                 { text:'SO Growth', action: function(){so_growth()}},
                 { text:'Rev Growth', action: function(){rev_growth()}},
+                { text:'aEBITDA Growth', action: function(){ae_growth()} },
                 { text:'<b>Asset Light</b>', action: function(){asset_light()}},
-                { text:'CapEx'},
-                { text: '<b>Profitability</b>'},
-                { text:'aEBITDA Growth', },
+                { text:'CapEx', action: function(){capex()}},
+                { text: '<b>Profitability</b>', action: function(){profitability()}},
+
 
             ]
         },

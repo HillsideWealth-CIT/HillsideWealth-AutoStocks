@@ -76,7 +76,12 @@ function asset_light(){
     $table.columns.adjust().draw(false)
 }
 
-function test(){
-hide_loop(49,57)
-$table.columns.adjust().draw(false)
+function capex(){
+    hide_loop(49,56)
+    $table.columns.adjust().draw(false)
+}
+
+function profitability(){
+    hide_loop(72, total_columns)
+    $table.columns.adjust().draw(false)
 }
