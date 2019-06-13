@@ -89,9 +89,10 @@ const get_added = async (symbol, username) => {
     return getdata(stocks, stockdata)
 }
 
-const sharestock = async(symbol, user) => {
-    await runQuery(`UPDATE stocks SET shared='True' where symbol='${symbol}' and username='${user}';`);
-    return symbol
+const sharestock = async(id_string) => {
+    // console.log(id_string)
+    await runQuery(`UPDATE stocks SET shared='True' where ${id_string};`);
+    return
 }
 
 const unsharestock = async(symbol, user) => {
@@ -294,6 +295,11 @@ const editDfc = async(edit, stock_id) => {
     return await runQuery(`UPDATE stockdata SET eps_basic = $2,  eps_without_nri = $3, growth_years=$4, terminal_growth_rate = $5, terminal_years = $6, discount_rate = $7 Where stock_id = $1`, [stock_id, edit.eps, edit.gr, edit.gy, edit.tgr, edit.ty,edit.dr,])
 }
 
+const edits = async(edit) => {
+    console.log(edit)
+    return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7, current_price = $8 where stock_id = $9`, [edit.comment, edit.ms_moat, edit.ms_fair_value, edit.ms_5_star, edit.ms_1_star, edit.emoticon, edit.jdv, edit.price ,edit.id])
+}
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -322,7 +328,8 @@ module.exports = {
     editEmoticon,
     editDfc,
     updatemultidfc,
-    get_added
+    get_added,
+    edits
 }
 
 function getdata(stocks, stockdata){
@@ -344,6 +351,7 @@ function getdata(stocks, stockdata){
             fairvalue: `$${stocks.rows[i].fairvalue}`,
             jdv: stocks.rows[i].jdv,
             emoticon: stocks.rows[i].emoticons,
+            username: stocks.rows[i].username,
         })
     }
     return stockAndData

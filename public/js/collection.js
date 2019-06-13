@@ -309,18 +309,38 @@ function multi_dfc_calc(){
  * @returns {int} deterines if a is bigger than b or not
  */
 function currencysorter(a, b) {
-    if(a == 'Infinity%' || a == 'NaN%' || a == '-Infinity' || a=='Missing Required information to format'){
-        a = '100000.0%'
+    if(a.indexOf('div') != -1){
+        let a1 = a.substring(a.indexOf('>') + 1)
+        a = a1.substring(0, a1.indexOf('<'))
+        let b1 = b.substring(b.indexOf('>') + 1)
+        b = b1.substring(0, b1.indexOf('<'))
     }
-    if(b == 'Infinity%' || b == 'NaN%' || b == '-Infinity' || b=='Missing Required information to format'){
-        b = '100000.0%'
-    }
+    
     a = parseFloat(a.replace(/[^\d.-]/g, ''));
     b = parseFloat(b.replace(/[^\d.-]/g, ''));
+    console.log(`A: ${a} B: ${b}`)
+
+    if(isNaN(a) == true){
+        a = -10000000000
+    }
+    if(isNaN(b) == true){
+        b = -10000000000
+    }
+
     if(a > b) return -1
     if(a < b) return 1
     return 0
 }
+
+
+function buttonremover(a,b){
+    let a1 = a.substring(a.indexOf('$') + 1)
+    let a2 = a1.substring(0, a1.indexOf('<'))
+    let b1 = b.substring(b.indexOf('$') + 1)
+    let b2 = b1.substring(0, b1.indexOf('<'))
+    return currencysorter(a2, b2)
+}
+
 
 var hiddenList = []
 var showList = []

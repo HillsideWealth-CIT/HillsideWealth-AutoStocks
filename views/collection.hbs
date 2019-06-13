@@ -8,14 +8,8 @@
 	</head>
 	<body>
 		{{>header}}
-		<div class="container-fluid">
-			<div class="d-flex justify-content-center">
-				<div class="table-responsive p-3">
-					{{>table}}
-				</div>
-			</div>
-		</div>
-		<div id="toolbar" class="d-flex flex-row justify-content-center
+
+		{{!-- <div id="toolbar" class="d-flex flex-row justify-content-right
 			align-items-center px-3">
             <form class="px-2">
 				<button type="button" onclick="add();" class="btn btn-success btn-sm">
@@ -58,10 +52,19 @@
 				</button>
 			</form>
 			<b><label for="toggleCheck"> Show Hidden </label></b> &nbsp;<input id="toggleCheck" type="checkbox" onclick="toggleHidden()">
+		</div> --}}
+
+		<div class="container-fluid">
+			<div class="d-flex justify-content-center">
+				<div class="table-responsive p-3">
+					{{>datatable}}
+				</div>
+			</div>
 		</div>
-		<script src="/js/table.js"></script>
+		
+		{{!-- <script src="/js/table.js"></script>
 		<script src="/js/collection.js"></script>
-		<script src="/js/edit_scripts.js"></script>
+		<script src="/js/edit_scripts.js"></script> --}}
 	</body>
-	{{>detailformatter}}
+	{{!-- {{>detailformatter}} --}}
 </html>
