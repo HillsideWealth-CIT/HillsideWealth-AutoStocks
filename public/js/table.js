@@ -85,3 +85,4 @@ function profitability(){
     hide_loop(72, total_columns)
     $table.columns.adjust().draw(false)
 }
+

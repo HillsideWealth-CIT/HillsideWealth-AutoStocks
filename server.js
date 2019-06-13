@@ -373,10 +373,12 @@ app.post('/remove', sessionCheck, statusCheck, (request, response) => {
             })
 })
 
-app.post('/share', sessionCheck, statusCheck, (request, repsonse) => {
-            db.sharestock(request.body.stocks.symbol, request.session.user)
+app.post('/share', sessionCheck, statusCheck, (request, response) => {
+    // console.log(request.body)
+    console.log(calc.multi_dfc_string(request.body.action))
+    db.sharestock(calc.multi_dfc_string(request.body.action), request.session.user)
                 .then((resolve) => {
-                    response.send(JSON.stringify(request.body.stocks));
+                    response.send({status: 'OK'});
                 })
 })
 

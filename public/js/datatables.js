@@ -42,7 +42,7 @@ function button_builder(page){
         {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-sm", action: function(){update('update_financials');}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
-        {text: '<span class="fas fa-share"></span> Share', className:"btn-sm"},
+        {text: '<span class="fas fa-share"></span> Share', className:"btn-sm", action: function(){share()}},
         {text: '<span class="fas fa-cog"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all()} },

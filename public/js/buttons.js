@@ -103,8 +103,8 @@ function open_edit(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, p
         ajax_Call(resolve, '/edits').then((server_resolve) => {
             if(server_resolve.status == "OK"){
                 test_selected.html(setting_string)
-                $table.cell({row:row_index, column: 2}).invalidate().draw()
-                $table.cell({row:row_index, column: 10}).data(`$${resolve.price}`).invalidate();   
+                $table.cell({row:row_index, column: 3}).invalidate().draw()
+                $table.cell({row:row_index, column: 8}).data(`$${resolve.price}`).invalidate();   
             }
             else{
                 alert(`ERROR ${server_resolve.status}`)
@@ -450,4 +450,19 @@ function show_selected(){
     let mergedVal = to_show.join('|')
     $table.column(1).search(mergedVal, true).draw();
     // $table.column(1).search("GOOGL|MSFT", true).draw();
+}
+
+function share(){
+    to_share = [];
+    let selected = $table.rows('.selected').data()
+    for( i in selected ){
+        if(selected[i].symbol){
+        to_share.push(selected[i].stock_id)
+        }   
+        else{
+            break;
+        }
+    }
+
+    ajax_Call(to_share, '/share')
 }

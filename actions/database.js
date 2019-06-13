@@ -89,8 +89,8 @@ const get_added = async (symbol, username) => {
     return getdata(stocks, stockdata)
 }
 
-const sharestock = async(symbol, user) => {
-    await runQuery(`UPDATE stocks SET shared='True' where symbol='${symbol}' and username='${user}';`);
+const sharestock = async(symbol) => {
+    await runQuery(`UPDATE stocks SET shared='True' where symbol='${symbol}';`);
     return symbol
 }
 
