@@ -1,5 +1,6 @@
 var $table
 var stockdb
+var total_columns
 
 $(document).ready(function(){
 Initialize_table();
@@ -10,6 +11,8 @@ function Initialize_table(){
         stockdb = resolve.data
         $table = fill_table(resolve.data)
         console.log(stockdb)
+        total_columns = $table.columns().header().length;
+        test()
     })
 }
 function fill_table(data){
@@ -26,7 +29,7 @@ function fill_table(data){
         scrollY : '75vh',
         deferRender : true,
         scroller: true,
-        order : [[8, 'desc']],
+        order : [[7, 'desc']],
     });
     return datatable
 }
@@ -41,7 +44,25 @@ function button_builder(page){
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
         {text: '<span class="fas fa-share"></span> Share', className:"btn-sm"},
-        {text: '<span class="fas fa-cog"></span> Config', className:"btn-sm"},
+        {text: '<span class="fas fa-cog"></span> Table Config', className:"btn-sm", extend: 'collection',
+            buttons: [
+                { text:'<b>Show All</b>', action: function(){show_all()} },
+                { text:'<b>Basic Stats</b>', action: function(){basic_stats()} },
+                { text:'Basic Info', action: function(){basic_info()}},
+                { text:'Financials', action: function(){financials()}},
+                { text:'<b>DCF</b>', action: function(){show_dcf()}},
+                { text:'<b>Growth</b>', action: function(){all_growth()}},
+                { text:'FCF Growth', action: function(){fcf_growth()}},
+                { text:'Price Growth', action: function(){price_growth()}},
+                { text:'SO Growth', action: function(){so_growth()}},
+                { text:'Rev Growth', action: function(){rev_growth()}},
+                { text:'<b>Asset Light</b>', action: function(){asset_light()}},
+                { text:'CapEx'},
+                { text: '<b>Profitability</b>'},
+                { text:'aEBITDA Growth', },
+
+            ]
+        },
     ];
     return buttons
 
@@ -54,6 +75,7 @@ function column_builder(){
         { data : "symbol" },
         {   data : null,
             orderable : false,
+            className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 1: takes user to gurufocus graph
                 return `<button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>`
@@ -61,6 +83,7 @@ function column_builder(){
         },
         {   data : null,
             orderable : false,
+            className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 2: Comments, emoticon, morning star, guru rating, JDV
                 return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
@@ -68,6 +91,7 @@ function column_builder(){
         },
         {   data : null,
             orderable : false,
+            className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 3: DCF calculator
                 return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`
@@ -75,6 +99,7 @@ function column_builder(){
         },
         {   data : null,
             orderable : false,
+            className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 4: 15 Year historical Financial Data
                 return `<button type="button" onclick='show_financials( "${row.symbol}" , ${JSON.stringify(row.stockdata)}, 15)' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`

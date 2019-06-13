@@ -373,6 +373,13 @@ app.post('/remove', sessionCheck, statusCheck, (request, response) => {
             })
 })
 
+app.post('/share', sessionCheck, statusCheck, (request, repsonse) => {
+            db.sharestock(request.body.stocks.symbol, request.session.user)
+                .then((resolve) => {
+                    response.send(JSON.stringify(request.body.stocks));
+                })
+})
+
 app.post('/update_financials', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)
     api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)
