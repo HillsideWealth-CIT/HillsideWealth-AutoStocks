@@ -326,7 +326,7 @@ function add(){
             let stocks = stockstring.split(',')
             for(let i in stocks){
                 if($(`#${stocks[i].toUpperCase()}`).length == 0) {
-                    promises.push(ajax_Call([{'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''}], '/append'))
+                    promises.push(ajax_Call([{'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''}], '/append/shared'))
                 }
             }
  
@@ -356,13 +356,16 @@ function remove(){
     let selected = $table.rows('.selected').data()
     for( i in selected ){
         if(selected[i].symbol){
-        to_remove.push(selected[i].symbol)
+            if(selected[i].username == $('#username').attr('user')){
+                to_remove.push(selected[i].symbol)
+            }
         }   
         else{
             break;
         }
     }
-    ajax_Call(to_remove, '/remove').then((resolved) => {
+    console.log(to_remove)
+    ajax_Call(to_remove, '/remove/shared').then((resolved) => {
         console.log(resolved)
             for(i in to_remove){
                 console.log(i)

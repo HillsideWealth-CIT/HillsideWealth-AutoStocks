@@ -89,9 +89,10 @@ const get_added = async (symbol, username) => {
     return getdata(stocks, stockdata)
 }
 
-const sharestock = async(symbol) => {
-    await runQuery(`UPDATE stocks SET shared='True' where symbol='${symbol}';`);
-    return symbol
+const sharestock = async(id_string) => {
+    // console.log(id_string)
+    await runQuery(`UPDATE stocks SET shared='True' where ${id_string};`);
+    return
 }
 
 const unsharestock = async(symbol, user) => {
@@ -350,6 +351,7 @@ function getdata(stocks, stockdata){
             fairvalue: `$${stocks.rows[i].fairvalue}`,
             jdv: stocks.rows[i].jdv,
             emoticon: stocks.rows[i].emoticons,
+            username: stocks.rows[i].username,
         })
     }
     return stockAndData
