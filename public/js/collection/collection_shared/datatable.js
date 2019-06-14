@@ -58,10 +58,9 @@ function button_builder(page){
                 { text:'<b>Asset Light</b>', action: function(){asset_light()}},
                 { text:'CapEx', action: function(){capex()}},
                 { text: '<b>Profitability</b>', action: function(){profitability()}},
-
-
             ]
         },
+        'excel'
     ];
     return buttons
 
