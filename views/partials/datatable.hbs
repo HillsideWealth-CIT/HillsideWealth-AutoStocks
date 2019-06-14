@@ -1,4 +1,3 @@
-
 <div id="table_main" class="dataTables_wrapper">
     <table id="datatable" class="table table-light table-striped">
         <thead class="thead-dark">
@@ -129,11 +128,12 @@
 <script type="text/javascript" src="https://cdn.datatables.net/scroller/2.0.0/js/dataTables.scroller.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.0/js/dataTables.select.js"></script>
 {{#if sc}}
-    <script src="/js/shareddatatable.js"></script>
-    <script src="/js/sharedbutton.js"></script>
-    <script src="/js/sharedtable.js"></script>
+    <script src="/js/collection/collection_shared/shareddatatable.js"></script>
+    <script src="/js/collection/collection_shared/sharedbutton.js"></script>
+    <script src="/js/collection/collection_shared/sharedtable.js"></script>
     {{else}}
-    <script src="/js/datatables.js"></script>
-    <script src="/js/buttons.js"></script>
-    <script src="/js/table.js"></script>
+    <script src="/js/collection/collection_personal/datatables.js"></script>
+    <script src="/js/collection/collection_personal/buttons.js"></script>
+    <script src="/js/collection/collection_personal/table.js"></script>
 {{/if}}
+<script src="/js/collection/common_functions.js"></script>
