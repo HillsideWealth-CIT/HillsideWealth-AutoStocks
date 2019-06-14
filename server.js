@@ -319,7 +319,7 @@ app.post('/append', sessionCheck, statusCheck, (request, response) => {
 app.post('/append/shared', sessionCheck, statusCheck, (request, response) => {
     // console.log("test")
     // console.log(request.body.action)
-    api_calls.gurufocusAdd(request.body,action, request.session.user, true, true)
+    api_calls.gurufocusAdd(request.body.action, request.session.user, true, true)
         .then((resolve) => {
             db.get_added(request.body.action[0].symbol, request.session.user)
                 .then((res) => {

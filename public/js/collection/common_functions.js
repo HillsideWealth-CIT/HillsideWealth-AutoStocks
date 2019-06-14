@@ -1,6 +1,3 @@
-var update_counter = 0;
-var to_update = [];
-
 function open_chart(symbol){
     window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`)
     return
@@ -313,63 +310,37 @@ function show_financials(symbol, stockdata, years){
     })
 };
 
-function add(){
-    Swal.fire({
-        title: 'Add Stocks',
-        text: 'Formats: American Stocks: [SYMBOL], Canadian stocks: [EXCHANGE:SYMBOL]',
-        input: 'text',
-        showCancelButton: true,
-        confirmButtonText: 'Add Stocks',
-        preConfirm: (result) => {
-            let promises = []
-            let stockstring = result.replace(/\s/g, "");
-            let stocks = stockstring.split(',')
-            for(let i in stocks){
-                if($(`#${stocks[i].toUpperCase()}`).length == 0) {
-                    promises.push(ajax_Call([{'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''}], '/append'))
-                }
-            }
- 
-            Promise.all(promises).then((resolve) => {
-                for(i in resolve){
-                    $table.row.add(resolve[i].data[0]).draw();
-                }
-            })
-            setTimeout(function(){
-                swal.close()
-            }, 5000)
-            
-        }
-    }).then((result) => {
-        if(!result.dismiss){
-            Swal.fire({
-            type: 'success',
-            title: 'Currently Saving To Database!',
-            showConfirmButton: false
-        })
-        }
-    })
-};
-
-function remove(){
-    let to_remove = [];
+function show_selected(){
+    to_show = [];
     let selected = $table.rows('.selected').data()
     for( i in selected ){
         if(selected[i].symbol){
-        to_remove.push(selected[i].symbol)
+        to_show.push(selected[i].symbol)
         }   
         else{
             break;
         }
     }
-    ajax_Call(to_remove, '/remove').then((resolved) => {
-        console.log(resolved)
-            for(i in to_remove){
-                console.log(i)
-                $table.row(document.getElementById(`${to_remove[i]}`)).remove().draw()
-            }
-    })
-};
+    console.log(to_show)
+    let mergedVal = to_show.join('|')
+    $table.column(1).search(mergedVal, true).draw();
+    // $table.column(1).search("GOOGL|MSFT", true).draw();
+}
+
+function share(){
+    to_share = [];
+    let selected = $table.rows('.selected').data()
+    for( i in selected ){
+        if(selected[i].symbol){
+        to_share.push(selected[i].stock_id)
+        }   
+        else{
+            break;
+        }
+    }
+
+    ajax_Call(to_share, '/share')
+}
 
 function update(link){
     to_update = [];
@@ -415,26 +386,6 @@ function update(link){
 
 };
 
-function counter_ajax(action, link, async){
-    return new Promise ((resolve, reject ) => {
-        let data = {};
-        data.action = action
-        $.ajax({
-            type: 'POST',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            url: link,
-            async: async,
-        }).done(function(returned_data){
-            update_counter += 1;
-            swal.update({
-                text: `Progress: ${update_counter}/${to_update.length}`
-            })
-            resolve(returned_data)
-        })
-    })
-}
-
 function show_selected(){
     to_show = [];
     let selected = $table.rows('.selected').data()
@@ -465,4 +416,24 @@ function share(){
     }
 
     ajax_Call(to_share, '/share')
+}
+
+function counter_ajax(action, link, async){
+    return new Promise ((resolve, reject ) => {
+        let data = {};
+        data.action = action
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: link,
+            async: async,
+        }).done(function(returned_data){
+            update_counter += 1;
+            swal.update({
+                text: `Progress: ${update_counter}/${to_update.length}`
+            })
+            resolve(returned_data)
+        })
+    })
 }
