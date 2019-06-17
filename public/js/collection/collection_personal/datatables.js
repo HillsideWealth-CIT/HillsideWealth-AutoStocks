@@ -115,7 +115,7 @@ function column_builder(){
                     return `$${row.stock_current_price}`
                 }
                 else{
-                    return 
+                    return null
                 }
             }
         },
@@ -133,7 +133,17 @@ function column_builder(){
         { data : "stockdata.0.ev_aebitda" },
         { data : "stockdata.0.net_debt_format" },
         { data : "stockdata.0.nd_aebitda" },
-        { data : "stockdata.0.roe_format" },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.stockdata[0].roe_format != null){
+                    return `${row.stockdata[0].roe_format}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
         { data : "stockdata.0.roe_spice" },
         { data : "stockdata.0.effective_tax_format" },
 
@@ -155,54 +165,312 @@ function column_builder(){
         { data : "dcf_values_15y.terminal_value" },
         { data : "dcf_values_15y.fair_value" },
         
-        { data : "stockdata.0.fcf_format" },
-        { data : "stockdata.0.fcf_yield" },
-        { data : "fcf_growth_1" },
-        { data : "fcf_growth_3" },
-        { data : "fcf_growth_5" },
-        { data : "fcf_growth_10" },
-        { data : "stockdata.0.capex_format" },
-        {   data : null ,
+        // { data : "stockdata.0.fcf_format" },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.stockdata[0].fcf_format != 'NaN'){
+                    return `${row.stockdata[0].fcf_format}`
+                }
+                else{
+                    return null
+                }
+                return `${row.stockdata[0].fcf_format}`
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.stockdata[0].fcf_yield != null){
+                    return `${row.stockdata[0].fcf_yield}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.fcf_growth_1 != null){
+                    return `${row.fcf_growth_1}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.fcf_growth_3 != null){
+                    return `${row.fcf_growth_3}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.fcf_growth_5 != null){
+                    return `${row.fcf_growth_5}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.fcf_growth_10 != null){
+                    return `${row.fcf_growth_10}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        { data : "stockdata.0.capex_format", orderDataType: 'Dom-Text', type: 'numeric', },
+        {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
             render : function(data, type, row, meta){
                 return calculate_average(row.stockdata, 'capeXfcf_format', 5)
             }
         },
-        {   data : null ,
+        {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
             render : function(data, type, row, meta){
                 return calculate_average(row.stockdata, 'capeXfcf_format', 10)
             }
         },
-        { data : "stockdata.0.capeXae_format" },
-        {   data : null ,
+        { data : "stockdata.0.capeXae_format", orderDataType: 'Dom-Text', type: 'numeric', },
+        {   data : null, orderDataType: 'Dom-Text', type: 'numeric',
             render : function(data, type, row, meta){
                 return calculate_average(row.stockdata, 'capeXae_format', 5)
             }
         },
-        {   data : null ,
+        {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
             render : function(data, type, row, meta){
                 return calculate_average(row.stockdata, 'capeXae_format', 10)
             }
         },
         { data : "stockdata.0.fcfXae_format" },
-        { data : "price_growth_1" },
-        { data : "price_growth_3" },
-        { data : "price_growth_5" },
-        { data : "price_growth_10" },
-        { data : "so_change_1" },
-        { data : "so_change_3" },
-        { data : "so_change_5" },
-        { data : "so_change_10" },
-        { data : "revenue_growth_1" },
-        { data : "revenue_growth_3" },
-        { data : "revenue_growth_5" },
-        { data : "revenue_growth_10" },
-        { data : "aebitda_growth_1" },
-        { data : "aebitda_growth_3" },
-        { data : "aebitda_growth_5" },
-        { data : "aebitda_growth_10" },
-        { data : "stockdata.0.roic_format"},
-        { data : "stockdata.0.wacc_format"},
-        { data : "stockdata.0.roicwacc_format"},
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.price_growth_1 != null){
+                    return `${row.price_growth_1}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.price_growth_3 != null){
+                    return `${row.price_growth_3}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.price_growth_5 != null){
+                    return `${row.price_growth_5}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.price_growth_10 != null){
+                    return `${row.price_growth_10}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.so_change_1 != null){
+                    return `${row.so_change_1}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.so_change_3 != null){
+                    return `${row.so_change_3}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.so_change_5 != null){
+                    return `${row.so_change_5}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.so_change_10 != null){
+                    return `${row.so_change_10}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.revenue_growth_1 != null){
+                    return `${row.revenue_growth_1}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.revenue_growth_3 != null){
+                    return `${row.revenue_growth_3}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.revenue_growth_5 != null){
+                    return `${row.revenue_growth_5}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.revenue_growth_10 != null){
+                    return `${row.revenue_growth_10}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.aebitda_growth_1 != null){
+                    return `${row.aebitda_growth_1}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.aebitda_growth_3 != null){
+                    return `${row.aebitda_growth_3}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.aebitda_growth_5 != null){
+                    return `${row.aebitda_growth_5}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.aebitda_growth_10 != null){
+                    return `${row.aebitda_growth_10}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.stockdata[0].roic_format == 'Missing Required information to format' || row.stockdata[0].roic_format == 'NaN'){
+                    return null
+                }
+                else{
+                    return row.stockdata[0].roic_format
+                }
+               
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.stockdata[0].wacc_format == 'Missing Required information to format' || row.stockdata[0].wacc_format == 'NaN'){
+                    return null
+                }
+                else{
+                    return row.stockdata[0].wacc_format
+                }
+               
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.stockdata[0].roicwacc_format == 'Missing Required information to format' || row.stockdata[0].roicwacc_format == 'NaN'){
+                    return null
+                }
+                else{
+                    return row.stockdata[0].roicwacc_format
+                }
+               
+            }
+        },
     ]
     return columns
 }
