@@ -504,7 +504,7 @@ function format_data(stock){
         data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10)
         data.revenue_format = formatNumber(Math.round(data.revenue))
         data.aebitda_format = formatNumber(data.aebitda)
-        data.roe_format = Math.round(data.roe * 10) / 10 + '%'
+        data.roe_format = Math.round(data.roe * 10) / 10
         data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
         data.fcf_format = formatNumber(Math.round(data.fcf))
 
@@ -542,7 +542,7 @@ function format_data(stock){
         data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
         data.datestring = moment(data.date).format('MMM DD, YYYY')
-        data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
+        data.fcf_yield = Math.round(data.fcf / data.market_cap * 100)
     })
 
     try{
@@ -557,8 +557,8 @@ function format_data(stock){
             );
     }
     catch{
-        stock.growth_rate_5y = "N/A"
-        stock.dcf_values_5y = {fair_value: "NA", growth_value: "NA", terminal_value: "N/A"}
+        stock.growth_rate_5y = null
+        stock.dcf_values_5y = {fair_value: null, growth_value: null, terminal_value: null}
     }      
 
     try{
@@ -574,8 +574,8 @@ function format_data(stock){
     }
     catch(err){
         //console.log(err)
-        stock.growth_rate_10y = "N/A"
-        stock.dcf_values_10y = {fair_value: "NA", growth_value: "NA", terminal_value: "N/A"}
+        stock.growth_rate_10y = null
+        stock.dcf_values_10y = {fair_value: null, growth_value: null, terminal_value: null}
     }
 
     try{
@@ -591,8 +591,8 @@ function format_data(stock){
     }
     catch(err){
         //console.log(err)
-        stock.growth_rate_15y = "N/A"
-        stock.dcf_values_15y = {fair_value: "NA", growth_value: "NA", terminal_value: "N/A"}
+        stock.growth_rate_15y = null
+        stock.dcf_values_15y = {fair_value: null, growth_value: null, terminal_value: null}
     }
 
     // Calculates metric growth rates
@@ -652,25 +652,25 @@ function format_data(stock){
         }
         // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
         // Only 1 decimal required for price growth
-        stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100) + '%'
-        stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100) + '%'
-        stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100) + '%'
-        stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100) + '%'
+        stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100)
+        stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100)
+        stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100)
+        stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100)
 
-        stock.revenue_growth_10 = Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100) + '%'
-        stock.revenue_growth_5 = Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100) + '%'
-        stock.revenue_growth_3 = Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100) + '%'
-        stock.revenue_growth_1 = Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100) + '%'
+        stock.revenue_growth_10 = Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100)
+        stock.revenue_growth_5 = Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100)
+        stock.revenue_growth_3 = Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100)
+        stock.revenue_growth_1 = Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100)
 
-        stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100) + '%'
-        stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100) + '%'
-        stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100) + '%'
-        stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100) + '%'
+        stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100)
+        stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100)
+        stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100)
+        stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100)
 
-        stock.fcf_growth_10 = Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100) + '%'
-        stock.fcf_growth_5 = Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100) + '%'
-        stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100) + '%'
-        stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100) + '%'
+        stock.fcf_growth_10 = Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100)
+        stock.fcf_growth_5 = Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100)
+        stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100)
+        stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100)
 
         stock.so_change_10 = formatNumber(Math.round((end_so - so_10) * 10) / 10)
         stock.so_change_5 = formatNumber(Math.round((end_so - so_5) * 10) / 10)

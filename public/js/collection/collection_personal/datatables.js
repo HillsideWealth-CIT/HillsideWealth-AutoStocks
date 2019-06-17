@@ -108,7 +108,17 @@ function column_builder(){
         { data : "stockdata.0.market_cap_format" },
         { data : "stocksector" },
         { data : "stockdata.0.aebitda_spice" },
-        { data : "stock_current_price" },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.stock_current_price != 'null'){
+                    return `$${row.stock_current_price}`
+                }
+                else{
+                    return 
+                }
+            }
+        },
 
         { data : "stockdata.0.yield_format" },
         { data : "stockdata.0.datestring" },
