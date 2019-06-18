@@ -329,7 +329,7 @@ module.exports = {
     editDfc,
     updatemultidfc,
     get_added,
-    edits
+    edits,
 }
 
 function getdata(stocks, stockdata){

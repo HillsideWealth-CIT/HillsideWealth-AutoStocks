@@ -342,50 +342,6 @@ function share(){
     ajax_Call(to_share, '/share')
 }
 
-function update(link){
-    to_update = [];
-    let selected = $table.rows('.selected').data()
-    for( i in selected ){
-        if(selected[i].symbol){
-        to_update.push(selected[i].symbol)
-        }   
-        else{
-            break;
-        }
-    }
-    let promises = [];
-
-    Swal.fire({
-        position:'center',
-        type: 'question',
-        title: 'The selected stocks are currently being updated!',
-        text: `Progress: ${update_counter}/${to_update.length}`,
-        footer: 'This might take a while, you might want to do something else',
-        showConfirmButton: false,
-    });
-
-    for ( i in to_update ) {
-        promises.push(counter_ajax(
-            [{symbol: to_update[i]}],
-            `/${link}`,
-            false
-        ))
-    }
-
-    Promise.all(promises).then((resolve) => {
-        Swal.update({type: 'success'})
-        for(i in resolve){
-            //console.log(resolve[i].data[0])
-            $table.row(document.getElementById(`${resolve[i].data[0].symbol}`)).data(resolve[i].data[0]).invalidate();
-        }
-        update_counter = 0;
-        setTimeout(function(){
-            Swal.close();
-        }, 3000)
-    })
-
-};
-
 function show_selected(){
     to_show = [];
     let selected = $table.rows('.selected').data()
