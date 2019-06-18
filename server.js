@@ -366,9 +366,9 @@ app.post('/share', sessionCheck, statusCheck, (request, response) => {
 
 app.post('/update_financials', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)
-    api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)
+    api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false, shared=false, request.body.action[0].stock_id)
                 .then((r) => {
-                    db.get_added_by_id(request.body.action[0].stock_id)
+                    db.get_added(request.body.action[0].stock_id, request.body.action[0].symbol)
                     .then((res) => {
                         res.forEach((stock) => {
                             format_data(stock)
@@ -383,7 +383,7 @@ app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body);
         api_calls.update_prices(request.body.action, request.session.user)
         .then((resolve) => {
-                db.get_added_by_id(request.body.action[0].stock_id)
+                db.get_added(request.body.action[0].stock_id, request.body.action[0].symbol)
                 .then((res) => {
                     res.forEach((stock) => {
                     format_data(stock)

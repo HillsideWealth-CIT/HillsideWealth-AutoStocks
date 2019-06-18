@@ -29,7 +29,7 @@ function fill_table(data){
         scrollY : '75vh',
         deferRender : true,
         scroller: true,
-        order : [[7, 'desc']],
+        order : [[8, 'desc']],
     });
     return datatable
 }

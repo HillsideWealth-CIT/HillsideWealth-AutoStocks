@@ -66,7 +66,7 @@ const update_prices = async (list, username) => {
  * @param {Array} list List of stock symbols
  * @param {Boolean} summary_call Whether summary call should be used.
  */
-const gurufocusAdd = async (list, username, summaryCall = true, shared = false) => {
+const gurufocusAdd = async (list, username, summaryCall = true, shared = false, update_id = null) => {
     for (i in list) {
         let timer;
         let currentStock = {
@@ -153,7 +153,12 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
 
         //console.log(stocksList[i].data)
         for (d in currentStock.data) {
+            if(update_id == null){
             currentStock.data[d].stock_id = stocks.rows[0].stock_id
+            }
+            else{
+                currentStock.data[d].stock_id = update_id
+            }
         }
         await db.arrayAddStockData(currentStock.data)
     }
