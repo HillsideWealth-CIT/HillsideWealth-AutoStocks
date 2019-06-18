@@ -89,12 +89,6 @@ const get_added = async (symbol, username) => {
     return getdata(stocks, stockdata)
 }
 
-const get_added_by_id = async (stock_id) => {
-    let stocks = await runQuery('SELECT * from stocks WHERE stock_id = $1', [stock_id])
-    let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
-    return getdata(stocks, stockdata)
-}
-
 const sharestock = async(id_string) => {
     // console.log(id_string)
     await runQuery(`UPDATE stocks SET shared='True' where ${id_string};`);
@@ -336,7 +330,6 @@ module.exports = {
     updatemultidfc,
     get_added,
     edits,
-    get_added_by_id
 }
 
 function getdata(stocks, stockdata){
