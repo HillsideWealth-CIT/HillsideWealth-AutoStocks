@@ -396,6 +396,38 @@ app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
     })
 })
 
+app.post('/update_financials/shared', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = false)
+                .then((r) => {
+                    db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
+                    .then((res) => {
+                        res.forEach((stock) => {
+                            format_data(stock)
+                            })
+                        //fs.writeFileSync('test.json', JSON.stringify(res))
+                        response.send({data: res})
+                    })
+                });
+})
+
+app.post('/update_prices/shared', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body);
+        api_calls.update_prices(request.body.action, request.body.action[0].stock_id)
+        .then((resolve) => {
+                db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
+                .then((res) => {
+                    res.forEach((stock) => {
+                    format_data(stock)
+                    })
+                response.send({data:res})
+                })
+        }).catch(function(err) {
+            console.log(err)
+            response.send(JSON.stringify({'Error': `${request.body.action[0].symbol}`}))
+    })
+})
+
 app.post("/shared", (request, response) => {
     //console.log(request.body.stocks)
     switch(request.body.action){
@@ -439,15 +471,6 @@ app.listen(port, () => {
 quarter_updates;
  */
 
-
-
-
-/*** HBS HELPERS ***/
-hbs.registerHelper('Averages', function(data, column, years){
-    return calculate_average(data,column,years)
-})
-
-
  /*** Functions ***/
 
 // Add comma separator to numbers in thousands
@@ -458,19 +481,6 @@ function formatNumber(num) {
     catch {
         return "Missing Required information to format"
     }
-}
-
-function calculate_average(data, column, years){
-    try{
-        let total = 0;
-        for(let i = 0; i < years; i++){
-            total += parseFloat(data[i][`${column}`])
-        }
-        return Math.round((total/years)*1000)/1000
-        }
-        catch{
-            return 'Missing Values'
-        }
 }
 
 hbs.registerHelper('calculate_default_growth', function(years, ttm, eps){
