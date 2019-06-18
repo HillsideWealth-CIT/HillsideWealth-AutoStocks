@@ -63,3 +63,32 @@ function remove(){
 };
 
 
+function update(link){
+    to_update = [];
+    to_stock_id = []
+    let selected = $table.rows('.selected').data()
+    for( i in selected ){
+        if(selected[i].symbol){
+        to_update.push(selected[i].symbol)
+        to_stock_id.push(selected[i].username)
+        }   
+        else{
+            break;
+        }
+    }
+
+    console.log(to_update)
+    console.log(to_stock_id)
+
+    Swal.fire({
+        position:'center',
+        type: 'question',
+        title: 'The selected stocks are currently being updated!',
+        text: `Progress: ${update_counter}/${to_update.length}`,
+        footer: 'This might take a while, you might want to do something else',
+        showConfirmButton: false,
+    });
+
+    counter_ajax(0, to_update.length, to_update, to_stock_id, `${link}/shared`)
+
+};
