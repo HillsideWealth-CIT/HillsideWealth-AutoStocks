@@ -10,9 +10,8 @@ function Initialize_table(){
     ajax_Call("init_user", "/init_table").then((resolve) => {
         stockdb = resolve.data
         $table = fill_table(resolve.data)
+        console.log(stockdb)
         total_columns = $table.columns().header().length;
-        $table.scroller.toPosition(stockdb.length);
-        $table.scroller.toPosition(0);
     })
 }
 function fill_table(data){
