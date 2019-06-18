@@ -342,50 +342,6 @@ function share(){
     ajax_Call(to_share, '/share')
 }
 
-function update(link){
-    to_update = [];
-    let selected = $table.rows('.selected').data()
-    for( i in selected ){
-        if(selected[i].symbol){
-        to_update.push(selected[i].symbol)
-        }   
-        else{
-            break;
-        }
-    }
-    let promises = [];
-
-    Swal.fire({
-        position:'center',
-        type: 'question',
-        title: 'The selected stocks are currently being updated!',
-        text: `Progress: ${update_counter}/${to_update.length}`,
-        footer: 'This might take a while, you might want to do something else',
-        showConfirmButton: false,
-    });
-
-    for ( i in to_update ) {
-        promises.push(counter_ajax(
-            [{symbol: to_update[i]}],
-            `/${link}`,
-            false
-        ))
-    }
-
-    Promise.all(promises).then((resolve) => {
-        Swal.update({type: 'success'})
-        for(i in resolve){
-            //console.log(resolve[i].data[0])
-            $table.row(document.getElementById(`${resolve[i].data[0].symbol}`)).data(resolve[i].data[0]).invalidate();
-        }
-        update_counter = 0;
-        setTimeout(function(){
-            Swal.close();
-        }, 3000)
-    })
-
-};
-
 function show_selected(){
     to_show = [];
     let selected = $table.rows('.selected').data()
@@ -418,22 +374,35 @@ function share(){
     ajax_Call(to_share, '/share')
 }
 
-function counter_ajax(action, link, async){
-    return new Promise ((resolve, reject ) => {
-        let data = {};
-        data.action = action
-        $.ajax({
-            type: 'POST',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            url: link,
-            async: async,
-        }).done(function(returned_data){
-            update_counter += 1;
-            swal.update({
-                text: `Progress: ${update_counter}/${to_update.length}`
-            })
-            resolve(returned_data)
+function counter_ajax(active_num, end_num, symbols, ids, link){
+    // console.log(`${active_num} ${end_num}`)
+    // console.log(arr[active_num])
+    var number = 0;
+    Swal.update({text: `Progress: ${active_num}/${end_num}`})
+    if (active_num == end_num){ 
+        Swal.update({
+            type:'success',
+            text: 'Update Complete'
         })
+        setTimeout(function(){
+            Swal.close();
+        }, 3000)
+        return
+    };
+    $.ajax({
+        type: 'POST',
+        url: link,
+        data: {action: [{symbol: symbols[active_num], stock_id: ids[active_num]}]},
+        success: function(resolved){
+            // alert(JSON.stringify(data))
+            console.log(resolved.data)
+            try{
+            $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
+            }
+            catch(e){
+                // console.log(e)
+            }
+            counter_ajax(active_num + 1, end_num, symbols, ids, link)
+        }
     })
 }
