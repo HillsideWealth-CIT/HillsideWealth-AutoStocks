@@ -83,8 +83,8 @@ const showshared = async (username) => {
     return getdata(stocks, stockdata)
 }
 
-const get_added = async (symbol, username) => {
-    let stocks = await runQuery('SELECT * from stocks WHERE symbol = $1 AND username = $2', [symbol, username])
+const get_added = async ( stock_id ,symbol, username) => {
+    let stocks = await runQuery('SELECT * from stocks WHERE stock_id=$1 AND symbol = $2', [stock_id, symbol])
     let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
     return getdata(stocks, stockdata)
 }
