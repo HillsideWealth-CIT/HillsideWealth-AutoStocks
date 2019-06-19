@@ -315,7 +315,7 @@ app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
 })
 
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
-            // console.log(request.body)
+            console.log(request.body.action)
             api_calls.gurufocusAdd(request.body.action, request.session.user)
                 .then((resolve) => {
                     db.get_added(request.body.action[0].symbol, request.session.user)
@@ -331,18 +331,17 @@ app.post('/append', sessionCheck, statusCheck, (request, response) => {
 })
 
 app.post('/append/shared', sessionCheck, statusCheck, (request, response) => {
-    // console.log("test")
-    // console.log(request.body.action)
-    api_calls.gurufocusAdd(request.body.action, request.session.user, true, true)
-        .then((resolve) => {
-            db.get_added(request.body.action[0].symbol, request.session.user)
-                .then((res) => {
-                    res.forEach((stock)=> {
-                        format_data(stock)
-                    })
-                    response.send({data: res})
-                })
-        })
+    console.log(request.body.action)
+    // api_calls.gurufocusAdd(request.body.action, request.session.user, true, true)
+    //     .then((resolve) => {
+    //         db.get_added(request.body.action[0].symbol, request.session.user)
+    //             .then((res) => {
+    //                 res.forEach((stock)=> {
+    //                     format_data(stock)
+    //                 })
+    //                 response.send({data: res})
+    //             })
+    //     })
 
 })
 

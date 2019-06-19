@@ -2,6 +2,7 @@ var update_counter = 0;
 var to_update = [];
 
 function add(){
+    let stocks;
     Swal.fire({
         title: 'Add Stocks',
         text: 'Formats: American Stocks: [SYMBOL], Canadian stocks: [EXCHANGE:SYMBOL]',
@@ -11,22 +12,7 @@ function add(){
         preConfirm: (result) => {
             let promises = []
             let stockstring = result.replace(/\s/g, "");
-            let stocks = stockstring.split(',')
-            for(let i in stocks){
-                if($(`#${stocks[i].toUpperCase()}`).length == 0) {
-                    promises.push(ajax_Call([{'symbol': stocks[i].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''}], '/append/shared'))
-                }
-            }
- 
-            Promise.all(promises).then((resolve) => {
-                for(i in resolve){
-                    $table.row.add(resolve[i].data[0]).draw();
-                }
-            })
-            setTimeout(function(){
-                swal.close()
-            }, 5000)
-            
+            stocks = stockstring.split(',')
         }
     }).then((result) => {
         if(!result.dismiss){
@@ -35,9 +21,11 @@ function add(){
             title: 'Currently Saving To Database!',
             showConfirmButton: false
         })
+        adder_ajax(0, stocks.length, stocks, '/append')
         }
     })
 };
+
 
 function remove(){
     let to_remove = [];

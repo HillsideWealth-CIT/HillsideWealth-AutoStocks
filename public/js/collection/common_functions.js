@@ -468,7 +468,6 @@ function share(){
 function counter_ajax(active_num, end_num, symbols, ids, link){
     // console.log(`${active_num} ${end_num}`)
     // console.log(arr[active_num])
-    var number = 0;
     Swal.update({text: `Progress: ${active_num}/${end_num}`})
     if (active_num == end_num){ 
         Swal.update({
@@ -494,6 +493,35 @@ function counter_ajax(active_num, end_num, symbols, ids, link){
                 // console.log(e)
             }
             counter_ajax(active_num + 1, end_num, symbols, ids, link)
+        }
+    })
+}
+
+function adder_ajax(active_num, end_num, list, link){
+    swal.update({text: `Progress: ${active_num}/${end_num}`})
+    if (active_num == end_num){
+        Swal.update({
+            type:'success',
+            text: 'Update Complete'
+        })
+        setTimeout(function(){
+            Swal.close();
+        }, 3000)
+        return
+    };
+    $.ajax({
+        type: 'POST',
+        url: link,
+        data: {action: [{'symbol': list[active_num].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''}]},
+        success: function(stockinfo){
+            console.log(stockinfo)
+            try{
+                $table.row.add(stockinfo.data[0]).draw();
+            }
+            catch(e){
+                console.log(e)
+            }
+            adder_ajax(active_num + 1, end_num, list, link)
         }
     })
 }
