@@ -1,13 +1,6 @@
 function open_chart(symbol){
     window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`)
     return
-
-    // console.log($table.row($('#LMT')).index())
-
-    // console.log($('#BUTTS').length)
-    // console.log($('#MSFT').length)
-    // console.log(stockdb[1])
-    // $table.row.add(row_columns()).draw();
 };
 
 function fill_0(field){
@@ -199,6 +192,79 @@ function eps_onchange(){
     $('#tv_form').val(dcf_results.terminal_value)
     $('#fv_form').val(dcf_results.fair_value)
 };
+
+function calc_edit(){
+
+    let stock_id_list = [];
+    let selected = $table.rows('.selected').data()
+    for( i in selected ){
+        if(selected[i].symbol){
+        stock_id_list.push(selected[i].stock_id)
+        }   
+        else{
+            break;
+        }
+    }
+    if(stock_id_list.length != 0){
+        calc_edit_menu().then((values) => {
+            let to_send = {stock_id_list: stock_id_list, values: values}
+            ajax_Call(to_send, '/calc_edit').then((res) => {
+                console.log(res)
+                if (res == "OK"){
+                    location.reload();
+                }
+            })
+        })
+    }
+    else{
+        alert("NO ROWS SELECTED")
+    }
+}
+
+function calc_edit_menu(){
+    let values = {};
+    return new Promise ((resolve) => {
+    swal.fire({
+        title: 'DCF INPUTS',
+        showConfirmButton: true,
+        showCancelButton: true,
+        html:
+            `
+            <div class="row">
+                <p class="col">*EMPTY FIELDS WILL BE TREATED AS DEFAULT VALUES</p>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="tgr_form">Terminal Growth Rate (%)</label>
+                    <input id="tgr_form" type="text" class="form-control" value="4">
+                </div>
+                <div class="col">
+                    <label for="dr_form">Discount Rate(%)</label>
+                    <input id="dr_form" type="text" class="form-control" value="12">
+                </div>        
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="gy_form">Growth Years</label>
+                    <input id="gy_form" id="eps_form" type="text" class="form-control" value="10">
+                </div>
+                <div class="col">
+                    <label for="ty_form">Terminal Years</label>
+                    <input id="ty_form" type="text" class="form-control" value="10">
+                </div>        
+            </div>
+            `,
+    }).then((result) => {
+        if (!result.dismiss) {
+                values.tgr = document.getElementById('tgr_form').value / 100;
+                values.dr = document.getElementById('dr_form').value / 100;
+                values.gy = document.getElementById('gy_form').value;
+                values.ty = document.getElementById('ty_form').value;
+                resolve(values)
+            }
+        })
+    })
+}
 
 dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10) => {
     console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate} ${g_years} ${t_years}`)

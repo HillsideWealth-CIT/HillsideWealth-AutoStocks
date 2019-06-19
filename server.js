@@ -305,6 +305,15 @@ app.post('/edits', sessionCheck, statusCheck, (request, response) => {
     })
 })
 
+app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
+    // console.log(request.body.action)
+    //calc.multi_dfc_string(request.body.action.stock_id_list)
+    db.dfc_edits(request.body.action.values, calc.multi_dfc_string(request.body.action.stock_id_list)).then((resolve) => {
+        response.send("OK")
+    })
+
+})
+
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
             // console.log(request.body)
             api_calls.gurufocusAdd(request.body.action, request.session.user)

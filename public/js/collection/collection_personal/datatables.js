@@ -27,7 +27,7 @@ function fill_table(data){
         columns : column_builder(),
         fixedColumns: { leftColumns: 2 },
         scrollX : true,
-        scrollY : '75vh',
+        scrollY : '70vh',
         deferRender : true,
         scroller: true,
         order : [[7, 'desc']],
@@ -42,6 +42,7 @@ function button_builder(page){
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove();}},
         {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-sm", action: function(){update('update_prices')}},
         {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-sm", action: function(){update('update_financials');}},
+        {text: `<span class="fas fa-calculator"></span> DFC`, className: "btn-sm", action: function(){calc_edit()}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
         {text: '<span class="fas fa-share"></span> Share', className:"btn-sm", action: function(){share()}},

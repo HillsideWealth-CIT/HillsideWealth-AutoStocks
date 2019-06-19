@@ -231,10 +231,6 @@ const updatePrices = async(stock, username, sector, current_price, gfrating) => 
     return await runQuery(`UPDATE stocks SET sector = '${sector}', current_price = ${current_price}, gfrating = '${gfrating}' where username = '${username}' and symbol = '${stock}'`)
 }
 
-const updatemultidfc = async(conditions, edit) => {
-    return await runQuery(`UPDATE stockdata SET eps_basic = $1, eps_without_nri = $2, growth_years=$3, terminal_growth_rate = $4, terminal_years = $5, discount_rate = $6 Where ${conditions}`, [edit.eps, edit.gr, edit.gy, edit.tgr, edit.ty,edit.dr,])
-}
-
 const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, gfrating ,shared = false) => {
     return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, gfrating,shared) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING stock_id`, [symbol, stock_name, stock_sector, current_price, username, note, gfrating,shared])
 }
@@ -265,40 +261,10 @@ const retrieveAllUsers = async () => {
     return await runQuery('SELECT * from users')
 }
 
-const editNote = async (note, username, stock_id) => {
-    return await runQuery(`UPDATE stocks SET note = $1 WHERE stock_id = $2`, [note, stock_id])
-}
-
-const editPrices = async (edit, stock_id, username) => {
-    return await runQuery(`UPDATE stocks SET current_price = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
-}
-
-const editOnestar = async (edit, stock_id, username) => {
-    return await runQuery(`UPDATE stocks SET onestar = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
-}
-
-const editFivestar = async (edit, stock_id, username) => {
-    return await runQuery(`UPDATE stocks SET fivestar = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
-}
-
-const editFairvalue = async (edit, stock_id, username) => {
-    return await runQuery(`UPDATE stocks SET fairvalue = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
-}
-
-const editMoat = async (edit, stock_id, username) => {
-    return await runQuery(`UPDATE stocks SET moat = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
-}
-
-const editJdv = async (edit, stock_id, username) => {
-    return await runQuery(`UPDATE stocks SET jdv = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
-}
-
-const editEmoticon = async (edit, stock_id, username) => {
-    return await runQuery(`UPDATE stocks SET emoticons = $1 WHERE username = $2 AND stock_id = $3`,[edit ,username, stock_id])
-}
-
-const editDfc = async(edit, stock_id) => {
-    return await runQuery(`UPDATE stockdata SET eps_basic = $2,  eps_without_nri = $3, growth_years=$4, terminal_growth_rate = $5, terminal_years = $6, discount_rate = $7 Where stock_id = $1`, [stock_id, edit.eps, edit.gr, edit.gy, edit.tgr, edit.ty,edit.dr,])
+const dfc_edits = async(values, list) => {
+    // console.log(values)
+    // console.log(list)
+    return await runQuery(`Update stockdata set terminal_growth_rate = $1, discount_rate = $2, growth_years = $3, terminal_years = $4 where ${list};`, [values.tgr, values.dr, values.gy, values.ty])
 }
 
 const edits = async(edit) => {
@@ -320,21 +286,12 @@ module.exports = {
     retrieveAllUsers,
     changeCode,
     toggleStock,
-    editNote,
     sharestock,
     unsharestock,
     updatePrices,
-    editPrices,
-    editOnestar,
-    editFivestar,
-    editFairvalue,
-    editMoat,
-    editJdv,
-    editEmoticon,
-    editDfc,
-    updatemultidfc,
     get_added,
     get_by_id,
+    dfc_edits,
     edits
 }
 
