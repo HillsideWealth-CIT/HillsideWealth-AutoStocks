@@ -208,6 +208,7 @@ function calc_edit(){
     if(stock_id_list.length != 0){
         calc_edit_menu().then((values) => {
             let to_send = {stock_id_list: stock_id_list, values: values}
+            console.log(values)
             ajax_Call(to_send, '/calc_edit').then((res) => {
                 console.log(res)
                 if (res == "OK"){
@@ -223,6 +224,7 @@ function calc_edit(){
 
 function calc_edit_menu(){
     let values = {};
+    let arr = ['tgr', 'dr', 'gy', 'ty'];
     return new Promise ((resolve) => {
     swal.fire({
         title: 'DCF INPUTS',
@@ -231,7 +233,7 @@ function calc_edit_menu(){
         html:
             `
             <div class="row">
-                <p class="col">*EMPTY FIELDS WILL BE TREATED AS DEFAULT VALUES</p>
+                <p class="col">*EMPTY FIELDS WILL BE TREATED AS 5</p>
             </div>
             <div class="row">
                 <div class="col">
@@ -256,10 +258,18 @@ function calc_edit_menu(){
             `,
     }).then((result) => {
         if (!result.dismiss) {
-                values.tgr = document.getElementById('tgr_form').value / 100;
-                values.dr = document.getElementById('dr_form').value / 100;
-                values.gy = document.getElementById('gy_form').value;
-                values.ty = document.getElementById('ty_form').value;
+                // values.tgr = document.getElementById('tgr_form').value / 100;
+                // values.dr = document.getElementById('dr_form').value / 100;
+                // values.gy = document.getElementById('gy_form').value;
+                // values.ty = document.getElementById('ty_form').value;
+                for( i in arr ){
+                    if (document.getElementById(`${arr[i]}_form`).value.length != 0){
+                        values[arr[i]] = document.getElementById(`${arr[i]}_form`).value
+                    }
+                    else{
+                        values[arr[i]] = 5;
+                    }
+                }
                 resolve(values)
             }
         })

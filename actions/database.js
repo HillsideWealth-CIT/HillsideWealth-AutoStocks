@@ -264,7 +264,7 @@ const retrieveAllUsers = async () => {
 const dfc_edits = async(values, list) => {
     // console.log(values)
     // console.log(list)
-    return await runQuery(`Update stockdata set terminal_growth_rate = $1, discount_rate = $2, growth_years = $3, terminal_years = $4 where ${list};`, [values.tgr, values.dr, values.gy, values.ty])
+    return await runQuery(`Update stockdata set terminal_growth_rate = $1, discount_rate = $2, growth_years = $3, terminal_years = $4 where ${list};`, [values.tgr/100, values.dr/100, values.gy, values.ty])
 }
 
 const edits = async(edit) => {
