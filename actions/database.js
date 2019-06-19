@@ -89,6 +89,12 @@ const get_added = async (symbol, username) => {
     return getdata(stocks, stockdata)
 }
 
+const get_by_id = async (id) => {
+    let stocks = await runQuery('SELECT * from stocks WHERE stock_id= $1', [id])
+    let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
+    return getdata(stocks, stockdata)
+}
+
 const sharestock = async(id_string) => {
     // console.log(id_string)
     await runQuery(`UPDATE stocks SET shared='True' where ${id_string};`);
@@ -296,7 +302,6 @@ const editDfc = async(edit, stock_id) => {
 }
 
 const edits = async(edit) => {
-    console.log(edit)
     return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7, current_price = $8 where stock_id = $9`, [edit.comment, edit.ms_moat, edit.ms_fair_value, edit.ms_5_star, edit.ms_1_star, edit.emoticon, edit.jdv, edit.price ,edit.id])
 }
 
@@ -329,6 +334,7 @@ module.exports = {
     editDfc,
     updatemultidfc,
     get_added,
+    get_by_id,
     edits
 }
 

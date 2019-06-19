@@ -294,9 +294,14 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
 })
 
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
-    // console.log(request.body)
+    console.log(request.body)
     db.edits(request.body.action).then(() => {
-        response.send({status:'OK'})
+        db.get_by_id(request.body.action.id).then((res) => {
+            res.forEach((stock) => {
+                format_data(stock)
+            })
+            response.send({data:res})
+        })
     })
 })
 
@@ -426,31 +431,6 @@ app.post('/update_prices/shared', sessionCheck, statusCheck, (request, response)
             console.log(err)
             response.send(JSON.stringify({'Error': `${request.body.action[0].symbol}`}))
     })
-})
-
-app.post("/shared", (request, response) => {
-    //console.log(request.body.stocks)
-    switch(request.body.action){
-        case 'Remove':
-        let promises = [];
-        for (let i = 0; i < request.body.stocks.length; i++) {
-            promises.push(db.unsharestock(request.body.stocks[i].symbol, request.session.user));
-        }
-        Promise.all(promises)
-            .then((returned) => {
-                response.send(JSON.stringify(request.body));
-            })
-        break;
-
-        // case 'Append':
-        // //console.log(request.body.stocks)
-        // api_calls.gurufocusAdd(request.body.stocks, request.session.user, true, true)
-        //     .then((resolve) => {
-        //         response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
-        //     })
-        //     .catch((reason) => console.log(reason))
-        //     break;
-    }
 })
 
 /* Logout */
