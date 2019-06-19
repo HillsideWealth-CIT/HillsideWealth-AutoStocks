@@ -28,7 +28,12 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
             `<div class="row">
                 <div class="col">
                     <label for="jdv">JDV</label>
-                    <input id="jdv" type="text" class="form-control" value="${fill_0(jdv)}">
+                    <select id="jdv" class="form-control">
+                    <option selected hidden>${fill_0(jdv)}</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
                 </div>
                 <div class="col">
                     <label for="emoticon">Emoticon</label>
