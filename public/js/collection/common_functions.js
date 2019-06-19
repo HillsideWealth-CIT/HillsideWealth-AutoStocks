@@ -10,8 +10,19 @@ function open_chart(symbol){
     // $table.row.add(row_columns()).draw();
 };
 
-function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price){
+function fill_0(field){
+    if(field == 'null'){
+        return 0
+    }
+    
+    else{
+        return field
+    }
+}
+
+function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
     //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
+    console.log(fill_0(ms_1_star))
     let edits = {};
     return new Promise ((resolve, reject) => {
     swal.fire({
@@ -24,7 +35,7 @@ function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, p
             `<div class="row">
                 <div class="col">
                     <label for="jdv">JDV</label>
-                    <input id="jdv" type="text" class="form-control" value="${jdv}">
+                    <input id="jdv" type="text" class="form-control" value="${fill_0(jdv)}">
                 </div>
                 <div class="col">
                     <label for="emoticon">Emoticon</label>
@@ -40,17 +51,17 @@ function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, p
             <div class="row">
                 <div class="col">
                     <label for="ms_1_star">MS 1 Star</label>
-                    <input id="ms_1_star" type="text" class="form-control" value="${ms_1_star}">
+                    <input id="ms_1_star" type="text" class="form-control" value="${fill_0(ms_1_star)}">
                 </div>
                 <div class="col">
                     <label for="ms_5_star">MS 5 Star</label>
-                    <input id="ms_5_star" type="text" class="form-control" value="${ms_5_star}">
+                    <input id="ms_5_star" type="text" class="form-control" value="${fill_0(ms_5_star)}">
                 </div>        
             </div>
             <div class="row">
                 <div class="col">
                     <label for="ms_fair_value">MS Fair Value</label>
-                    <input id="ms_fair_value" type="text" class="form-control" value="${ms_fv}">
+                    <input id="ms_fair_value" type="text" class="form-control" value="${fill_0(ms_fv)}">
                 </div>
                 <div class="col">
                     <label for="ms_moat">MS Moat</label>
@@ -64,12 +75,18 @@ function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, p
             </div>
             <div class="row">
                 <div class="col">
-                    <label for="Comment">Comment</label>
-                    <input id="Comment" type="text" class="form-control" value="${comment}">
+                    <label for="gfrating">GuruFocus Rating</label>
+                    <input id="gfrating" type="text" class="form-control" value="${gf_rating}" readonly>
                 </div>
                 <div class="col">
                     <label for="cur_price">Current Price</label>
                     <input id="cur_price" type="text" class="form-control" value="${price}">
+                </div>
+            </div>
+            <div class="row>
+                <div class="col">
+                    <label for="Comment">Comment</label>
+                    <input id="Comment" type="text" class="form-control" value="${comment}">
                 </div>
             </div>
             `,
@@ -91,21 +108,14 @@ function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, p
     })
 };
 
-function open_edit(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price){
+function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
     let selected = $(`#edit${id}`).parent().parent()
     let test_selected = $(`#edit${id}`).parent()
     let row_index = $table.row(selected).index()
-    edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price).then((resolve) => {
-        let setting_string = `<button type="button" id="edit${id}" onclick='open_edit("${id}", "${resolve.comment}", "${resolve.emoticon}", "${resolve.ms_1_star}" , "${resolve.ms_5_star}", "${resolve.ms_fair_value}","${resolve.ms_moat}", "${resolve.jdv}", "${resolve.price}" )' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+    edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating).then((resolve) => {
+        let setting_string = `<button type="button" id="edit${id}" onclick='open_edit("${id}", "${resolve.comment}", "${resolve.emoticon}", "${resolve.ms_1_star}" , "${resolve.ms_5_star}", "${resolve.ms_fair_value}","${resolve.ms_moat}", "${resolve.jdv}", "${resolve.price}", "${gf_rating}" )' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         ajax_Call(resolve, '/edits').then((server_resolve) => {
-            if(server_resolve.status == "OK"){
-                test_selected.html(setting_string)
-                $table.cell({row:row_index, column: 3}).invalidate().draw()
-                $table.cell({row:row_index, column: 8}).data(`$${resolve.price}`).invalidate();   
-            }
-            else{
-                alert(`ERROR ${server_resolve.status}`)
-            }
+            $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
         })
     })
 };
