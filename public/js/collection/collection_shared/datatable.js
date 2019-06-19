@@ -12,6 +12,8 @@ function Initialize_table(){
         $table = fill_table(resolve.data)
         console.log(stockdb)
         total_columns = $table.columns().header().length;
+        $table.scroller.toPosition(stockdb.length,false);
+        $table.scroller.toPosition(0);
     })
 }
 function fill_table(data){
