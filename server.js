@@ -305,6 +305,15 @@ app.post('/edits', sessionCheck, statusCheck, (request, response) => {
     })
 })
 
+app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
+    // console.log(request.body.action)
+    //calc.multi_dfc_string(request.body.action.stock_id_list)
+    db.dfc_edits(request.body.action.values, calc.multi_dfc_string(request.body.action.stock_id_list)).then((resolve) => {
+        response.send("OK")
+    })
+
+})
+
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
             // console.log(request.body)
             api_calls.gurufocusAdd(request.body.action, request.session.user)
@@ -517,8 +526,8 @@ function format_data(stock){
         data.eps_growth_rate = Math.round((data.eps_basic)*100)/100;
         data.growth_years_format = data.growth_years;
         data.terminal_years_format = data.terminal_years;
-        data.terminal_growth_rate_format = (data.terminal_growth_rate);
-        data.discount_rate_format = (data.discount_rate);
+        data.terminal_growth_rate_format = (data.terminal_growth_rate) * 100;
+        data.discount_rate_format = (data.discount_rate) * 100;
         
         // let dcf_calc5 = calc.dcf(data.eps_without_nri, data.terminal_growth_rate, data.discount_rate, data.growth_years,data.terminal_years)
         // data.dcf_growth = formatNumber(Math.round((dcf_calc.growth_value)*100) / 100)
