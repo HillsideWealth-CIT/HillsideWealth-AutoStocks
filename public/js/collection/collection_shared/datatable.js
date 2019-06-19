@@ -31,7 +31,6 @@ function fill_table(data){
         deferRender : true,
         scroller: true,
         order : [[8, 'desc']],
-        colReorder: true
     });
     return datatable
 }
