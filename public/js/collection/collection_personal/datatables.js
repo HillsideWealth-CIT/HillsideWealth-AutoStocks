@@ -10,8 +10,9 @@ function Initialize_table(){
     ajax_Call("init_user", "/init_table").then((resolve) => {
         stockdb = resolve.data
         $table = fill_table(resolve.data)
+        console.log(stockdb)
         total_columns = $table.columns().header().length;
-        $table.scroller.toPosition(stockdb.length);
+        $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
     })
 }
@@ -86,7 +87,7 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 2: Comments, emoticon, morning star, guru rating, JDV
-                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
             }    
         },
         {   data : null,
@@ -122,6 +123,10 @@ function column_builder(){
         },
 
         { data : "stockdata.0.yield_format" },
+        
+        { data : "note" },
+        { data : "emoticon" },
+
         { data : "stockdata.0.datestring" },
         { data : "stockdata.0.shares_outstanding_format" },
         { data : "stockdata.0.enterprise_value_format" },
@@ -147,6 +152,13 @@ function column_builder(){
         },
         { data : "stockdata.0.roe_spice" },
         { data : "stockdata.0.effective_tax_format" },
+
+        { data : "gfrating" },
+        { data : "jdv" },
+        { data : "moat" },
+        { data : "fairvalue" },
+        { data : "fivestar" },
+        { data : "onestar" },
 
         { data : "stockdata.0.eps_without_nri_format" },
         { data : "stockdata.0.growth_years_format" },

@@ -294,9 +294,14 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
 })
 
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
-    // console.log(request.body)
+    console.log(request.body)
     db.edits(request.body.action).then(() => {
-        response.send({status:'OK'})
+        db.get_by_id(request.body.action.id).then((res) => {
+            res.forEach((stock) => {
+                format_data(stock)
+            })
+            response.send({data:res})
+        })
     })
 })
 
@@ -368,7 +373,7 @@ app.post('/update_financials', sessionCheck, statusCheck, (request, response) =>
     console.log(request.body)
     api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)
                 .then((r) => {
-                    db.get_added_by_id(request.body.action[0].stock_id)
+                    db.get_added(request.body.action[0].symbol, request.session.user)
                     .then((res) => {
                         res.forEach((stock) => {
                             format_data(stock)
@@ -383,7 +388,7 @@ app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body);
         api_calls.update_prices(request.body.action, request.session.user)
         .then((resolve) => {
-                db.get_added_by_id(request.body.action[0].stock_id)
+                db.get_added(request.body.action[0].symbol, request.session.user)
                 .then((res) => {
                     res.forEach((stock) => {
                     format_data(stock)
@@ -396,29 +401,36 @@ app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
     })
 })
 
-app.post("/shared", (request, response) => {
-    //console.log(request.body.stocks)
-    switch(request.body.action){
-        case 'Remove':
-        let promises = [];
-        for (let i = 0; i < request.body.stocks.length; i++) {
-            promises.push(db.unsharestock(request.body.stocks[i].symbol, request.session.user));
-        }
-        Promise.all(promises)
-            .then((returned) => {
-                response.send(JSON.stringify(request.body));
-            })
-        break;
+app.post('/update_financials/shared', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = false)
+                .then((r) => {
+                    db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
+                    .then((res) => {
+                        res.forEach((stock) => {
+                            format_data(stock)
+                            })
+                        //fs.writeFileSync('test.json', JSON.stringify(res))
+                        response.send({data: res})
+                    })
+                });
+})
 
-        // case 'Append':
-        // //console.log(request.body.stocks)
-        // api_calls.gurufocusAdd(request.body.stocks, request.session.user, true, true)
-        //     .then((resolve) => {
-        //         response.send(JSON.stringify({ stocks: resolve, action: 'Append' }));
-        //     })
-        //     .catch((reason) => console.log(reason))
-        //     break;
-    }
+app.post('/update_prices/shared', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body);
+        api_calls.update_prices(request.body.action, request.body.action[0].stock_id)
+        .then((resolve) => {
+                db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
+                .then((res) => {
+                    res.forEach((stock) => {
+                    format_data(stock)
+                    })
+                response.send({data:res})
+                })
+        }).catch(function(err) {
+            console.log(err)
+            response.send(JSON.stringify({'Error': `${request.body.action[0].symbol}`}))
+    })
 })
 
 /* Logout */
@@ -439,15 +451,6 @@ app.listen(port, () => {
 quarter_updates;
  */
 
-
-
-
-/*** HBS HELPERS ***/
-hbs.registerHelper('Averages', function(data, column, years){
-    return calculate_average(data,column,years)
-})
-
-
  /*** Functions ***/
 
 // Add comma separator to numbers in thousands
@@ -458,19 +461,6 @@ function formatNumber(num) {
     catch {
         return "Missing Required information to format"
     }
-}
-
-function calculate_average(data, column, years){
-    try{
-        let total = 0;
-        for(let i = 0; i < years; i++){
-            total += parseFloat(data[i][`${column}`])
-        }
-        return Math.round((total/years)*1000)/1000
-        }
-        catch{
-            return 'Missing Values'
-        }
 }
 
 hbs.registerHelper('calculate_default_growth', function(years, ttm, eps){
