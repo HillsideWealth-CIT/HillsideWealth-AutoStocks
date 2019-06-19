@@ -20,13 +20,13 @@ function fill_0(field){
     }
 }
 
-function edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
+function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
     //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
     console.log(fill_0(ms_1_star))
     let edits = {};
     return new Promise ((resolve, reject) => {
     swal.fire({
-        title: 'Inputs',
+        title: symbol,
         showConfirmButton: true,
         confirmButtonText: 'Save Changes',
         showCancelButton: true,
@@ -112,8 +112,8 @@ function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
     let selected = $(`#edit${id}`).parent().parent()
     let test_selected = $(`#edit${id}`).parent()
     let row_index = $table.row(selected).index()
-    edit_menu(id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating).then((resolve) => {
-        let setting_string = `<button type="button" id="edit${id}" onclick='open_edit("${id}", "${resolve.comment}", "${resolve.emoticon}", "${resolve.ms_1_star}" , "${resolve.ms_5_star}", "${resolve.ms_fair_value}","${resolve.ms_moat}", "${resolve.jdv}", "${resolve.price}", "${gf_rating}" )' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
+    edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating).then((resolve) => {
+        let setting_string = `<button type="button" id="edit${id}" onclick='open_edit("${symbol}", "${id}", "${resolve.comment}", "${resolve.emoticon}", "${resolve.ms_1_star}" , "${resolve.ms_5_star}", "${resolve.ms_fair_value}","${resolve.ms_moat}", "${resolve.jdv}", "${resolve.price}", "${gf_rating}" )' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         ajax_Call(resolve, '/edits').then((server_resolve) => {
             $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
         })
