@@ -27,7 +27,7 @@ function fill_table(data){
         columns : column_builder(),
         fixedColumns: { leftColumns: 2 },
         scrollX : true,
-        scrollY : '75vh',
+        scrollY : '70vh',
         deferRender : true,
         scroller: true,
         order : [[8, 'desc']],
