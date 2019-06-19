@@ -31,6 +31,7 @@ function fill_table(data){
         deferRender : true,
         scroller: true,
         order : [[7, 'desc']],
+        colReorder: true
     });
     return datatable
 }
@@ -170,7 +171,7 @@ function column_builder(){
 
         { data : "stockdata.0.terminal_growth_rate_format" },
         { data : "stockdata.0.discount_rate_format" },
-        
+
         { data : "dcf_values_5y.growth_value" },
         { data : "dcf_values_5y.terminal_value" },
         { data : "dcf_values_5y.fair_value" },
