@@ -110,30 +110,46 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     ttm: annuals["Fiscal Year"][f] === "TTM",
                     date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
-                    price: parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f]),
-                    net_debt: parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Current Portion of Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Minority Interest"][f]) - parseFloat(annuals.balance_sheet["Cash And Cash Equivalents"][f]) - parseFloat(annuals.balance_sheet["Marketable Securities"][f]),
-                    market_cap: parseFloat(annuals.valuation_and_quality["Market Cap"][f]),
-                    yield: parseFloat(annuals.valuation_ratios["Dividend Yield %"][f]),
-                    dividend: parseFloat(annuals.common_size_ratios["Dividend Payout Ratio"][f]),
-                    asset_turnover: parseFloat(annuals.common_size_ratios["Asset Turnover"][f]),
-                    revenue: parseFloat(annuals.income_statement.Revenue[f]),
-                    enterprise_value: parseFloat(annuals.valuation_and_quality["Enterprise Value"][f]),
-                    effective_tax: parseFloat(annuals.income_statement["Tax Rate %"][f]),
-                    shares_outstanding: parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f]),
-                    aebitda: Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f])),
-                    wacc: parseFloat(annuals.common_size_ratios["WACC %"][f]),
-                    capex: parseFloat(annuals.cashflow_statement["Capital Expenditure"][f]),
-                    eps_basic: parseFloat(annuals.income_statement["EPS (Basic)"][f]),
-                    eps_without_nri: parseFloat(annuals.per_share_data_array["EPS without NRI"][f])
-                }
-                    try { currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f]); }
-                    catch { currentData.roe = "Does not exist" }
-                    try{ currentData.roic = parseFloat(annuals.common_size_ratios["ROIC %"][f]); }
-                    catch{ currentData.roic = NaN; }
-                    try { currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f]); }
-                    catch { currentData.fcf = NaN; }
+                    }
+                    try{currentData.price =  parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f])}
+                        catch{currentData.price =  null}
+                    try{ currentData.net_debt =  parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Current Portion of Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Minority Interest"][f]) - parseFloat(annuals.balance_sheet["Cash And Cash Equivalents"][f]) - parseFloat(annuals.balance_sheet["Marketable Securities"][f])}
+                        catch{currentData.net_debt = null}
+                    try{currentData.market_cap =  parseFloat(annuals.valuation_and_quality["Market Cap"][f])}
+                        catch{currentData.market_cap = null}
+                    try{ currentData.yield =  parseFloat(annuals.valuation_ratios["Dividend Yield %"][f])}
+                        catch{ currentData.yield = null}
+                    try{currentData.dividend =  parseFloat(annuals.common_size_ratios["Dividend Payout Ratio"][f])}
+                        catch{currentData.dividend = null}
+                    try{currentData.asset_turnover =  parseFloat(annuals.common_size_ratios["Asset Turnover"][f])}
+                        catch{currentData.asset_turnover = null}
+                    try{currentData.revenue =  parseFloat(annuals.income_statement.Revenue[f])}
+                        catch{currentData.revenue = null}
+                    try{ currentData.enterprise_value =  parseFloat(annuals.valuation_and_quality["Enterprise Value"][f])}
+                        catch{ currentData.enterprise_value =  null}
+                    try{currentData.effective_tax =  parseFloat(annuals.income_statement["Tax Rate %"][f])}
+                        catch{currentData.effective_tax = null}
+                    try{currentData.shares_outstanding =  parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f])}
+                        catch{currentData.shares_outstanding = null}
+                    try{currentData.aebitda =  Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f]))}
+                        catch{currentData.aebitda = null}
+                    try{ currentData.wacc =  parseFloat(annuals.common_size_ratios["WACC %"][f])}
+                        catch{ currentData.wacc = null}
+                    try{currentData.capex =  parseFloat(annuals.cashflow_statement["Capital Expenditure"][f])}
+                        catch{currentData.capex = null}
+                    try{currentData.eps_basic =  parseFloat(annuals.income_statement["EPS (Basic)"][f])}
+                        catch{currentData.eps_basic =  null}
+                    try{currentData.eps_without_nri =  parseFloat(annuals.per_share_data_array["EPS without NRI"][f])}
+                        catch{currentData.eps_without_nri = null}
 
-                //console.log(currentData)
+                    try { currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f]); }
+                        catch { currentData.roe = "Does not exist" }
+                    try{ currentData.roic = parseFloat(annuals.common_size_ratios["ROIC %"][f]); }
+                        catch{ currentData.roic = NaN; }
+                    try { currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f]); }
+                        catch { currentData.fcf = NaN; }
+
+                console.log(currentData)
                 currentStock.data.push(currentData)
             }
         } catch (err) {

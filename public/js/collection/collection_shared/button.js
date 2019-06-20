@@ -21,7 +21,7 @@ function add(){
             title: 'Currently Saving To Database!',
             showConfirmButton: false
         })
-        adder_ajax(0, stocks.length, stocks, '/append')
+        adder_ajax(0, stocks.length, stocks, '/append/shared')
         }
     })
 };
