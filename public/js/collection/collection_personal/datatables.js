@@ -132,7 +132,16 @@ function column_builder(){
         { data : "stockdata.0.shares_outstanding_format" },
         { data : "stockdata.0.enterprise_value_format" },
         { data : "stockdata.0.revenue_format" },
-        { data : "stockdata.0.aebitda_format" },
+        {   data : null,
+            render: function(data, type, row, meta ){
+                if(row.stockdata[0].aebitda_format == 'Missing Required information to format'){
+                    return null
+                }
+                else {
+                    return row.stockdata[0].aebitda_format
+                }
+            }
+        },
         { data : "stockdata.0.aeXsho_format" },
         { data : "stockdata.0.aebitda_percent" },
         { data : "stockdata.0.asset_turnover" },
