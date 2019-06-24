@@ -356,6 +356,7 @@ function show_financials(symbol, stockdata, years){
             <td>${stockdata[i].fcf_yield}</td>
             <td>${stockdata[i].capex}</td>
             <td>${stockdata[i].capeXae_format}</td>
+            <td>${stockdata[i].datestring}</td>
             </tr>
             `
         }
@@ -392,7 +393,7 @@ function show_financials(symbol, stockdata, years){
                         <th>FCF Yield</th>
                         <th>Capex</th>
                         <th>Capex/aEBITDA</th>
-                        <th></th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 ${financials}

@@ -6,194 +6,38 @@
 		<link rel="icon" type="image/png" href="/imgs/icon.png" />
 		<style>.fixed-table-container{ background-color:white}</style>
 	</head>
-	<body style="">
+	<body>
 		{{>header}}
-			<div class="container-fluid">
+		<div class="container-fluid">
 			<div class="d-flex justify-content-center">
 				<div class="table-responsive p-3">
-					<table id="myTable1" data-toggle="table" data-toolbar="#toolbar1"
-						data-height=750 data-search="true" data-show-columns="true" class="table table1 table-hover">
-						<thead class='thead-dark'>
-							<tr>
-								<th data-checkbox="true"></th>
-								<th data-sortable="true">Status</th>
-								<th data-sortable="true">Symbol</th>
-								<th data-sortable="true">Price</th>
-								<th data-sortable="true">Currency</th>
-								<th>Info</th>
-							</tr>
-						</thead>
-						<tbody>
-							{{#each data}}
-
-							<tr data-val={{Ticker}} data-cur={{Exchange}} id={{Ticker}}1>
-								<td></td>
-								<td>New</td>
-								<td>{{ Ticker }}</td>
-								<td>{{ "Current Price" }}</td>
-								<td>{{ "Currency" }}</td>
-								<td class="d-flex flex-row justify-content-center align-items-center"><i
-										class="fas fa-info-circle fa-2x" data-toggle="modal"
-										data-target="#{{ Ticker }}_modal"></i></td>
-							</tr>
-							{{/each}}
-						</tbody>
-					</table>
-					<div class="d-flex flex-column-reverse p-1">
-						<button type="button" onclick="add();" class="btn btn-success">Add</button>
+					<div id="table_main" class="dataTables_wrapper">
+						<table id="comparetable" class="table table-light table-striped">
+							<thead class="thead-dark">
+								<tr>
+									<th></th>
+									<th>Symbol</th>
+									<th>Company</th>
+									<th>Exchange</th>
+									<th>Current Price</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{#each data}}
+								<tr>
+									<td></td>
+									<td>{{Ticker}}</td>
+									<td><a href="https://www.gurufocus.com/financials/{{Ticker}}" target="_blank">{{Company}}</a></td>
+									<td>{{Exchange}}</td>
+									<td>{{"Current Price"}}</td>
+								</tr>
+								{{/each}}
+							</tbody>
+						</table>
 					</div>
 				</div>
-				<div class="table-responsive p-3">
-					<table id="myTable2" data-toggle="table" data-toolbar="#toolbar2"
-						data-height=750 data-search="true" data-click-to-select="true"
-						data-show-columns="true" class="table table1 table-hover">
-						<thead>
-							<tr>
-								<th data-checkbox="true"></th>
-								<th data-sortable="true">Symbol</th>
-								<th data-sortable="true">Stock Name</th>
-							</tr>
-						</thead>
-						<tbody id='db_stocks'>
-							{{#each dbdata}}
-							<tr id= "{{ symbol }}2" data-val={{symbol}}>
-								<td></td>
-								<td>{{ symbol }}</td>
-								<td>{{ stock_name }}</td>
-							</tr>
-							{{/each}}
-						</tbody>
-					</table>
-					<div class="d-flex flex-column-reverse p-1">
-						<button type="button" onclick="rm();" class="btn btn-danger">Remove</button>
-					</div>
-				</div>
-				{{#each data}}
-				<div class="modal" id="{{ Ticker }}_modal">
-					<div class="modal-dialog modal-dialog-centered modal-xl">
-						<div class="modal-content">
-
-							<!-- Modal Header -->
-							<div class="modal-header">
-								<h4 class="modal-title">{{ Company }}</h4>
-								<button type="button" class="close" data-dismiss="modal">&times;</button>
-							</div>
-
-							<!-- Modal body -->
-							<div class="modal-body">
-								<div class="table-responsive p-3">
-									<table class="table table-striped">
-										<thead class='thead-dark'>
-											<tr>
-												<th>Company</th>
-												<th>Symbol</th>
-												<th>Exchange</th>
-												<th>Price</th>
-												<th>Currency</th>
-												<th>aEBTIDA*AT</th>
-												<th>ROE % (5y Median)</th>
-												<th>Market Cap ($M)</th>
-												<th>3-Year Total Revenue Growth Rate</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>{{ Company }}</td>
-												<td>{{ Ticker }}</td>
-												<td>{{ Exchange }}</td>
-												<td>{{ "Current Price" }}</td>
-												<td>{{ "Currency" }}</td>
-												<td>{{ "(((('EBITDA'+'Stock Based Compensation')/'Revenue')*100)*('Revenue' /'Total Assets'))" }}</td>
-												<td>{{ "ROE % (5y Median)" }}</td>
-												<td>{{ "Market Cap ($M)" }}</td>
-												<td>{{ "3-Year Total Revenue Growth Rate" }}</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<label for="comment">Comment:</label>
-								<div class="form-group">
-									<textarea class="form-control" rows="5" id="{{ Ticker }}_comment" data-ex="{{ Exchange }}" data-company="{{ Company }}"></textarea>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				{{/each}}
 			</div>
 		</div>
-		<div id="toolbar1" class="d-flex flex-row justify-content-center align-items-center">
-			 <h2>XLSX</h2>
-		</div>
-		<div id="toolbar2" class="d-flex flex-row justify-content-center align-items-center">
-			 <h2>DB</h2>
-		</div>
-		<script>
-			var add_list = [];
-			var rm_list = [];
-			/** Adds stock info from the page to the server and opens a sweet alert
-				Note: Stock exchange is a required column
-			 */
-			function add() {
-				$("#myTable1 tbody input:checked").each(function() {
-					var cur = $(this).parents("tr:first").data("cur");
-					if(cur == "NYSE" || cur == "NAS"){
-						var sym = $(this).parents("tr:first").data("val");
-					}
-					else{
-						var sym = `${cur}:`+$(this).parents("tr:first").data("val");
-					}
-					var sym_commment = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).value;
-					var sym_company = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.company;
-					var sym_exchange = document.getElementById(`${$(this).parents("tr:first").data("val")}_comment`).dataset.ex;
-					add_list.push({ "symbol" : sym.toString() , "comment" : sym_commment.toString(), "company": sym_company.toString(), "exchange": sym_exchange.toString()});
-					console.log(JSON.stringify(add_list))
-			});
-                ajax_func(add_list, 'Append')
-				Swal.fire({
-					position:'center',
-					type: 'success',
-					title: 'The selected stocks are currently being added!',
-					text: 'The page will reload shortly.',
-					showConfirmButton: false,
-				});
-			};
-			/** Adds stock info from the page to the server and opens a sweet alert */
-			function rm() {
-				$("#myTable2 tbody input:checked").each(function() {
-					var sym = $(this).parents("tr:first").data("val");
-					rm_list.push({"symbol" : sym.toString()});
-					$(`#${sym.toString()}`).remove();
-				});
-                ajax_func(rm_list, 'Remove');
-				Swal.fire({
-					position:'center',
-					type: 'success',
-					title: 'The selected stocks are currently being removed!',
-					text: 'The page will reload shortly.',
-					showConfirmButton: false,
-				});
-			};
-			/**
-			* Accepts list of stock symbols, does a gurufocus search on them, and returns a list of objects with stock data.
-			* @param {Array} list List of stock symbols
-			* @param {Boolean} summary_call Whether summary call should be used.
-			*/
-            function ajax_func(list, action){
-                var data = {};
-                data.stocks = list;
-                data.action = action;
-                console.log(data)
-                $.ajax({
-                    type:"POST",
-                    data:JSON.stringify(data),
-                    contentType: 'application/json',
-                    url:"/upload",
-                }).done(function(returned_data){
-					location.reload()
-				});
-            }
-
-		</script>
 	</body>
+	<script src="/js/compare.js"></script>
 </html>
