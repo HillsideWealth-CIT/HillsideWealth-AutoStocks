@@ -118,8 +118,10 @@ function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
     })
 };
 
+//                        <input id="gr_form" type="text" class="form-control" value="${gr5}" oninput="eps_onchange()">
+
 /** DCF CALCULATOR */
-function calc_menu(eps, gr, tgr, dr, gy, ty, fv) {
+function calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv) {
     return new Promise((resolve, reject) => {
         let user_input = {};
         swal.fire({
@@ -133,7 +135,13 @@ function calc_menu(eps, gr, tgr, dr, gy, ty, fv) {
                     </div>
                     <div class="col">
                         <label for="gr_form">Growth Rate (%)</label>
-                        <input id="gr_form" type="text" class="form-control" value="${gr}" oninput="eps_onchange()">
+                        <input id="gr_form" list="gr_list" type="text" class="form-control" placeholder="press y for years" oninput="eps_onchange(${gr5}, ${gr10}, ${gr15})">
+                        <datalist id="gr_list">
+                            <option value="years 5">
+                            <option value="years 10">
+                            <option value="years 15">
+                        </datalist>
+                        
                     </div>        
                 </div>
                 <div class="row">
@@ -176,26 +184,41 @@ function calc_menu(eps, gr, tgr, dr, gy, ty, fv) {
     })
 };
 
-function open_calc(eps, gr, tgr, dr, gy, ty){
+function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty){
     //console.log(`${eps} ${gr} ${tgr} ${dr} ${gy} ${ty} `)
-    let fv = dcf(eps, Math.round((gr/100) * 100000)/100000, tgr, dr, gy, ty)
+    let fv = dcf(eps, Math.round((gr5/100) * 100000)/100000, tgr, dr, gy, ty)
     console.log(fv)
-    calc_menu(eps, gr, tgr, dr, gy, ty, fv)
+    calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv)
 };
 
-function eps_onchange(){
-    dcf_results = dcf(
-        $('#eps_form').val(),
-        Math.round(($('#gr_form').val()/100)*10000)/10000,
-        $('#tgr_form').val()/100,
-        $('#dr_form').val()/100,
-        $('#gy_form').val(),
-        $('#ty_form').val(),
-    )
-    console.log(dcf_results)
-    $('#gv_form').val(dcf_results.growth_value)
-    $('#tv_form').val(dcf_results.terminal_value)
-    $('#fv_form').val(dcf_results.fair_value)
+function eps_onchange(gr5, gr10, gr15){
+    console.log(isNaN($('#gr_form').val()))
+    console.log(gr5)
+    if(isNaN($('#gr_form').val()) == true){
+        console.log("hello")
+        if($('#gr_form').val() == 'years 5'){
+            $('#gr_form').val(gr5)
+        }
+        else if ($('#gr_form').val() == 'years 10'){
+            $('#gr_form').val(gr10) 
+        }
+        else if ($('#gr_form').val() == 'years 15'){
+            $('#gr_form').val(gr15)
+        }
+
+    }
+        dcf_results = dcf(
+            $('#eps_form').val(),
+            Math.round(($('#gr_form').val()/100)*10000)/10000,
+            $('#tgr_form').val()/100,
+            $('#dr_form').val()/100,
+            $('#gy_form').val(),
+            $('#ty_form').val(),
+        )
+        console.log(dcf_results)
+        $('#gv_form').val(dcf_results.growth_value)
+        $('#tv_form').val(dcf_results.terminal_value)
+        $('#fv_form').val(dcf_results.fair_value)
 };
 
 function calc_edit(){
