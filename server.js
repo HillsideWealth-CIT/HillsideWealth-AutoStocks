@@ -441,6 +441,27 @@ app.post('/update_prices/shared', sessionCheck, statusCheck, (request, response)
     })
 })
 
+app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    let combined_string = calc.multi_dfc_string(request.body.stocks_list)
+    let retrieve_info = [];
+    db.set_categories(request.body.categories, combined_string)
+    .then((resolve) => {
+        console.log(resolve)
+        for( i in request.body.stocks_list ){
+            retrieve_info.push(db.get_added(request.body.symbols[i], request.session.user))
+        }
+        Promise.all(retrieve_info).then((resolved) => {
+            for ( i in resolved ){
+                resolved[i].forEach((stock) => {
+                    format_data(stock)
+                })
+            }
+            response.send(JSON.stringify(resolved))
+        })
+    })
+})
+
 /* Logout */
 app.post("/logout", (request, response) => {
     request.session.reset();
