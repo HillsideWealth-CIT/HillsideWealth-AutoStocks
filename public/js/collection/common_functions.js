@@ -511,6 +511,7 @@ function counter_ajax(active_num, end_num, symbols, ids, link){
             // alert(JSON.stringify(data))
             console.log(resolved.data)
             try{
+                // console.log(resolved.data[0])
             $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
             }
             catch(e){
@@ -548,4 +549,51 @@ function adder_ajax(active_num, end_num, list, link){
             adder_ajax(active_num + 1, end_num, list, link)
         }
     })
+}
+
+function set_categories(){
+    to_set = [];
+    categories = [];
+    symbols = [];
+    let selected = $table.rows('.selected').data()
+    console.log(selected)
+    for( i in selected ){
+        if(selected[i].symbol){
+        to_set.push(selected[i].stock_id)
+        symbols.push(selected[i].symbol)
+        }   
+        else{
+            break;
+        }
+    }
+    if(to_set.length == 0){
+        alert('MUST SELECT AT LEAST ONE!')
+    }
+    else{
+    Swal.fire({
+        title: 'Set Categories',
+        text: 'Format: [category], [category]',
+        input: 'text',
+        showCancelButton: 'true',
+        showConfirmButton: 'true',
+        preConfirm: (user_input) => {
+            // console.log(user_input)
+            fetch('/categories/set', {
+                method: 'POST',
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({stocks_list: to_set, categories: user_input.toUpperCase(), symbols: symbols})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log( data )
+                for (i in data){
+                    $table.row(document.getElementById(`${data[i][0].symbol}`)).data(data[i][0]).invalidate();
+                }
+                $table.columns.adjust().draw(false)
+            })
+
+        }
+    })
+}
+    console.log(to_set)
 }

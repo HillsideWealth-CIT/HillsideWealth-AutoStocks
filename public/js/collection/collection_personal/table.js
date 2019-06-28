@@ -15,6 +15,7 @@ var column_list = [  'check',
             
             'comment',
             'emoticon',
+            'categories',
 
             'date',
             'sharesoutstanding',

@@ -271,6 +271,10 @@ const edits = async(edit) => {
     return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7, current_price = $8 where stock_id = $9`, [edit.comment, edit.ms_moat, edit.ms_fair_value, edit.ms_5_star, edit.ms_1_star, edit.emoticon, edit.jdv, edit.price ,edit.id])
 }
 
+const set_categories = async(category_string, conditions) => {
+    return await runQuery(`UPDATE stocks set categories = '${category_string}' where ${conditions}`)
+}
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -292,7 +296,8 @@ module.exports = {
     get_added,
     get_by_id,
     dfc_edits,
-    edits
+    edits,
+    set_categories,
 }
 
 function getdata(stocks, stockdata){
@@ -315,6 +320,7 @@ function getdata(stocks, stockdata){
             jdv: stocks.rows[i].jdv,
             emoticon: stocks.rows[i].emoticons,
             username: stocks.rows[i].username,
+            categories: `${stocks.rows[i].categories}`
         })
     }
     return stockAndData
