@@ -45,6 +45,7 @@ function button_builder(page){
         {text: `<span class="fas fa-calculator"></span> DFC`, className: "btn-sm", action: function(){calc_edit()}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
+        {text: '<span class="fas fa-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories()}},
         {text: '<span class="fas fa-cog"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all()} },
@@ -128,6 +129,8 @@ function column_builder(){
         { data : "stockdata.0.yield_format" },
         { data : "note" },
         { data : "emoticon" },
+        { data : "categories"},
+
         { data : "stockdata.0.datestring" },
         { data : "stockdata.0.shares_outstanding_format" },
         { data : "stockdata.0.enterprise_value_format" },
