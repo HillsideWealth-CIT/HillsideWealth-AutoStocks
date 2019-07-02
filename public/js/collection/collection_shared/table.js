@@ -38,7 +38,7 @@ var column_list = [  'check',
             'msmoatrating',
             'msfvest',
             'ms5*price',
-            'ms51price',
+            'ms1*price',
             
             'eps',
             'growthyears',
@@ -129,6 +129,18 @@ function basic_info(){
 function financials(){
     hide_loop(column_list.indexOf('enterprisevalue')-1,
         column_list.indexOf('effectivetaxrate') +1)
+    $table.columns.adjust().draw(false)
+}
+
+function show_values(){
+    hide_loop(column_list.indexOf('gururating')-1,
+        column_list.indexOf('dcffairvalue15y') +1)
+    $table.columns.adjust().draw(false)
+}
+
+function show_msguru(){
+    hide_loop(column_list.indexOf('gururating')-1,
+        column_list.indexOf('ms1*price') +1)
     $table.columns.adjust().draw(false)
 }
 
