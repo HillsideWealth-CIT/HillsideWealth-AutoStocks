@@ -125,6 +125,13 @@ function column_builder(){
                 }
             }
         },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                return value_calculator(row.fairvalue, row.stock_current_price)
+            }
+        },
+
 
         { data : "stockdata.0.yield_format" },
         { data : "note" },
@@ -201,7 +208,6 @@ function column_builder(){
                 else{
                     return null
                 }
-                return `${row.stockdata[0].fcf_format}`
             }
         },
         {   data : null,
