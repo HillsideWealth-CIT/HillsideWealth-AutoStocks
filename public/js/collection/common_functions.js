@@ -597,3 +597,21 @@ function set_categories(){
 }
     console.log(to_set)
 }
+
+function value_calculator(val, price){
+    // console.log(`${val} ${price}`)
+    if(val != 'null'  && price != 'null'){
+        if(price <= val * 1.10 && price >= val * 0.9){
+            return 'Expected'
+        }
+        else if(price >= val * 1.10){
+            return 'OverValued'
+        }
+        else{
+            return 'UnderValued'
+        }
+    }
+    else{
+        return 'Missing Values'
+    }
+}

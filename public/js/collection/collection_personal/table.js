@@ -11,6 +11,7 @@ var column_list = [  'check',
             'sector',
             'aebitdaspice',
             'currentprice',
+            'valuecondition',
             'yield',
             
             'comment',
