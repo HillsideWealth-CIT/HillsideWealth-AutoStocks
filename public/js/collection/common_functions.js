@@ -1,8 +1,17 @@
+/**
+ * Opens a page that navigates to the gurufocus graph
+ * @param {String} symbol - The Stock Symbol
+ */
 function open_chart(symbol){
     window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`)
     return
 };
 
+/**
+ * Determines if a field is null and fills it with 0
+ * @param {String} field
+ * @returns {String}
+ */
 function fill_0(field){
     if(field == 'null'){
         return 0
@@ -13,6 +22,20 @@ function fill_0(field){
     }
 }
 
+/**
+ * Opens a sweet alert for editing certain parameters for a stock
+ * @param {Float} symbol 
+ * @param {Float} id 
+ * @param {Float} comment 
+ * @param {Float} emote 
+ * @param {Float} ms_1_star 
+ * @param {Float} ms_5_star 
+ * @param {Float} ms_fv 
+ * @param {Float} moat 
+ * @param {Float} jdv 
+ * @param {Float} price 
+ * @param {Float} gf_rating 
+ */
 function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
     //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
     console.log(fill_0(ms_1_star))
@@ -106,21 +129,40 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
     })
 };
 
+/**
+ * Opens the edit menu then passes data to the server
+ * @param {String} symbol 
+ * @param {String} id 
+ * @param {String} comment 
+ * @param {String} emote 
+ * @param {String} ms_1_star 
+ * @param {String} ms_5_star 
+ * @param {String} ms_fv 
+ * @param {String} moat 
+ * @param {String} jdv 
+ * @param {String} price 
+ * @param {String} gf_rating 
+ */
 function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
-    let selected = $(`#edit${id}`).parent().parent()
-    let test_selected = $(`#edit${id}`).parent()
-    let row_index = $table.row(selected).index()
     edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating).then((resolve) => {
-        let setting_string = `<button type="button" id="edit${id}" onclick='open_edit("${symbol}", "${id}", "${resolve.comment}", "${resolve.emoticon}", "${resolve.ms_1_star}" , "${resolve.ms_5_star}", "${resolve.ms_fair_value}","${resolve.ms_moat}", "${resolve.jdv}", "${resolve.price}", "${gf_rating}" )' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`
         ajax_Call(resolve, '/edits').then((server_resolve) => {
             $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
         })
     })
 };
 
-//                        <input id="gr_form" type="text" class="form-control" value="${gr5}" oninput="eps_onchange()">
-
-/** DCF CALCULATOR */
+/**
+ * Opens a menu that calculates dfc's
+ * @param {Float} eps 
+ * @param {Float} gr5 
+ * @param {Float} gr10 
+ * @param {Float} gr15 
+ * @param {Float} tgr 
+ * @param {Float} dr 
+ * @param {Float} gy 
+ * @param {Float} ty 
+ * @param {Float} fv 
+ */
 function calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv) {
     return new Promise((resolve, reject) => {
         let user_input = {};
@@ -184,6 +226,17 @@ function calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv) {
     })
 };
 
+/**
+ * Calculates initial dfc's 
+ * @param {String} eps 
+ * @param {String} gr5 
+ * @param {String} gr10 
+ * @param {String} gr15 
+ * @param {String} tgr 
+ * @param {String} dr 
+ * @param {String} gy 
+ * @param {String} ty 
+ */
 function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty){
     //console.log(`${eps} ${gr} ${tgr} ${dr} ${gy} ${ty} `)
     let fv = dcf(eps, Math.round((gr5/100) * 100000)/100000, tgr, dr, gy, ty)
@@ -191,11 +244,14 @@ function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty){
     calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv)
 };
 
+/**
+ * calculates on input change
+ * @param {String} gr5 
+ * @param {String} gr10 
+ * @param {String} gr15 
+ */
 function eps_onchange(gr5, gr10, gr15){
-    console.log(isNaN($('#gr_form').val()))
-    console.log(gr5)
     if(isNaN($('#gr_form').val()) == true){
-        console.log("hello")
         if($('#gr_form').val() == 'years 5'){
             $('#gr_form').val(gr5)
         }
@@ -215,12 +271,14 @@ function eps_onchange(gr5, gr10, gr15){
             $('#gy_form').val(),
             $('#ty_form').val(),
         )
-        console.log(dcf_results)
         $('#gv_form').val(dcf_results.growth_value)
         $('#tv_form').val(dcf_results.terminal_value)
         $('#fv_form').val(dcf_results.fair_value)
 };
 
+/**
+ * Sends changes for the dfc options to the server
+ */
 function calc_edit(){
 
     let stock_id_list = [];
@@ -250,6 +308,9 @@ function calc_edit(){
     }
 }
 
+/**
+ * Opens the calc edit menu
+ */
 function calc_edit_menu(){
     let values = {};
     let arr = ['tgr', 'dr', 'gy', 'ty'];
@@ -353,6 +414,12 @@ function dcf_terminal(x, y, eps, g_years ,t_years){
     return terminal_value
 };
 
+/**
+ * displays historical data in a sweet alert
+ * @param {String} symbol 
+ * @param {JSON} stockdata 
+ * @param {Integer} years 
+ */
 function show_financials(symbol, stockdata, years){
     console.log(stockdata)
     let financials = ""
@@ -425,6 +492,9 @@ function show_financials(symbol, stockdata, years){
     })
 };
 
+/**
+ * Hides all rows in the table but the selected ones
+ */
 function show_selected(){
     to_show = [];
     let selected = $table.rows('.selected').data()
@@ -442,6 +512,9 @@ function show_selected(){
     // $table.column(1).search("GOOGL|MSFT", true).draw();
 }
 
+/**
+ * Enables selected stocks to be accessed on the shared database
+ */
 function share(){
     to_share = [];
     let selected = $table.rows('.selected').data()
@@ -457,38 +530,14 @@ function share(){
     ajax_Call(to_share, '/share')
 }
 
-function show_selected(){
-    to_show = [];
-    let selected = $table.rows('.selected').data()
-    for( i in selected ){
-        if(selected[i].symbol){
-        to_show.push(selected[i].symbol)
-        }   
-        else{
-            break;
-        }
-    }
-    console.log(to_show)
-    let mergedVal = to_show.join('|')
-    $table.column(1).search(mergedVal, true).draw();
-    // $table.column(1).search("GOOGL|MSFT", true).draw();
-}
-
-function share(){
-    to_share = [];
-    let selected = $table.rows('.selected').data()
-    for( i in selected ){
-        if(selected[i].symbol){
-        to_share.push(selected[i].stock_id)
-        }   
-        else{
-            break;
-        }
-    }
-
-    ajax_Call(to_share, '/share')
-}
-
+/**
+ * Recusively sends data to the server
+ * @param {Integer} active_num 
+ * @param {Integer} end_num 
+ * @param {String} symbols 
+ * @param {Integer} ids 
+ * @param {String} link 
+ */
 function counter_ajax(active_num, end_num, symbols, ids, link){
     // console.log(`${active_num} ${end_num}`)
     // console.log(arr[active_num])
@@ -522,6 +571,13 @@ function counter_ajax(active_num, end_num, symbols, ids, link){
     })
 }
 
+/**
+ * Recursively adds symbols
+ * @param {Integer} active_num 
+ * @param {Integer} end_num 
+ * @param {Array} list 
+ * @param {String} link 
+ */
 function adder_ajax(active_num, end_num, list, link){
     swal.update({text: `Progress: ${active_num}/${end_num}`})
     if (active_num == end_num){
@@ -551,6 +607,9 @@ function adder_ajax(active_num, end_num, list, link){
     })
 }
 
+/**
+ * Sets the categories for selected stocks
+ */
 function set_categories(){
     to_set = [];
     categories = [];
@@ -598,6 +657,12 @@ function set_categories(){
     console.log(to_set)
 }
 
+/**
+ * Determines if a price is under, over, or in expected regions
+ * @param {Integer} val 
+ * @param {Integer} price 
+ * @returns {String}
+ */
 function value_calculator(val, price){
     // console.log(`${val} ${price}`)
     if(val != 'null'  && price != 'null'){

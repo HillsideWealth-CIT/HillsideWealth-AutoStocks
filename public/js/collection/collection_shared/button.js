@@ -1,6 +1,9 @@
 var update_counter = 0;
 var to_update = [];
 
+/**
+ * Opens a sweetalert and adds all stocks user inputs
+ */
 function add(){
     let stocks;
     Swal.fire({
@@ -26,7 +29,9 @@ function add(){
     })
 };
 
-
+/**
+ * Selected stocks get removed from the database
+ */
 function remove(){
     let to_remove = [];
     let selected = $table.rows('.selected').data()
@@ -50,7 +55,10 @@ function remove(){
     })
 };
 
-
+/**
+ * Updates All selected stocks
+ * @param {String} link 
+ */
 function update(link){
     to_update = [];
     to_stock_id = []

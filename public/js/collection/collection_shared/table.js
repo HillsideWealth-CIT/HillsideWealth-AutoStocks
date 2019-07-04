@@ -94,8 +94,12 @@ var column_list = [  'check',
             'roic-wacc', 
             ]
 
-            console.log(column_list.length)
-
+/**
+ * Loops through columns and hides the undesired columns
+ * @param {Integer} start 
+ * @param {Integer} end 
+ * @param {Integer} count 
+ */
 function hide_loop(start, end, count=0){
     for (let i = count; i < total_columns; i++){
         if(i >= end || i <= start){

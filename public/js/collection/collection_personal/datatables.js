@@ -6,6 +6,9 @@ $(document).ready(function(){
 Initialize_table();
 })
 
+/**
+ * Initializes table
+ */
 function Initialize_table(){
     ajax_Call("init_user", "/init_table").then((resolve) => {
         stockdb = resolve.data
@@ -16,6 +19,10 @@ function Initialize_table(){
         $table.scroller.toPosition(0);
     })
 }
+/**
+ * Fills table with JSON data
+ * @param {JSON} data 
+ */
 function fill_table(data){
     var datatable = $('#datatable').DataTable({
         processing : true,
@@ -35,7 +42,10 @@ function fill_table(data){
     return datatable
 }
 
-function button_builder(page){
+/**
+ * Builds the button array for the table
+ */
+function button_builder(){
     let buttons = [
         'selectAll', 'selectNone',
         {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
@@ -74,6 +84,9 @@ function button_builder(page){
     //  ['selectAll', 'selectNone']
 }
 
+/**
+ * Builds the column array for the table
+ */
 function column_builder(){
     let columns = [
         { data : null , defaultContent: '', checkboxes : { selectRow : true } ,orderable: false, targets:0, className: 'select-checkbox'},
@@ -511,6 +524,12 @@ function column_builder(){
     return columns
 }
 
+/**
+ * calculates the average of numbers
+ * @param {JSON} data 
+ * @param {String} column 
+ * @param {Integer} years 
+ */
 function calculate_average(data, column, years){
     try{
         let total = 0;
