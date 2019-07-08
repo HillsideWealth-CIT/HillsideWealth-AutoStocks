@@ -121,7 +121,7 @@ app.get("/shared", sessionCheck, statusCheck, (request, response) => {
             //console.log(res)
             //fs.writeFileSync('test.json', JSON.stringify(res));
             response.render("collection.hbs", {
-                dbdata: res,
+                //dbdata: res,
                 user: request.session.user,
                 sc: true,
                 admin: (request.session.status == 'admin')
@@ -278,7 +278,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
 
 });
 
-//Initialize Table
+//Initializes Tables
 app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
     //console.log(request.body.action)
     if(request.body.action == "init_user"){
@@ -299,6 +299,7 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
     }
 })
 
+/* Edit Fields */
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)
     db.edits(request.body.action).then(() => {
@@ -311,6 +312,7 @@ app.post('/edits', sessionCheck, statusCheck, (request, response) => {
     })
 })
 
+/* DFC Values Edit */
 app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
     // console.log(request.body.action)
     //calc.multi_dfc_string(request.body.action.stock_id_list)
@@ -320,6 +322,7 @@ app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
 
 })
 
+/* Adds Stock to Personal Database */
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
             console.log(request.body.action)
             api_calls.gurufocusAdd(request.body.action, request.session.user)
@@ -336,6 +339,7 @@ app.post('/append', sessionCheck, statusCheck, (request, response) => {
                 .catch((reason) => console.log(reason));
 })
 
+/* Adds Stock to Shared Database */
 app.post('/append/shared', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body.action)
     api_calls.gurufocusAdd(request.body.action, request.session.user, true, true)
@@ -351,6 +355,7 @@ app.post('/append/shared', sessionCheck, statusCheck, (request, response) => {
 
 })
 
+/* removes stocks from the database */
 app.post('/remove', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body.action)
     let promises = [];
@@ -363,6 +368,7 @@ app.post('/remove', sessionCheck, statusCheck, (request, response) => {
             })
 })
 
+/* Hides stocks from the shared database */
 app.post('/remove/shared', sessionCheck, statusCheck, (request, response) => {
     let promises = [];
     for(let i =0; i < request.body.action.length; i++) {
@@ -374,6 +380,7 @@ app.post('/remove/shared', sessionCheck, statusCheck, (request, response) => {
         })
 })
 
+/* Enables stocks to be displayed in the shared database */
 app.post('/share', sessionCheck, statusCheck, (request, response) => {
     // console.log(request.body)
     // console.log(calc.multi_dfc_string(request.body.action))
@@ -383,6 +390,7 @@ app.post('/share', sessionCheck, statusCheck, (request, response) => {
                 })
 })
 
+/* Updates Historical Financial Data */
 app.post('/update_financials', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)
     api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)
@@ -398,6 +406,7 @@ app.post('/update_financials', sessionCheck, statusCheck, (request, response) =>
                 });
 })
 
+/* Updates Current Price Data  */
 app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body);
         api_calls.update_prices(request.body.action, request.session.user)
@@ -415,6 +424,7 @@ app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
     })
 })
 
+/* Updates Historical Financial Data on shared */
 app.post('/update_financials/shared', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)
     api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = false)
@@ -430,6 +440,7 @@ app.post('/update_financials/shared', sessionCheck, statusCheck, (request, respo
                 });
 })
 
+/* Updates Current Price Data on shared */
 app.post('/update_prices/shared', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body);
         api_calls.update_prices(request.body.action, request.body.action[0].stock_id)
@@ -447,6 +458,7 @@ app.post('/update_prices/shared', sessionCheck, statusCheck, (request, response)
     })
 })
 
+/* Sets Catagorie Strings for stocks */
 app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)
     let combined_string = calc.multi_dfc_string(request.body.stocks_list)
