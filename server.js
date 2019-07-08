@@ -81,6 +81,12 @@ app.get("/login", (request, response) => {
     response.render("login.hbs");
 });
 
+app.get("/indicators", (request, response) => {
+    response.render("indicators.hbs",{
+        in:true
+    })
+})
+
 app.get("/collection", sessionCheck, statusCheck, (request, response) => {
         db.showstocks(request.session.user)
         .then(res => {
