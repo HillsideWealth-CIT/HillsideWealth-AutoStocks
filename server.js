@@ -286,8 +286,8 @@ app.post('/indicators/get', sessionCheck, statusCheck, (request, response) => {
 })
 
 app.post('/indicators/append', sessionCheck, statusCheck, (request, response) => {
-    console.log(request.body)
     db.addIndicators(request.session.user, request.body).then(res => {
+        console.log(res.rows)
        response.send(res.rows)
     })
 })

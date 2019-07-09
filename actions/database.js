@@ -281,7 +281,7 @@ const get_indicators = async(username) => {
 
 const addIndicators = async(username, values) => {
     await runQuery('INSERT INTO indicators(username, indicators, leadtime, months_since_peak, recession_level, current_level, links) values($1, $2, $3, $4, $5, $6, $7)', [username, values.indicator, values.leadTime, values.monthsSince, values.recessionLevel, values.currentLevel, values.link])
-    return await runQuery(`SELECT * FROM indicators WHERE indicators = $1 AND username=$2`, [values.indicator, username])
+    return await runQuery(`SELECT * FROM indicators WHERE indicators = $1 AND username=$2 ORDER BY indicator_id DESC`, [values.indicator, username])
 }
 
 const editIndicators = async (values) => {
