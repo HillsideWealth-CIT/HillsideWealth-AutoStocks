@@ -275,6 +275,25 @@ const set_categories = async(category_string, conditions) => {
     return await runQuery(`UPDATE stocks set categories = '${category_string}' where ${conditions}`)
 }
 
+const get_indicators = async(username) => {
+    return await runQuery(`select * from indicators where username = '${username}'`)
+}
+
+const addIndicators = async(username, values) => {
+    await runQuery('INSERT INTO indicators(username, indicators, leadtime, months_since_peak, recession_level, current_level, links) values($1, $2, $3, $4, $5, $6, $7)', [username, values.indicator, values.leadTime, values.monthsSince, values.recessionLevel, values.currentLevel, values.link])
+    return await runQuery(`SELECT * FROM indicators WHERE indicators = $1 AND username=$2`, [values.indicator, username])
+}
+
+const editIndicators = async (values) => {
+    await runQuery(`update indicators set indicators=$1, leadtime=$2, months_since_peak=$3, recession_level=$4, current_level=$5, links=$6  where indicator_id = $7`, [values.indicator, values.leadTime, values.monthsSince, values.recessionLevel, values.currentLevel, values.link, values.indicator_id])
+    return await runQuery(`SELECT * FROM indicators WHERE indicator_id = $1`, [values.indicator_id])
+}
+
+const deleteIndicator = async (values) => {
+    return await runQuery(`delete from indicators where indicator_id = $1`, [values.indicatorId])
+}
+
+
 module.exports = {
     addUser,
     usernameAvailable,
@@ -298,6 +317,10 @@ module.exports = {
     dfc_edits,
     edits,
     set_categories,
+    get_indicators,
+    addIndicators,
+    editIndicators,
+    deleteIndicator,
 }
 
 function getdata(stocks, stockdata){

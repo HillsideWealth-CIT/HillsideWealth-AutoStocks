@@ -278,6 +278,32 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
 
 });
 
+app.post('/indicators/get', sessionCheck, statusCheck, (request, response) => {
+    // console.log(request.body)
+    db.get_indicators(request.session.user).then(resolve => {
+        response.send(resolve.rows)
+    })
+})
+
+app.post('/indicators/append', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    db.addIndicators(request.session.user, request.body).then(res => {
+       response.send(res.rows)
+    })
+})
+
+app.post('/indicators/edit', sessionCheck, statusCheck, (request, response) => {
+    db.editIndicators(request.body).then(res => {
+        response.send(res.rows)
+    })
+})
+
+app.post('/indicators/delete', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    db.deleteIndicator(request.body)
+    response.send({test: 'hello'})
+})
+
 //Initializes Tables
 app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
     //console.log(request.body.action)
