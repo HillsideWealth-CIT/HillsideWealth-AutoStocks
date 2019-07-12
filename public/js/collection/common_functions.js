@@ -38,7 +38,7 @@ function fill_0(field){
  */
 function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
     //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
-    console.log(fill_0(ms_1_star))
+    // console.log(fill_0(ms_1_star))
     let edits = {};
     return new Promise ((resolve, reject) => {
     swal.fire({
@@ -221,10 +221,31 @@ function calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv) {
                         <input id="fv_form" type="text" class="form-control" value="${fv.fair_value}" readonly>
                     </div>           
                 </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label for="gv_form">Average</label>
+                        <input id="gv_form" type="text" class="form-control" value="${dfcAverage([gr5, gr10, gr15])}" readonly>
+                    </div>
+            </div>
                 `,
         })
     })
 };
+
+function dfcAverage(arrList){
+    let total = 0;
+    let counter = 0;
+    let finalString = '';
+    for(i in arrList){
+        if(arrList[i] != 'null'){
+            total += parseFloat(arrList[i])
+            counter ++
+            finalString = `${finalString} + ${arrList[i]}`
+        }
+    }
+    return `${finalString.substr(2)} / ${counter} = ${Math.round((total) * 100) / 100}`
+}
 
 /**
  * Calculates initial dfc's 
@@ -240,7 +261,7 @@ function calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv) {
 function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty){
     //console.log(`${eps} ${gr} ${tgr} ${dr} ${gy} ${ty} `)
     let fv = dcf(eps, Math.round((gr5/100) * 100000)/100000, tgr, dr, gy, ty)
-    console.log(fv)
+    // console.log(fv)
     calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv)
 };
 
@@ -365,8 +386,8 @@ function calc_edit_menu(){
     })
 }
 
-dcf = ( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10) => {
-    console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate} ${g_years} ${t_years}`)
+function dcf( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10){
+    // console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate} ${g_years} ${t_years}`)
     let results = {};
     let x = (1+parseFloat(growth_rate))/(1+parseFloat(discount_rate));
     let y = (1+parseFloat(terminal_growth))/(1+parseFloat(discount_rate));
@@ -421,7 +442,7 @@ function dcf_terminal(x, y, eps, g_years ,t_years){
  * @param {Integer} years 
  */
 function show_financials(symbol, stockdata, years){
-    console.log(stockdata)
+    // console.log(stockdata)
     let financials = ""
     for(let i = 1; i <= years; i++){
         try{
