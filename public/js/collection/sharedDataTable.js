@@ -13,7 +13,7 @@ function Initialize_table(){
     ajax_Call("init_shared", "/init_table").then((resolve) => {
         stockdb = resolve.data
         $table = fill_table(resolve.data)
-        console.log(stockdb)
+        // console.log(stockdb)
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
@@ -53,7 +53,7 @@ function button_builder(){
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove();}},
         {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-sm", action: function(){update('update_prices')}},
         {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-sm", action: function(){update('update_financials');}},
-        {text: `<span class="fas fa-calculator"></span> DFC`, className: "btn-sm", action: function(){calc_edit()}},
+        {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit()}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
         {text: '<span class="fas fa-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories()}},
