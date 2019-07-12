@@ -13,7 +13,7 @@ function Initialize_table(){
     ajax_Call("init_user", "/init_table").then((resolve) => {
         stockdb = resolve.data
         $table = fill_table(resolve.data)
-        // console.log(stockdb)
+        console.log(stockdb)
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
@@ -354,7 +354,7 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.so_change_1 != null){
-                    return `${row.so_change_1}%`
+                    return `${row.so_change_1}`
                 }
                 else{
                     return null
@@ -365,7 +365,7 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.so_change_3 != null){
-                    return `${row.so_change_3}%`
+                    return `${row.so_change_3}`
                 }
                 else{
                     return null
@@ -376,7 +376,7 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.so_change_5 != null){
-                    return `${row.so_change_5}%`
+                    return `${row.so_change_5}`
                 }
                 else{
                     return null
@@ -387,7 +387,7 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.so_change_10 != null){
-                    return `${row.so_change_10}%`
+                    return `${row.so_change_10}`
                 }
                 else{
                     return null
@@ -398,7 +398,7 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.revenue_growth_1 != null){
-                    return `${row.revenue_growth_1}%`
+                    return `${row.revenue_growth_1}`
                 }
                 else{
                     return null
