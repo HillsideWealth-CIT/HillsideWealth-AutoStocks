@@ -394,11 +394,57 @@ function column_builder(){
                 }
             }
         },
+
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.soChangePercent_1 != null){
+                    return `${Math.round((row.soChangePercent_1 * 100)*100)/100}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.soChangePercent_3 != null){
+                    return `${Math.round((row.soChangePercent_3 * 100)*100)/100}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.soChangePercent_5 != null){
+                    return `${Math.round((row.soChangePercent_5 * 100)*100)/100}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.soChangePercent_10 != null){
+                    return `${Math.round((row.soChangePercent_10 * 100)*100)/100}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+
         {   data : null,
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.revenue_growth_1 != null){
-                    return `${row.revenue_growth_1}`
+                    return `${row.revenue_growth_1}%`
                 }
                 else{
                     return null

@@ -351,7 +351,7 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.so_change_1 != null){
-                    return `${row.so_change_1}%`
+                    return `${row.so_change_1}`
                 }
                 else{
                     return null
@@ -362,7 +362,7 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.so_change_3 != null){
-                    return `${row.so_change_3}%`
+                    return `${row.so_change_3}`
                 }
                 else{
                     return null
@@ -373,7 +373,7 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.so_change_5 != null){
-                    return `${row.so_change_5}%`
+                    return `${row.so_change_5}`
                 }
                 else{
                     return null
@@ -384,7 +384,52 @@ function column_builder(){
             orderable: true,
             render: function( data, type, row, meta ) {
                 if(row.so_change_10 != null){
-                    return `${row.so_change_10}%`
+                    return `${row.so_change_10}`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.soChangePercent_1 != null){
+                    return `${Math.round((row.soChangePercent_1 * 100)*100)/100}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.soChangePercent_3 != null){
+                    return `${Math.round((row.soChangePercent_3 * 100)*100)/100}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.soChangePercent_5 != null){
+                    return `${Math.round((row.soChangePercent_5 * 100)*100)/100}%`
+                }
+                else{
+                    return null
+                }
+            }
+        },
+        {   data : null,
+            orderable: true,
+            render: function( data, type, row, meta ) {
+                if(row.soChangePercent_10 != null){
+                    return `${Math.round((row.soChangePercent_10 * 100)*100)/100}%`
                 }
                 else{
                     return null

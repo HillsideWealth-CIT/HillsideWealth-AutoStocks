@@ -80,7 +80,11 @@ var column_list = [  'check',
             's/ochange1y', 
             's/ochange3y', 
             's/ochange5y', 
-            's/ochange10y', 
+            's/ochange10y',
+            's/ochange1y%', 
+            's/ochange3y%', 
+            's/ochange5y%', 
+            's/ochange10y%', 
             'revenuegrowth1y', 
             'revenuegrowth3y', 
             'revenuegrowth5y', 
@@ -179,7 +183,7 @@ function price_growth(){
 
 function so_growth(){
     hide_loop(column_list.indexOf('s/ochange1y')-1,
-    column_list.indexOf('s/ochange10y') +1)
+    column_list.indexOf('s/ochange10y%') +1)
     $table.columns.adjust().draw(false)
 }
 
