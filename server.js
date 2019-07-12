@@ -740,6 +740,13 @@ function format_data(stock){
         stock.so_change_3 = formatNumber(Math.round((end_so - so_3) * 10) / 10)
         stock.so_change_1 = formatNumber(Math.round((end_so - so_1) * 10) / 10)
 
+        stock.soChangePercent_10 = formatNumber(Math.round(((so_10 - end_so) / so_10) * 100) / 100)
+        stock.soChangePercent_5 = formatNumber(Math.round(((so_5 - end_so) / so_5) * 100) / 100)
+        stock.soChangePercent_3 = formatNumber(Math.round(((so_3 - end_so) / so_3) * 100) / 100)
+        stock.soChangePercent_1 = formatNumber(Math.round(((so_1 - end_so) / so_1) * 100) / 100)
+
+        
+
     }
     catch (err) {
         ///
