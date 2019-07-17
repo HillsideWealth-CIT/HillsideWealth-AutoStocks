@@ -279,7 +279,11 @@ function column_builder(){
                 }
             }
         },
-        { data : "stockdata.0.capex_format", orderDataType: 'Dom-Text', type: 'numeric', },
+        {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
+            render : function(data, type, row, meta){
+                return calculate_average(row.stockdata, 'capeXfcf_format', 1)
+            }
+        },
         {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
             render : function(data, type, row, meta){
                 return calculate_average(row.stockdata, 'capeXfcf_format', 5)
@@ -290,7 +294,11 @@ function column_builder(){
                 return calculate_average(row.stockdata, 'capeXfcf_format', 10)
             }
         },
-        { data : "stockdata.0.capeXae_format", orderDataType: 'Dom-Text', type: 'numeric', },
+        {   data : null, orderDataType: 'Dom-Text', type: 'numeric',
+            render : function(data, type, row, meta){
+                return calculate_average(row.stockdata, 'capeXae_format', 1)
+            }
+        },
         {   data : null, orderDataType: 'Dom-Text', type: 'numeric',
             render : function(data, type, row, meta){
                 return calculate_average(row.stockdata, 'capeXae_format', 5)
