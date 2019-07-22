@@ -57,6 +57,11 @@ function button_builder(){
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
         {text: '<span class="fas fa-share"></span> Share', className:"btn-sm", action: function(){share()}},
         {text: '<span class="fas fa-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories()}},
+        {text: '<span class="fas fa-cog"></span> Aggregate', className:"btn-sm", extend: 'collection',
+        buttons: [
+            { text:'Create', action: function(){createAggregation()} },
+            { text:'Set', action: function(){settingAggregation()} },
+        ]},
         {text: '<span class="fas fa-cog"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all()} },

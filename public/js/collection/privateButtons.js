@@ -1,6 +1,5 @@
 var update_counter = 0;
 var to_update = [];
-
 /**
  * Opens a sweetalert and adds all stocks user inputs
  */
@@ -85,6 +84,112 @@ function update(link){
     counter_ajax(0, to_update.length, to_update, to_stock_id, link)
 };
 
+function createAggregation(){
+    console.log("creating aggregation")
+    let to_send = {};
+    Swal.fire({
+        title: 'Create Aggregation',
+        showCancelButton: true,
+        html:
+            `
+                <div class="row">
+                    <div class="col">
+                        <label for="nameform">Name</label>
+                        <input id="nameForm" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label>Columns</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label>Add [!] At The End For Descending</label>
+                    </div>
+                </div>
 
+                <div class="row mt-3">
+                    <div class="col">
+                        <input id="columnForm1" type="text" list="columnList" class="form-control">
+                    </div>
+                    <div class="col">
+                        <input id="columnForm2" type="text" list="columnList" class="form-control">
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col">
+                        <input id="columnForm3" type="text" list="columnList" class="form-control">
+                    </div>
+                    <div class="col">
+                        <input id="columnForm4" type="text" list="columnList" class="form-control">
+                    </div>
+                </div>
+            
+            <div class="row mt-3">
+                <div class="col">
+                    <input id="columnForm5" type="text" list="columnList" class="form-control">
+                </div>
+                <div class="col">
+                    <input id="columnForm6" type="text" list="columnList" class="form-control">
+                </div>
+            </div>
+        
+        
+            <div class="row mt-3">
+                <div class="col">
+                    <input id="columnForm7" type="text" list="columnList" class="form-control">
+                </div>
+                <div class="col">
+                    <input id="columnForm8" type="text" list="columnList" class="form-control">
+                </div>
+            </div>
+        
+        
+            <div class="row mt-3">
+                <div class="col">
+                    <input id="columnForm9" type="text" list="columnList" class="form-control">
+                </div>
+                <div class="col">
+                    <input id="columnForm10" type="text" list="columnList" class="form-control">
+                </div>
+            </div>
 
+        ${createColumnList()}
+            `,
+    }).then((result) => {
+        if (!result.dismiss) {
+            to_send.name = document.getElementById('nameForm').value
+            to_send.columns = []
+            for(i of 10){
+                if(document.getElementById(`columnForm${i+1}`).value != ""){
+                to_send.columns.push(document.getElementById(`columnForm${i+1}`).value)
+                }
+            }
+            fetch('/aggregation/create', {
+                method: 'POST',
+                headers: {"Content-Type" : "application/json"},
+                body: JSON.stringify(to_send)
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data)
+            })
+        }
+    })
+}
 
+function createColumnList(){
+    let optionString = '<datalist id="columnList">'
+    let tableList = document.getElementById('headerRow').childNodes
+    for (let i = 0; i < tableList.length; i++){
+        if (tableList[i].innerHTML != ''){
+            optionString += `<option value="${tableList[i].innerHTML}">`
+        }
+    }
+    return `${optionString}</datalist>`
+}
+
+function settingAggregation(){
+    console.log('setting Aggregation')
+}

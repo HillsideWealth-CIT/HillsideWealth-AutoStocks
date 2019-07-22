@@ -104,6 +104,7 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
             })
         });
 });
+
 /***
  * Things that need to be changed when copying collection
  * 1. get link
@@ -504,6 +505,11 @@ app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
             response.send(JSON.stringify(resolved))
         })
     })
+})
+
+app.post('/aggregation/create', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    response.send({hello:'hello'})
 })
 
 /* Logout */
