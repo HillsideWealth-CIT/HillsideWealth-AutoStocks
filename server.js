@@ -509,7 +509,72 @@ app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
 
 app.post('/aggregation/create', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)
-    response.send({hello:'hello'})
+    // console.log(calc.createAggregationString(request.body.columns))
+    db.createAggregation(request.session.user, calc.createAggregationString(request.body.columns), request.body.name).then(resolve => {
+        response.send({hello:'hello'})
+    })
+})
+
+app.post('/aggregation/get', sessionCheck, statusCheck, (request, response) => {
+    console.log("aggregation_get")
+    db.retrieveAggregates(request.session.user).then(resolve => {
+        response.send(resolve.rows)
+    })
+})
+
+app.post('/aggregation/aggregate', sessionCheck, statusCheck, (request, response) => {
+    let track = [];
+    let symbols = [];
+    for(i in request.body){
+        if(request.body[i].row.split(' !').length != 1){
+            trackPositions(track, symbols,sorter(request.body[i].values).reverse())
+        }
+        else{
+            trackPositions(track, symbols,sorter(request.body[i].values))
+
+        }
+
+    }
+    response.send(JSON.stringify({symbols : symbols, score: track}))
+
+    function sorter(arrayList){
+        arrayList.sort(function(a, b){return a.value - b.value})
+        return arrayList
+    }
+
+    function trackPositions(tracker, symbolList, arrayList){
+        for( i in arrayList ){
+            // console.log(arrayList[i])
+            if(symbolList.indexOf(arrayList[i].symbol) == -1){
+                symbolList.push(arrayList[i].symbol)
+                tracker.push(parseInt(i) + 1)
+            }
+            else{
+                let pos = symbolList.indexOf(arrayList[i].symbol)
+                tracker[pos] += parseInt(i) + 1
+            }
+        }
+    }
+
+})
+
+app.post('/aggregation/get_single', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    db.getAggregateSingle(request.body.aggregationString, request.session.user).then(resolve => {
+        response.send(resolve.rows)
+    })
+})
+
+app.post('/aggregation/edit', sessionCheck, statusCheck, (request, response) => {
+    db.editAggregate(request.session.user, calc.createAggregationString(request.body.columns), request.body.name).then(resolve => {
+        response.send(resolve.rows)
+    })
+})
+
+app.post('/aggregation/delete', sessionCheck, statusCheck, (request, response) => {
+    db.deleteAggregate(request.body.delete).then(resolve => {
+        response.send({success: resolve})
+    })
 })
 
 /* Logout */
@@ -538,13 +603,25 @@ function formatNumber(num) {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
     }
     catch {
-        return "Missing Required information to format"
+        return null
     }
 }
 
 hbs.registerHelper('calculate_default_growth', function(years, ttm, eps){
     return calculate_default_growth_func(years, ttm, eps)
 })
+
+function clearNAN(param, extraSymbol){
+    if(isNaN(param) || !isFinite(param)){
+        return null
+    }
+    else if(extraSymbol){
+        return param + extraSymbol
+    }
+    else{
+        return param
+    }
+}
 
 function initial_values_calc(years, id, ttm, prev_eps, terminal_growth, discount, growth_years, terminal_years){
         // console.log(`${years} ${id} ${ttm} ${prev_eps} ${terminal_growth} ${discount} ${growth_years} ${terminal_years} `)
@@ -577,14 +654,14 @@ function format_data(stock){
         data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%'
         data.fcf_format = formatNumber(Math.round(data.fcf))
 
-        data.roic_format = formatNumber(data.roic);
-        data.wacc_format = formatNumber(data.wacc);
-        data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100)
+        data.roic_format = clearNAN(formatNumber(data.roic));
+        data.wacc_format = clearNAN(formatNumber(data.wacc));
+        data.roicwacc_format = clearNAN(formatNumber(Math.round((data.roic - data.wacc) * 100) / 100))
         data.capex_format = formatNumber(data.capex * -1)
         data.capeXae_format = formatNumber(Math.round((data.capex/data.aebitda) * 100) / 100)
         data.aeXsho_format = formatNumber(Math.round((data.aebitda/data.shares_outstanding) * 100) / 100)
         data.capeXfcf_format = formatNumber(Math.round((data.capex/data.fcf) * 100) / 100)
-        data.fcfXae_format = formatNumber(Math.round((data.fcf/data.aebitda) * 100) / 100)
+        data.fcfXae_format = clearNAN(formatNumber(Math.round((data.fcf/data.aebitda) * 100) / 100))
 
         // if(data.eps_without_nri<= 1) {
         //     data.eps_without_nri_format = (data.eps_without_nri/10);
@@ -611,8 +688,10 @@ function format_data(stock){
         data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) /100
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100
         data.datestring = moment(data.date).format('MMM DD, YYYY')
-        data.fcf_yield = Math.round(data.fcf / data.market_cap * 100)
+        data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%'
     })
+
+    stock.valueConditions = calc.value_calculator(stock.fair_value, stock.stock_current_price)
 
     try{
         stock.growth_rate_5y = calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format)
@@ -719,6 +798,13 @@ function format_data(stock){
                 so_1 = stock.stockdata[i].shares_outstanding
             }
         }
+
+        stock.capeXfcfAverage5 = calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5)
+        stock.capeXfcfAverage10 = calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10)
+
+        stock.capeXaeAverage5 = calc.calculate_average(stock.stockdata, 'capeXae_format', 5)
+        stock.capeXaeAverage10 = calc.calculate_average(stock.stockdata, 'capeXae_format', 10)
+
         // console.log(stock.symbol, 'PRICE', '10y:'+price_10, '5y:'+price_5, '3y:'+price_3, '1y:'+price_1)
         // Only 1 decimal required for price growth
         stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100)
@@ -726,30 +812,30 @@ function format_data(stock){
         stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100)
         stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100)
 
-        stock.revenue_growth_10 = Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100)
-        stock.revenue_growth_5 = Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100)
-        stock.revenue_growth_3 = Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100)
-        stock.revenue_growth_1 = Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100)
+        stock.revenue_growth_10 = clearNAN(Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100),'%')
+        stock.revenue_growth_5 =  clearNAN(Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100), '%')
+        stock.revenue_growth_3 =  clearNAN(Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100), '%')
+        stock.revenue_growth_1 =  clearNAN(Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100), '%')
 
         stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100)
         stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100)
         stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100)
         stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100)
 
-        stock.fcf_growth_10 = Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100)
-        stock.fcf_growth_5 = Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100)
-        stock.fcf_growth_3 = Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100)
-        stock.fcf_growth_1 = Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100)
+        stock.fcf_growth_10 = clearNAN(Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100), '%')
+        stock.fcf_growth_5 = clearNAN(Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100), '%')
+        stock.fcf_growth_3 = clearNAN(Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100), '%')
+        stock.fcf_growth_1 = clearNAN(Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100), '%')
 
         stock.so_change_10 = formatNumber(Math.round((end_so - so_10) * 10) / 10)
         stock.so_change_5 = formatNumber(Math.round((end_so - so_5) * 10) / 10)
         stock.so_change_3 = formatNumber(Math.round((end_so - so_3) * 10) / 10)
         stock.so_change_1 = formatNumber(Math.round((end_so - so_1) * 10) / 10)
 
-        stock.soChangePercent_10 = formatNumber(Math.round(((so_10 - end_so) / so_10) * 100) / 100) * -1
-        stock.soChangePercent_5 = formatNumber(Math.round(((so_5 - end_so) / so_5) * 100) / 100) * -1
-        stock.soChangePercent_3 = formatNumber(Math.round(((so_3 - end_so) / so_3) * 100) / 100) * -1
-        stock.soChangePercent_1 = formatNumber(Math.round(((so_1 - end_so) / so_1) * 100) / 100) * -1
+        stock.soChangePercent_10 = clearNAN(Math.round((formatNumber((Math.round(((so_10 - end_so) / so_10) * 100) / 100) * -1) * 100) * 100) / 100, '%')
+        stock.soChangePercent_5 =  clearNAN(Math.round((formatNumber((Math.round(((so_5 - end_so) / so_5) * 100) / 100) * -1) * 100) * 100) / 100, '%')
+        stock.soChangePercent_3 =  clearNAN(Math.round((formatNumber((Math.round(((so_3 - end_so) / so_3) * 100) / 100) * -1) * 100) * 100) / 100, '%')
+        stock.soChangePercent_1 =  clearNAN(Math.round((formatNumber((Math.round(((so_1 - end_so) / so_1) * 100) / 100) * -1) * 100) * 100) / 100, '%')
 
         
 

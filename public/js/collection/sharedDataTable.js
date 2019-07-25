@@ -38,7 +38,7 @@ function fill_table(data){
         scrollY : '70vh',
         deferRender : true,
         scroller: true,
-        order : [[8, 'desc']],
+        order : [[9, 'desc']],
     });
     return datatable
 }
@@ -57,6 +57,13 @@ function button_builder(){
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
         {text: '<span class="fas fa-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories()}},
+        {text: '<span class="fas fa-cog"></span> Aggregate', className:"btn-sm", extend: 'collection',
+        buttons: [
+            { text:'Create', action: function(){createAggregation()} },
+            { text:'Set', action: function(){settingAggregation(7, 'set')} },
+            { text:'Edit', action: function(){settingAggregation(0,'edit')} },
+            { text:'Delete', action: function(){settingAggregation(0, 'delete')} },
+        ]},
         {text: '<span class="fas fa-cog"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all()} },
@@ -123,6 +130,9 @@ function column_builder(){
                 // button 4: 15 Year historical Financial Data
                 return `<button type="button" onclick='show_financials( "${row.symbol}" , ${JSON.stringify(row.stockdata)}, 15)' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`
             }    
+        },
+        { 
+            defaultContent: 'Set'
         },
         { data : "stock_name"},
         { data : "stockdata.0.market_cap_format" },

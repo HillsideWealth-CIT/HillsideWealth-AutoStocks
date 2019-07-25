@@ -77,8 +77,67 @@ function multi_dfc_string(list) {
 //console.log(dcf(1, 2, 3, 4, 5, 6))
 // console.log(dcf(0.94, 0.091, 0.04, 0.12, 10, 10))
 
+function createAggregationString(arr) {
+    let aggregateString = ''
+    for(i in arr){
+        if (i == 0){
+            aggregateString += arr[i]
+        }
+        else {
+            aggregateString += `, ${arr[i]}`
+        }
+    }
+    return aggregateString
+}
+
+/**
+ * Determines if a price is under, over, or in expected regions
+ * @param {Integer} val 
+ * @param {Integer} price 
+ * @returns {String}
+ */
+function value_calculator(val, price){
+    // console.log(`${val} ${price}`)
+    if(val != 'null'  && price != 'null'){
+        if(price <= val * 1.10 && price >= val * 0.9){
+            return 'Expected'
+        }
+        else if(price >= val * 1.10){
+            return 'OverValued'
+        }
+        else{
+            return 'UnderValued'
+        }
+    }
+    else{
+        return null
+    }
+}
+
+/**
+ * calculates the average of numbers
+ * @param {JSON} data 
+ * @param {String} column 
+ * @param {Integer} years 
+ */
+function calculate_average(data, column, years){
+    try{
+        let total = 0;
+        for(let i = 0; i < years; i++){
+            total += parseFloat(data[i][`${column}`])
+        }
+        return Math.round((total/years)*1000)/1000
+        }
+        catch{
+            return null
+        }
+}
+
 
 module.exports={
     dcf,
-    multi_dfc_string
+    multi_dfc_string,
+    createAggregationString,
+    value_calculator,
+    calculate_average
 }

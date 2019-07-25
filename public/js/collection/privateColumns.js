@@ -1,102 +1,103 @@
-const perm = [0,1,2,3,4,5,6]
+const perm = [0, 1, 2, 3, 4, 5, 6, 7]
 
-var column_list = [  'check',
-            'symbol',
-            'graph',
-            'edit',
-            'calc',
-            'historic',
-            'stockname',
-            'marketcap',
-            'sector',
-            'aebitdaspice',
-            'currentprice',
-            'valuecondition',
-            'yield',
-            
-            'comment',
-            'emoticon',
-            'categories',
+var column_list = ['check',
+    'Symbol',
+    'Graph',
+    'Edit',
+    'Calc',
+    'Historic',
+    'Aggregated',
+    'Stock Name',
+    'Market Cap (M)',
+    'Sector',
+    'aEBITDA Spice',
+    'Current Price',
+    'Value Conditions',
+    'Yield',
 
-            'date',
-            'sharesoutstanding',
-            'enterprisevalue',
-            'Revenue',
-            'aebitda',
-            'aebitda/share',
-            'aebitda%',
-            'assetturn',
-            'aebitaat',
-            'ev/aebitda',
-            'netdebt',
-            'nd/aebitda',
-            'roe',
-            'roespice',
-            'effectivetaxrate',
+    'Comment',
+    'Emoticon',
+    'Categories',
 
-            'gururating',
-            'jdvrating',
-            'msmoatrating',
-            'msfvest',
-            'ms5*price',
-            'ms1*price',
-            
-            'eps',
-            'growthyears',
-            'growth%5y',
-            'growth%10y',
-            'growth%15y',
-            'terminalyears',
-            'terminalgrowth%',
-            'discountrate',
-            'growthvalue5y',
-            'terminalvalue5y',
-            'dcffairvalue5y',
-            'growthvalue10y',
-            'terminalvalue10y',
-            'dcffairvalue10y',
-            'growthvalue15y',
-            'terminalvalue15y',
-            'dcffairvalue15y',
-            
-            'fcf', 
-            'fcfyield', 
-            'fcfgrowth1y', 
-            'fcfgrowth3y', 
-            'fcfgrowth5y', 
-            'fcfgrowth10y', 
-            'capex', 
-            'capex/fcf5y', 
-            'capex/fcf10y', 
-            'capex/aebitda', 
-            'capex/aebitda5y', 
-            'capex/aebitda10y', 
-            
-            'fcf/aebitda', 
-            'pricegrowth1y', 
-            'pricegrowth3y', 
-            'pricegrowth5y', 
-            'pricegrowth10y', 
-            's/ochange1y', 
-            's/ochange3y', 
-            's/ochange5y', 
-            's/ochange10y',
-            's/ochange1y%', 
-            's/ochange3y%', 
-            's/ochange5y%', 
-            's/ochange10y%', 
-            'revenuegrowth1y', 
-            'revenuegrowth3y', 
-            'revenuegrowth5y', 
-            'revenuegrowth10y', 
-            'aebitdagrowth1y', 
-            'aebitdagrowth3y', 
-            'aebitdagrowth5y', 
-            'aebitdagrowth10y', 
-            'roic%', 
-            'wacc%', 
-            'roic-wacc', 
-            ]
+    'Date',
+    'Shares Outstanding',
+    'Enterprise Value',
+    'Revenue',
+    'aEBITDA(M)',
+    'aEBITDA/Share',
+    'aEBITDA%',
+    'Asset Turn',
+    'aEBITDA AT',
+    'EV/aEBITDA',
+    'Net Debt',
+    'ND/aEBITDA',
+    'ROE',
+    'ROE Spice',
+    'Effective Tax Rate',
+
+    'Guru Rating',
+    'JDV Rating',
+    'MS Moat Rating',
+    'MS FV Est',
+    'MS 5* Price',
+    'MS 1* Price',
+
+    'EPS',
+    'Growth Years',
+    'Growth % 5Y',
+    'Growth % 10Y',
+    'Growth % 15Y',
+    'terminalyears',
+    'Terminal Growth %',
+    'Discount Rate',
+    'Growth Value 5Y',
+    'Terminal Value 5Y',
+    'DCF Fair Value 5Y',
+    'Growth Value 10Y',
+    'Terminal Value 10Y',
+    'DCF Fair Value 10Y',
+    'Growth Value 15Y',
+    'Terminal Value 15Y',
+    'DCF Fair Value 15Y',
+
+    'FCF (M)',
+    'FCF Yield',
+    'FCF Growth(1Y)',
+    'FCF Growth(3Y)',
+    'FCF Growth(5Y)',
+    'FCF Growth(10Y)',
+    'Capex (M)',
+    'Capex/FCF 5Y',
+    'Capex/FCF 10Y',
+    'Capex/aEBITDA',
+    'Capex/aEBITDA 5Y',
+    'Capex/aEBITDA 10Y',
+
+    'FCF/aBITDA',
+    'Price Growth (1y)',
+    'Price Growth (3y)',
+    'Price Growth (5y)',
+    'Price Growth (10y)',
+    'S/O Change (1Y)(M)',
+    'S/O Change (3Y)(M)',
+    'S/O Change (5Y)(M)',
+    'S/O Change (10Y)(M)',
+    'S/O Change (1Y)(%)',
+    'S/O Change (3Y)(%)',
+    'S/O Change (5Y)(%)',
+    'S/O Change (10Y)(%)',
+    'Revenue Growth (1Y)',
+    'Revenue Growth (3Y)',
+    'Revenue Growth (5Y)',
+    'Revenue Growth (10Y)',
+    'aEBITDA Growth(1Y)',
+    'aEBITDA Growth(3Y)',
+    'aEBITDA Growth(5Y)',
+    'aEBITDA Growth(10Y)',
+    'ROIC %',
+    'WACC %',
+    'ROIC-WACC',
+]
 
 /**
  * Loops through columns and hides the undesired columns
@@ -104,116 +105,116 @@ var column_list = [  'check',
  * @param {Integer} end 
  * @param {Integer} count 
  */
-function hide_loop(start, end, count=0){
-    for (let i = count; i < total_columns; i++){
-        if(i >= end || i <= start){
-            if(perm.indexOf(i)==-1){
+function hide_loop(start, end, count = 0) {
+    for (let i = count; i < total_columns; i++) {
+        if (i >= end || i <= start) {
+            if (perm.indexOf(i) == -1) {
                 $table.column(i).visible(false, false)
             }
         }
 
-        else{
+        else {
             $table.column(i).visible(true, false)
         }
     }
 }
 
-function show_all(){
-    hide_loop(0,total_columns)
+function show_all() {
+    hide_loop(0, total_columns)
     $table.columns.adjust().draw(false)
 }
 
-function basic_stats(){
-    hide_loop(column_list.indexOf('marketcap')-1, 
-        column_list.indexOf('effectivetaxrate')+1)
+function basic_stats() {
+    hide_loop(column_list.indexOf('Market Cap (M)') - 1,
+        column_list.indexOf('Effective Tax Rate') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function basic_info(){
-    hide_loop(column_list.indexOf('marketcap')-1,
-         column_list.indexOf('date') +1)
+function basic_info() {
+    hide_loop(column_list.indexOf('Market Cap (M)') - 1,
+        column_list.indexOf('Date') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function financials(){
-    hide_loop(column_list.indexOf('enterprisevalue')-1,
-        column_list.indexOf('effectivetaxrate') +1)
+function financials() {
+    hide_loop(column_list.indexOf('Enterprise Value') - 1,
+        column_list.indexOf('Effective Tax Rate') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function show_values(){
-    hide_loop(column_list.indexOf('gururating')-1,
-        column_list.indexOf('dcffairvalue15y') +1)
+function show_values() {
+    hide_loop(column_list.indexOf('Guru Rating') - 1,
+        column_list.indexOf('DCF Fair Value 15Y') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function show_msguru(){
-    hide_loop(column_list.indexOf('gururating')-1,
-        column_list.indexOf('ms1*price') +1)
+function show_msguru() {
+    hide_loop(column_list.indexOf('Guru Rating') - 1,
+        column_list.indexOf('MS 1* Price') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function show_dcf(){
-    hide_loop(column_list.indexOf('eps')-1,
-    column_list.indexOf('dcffairvalue15y') +1)
+function show_dcf() {
+    hide_loop(column_list.indexOf('EPS') - 1,
+        column_list.indexOf('DCF Fair Value 15Y') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function all_growth(){
-    hide_loop(column_list.indexOf('fcf')-1,
-    column_list.indexOf('fcfgrowth10y') +1)
-    hide_loop(column_list.indexOf('pricegrowth1y')-1,
-    column_list.indexOf('aebitdagrowth10y') +1, 50)
+function all_growth() {
+    hide_loop(column_list.indexOf('FCF (M)') - 1,
+        column_list.indexOf('FCF Growth(10Y)') + 1)
+    hide_loop(column_list.indexOf('Price Growth (1y)') - 1,
+        column_list.indexOf('Price Growth (10y)') + 1, 50)
     $table.columns.adjust().draw(false)
 }
 
-function fcf_growth(){
-    hide_loop(column_list.indexOf('fcf')-1,
-    column_list.indexOf('fcfgrowth10y') +1)
-    hide_loop(column_list.indexOf('fcf/aebitda')-1,
-    column_list.indexOf('fcf/aebitda') +1, 50)
+function fcf_growth() {
+    hide_loop(column_list.indexOf('FCF (M)') - 1,
+        column_list.indexOf('FCF Growth(10Y)') + 1)
+    hide_loop(column_list.indexOf('FCF/aBITDA') - 1,
+        column_list.indexOf('FCF/aBITDA') + 1, 50)
     $table.columns.adjust().draw(false)
 }
 
-function price_growth(){
-    hide_loop(column_list.indexOf('pricegrowth1y')-1,
-    column_list.indexOf('pricegrowth10y') +1)
+function price_growth() {
+    hide_loop(column_list.indexOf('Price Growth (1y)') - 1,
+        column_list.indexOf('Price Growth (10y)') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function so_growth(){
-    hide_loop(column_list.indexOf('s/ochange1y')-1,
-    column_list.indexOf('s/ochange10y%') +1)
+function so_growth() {
+    hide_loop(column_list.indexOf('S/O Change (1Y)(M)') - 1,
+        column_list.indexOf('S/O Change (10Y)(%)') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function rev_growth(){
-    hide_loop(column_list.indexOf('revenuegrowth1y')-1,
-    column_list.indexOf('revenuegrowth10y') +1)
+function rev_growth() {
+    hide_loop(column_list.indexOf('Revenue Growth (1Y)') - 1,
+        column_list.indexOf('Revenue Growth (10Y)') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function ae_growth(){
-    hide_loop(column_list.indexOf('aebitdagrowth1y')-1,
-    column_list.indexOf('aebitdagrowth10y') +1)
+function ae_growth() {
+    hide_loop(column_list.indexOf('aEBITDA Growth(1Y)') - 1,
+        column_list.indexOf('aEBITDA Growth(10Y)') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function asset_light(){
-    hide_loop(column_list.indexOf('capex')-1,
-    column_list.indexOf('fcf/aebitda') +1)
+function asset_light() {
+    hide_loop(column_list.indexOf('Capex (M)') - 1,
+        column_list.indexOf('FCF/aBITDA') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function capex(){
-    hide_loop(column_list.indexOf('capex')-1,
-    column_list.indexOf('capex/aebitda10y') +1)
+function capex() {
+    hide_loop(column_list.indexOf('Capex (M)') - 1,
+        column_list.indexOf('Capex/aEBITDA 10Y') + 1)
     $table.columns.adjust().draw(false)
 }
 
-function profitability(){
-    hide_loop(column_list.indexOf('roic%')-1,
-    total_columns)
+function profitability() {
+    hide_loop(column_list.indexOf('ROIC %') - 1,
+        total_columns)
     $table.columns.adjust().draw(false)
 }
 
