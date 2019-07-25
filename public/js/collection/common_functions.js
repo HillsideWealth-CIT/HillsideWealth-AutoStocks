@@ -2,7 +2,7 @@
  * Opens a page that navigates to the gurufocus graph
  * @param {String} symbol - The Stock Symbol
  */
-function open_chart(symbol){
+function open_chart(symbol) {
     window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`)
     return
 };
@@ -12,12 +12,12 @@ function open_chart(symbol){
  * @param {String} field
  * @returns {String}
  */
-function fill_0(field){
-    if(field == 'null'){
+function fill_0(field) {
+    if (field == 'null') {
         return 0
     }
-    
-    else{
+
+    else {
         return field
     }
 }
@@ -36,19 +36,19 @@ function fill_0(field){
  * @param {Float} price 
  * @param {Float} gf_rating 
  */
-function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
+function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating) {
     //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
     // console.log(fill_0(ms_1_star))
     let edits = {};
-    return new Promise ((resolve, reject) => {
-    swal.fire({
-        title: symbol,
-        showConfirmButton: true,
-        confirmButtonText: 'Save Changes',
-        showCancelButton: true,
-        cancelButtonText: 'Back',
-        html:
-            `<div class="row">
+    return new Promise((resolve, reject) => {
+        swal.fire({
+            title: symbol,
+            showConfirmButton: true,
+            confirmButtonText: 'Save Changes',
+            showCancelButton: true,
+            cancelButtonText: 'Back',
+            html:
+                `<div class="row">
                 <div class="col">
                     <label for="jdv">JDV</label>
                     <select id="jdv" class="form-control">
@@ -111,19 +111,19 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                 </div>
             </div>
             `,
-    }
-    ).then((result) => {
-        if (!result.dismiss) {
-            edits.id = id;
-            edits.comment = $('#Comment').val();
-            edits.ms_moat = $('#ms_moat').val();
-            edits.ms_fair_value = $('#ms_fair_value').val().replace(/[^a-z0-9,. ]/gi, '');
-            edits.ms_5_star = $('#ms_5_star').val().replace(/[^a-z0-9,. ]/gi, '');
-            edits.ms_1_star = $('#ms_1_star').val().replace(/[^a-z0-9,. ]/gi, '');
-            edits.emoticon = $('#emote').val();
-            edits.jdv = $('#jdv').val();
-            edits.price = $('#cur_price').val().replace(/[^a-z0-9,. ]/gi, '');
-            resolve(edits)
+        }
+        ).then((result) => {
+            if (!result.dismiss) {
+                edits.id = id;
+                edits.comment = $('#Comment').val();
+                edits.ms_moat = $('#ms_moat').val();
+                edits.ms_fair_value = $('#ms_fair_value').val().replace(/[^a-z0-9,. ]/gi, '');
+                edits.ms_5_star = $('#ms_5_star').val().replace(/[^a-z0-9,. ]/gi, '');
+                edits.ms_1_star = $('#ms_1_star').val().replace(/[^a-z0-9,. ]/gi, '');
+                edits.emoticon = $('#emote').val();
+                edits.jdv = $('#jdv').val();
+                edits.price = $('#cur_price').val().replace(/[^a-z0-9,. ]/gi, '');
+                resolve(edits)
             }
         })
     })
@@ -143,7 +143,7 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
  * @param {String} price 
  * @param {String} gf_rating 
  */
-function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating){
+function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating) {
     edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating).then((resolve) => {
         ajax_Call(resolve, '/edits').then((server_resolve) => {
             $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
@@ -233,14 +233,14 @@ function calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv) {
     })
 };
 
-function dfcAverage(arrList){
+function dfcAverage(arrList) {
     let total = 0;
     let counter = 0;
     let finalString = '';
-    for(i in arrList){
-        if(arrList[i] != 'null'){
+    for (i in arrList) {
+        if (arrList[i] != 'null') {
             total += parseFloat(arrList[i])
-            counter ++
+            counter++
             finalString = `${finalString} + ${arrList[i]}`
         }
     }
@@ -258,9 +258,9 @@ function dfcAverage(arrList){
  * @param {String} gy 
  * @param {String} ty 
  */
-function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty){
+function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty) {
     //console.log(`${eps} ${gr} ${tgr} ${dr} ${gy} ${ty} `)
-    let fv = dcf(eps, Math.round((gr5/100) * 100000)/100000, tgr, dr, gy, ty)
+    let fv = dcf(eps, Math.round((gr5 / 100) * 100000) / 100000, tgr, dr, gy, ty)
     // console.log(fv)
     calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv)
 };
@@ -271,60 +271,60 @@ function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty){
  * @param {String} gr10 
  * @param {String} gr15 
  */
-function eps_onchange(gr5, gr10, gr15){
-    if(isNaN($('#gr_form').val()) == true){
-        if($('#gr_form').val() == 'years 5'){
+function eps_onchange(gr5, gr10, gr15) {
+    if (isNaN($('#gr_form').val()) == true) {
+        if ($('#gr_form').val() == 'years 5') {
             $('#gr_form').val(gr5)
         }
-        else if ($('#gr_form').val() == 'years 10'){
-            $('#gr_form').val(gr10) 
+        else if ($('#gr_form').val() == 'years 10') {
+            $('#gr_form').val(gr10)
         }
-        else if ($('#gr_form').val() == 'years 15'){
+        else if ($('#gr_form').val() == 'years 15') {
             $('#gr_form').val(gr15)
         }
 
     }
-        dcf_results = dcf(
-            $('#eps_form').val(),
-            Math.round(($('#gr_form').val()/100)*10000)/10000,
-            $('#tgr_form').val()/100,
-            $('#dr_form').val()/100,
-            $('#gy_form').val(),
-            $('#ty_form').val(),
-        )
-        $('#gv_form').val(dcf_results.growth_value)
-        $('#tv_form').val(dcf_results.terminal_value)
-        $('#fv_form').val(dcf_results.fair_value)
+    dcf_results = dcf(
+        $('#eps_form').val(),
+        Math.round(($('#gr_form').val() / 100) * 10000) / 10000,
+        $('#tgr_form').val() / 100,
+        $('#dr_form').val() / 100,
+        $('#gy_form').val(),
+        $('#ty_form').val(),
+    )
+    $('#gv_form').val(dcf_results.growth_value)
+    $('#tv_form').val(dcf_results.terminal_value)
+    $('#fv_form').val(dcf_results.fair_value)
 };
 
 /**
  * Sends changes for the dfc options to the server
  */
-function calc_edit(){
+function calc_edit() {
 
     let stock_id_list = [];
     let selected = $table.rows('.selected').data()
-    for( i in selected ){
-        if(selected[i].symbol){
-        stock_id_list.push(selected[i].stock_id)
-        }   
-        else{
+    for (i in selected) {
+        if (selected[i].symbol) {
+            stock_id_list.push(selected[i].stock_id)
+        }
+        else {
             break;
         }
     }
-    if(stock_id_list.length != 0){
+    if (stock_id_list.length != 0) {
         calc_edit_menu().then((values) => {
-            let to_send = {stock_id_list: stock_id_list, values: values}
+            let to_send = { stock_id_list: stock_id_list, values: values }
             console.log(values)
             ajax_Call(to_send, '/calc_edit').then((res) => {
                 console.log(res)
-                if (res == "OK"){
+                if (res == "OK") {
                     location.reload();
                 }
             })
         })
     }
-    else{
+    else {
         alert("NO ROWS SELECTED")
     }
 }
@@ -332,16 +332,16 @@ function calc_edit(){
 /**
  * Opens the calc edit menu
  */
-function calc_edit_menu(){
+function calc_edit_menu() {
     let values = {};
     let arr = ['tgr', 'dr', 'gy', 'ty'];
-    return new Promise ((resolve) => {
-    swal.fire({
-        title: 'DCF INPUTS',
-        showConfirmButton: true,
-        showCancelButton: true,
-        html:
-            `
+    return new Promise((resolve) => {
+        swal.fire({
+            title: 'DCF INPUTS',
+            showConfirmButton: true,
+            showCancelButton: true,
+            html:
+                `
             <div class="row">
                 <p class="col">*EMPTY FIELDS WILL BE TREATED AS 5</p>
             </div>
@@ -366,17 +366,17 @@ function calc_edit_menu(){
                 </div>        
             </div>
             `,
-    }).then((result) => {
-        if (!result.dismiss) {
+        }).then((result) => {
+            if (!result.dismiss) {
                 // values.tgr = document.getElementById('tgr_form').value / 100;
                 // values.dr = document.getElementById('dr_form').value / 100;
                 // values.gy = document.getElementById('gy_form').value;
                 // values.ty = document.getElementById('ty_form').value;
-                for( i in arr ){
-                    if (document.getElementById(`${arr[i]}_form`).value.length != 0){
+                for (i in arr) {
+                    if (document.getElementById(`${arr[i]}_form`).value.length != 0) {
                         values[arr[i]] = document.getElementById(`${arr[i]}_form`).value
                     }
-                    else{
+                    else {
                         values[arr[i]] = 5;
                     }
                 }
@@ -386,16 +386,16 @@ function calc_edit_menu(){
     })
 }
 
-function dcf( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_years=10){
+function dcf(eps, growth_rate, terminal_growth, discount_rate, g_years = 10, t_years = 10) {
     // console.log(`${eps} ${growth_rate} ${terminal_growth} ${discount_rate} ${g_years} ${t_years}`)
     let results = {};
-    let x = (1+parseFloat(growth_rate))/(1+parseFloat(discount_rate));
-    let y = (1+parseFloat(terminal_growth))/(1+parseFloat(discount_rate));
+    let x = (1 + parseFloat(growth_rate)) / (1 + parseFloat(discount_rate));
+    let y = (1 + parseFloat(terminal_growth)) / (1 + parseFloat(discount_rate));
     results['growth_value'] = dfc_growth(x, parseFloat(eps), g_years);
-    results['terminal_value'] = dcf_terminal(x, y, parseFloat(eps), g_years,t_years);
-    results['fair_value'] = Math.round((results.growth_value + results.terminal_value) * 100)/100;
-    results['growth_value'] = Math.round((results.growth_value) * 100 ) / 100;
-    results['terminal_value'] = Math.round((results.terminal_value) * 100 ) / 100 ;
+    results['terminal_value'] = dcf_terminal(x, y, parseFloat(eps), g_years, t_years);
+    results['fair_value'] = Math.round((results.growth_value + results.terminal_value) * 100) / 100;
+    results['growth_value'] = Math.round((results.growth_value) * 100) / 100;
+    results['terminal_value'] = Math.round((results.terminal_value) * 100) / 100;
     return results;
 };
 
@@ -406,11 +406,11 @@ function dcf( eps, growth_rate, terminal_growth, discount_rate, g_years=10, t_ye
  * @param {Integer} years 
  * @returns {float} growth_value
  */
-function dfc_growth(x, eps, years){
+function dfc_growth(x, eps, years) {
     let growth_value = 0;
     //console.log(`X: ${x} ; Y: ${y}`)
-    for(let i = 1; i <= years; i ++){
-        let pow = Math.pow(x,i)
+    for (let i = 1; i <= years; i++) {
+        let pow = Math.pow(x, i)
         growth_value += pow * eps
     }
     return growth_value;
@@ -424,11 +424,11 @@ function dfc_growth(x, eps, years){
  * @param {float} t_years - terminal growth years
  * @returns {float} terminal_value
  */
-function dcf_terminal(x, y, eps, g_years ,t_years){
+function dcf_terminal(x, y, eps, g_years, t_years) {
     let terminal_value = 0;
-    for (let i = 1; i <= t_years; i ++){
-        part1 = Math.pow(x,g_years)
-        part2 = Math.pow(y,i)
+    for (let i = 1; i <= t_years; i++) {
+        part1 = Math.pow(x, g_years)
+        part2 = Math.pow(y, i)
         terminal_value += part1 * part2 * eps
         //console.log(part1*part2*eps)
     }
@@ -441,12 +441,12 @@ function dcf_terminal(x, y, eps, g_years ,t_years){
  * @param {JSON} stockdata 
  * @param {Integer} years 
  */
-function show_financials(symbol, stockdata, years){
+function show_financials(symbol, stockdata, years) {
     // console.log(stockdata)
     let financials = ""
-    for(let i = 1; i <= years; i++){
-        try{
-        financials +=  `<tr>
+    for (let i = 1; i <= years; i++) {
+        try {
+            financials += `<tr>
             <td>${stockdata[i].datestring}</td>
             <td>${stockdata[i].price_format}</td>
             <td>${stockdata[i].aebitda_spice}</td>
@@ -478,7 +478,7 @@ function show_financials(symbol, stockdata, years){
     swal.fire({
         title: `${symbol} Historical Data`,
         showConfirmButton: true,
-        width:'90vw',
+        width: '90vw',
         html:
             `
             <table class="table table-sm table-bordered table-light table-responsive">
@@ -516,14 +516,14 @@ function show_financials(symbol, stockdata, years){
 /**
  * Hides all rows in the table but the selected ones
  */
-function show_selected(){
+function show_selected() {
     to_show = [];
     let selected = $table.rows('.selected').data()
-    for( i in selected ){
-        if(selected[i].symbol){
-        to_show.push(selected[i].symbol)
-        }   
-        else{
+    for (i in selected) {
+        if (selected[i].symbol) {
+            to_show.push(selected[i].symbol)
+        }
+        else {
             break;
         }
     }
@@ -536,14 +536,14 @@ function show_selected(){
 /**
  * Enables selected stocks to be accessed on the shared database
  */
-function share(){
+function share() {
     to_share = [];
     let selected = $table.rows('.selected').data()
-    for( i in selected ){
-        if(selected[i].symbol){
-        to_share.push(selected[i].stock_id)
-        }   
-        else{
+    for (i in selected) {
+        if (selected[i].symbol) {
+            to_share.push(selected[i].stock_id)
+        }
+        else {
             break;
         }
     }
@@ -559,16 +559,16 @@ function share(){
  * @param {Integer} ids 
  * @param {String} link 
  */
-function counter_ajax(active_num, end_num, symbols, ids, link){
+function counter_ajax(active_num, end_num, symbols, ids, link) {
     // console.log(`${active_num} ${end_num}`)
     // console.log(arr[active_num])
-    Swal.update({text: `Progress: ${active_num}/${end_num}`})
-    if (active_num == end_num){ 
+    Swal.update({ text: `Progress: ${active_num}/${end_num}` })
+    if (active_num == end_num) {
         Swal.update({
-            type:'success',
+            type: 'success',
             text: 'Update Complete'
         })
-        setTimeout(function(){
+        setTimeout(function () {
             Swal.close();
         }, 3000)
         return
@@ -576,15 +576,15 @@ function counter_ajax(active_num, end_num, symbols, ids, link){
     $.ajax({
         type: 'POST',
         url: link,
-        data: {action: [{symbol: symbols[active_num], stock_id: ids[active_num]}]},
-        success: function(resolved){
+        data: { action: [{ symbol: symbols[active_num], stock_id: ids[active_num] }] },
+        success: function (resolved) {
             // alert(JSON.stringify(data))
             console.log(resolved.data)
-            try{
+            try {
                 // console.log(resolved.data[0])
-            $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
+                $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
             }
-            catch(e){
+            catch (e) {
                 // console.log(e)
             }
             counter_ajax(active_num + 1, end_num, symbols, ids, link)
@@ -599,14 +599,14 @@ function counter_ajax(active_num, end_num, symbols, ids, link){
  * @param {Array} list 
  * @param {String} link 
  */
-function adder_ajax(active_num, end_num, list, link){
-    swal.update({text: `Progress: ${active_num}/${end_num}`})
-    if (active_num == end_num){
+function adder_ajax(active_num, end_num, list, link) {
+    swal.update({ text: `Progress: ${active_num}/${end_num}` })
+    if (active_num == end_num) {
         Swal.update({
-            type:'success',
+            type: 'success',
             text: 'Update Complete'
         })
-        setTimeout(function(){
+        setTimeout(function () {
             Swal.close();
         }, 3000)
         return
@@ -614,13 +614,13 @@ function adder_ajax(active_num, end_num, list, link){
     $.ajax({
         type: 'POST',
         url: link,
-        data: {action: [{'symbol': list[active_num].toUpperCase(), 'comment': '', 'company':'', 'exchange': ''}]},
-        success: function(stockinfo){
+        data: { action: [{ 'symbol': list[active_num].toUpperCase(), 'comment': '', 'company': '', 'exchange': '' }] },
+        success: function (stockinfo) {
             console.log(stockinfo)
-            try{
+            try {
                 $table.row.add(stockinfo.data[0]).draw();
             }
-            catch(e){
+            catch (e) {
                 console.log(e)
             }
             adder_ajax(active_num + 1, end_num, list, link)
@@ -631,50 +631,50 @@ function adder_ajax(active_num, end_num, list, link){
 /**
  * Sets the categories for selected stocks
  */
-function set_categories(){
+function set_categories() {
     to_set = [];
     categories = [];
     symbols = [];
     let selected = $table.rows('.selected').data()
     console.log(selected)
-    for( i in selected ){
-        if(selected[i].symbol){
-        to_set.push(selected[i].stock_id)
-        symbols.push(selected[i].symbol)
-        }   
-        else{
+    for (i in selected) {
+        if (selected[i].symbol) {
+            to_set.push(selected[i].stock_id)
+            symbols.push(selected[i].symbol)
+        }
+        else {
             break;
         }
     }
-    if(to_set.length == 0){
+    if (to_set.length == 0) {
         alert('MUST SELECT AT LEAST ONE!')
     }
-    else{
-    Swal.fire({
-        title: 'Set Categories',
-        text: 'Format: [category], [category]',
-        input: 'text',
-        showCancelButton: 'true',
-        showConfirmButton: 'true',
-        preConfirm: (user_input) => {
-            // console.log(user_input)
-            fetch('/categories/set', {
-                method: 'POST',
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({stocks_list: to_set, categories: user_input.toUpperCase(), symbols: symbols})
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log( data )
-                for (i in data){
-                    $table.row(document.getElementById(`${data[i][0].symbol}`)).data(data[i][0]).invalidate();
-                }
-                $table.columns.adjust().draw(false)
-            })
+    else {
+        Swal.fire({
+            title: 'Set Categories',
+            text: 'Format: [category], [category]',
+            input: 'text',
+            showCancelButton: 'true',
+            showConfirmButton: 'true',
+            preConfirm: (user_input) => {
+                // console.log(user_input)
+                fetch('/categories/set', {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ stocks_list: to_set, categories: user_input.toUpperCase(), symbols: symbols })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        for (i in data) {
+                            $table.row(document.getElementById(`${data[i][0].symbol}`)).data(data[i][0]).invalidate();
+                        }
+                        $table.columns.adjust().draw(false)
+                    })
 
-        }
-    })
-}
+            }
+        })
+    }
     console.log(to_set)
 }
 
@@ -684,20 +684,421 @@ function set_categories(){
  * @param {Integer} price 
  * @returns {String}
  */
-function value_calculator(val, price){
+function value_calculator(val, price) {
     // console.log(`${val} ${price}`)
-    if(val != 'null'  && price != 'null'){
-        if(price <= val * 1.10 && price >= val * 0.9){
+    if (val != 'null' && price != 'null') {
+        if (price <= val * 1.10 && price >= val * 0.9) {
             return 'Expected'
         }
-        else if(price >= val * 1.10){
+        else if (price >= val * 1.10) {
             return 'OverValued'
         }
-        else{
+        else {
             return 'UnderValued'
         }
     }
-    else{
+    else {
         return 'Missing Values'
     }
 }
+
+
+
+function createAggregation() {
+    let to_send = {};
+    Swal.fire({
+        title: 'Create Aggregation',
+        showCancelButton: true,
+        html:
+            `
+                <div class="row">
+                    <div class="col">
+                        <label for="nameform">Name</label>
+                        <input id="nameForm" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label>Columns</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label>Add [!] At The End For greatest to least</label>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col">
+                        <input id="columnForm1" type="text" list="columnList" class="form-control">
+                    </div>
+                    <div class="col">
+                        <input id="columnForm2" type="text" list="columnList" class="form-control">
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col">
+                        <input id="columnForm3" type="text" list="columnList" class="form-control">
+                    </div>
+                    <div class="col">
+                        <input id="columnForm4" type="text" list="columnList" class="form-control">
+                    </div>
+                </div>
+            
+            <div class="row mt-3">
+                <div class="col">
+                    <input id="columnForm5" type="text" list="columnList" class="form-control">
+                </div>
+                <div class="col">
+                    <input id="columnForm6" type="text" list="columnList" class="form-control">
+                </div>
+            </div>
+        
+        
+            <div class="row mt-3">
+                <div class="col">
+                    <input id="columnForm7" type="text" list="columnList" class="form-control">
+                </div>
+                <div class="col">
+                    <input id="columnForm8" type="text" list="columnList" class="form-control">
+                </div>
+            </div>
+        
+        
+            <div class="row mt-3">
+                <div class="col">
+                    <input id="columnForm9" type="text" list="columnList" class="form-control">
+                </div>
+                <div class="col">
+                    <input id="columnForm10" type="text" list="columnList" class="form-control">
+                </div>
+            </div>
+
+        ${createColumnList()}
+            `,
+    }).then((result) => {
+        if (!result.dismiss) {
+            to_send.name = document.getElementById('nameForm').value
+            to_send.columns = []
+            for (i of 10) {
+                if (document.getElementById(`columnForm${i + 1}`).value != "") {
+                    to_send.columns.push(document.getElementById(`columnForm${i + 1}`).value)
+                }
+            }
+            fetch('/aggregation/create', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(to_send)
+            }).then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                })
+        }
+    })
+}
+
+function createColumnList() {
+    let optionString = '<datalist id="columnList">'
+    let tableList = document.getElementById('headerRow').childNodes
+    for (let i = 0; i < tableList.length; i++) {
+        if (tableList[i].innerHTML != '') {
+            optionString += `<option value="${tableList[i].innerHTML}">`
+        }
+    }
+    return `${optionString}</datalist>`
+}
+
+function settingAggregation(columnNum, ver) {
+    fetch('/aggregation/get', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" }
+    })
+        .then(response => response.json())
+        .then(data => {
+            // console.log(data)
+            createSelector(data)
+            Swal.fire({
+                title: 'Select Aggregate',
+                input: 'select',
+                inputOptions: createSelector(data),
+                inputPlaceholder: 'Select a setting',
+                showCancelButton: 'true',
+                showConfirmButton: 'true',
+            }).then(result => {
+                if (!result.dismiss) {
+                    // (ver) ? sendColumnData(result.value.split(', '), columnNum) : editAggregations(data, result);
+                     (ver == 'set') ? sendColumnData(result.value.split(', '), columnNum)
+                    :(ver == 'edit') ? editAggregations(data, result)
+                    :(ver == 'delete') ? deleteAggregations(data, result)
+                    : console.log("Error")
+                }
+            })
+
+        })
+}
+
+function createSelector(arr) {
+    let selectors = {}
+    for (i in arr) {
+        selectors[`${arr[i].aggregate_string}`] = arr[i].name
+    }
+    return selectors
+}
+
+
+function sendColumnData(valueList, columnNum) {
+    let toSend = [];
+    let tableRows = $table.rows().data()
+
+    for (j in valueList) {
+        let columnHeader = valueList[j].split(' !')[0]
+        toSend.push({ row: valueList[j], values: [] })
+        for (i in tableRows) {
+            if (tableRows[i].symbol) {
+                toSend[j].values.push(FAD(tableRows[i], columnHeader))
+            }
+        }
+    }
+    fetch('/aggregation/aggregate', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(toSend)
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            // for (i in data.symbols) {
+            //     console.log(data.symbols[i])
+            //     console.log($table.row(document.getElementById(`${data.symbols[i]}`)).index())
+            //     let rowNum = $table.row(document.getElementById(`${data.symbols[i]}`)).index()
+            //     $table.cell({ row: rowNum, column: columnNum }).data(data.score[i]).invalidate()
+            // }
+            $table.rows().every( function (index) {
+                // console.log($table.cell({row: index, column: 1}).data())
+                let stockIndex = data.symbols.indexOf($table.cell({row: index, column: 1}).data())
+                $table.cell({row: index, column: columnNum}).data(data.score[stockIndex]).invalidate()
+            })
+            $table.draw()
+        })
+
+}
+
+//format aggregation data
+function FAD(data, column) {
+    let keyvalues = {
+        'Symbol': 'symbol',
+        'Stock Name': 'stock_name',
+        'Market Cap (M)': 'stockdata market_cap_format',
+        'Sector': 'stocksector',
+        'aEBITDA Spice': 'stockdata aebitda_spice',
+        'Current Price': 'stock_current_price',
+        'Value Conditions': 'valueConditions',
+        'Yield': 'stockdata yield_format',
+        'Comment': 'note',
+        'Emoticon': 'emoticon',
+        'Categories': 'categories',
+
+        'Date': 'stockdata datestring',
+        'Shares Outstanding': 'stockdata shares_outstanding_format',
+        'Enterprise Value': 'stockdata enterprise_value_format',
+        'Revenue': 'stockdata revenue_format',
+        'aEBITDA(M)': 'stockdata aebitda_format',
+        'aEBITDA/Share': 'stockdata aeXsho_format',
+        'aEBITDA%': 'stockdata aebitda_percent',
+        'Asset Turn': 'stockdata asset_turnover',
+        'aEBITDA AT': 'stockdata aebitda_at',
+        'EV/aEBITDA': 'stockdata ev_aebita',
+        'Net Debt': 'stockdata net_debt_format',
+        'ND/aEBITDA': 'stockdata nd_aebitda',
+        'ROE': 'stockdata roe_format',
+        'ROE Spice': 'stockdata roe_spice',
+        'Effective Tax Rate': 'stockdata effective_tax_rate',
+
+        'Guru Rating': 'gfrating',
+        'JDV Rating': 'jdv',
+        'MS Moat Rating': 'moat',
+        'MS FV Est': 'fairvalue',
+        'MS 5* Price': 'fivestar',
+        'MS 1* Price': 'onestar',
+
+        'EPS': 'stockdata eps_without_nri_format',
+        'Growth Years': 'stockdata growth_years_format',
+        'Growth % 5Y': 'growth_rate_5y',
+        'Growth % 10Y': 'growth_rate_10y',
+        'Growth % 15Y': 'growth_rate_15y',
+        'terminalyears': 'stockdata terminal_years_format',
+        'Terminal Growth %': 'stockdata terminal_growth_rate_format',
+        'Discount Rate': 'stockdata discount_rate_format',
+        'Growth Value 5Y': 'dcf_values_5y growth_value',
+        'Terminal Value 5Y': 'dcf_values_5y terminal_value',
+        'DCF Fair Value 5Y': 'dcf_values_5y fair_value',
+        'Growth Value 10Y': 'dcf_values_10y growth_value',
+        'Terminal Value 10Y': 'dcf_values_10y terminal_value',
+        'DCF Fair Value 10Y': 'dcf_values_10y fair_value',
+        'Growth Value 15Y': 'dcf_values_15y growth_value',
+        'Terminal Value 15Y': 'dcf_values_15y terminal_value',
+        'DCF Fair Value 15Y': 'dcf_values_15y fair_value',
+
+        'FCF (M)': 'stockdata fcf_format',
+        'FCF Yield': 'stockdata fcf_yield',
+        'FCF Growth(1Y)': 'fcf_growth_1',
+        'FCF Growth(3Y)': 'fcf_growth_3',
+        'FCF Growth(5Y)': 'fcf_growth_5',
+        'FCF Growth(10Y)': 'fcf_growth_10',
+
+        'Capex (M)': 'stockdata capex',
+        'Capex/FCF 5Y': 'capeXfcfAverage5',
+        'Capex/FCF 10Y': 'capeXfcfAverage10',
+        'Capex/aEBITDA': 'stockdata capeXae_format',
+        'Capex/aEBITDA 5Y': 'capeXaeAverage5',
+        'Capex/aEBITDA 10Y': 'capeXaeAverage10',
+
+        'FCF/aBITDA': 'stockdata fcfXae_format',
+        'Price Growth (1y)': 'price_growth_1',
+        'Price Growth (3y)': 'price_growth_3',
+        'Price Growth (5y)': 'price_growth_5',
+        'Price Growth (10y)': 'price_growth_10',
+        'S/O Change (1Y)(M)': 'so_change_1',
+        'S/O Change (3Y)(M)': 'so_change_3',
+        'S/O Change (5Y)(M)': 'so_change_5',
+        'S/O Change (10Y)(M)': 'so_change_10',
+        'S/O Change (1Y)(%)': 'soChangePercent_1',
+        'S/O Change (3Y)(%)': 'soChangePercent_3',
+        'S/O Change (5Y)(%)': 'soChangePercent_5',
+        'S/O Change (10Y)(%)': 'soChangePercent_10',
+        'Revenue Growth (1Y)': 'revenue_growth_1',
+        'Revenue Growth (3Y)': 'revenue_growth_3',
+        'Revenue Growth (5Y)': 'revenue_growth_5',
+        'Revenue Growth (10Y)': 'revenue_growth_10',
+        'aEBITDA Growth(1Y)': 'aebitda_growth_1',
+        'aEBITDA Growth(3Y)': 'aebitda_growth_3',
+        'aEBITDA Growth(5Y)': 'aebitda_growth_5',
+        'aEBITDA Growth(10Y)': 'aebitda_growth_10',
+        'ROIC %': 'stockdata roic_format',
+        'WACC %': 'stockdata wacc_format',
+        'ROIC-WACC': 'stockdata roicwacc_format',
+    }
+    return { symbol: data.symbol, value: data[keyvalues[column]] }
+}
+
+function editAggregations(data, result) {
+    let to_send = {}
+    let selected = '';
+    for (i in data) {
+        if (result.value == data[i].aggregate_string) {
+            selected = result.value
+            break;
+        }
+    }
+    fetch("/aggregation/get_single", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ aggregationString: selected })
+    })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire({
+                title: 'Edit',
+                showCancelButton: 'true',
+                html: `
+            <div class="row">
+                <div class="col">
+                    <label for="nameform">Name</label>
+                    <input id="nameForm" type="text" class="form-control" value="${data[0].name}" readonly="readonly">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Columns</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Add [!] At The End For greatest to least</label>
+                </div>
+            </div>
+            ${SWAL_AggregationStringSet(data[0].aggregate_string.split(', '))}
+            ${createColumnList()}
+            `
+            }).then((result) => {
+                if (!result.dismiss) {
+                    to_send.name = document.getElementById('nameForm').value
+                    to_send.columns = []
+                    for (i of 10) {
+                        if (document.getElementById(`columnForm${i + 1}`).value != "") {
+                            to_send.columns.push(document.getElementById(`columnForm${i + 1}`).value)
+                        }
+                    }
+                    fetch('/aggregation/edit', {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(to_send)
+                    }).then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
+                }
+            })
+        })
+
+    function SWAL_AggregationStringSet(aggregate_string) {
+        let div_string;
+        for (let i = 0; i < 10; i++) {
+            if (aggregate_string[i]) {
+                if (i % 2 == 0) {
+                    div_string = div_string + `
+                        <div class="row mt-3">
+                            <div class="col">
+                            <input id="columnForm${i + 1}" type="text" list="columnList" class="form-control" value="${aggregate_string[i]}">
+                            </div>`
+                }
+                else if (i % 2 == 1) {
+                    div_string = div_string + `
+                        <div class="col">
+                        <input id="columnForm${i + 1}" type="text" list="columnList" class="form-control" value="${aggregate_string[i]}">
+                        </div>
+                    </div>`
+                }
+            }
+            else {
+                if (i % 2 == 0) {
+                    div_string = div_string + `
+                        <div class="row mt-3">
+                            <div class="col">
+                            <input id="columnForm${i + 1}" type="text" list="columnList" class="form-control">
+                            </div>`
+                }
+                else if (i % 2 == 1) {
+                    div_string = div_string + `
+                    <div class="col">
+                    <input id="columnForm${i + 1}" type="text" list="columnList" class="form-control">
+                    </div>
+                </div>`
+                }
+            }
+
+        }
+        return (div_string)
+    }
+}
+
+function deleteAggregations(data, result) {
+    let to_send = {}
+    let selected = '';
+    for (i in data) {
+        if (result.value == data[i].aggregate_string) {
+            selected = data[i].aggregation_id
+            break;
+        }
+    }
+    fetch("/aggregation/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ delete: selected })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('success')
+        })
+}   

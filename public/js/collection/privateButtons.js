@@ -1,6 +1,5 @@
 var update_counter = 0;
 var to_update = [];
-
 /**
  * Opens a sweetalert and adds all stocks user inputs
  */
@@ -84,7 +83,3 @@ function update(link){
     });
     counter_ajax(0, to_update.length, to_update, to_stock_id, link)
 };
-
-
-
-

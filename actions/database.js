@@ -293,6 +293,27 @@ const deleteIndicator = async (values) => {
     return await runQuery(`delete from indicators where indicator_id = $1`, [values.indicatorId])
 }
 
+const createAggregation = async(username, aggString, name) => {
+    return await runQuery(`INSERT INTO aggregation(username, aggregate_string, name) values($1, $2, $3)`, [username, aggString, name])
+}
+
+const retrieveAggregates = async(username) => {
+    return await runQuery('SELECT * from aggregation where username = $1', [username])
+}
+
+const getAggregateSingle = async(aggString, username) => {
+    return await runQuery(`SELECT * FROM aggregation WHERE aggregate_string = $1 AND username= $2;`, [aggString, username])
+}
+
+const editAggregate = async(username, aggregate_string, name) => {
+    return await runQuery(`update aggregation set aggregate_string = $1 where username = $2 and name=$3;`, [aggregate_string, username, name])
+}
+
+const deleteAggregate = async(id) => {
+    console.log(id)
+    return await runQuery(`DELETE FROM aggregation where aggregation_id = $1`, [id])
+}
+
 
 module.exports = {
     addUser,
@@ -321,6 +342,11 @@ module.exports = {
     addIndicators,
     editIndicators,
     deleteIndicator,
+    createAggregation,
+    retrieveAggregates,
+    getAggregateSingle,
+    editAggregate,
+    deleteAggregate
 }
 
 function getdata(stocks, stockdata){

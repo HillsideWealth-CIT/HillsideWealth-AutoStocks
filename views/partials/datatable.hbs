@@ -1,7 +1,7 @@
 <div id="table_main" class="dataTables_wrapper">
     <table id="datatable" class="table table-light table-striped">
         <thead class="thead-dark">
-            <tr>
+            <tr id = "headerRow">
                 <th></th>
                 <th>Symbol</th>
                 {{#if sc}}
@@ -11,6 +11,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th>Aggregated</th>
                 <th>Stock Name</th>
                 <th>Market Cap (M)</th>
                 <th>Sector</th>
@@ -75,7 +76,7 @@
                 <th>Capex (M)</th>
                 <th>Capex/FCF 5Y</th>
                 <th>Capex/FCF 10Y</th>
-                <th>Capex/aEbitda</th>
+                <th>Capex/aEBITDA</th>
                 <th>Capex/aEBITDA 5Y</th>
                 <th>Capex/ aEBITDA 10Y</th>
 
@@ -105,6 +106,7 @@
                 <th>ROIC %</th>
                 <th>WACC %</th>
                 <th>ROIC-WACC</th>
+
             </tr>
         </thead>
         <tbody>
