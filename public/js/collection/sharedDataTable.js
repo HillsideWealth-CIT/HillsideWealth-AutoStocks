@@ -132,32 +132,16 @@ function column_builder(){
             }    
         },
         { 
-            defaultContent: 'Set'
+            defaultContent: 0
         },
         { data : "stock_name"},
         { data : "stockdata.0.market_cap_format" },
         { data : "stocksector" },
         { data : "stockdata.0.aebitda_spice" },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.stock_current_price != 'null'){
-                    return `$${row.stock_current_price}`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                return value_calculator(row.fairvalue, row.stock_current_price)
-            }
-        },
-
-
+        { data : "stock_current_price" },
+        { data : 'valueConditions' },
         { data : "stockdata.0.yield_format" },
+        
         { data : "note" },
         { data : "emoticon" },
         { data : "categories"},
@@ -166,16 +150,7 @@ function column_builder(){
         { data : "stockdata.0.shares_outstanding_format" },
         { data : "stockdata.0.enterprise_value_format" },
         { data : "stockdata.0.revenue_format" },
-        {   data : null,
-            render: function(data, type, row, meta ){
-                if(row.stockdata[0].aebitda_format == 'Missing Required information to format'){
-                    return null
-                }
-                else {
-                    return row.stockdata[0].aebitda_format
-                }
-            }
-        },
+        { data : "stockdata.0.aebitda_format" },
         { data : "stockdata.0.aeXsho_format" },
         { data : "stockdata.0.aebitda_percent" },
         { data : "stockdata.0.asset_turnover" },
@@ -183,20 +158,11 @@ function column_builder(){
         { data : "stockdata.0.ev_aebitda" },
         { data : "stockdata.0.net_debt_format" },
         { data : "stockdata.0.nd_aebitda" },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.stockdata[0].roe_format != null){
-                    return `${row.stockdata[0].roe_format}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
+
+        { data : 'stockdata.0.roe_format'},
         { data : "stockdata.0.roe_spice" },
         { data : "stockdata.0.effective_tax_format" },
-        
+
         { data : "gfrating" },
         { data : "jdv" },
         { data : "moat" },
@@ -210,8 +176,10 @@ function column_builder(){
         { data : "growth_rate_10y" },
         { data : "growth_rate_15y" },
         { data : "stockdata.0.terminal_years_format" },
+
         { data : "stockdata.0.terminal_growth_rate_format" },
         { data : "stockdata.0.discount_rate_format" },
+
         { data : "dcf_values_5y.growth_value" },
         { data : "dcf_values_5y.terminal_value" },
         { data : "dcf_values_5y.fair_value" },
@@ -222,364 +190,48 @@ function column_builder(){
         { data : "dcf_values_15y.terminal_value" },
         { data : "dcf_values_15y.fair_value" },
         
-        // { data : "stockdata.0.fcf_format" },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.stockdata[0].fcf_format != 'NaN'){
-                    return `${row.stockdata[0].fcf_format}`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.stockdata[0].fcf_yield != null){
-                    return `${row.stockdata[0].fcf_yield}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.fcf_growth_1 != null){
-                    return `${row.fcf_growth_1}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.fcf_growth_3 != null){
-                    return `${row.fcf_growth_3}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.fcf_growth_5 != null){
-                    return `${row.fcf_growth_5}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.fcf_growth_10 != null){
-                    return `${row.fcf_growth_10}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
-            render : function(data, type, row, meta){
-                return calculate_average(row.stockdata, 'capeXfcf_format', 1)
-            }
-        },
-        {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
-            render : function(data, type, row, meta){
-                return calculate_average(row.stockdata, 'capeXfcf_format', 5)
-            }
-        },
-        {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
-            render : function(data, type, row, meta){
-                return calculate_average(row.stockdata, 'capeXfcf_format', 10)
-            }
-        },
-        {   data : null, orderDataType: 'Dom-Text', type: 'numeric',
-            render : function(data, type, row, meta){
-                return calculate_average(row.stockdata, 'capeXae_format', 1)
-            }
-        },
-        {   data : null, orderDataType: 'Dom-Text', type: 'numeric',
-            render : function(data, type, row, meta){
-                return calculate_average(row.stockdata, 'capeXae_format', 5)
-            }
-        },
-        {   data : null , orderDataType: 'Dom-Text', type: 'numeric',
-            render : function(data, type, row, meta){
-                return calculate_average(row.stockdata, 'capeXae_format', 10)
-            }
-        },
+        { data : "stockdata.0.fcf_format" },
+        { data : "stockdata.0.fcf_yield" },
+        { data : "fcf_growth_1" },
+        { data : "fcf_growth_3" },
+        { data : "fcf_growth_5" },
+        { data : "fcf_growth_10" },
+
+        { data : "stockdata.0.capex"},
+        { data : "capeXfcfAverage5"},
+        { data : "capeXfcfAverage10"},
+        { data : "stockdata.0.capeXae_format"},
+        { data : "capeXaeAverage5" },
+        { data : "capeXaeAverage10" },
         { data : "stockdata.0.fcfXae_format" },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.price_growth_1 != null){
-                    return `${row.price_growth_1}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.price_growth_3 != null){
-                    return `${row.price_growth_3}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.price_growth_5 != null){
-                    return `${row.price_growth_5}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.price_growth_10 != null){
-                    return `${row.price_growth_10}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
+        { data : "price_growth_1" },
+        { data : "price_growth_3"},
+        { data : "price_growth_5" },
+        { data : "price_growth_10" },
 
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.so_change_1 != null){
-                    return `${row.so_change_1}`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.so_change_3 != null){
-                    return `${row.so_change_3}`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.so_change_5 != null){
-                    return `${row.so_change_5}`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.so_change_10 != null){
-                    return `${row.so_change_10}`
-                }
-                else{
-                    return null
-                }
-            }
-        },
+        { data : "so_change_1" },
+        { data : "so_change_3" },
+        { data : "so_change_5" },
+        { data : "so_change_10" },
 
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.soChangePercent_1 != null){
-                    return `${Math.round((row.soChangePercent_1 * 100)*100)/100}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.soChangePercent_3 != null){
-                    return `${Math.round((row.soChangePercent_3 * 100)*100)/100}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.soChangePercent_5 != null){
-                    return `${Math.round((row.soChangePercent_5 * 100)*100)/100}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.soChangePercent_10 != null){
-                    return `${Math.round((row.soChangePercent_10 * 100)*100)/100}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.revenue_growth_1 != null){
-                    return `${row.revenue_growth_1}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.revenue_growth_3 != null){
-                    return `${row.revenue_growth_3}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.revenue_growth_5 != null){
-                    return `${row.revenue_growth_5}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.revenue_growth_10 != null){
-                    return `${row.revenue_growth_10}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
+        { data : "soChangePercent_1"},
+        { data : "soChangePercent_3"},
+        { data : "soChangePercent_5"},
+        { data : "soChangePercent_10"},
 
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.aebitda_growth_1 != null){
-                    return `${row.aebitda_growth_1}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.aebitda_growth_3 != null){
-                    return `${row.aebitda_growth_3}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.aebitda_growth_5 != null){
-                    return `${row.aebitda_growth_5}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.aebitda_growth_10 != null){
-                    return `${row.aebitda_growth_10}%`
-                }
-                else{
-                    return null
-                }
-            }
-        },
+        { data : "revenue_growth_1"},
+        { data : "revenue_growth_3"},
+        { data : "revenue_growth_5"},
+        { data : "revenue_growth_10"},
 
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.stockdata[0].roic_format == 'Missing Required information to format' || row.stockdata[0].roic_format == 'NaN'){
-                    return null
-                }
-                else{
-                    return row.stockdata[0].roic_format
-                }
-               
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.stockdata[0].wacc_format == 'Missing Required information to format' || row.stockdata[0].wacc_format == 'NaN'){
-                    return null
-                }
-                else{
-                    return row.stockdata[0].wacc_format
-                }
-               
-            }
-        },
-        {   data : null,
-            orderable: true,
-            render: function( data, type, row, meta ) {
-                if(row.stockdata[0].roicwacc_format == 'Missing Required information to format' || row.stockdata[0].roicwacc_format == 'NaN'){
-                    return null
-                }
-                else{
-                    return row.stockdata[0].roicwacc_format
-                }
-               
-            }
-        },
+        { data : "aebitda_growth_1"},
+        { data : "aebitda_growth_3"},
+        { data : "aebitda_growth_5"},
+        { data : "aebitda_growth_10"},
+
+        { data : "stockdata.0.roic_format" },
+        { data : "stockdata.0.wacc_format" },
+        { data : "stockdata.0.roicwacc_format" },
     ]
     return columns
 }
