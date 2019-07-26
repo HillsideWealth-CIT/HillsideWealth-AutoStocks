@@ -17,6 +17,7 @@ var column_list = ['check',
     'Yield',
 
     'Comment',
+    'Ownership',
     'Emoticon',
     'Categories',
 

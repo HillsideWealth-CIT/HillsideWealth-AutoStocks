@@ -36,7 +36,7 @@ function fill_0(field) {
  * @param {Float} price 
  * @param {Float} gf_rating 
  */
-function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating) {
+function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership) {
     //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
     // console.log(fill_0(ms_1_star))
     let edits = {};
@@ -67,22 +67,26 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                         <option value="😫">😫</option>
                         <option value="💩">💩</option>
                     </select>
-                </div>        
+                </div> 
+                <div class="col">
+                    <label for="ownership">Ownership %</label>
+                    <input id="ownership" type="text" class="form-control" value="${fill_0(ownership)}">
+                </div>       
             </div>
             <div class="row">
                 <div class="col">
                     <label for="ms_1_star">MS 1 Star</label>
-                    <input id="ms_1_star" type="text" class="form-control" value="${fill_0(ms_1_star)}">
+                    <input id="ms_1_star" type="text" class="form-control" value="$${fill_0(ms_1_star)}">
                 </div>
                 <div class="col">
                     <label for="ms_5_star">MS 5 Star</label>
-                    <input id="ms_5_star" type="text" class="form-control" value="${fill_0(ms_5_star)}">
+                    <input id="ms_5_star" type="text" class="form-control" value="$${fill_0(ms_5_star)}">
                 </div>        
             </div>
             <div class="row">
                 <div class="col">
                     <label for="ms_fair_value">MS Fair Value</label>
-                    <input id="ms_fair_value" type="text" class="form-control" value="${fill_0(ms_fv)}">
+                    <input id="ms_fair_value" type="text" class="form-control" value="$${fill_0(ms_fv)}">
                 </div>
                 <div class="col">
                     <label for="ms_moat">MS Moat</label>
@@ -101,7 +105,7 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                 </div>
                 <div class="col">
                     <label for="cur_price">Current Price</label>
-                    <input id="cur_price" type="text" class="form-control" value="${price}">
+                    <input id="cur_price" type="text" class="form-control" value="$${price}">
                 </div>
             </div>
             <div class="row>
@@ -115,6 +119,8 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
         ).then((result) => {
             if (!result.dismiss) {
                 edits.id = id;
+                console.log($('#ownership').val().replace().replace(/[^a-z0-9,. ]/gi, ''))
+                edits.ownership = $('#ownership').val().replace().replace(/[^a-z0-9,. ]/gi, '')
                 edits.comment = $('#Comment').val();
                 edits.ms_moat = $('#ms_moat').val();
                 edits.ms_fair_value = $('#ms_fair_value').val().replace(/[^a-z0-9,. ]/gi, '');
@@ -143,8 +149,8 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
  * @param {String} price 
  * @param {String} gf_rating 
  */
-function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating) {
-    edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating).then((resolve) => {
+function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership) {
+    edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership).then((resolve) => {
         ajax_Call(resolve, '/edits').then((server_resolve) => {
             $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
         })
@@ -724,7 +730,7 @@ function createAggregation() {
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label>Add [!] At The End For greatest to least</label>
+                        <label>Add [ !] At The End For greatest to least</label>
                     </div>
                 </div>
 
@@ -828,10 +834,10 @@ function settingAggregation(columnNum, ver) {
             }).then(result => {
                 if (!result.dismiss) {
                     // (ver) ? sendColumnData(result.value.split(', '), columnNum) : editAggregations(data, result);
-                     (ver == 'set') ? sendColumnData(result.value.split(', '), columnNum)
-                    :(ver == 'edit') ? editAggregations(data, result)
-                    :(ver == 'delete') ? deleteAggregations(data, result)
-                    : console.log("Error")
+                    (ver == 'set') ? sendColumnData(result.value.split(', '), columnNum)
+                        : (ver == 'edit') ? editAggregations(data, result)
+                            : (ver == 'delete') ? deleteAggregations(data, result)
+                                : console.log("Error")
                 }
             })
 
@@ -868,16 +874,9 @@ function sendColumnData(valueList, columnNum) {
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            // for (i in data.symbols) {
-            //     console.log(data.symbols[i])
-            //     console.log($table.row(document.getElementById(`${data.symbols[i]}`)).index())
-            //     let rowNum = $table.row(document.getElementById(`${data.symbols[i]}`)).index()
-            //     $table.cell({ row: rowNum, column: columnNum }).data(data.score[i]).invalidate()
-            // }
-            $table.rows().every( function (index) {
-                // console.log($table.cell({row: index, column: 1}).data())
-                let stockIndex = data.symbols.indexOf($table.cell({row: index, column: 1}).data())
-                $table.cell({row: index, column: columnNum}).data(data.score[stockIndex]).invalidate()
+            $table.rows().every(function (index) {
+                let stockIndex = data.symbols.indexOf($table.cell({ row: index, column: 1 }).data())
+                $table.cell({ row: index, column: columnNum }).data(data.score[stockIndex]).invalidate()
             })
             $table.draw()
         })
@@ -1015,7 +1014,7 @@ function editAggregations(data, result) {
             </div>
             <div class="row">
                 <div class="col">
-                    <label>Add [!] At The End For greatest to least</label>
+                    <label>Add [ !] At The End For greatest to least</label>
                 </div>
             </div>
             ${SWAL_AggregationStringSet(data[0].aggregate_string.split(', '))}

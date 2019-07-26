@@ -799,6 +799,8 @@ function format_data(stock){
             }
         }
 
+        if(!stock.ownership){stock.ownership = '0%';}
+        else(stock.ownership = `${stock.ownership}%`)
         stock.capeXfcfAverage5 = calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5)
         stock.capeXfcfAverage10 = calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10)
 
