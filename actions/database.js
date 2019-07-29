@@ -310,7 +310,6 @@ const editAggregate = async(username, aggregate_string, name) => {
 }
 
 const deleteAggregate = async(id) => {
-    console.log(id)
     return await runQuery(`DELETE FROM aggregation where aggregation_id = $1`, [id])
 }
 
@@ -357,7 +356,7 @@ function getdata(stocks, stockdata){
             symbol: stocks.rows[i].symbol,
             stock_name: stocks.rows[i].stock_name,
             stocksector:stocks.rows[i].sector,
-            stock_current_price: `${stocks.rows[i].current_price}`,
+            stock_current_price: `$${stocks.rows[i].current_price}`,
             note: stocks.rows[i].note,
             enabled: stocks.rows[i].enabled,
             stockdata: stockdata.rows.filter(data => data.stock_id == stocks.rows[i].stock_id),

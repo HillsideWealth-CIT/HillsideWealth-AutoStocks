@@ -3,9 +3,9 @@
  * @param {String} symbol - The Stock Symbol
  */
 function open_chart(symbol) {
-    window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`)
-    return
-};
+    window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`);
+    return;
+}
 
 /**
  * Determines if a field is null and fills it with 0
@@ -14,11 +14,11 @@ function open_chart(symbol) {
  */
 function fill_0(field) {
     if (field == 'null') {
-        return 0
+        return 0;
     }
 
     else {
-        return field
+        return field;
     }
 }
 
@@ -76,17 +76,17 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
             <div class="row">
                 <div class="col">
                     <label for="ms_1_star">MS 1 Star</label>
-                    <input id="ms_1_star" type="text" class="form-control" value="$${fill_0(ms_1_star)}">
+                    <input id="ms_1_star" type="text" class="form-control" value="${fill_0(ms_1_star)}">
                 </div>
                 <div class="col">
                     <label for="ms_5_star">MS 5 Star</label>
-                    <input id="ms_5_star" type="text" class="form-control" value="$${fill_0(ms_5_star)}">
+                    <input id="ms_5_star" type="text" class="form-control" value="${fill_0(ms_5_star)}">
                 </div>        
             </div>
             <div class="row">
                 <div class="col">
                     <label for="ms_fair_value">MS Fair Value</label>
-                    <input id="ms_fair_value" type="text" class="form-control" value="$${fill_0(ms_fv)}">
+                    <input id="ms_fair_value" type="text" class="form-control" value="${fill_0(ms_fv)}">
                 </div>
                 <div class="col">
                     <label for="ms_moat">MS Moat</label>
@@ -105,7 +105,7 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                 </div>
                 <div class="col">
                     <label for="cur_price">Current Price</label>
-                    <input id="cur_price" type="text" class="form-control" value="$${price}">
+                    <input id="cur_price" type="text" class="form-control" value="${price}">
                 </div>
             </div>
             <div class="row>
@@ -119,8 +119,7 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
         ).then((result) => {
             if (!result.dismiss) {
                 edits.id = id;
-                console.log($('#ownership').val().replace().replace(/[^a-z0-9,. ]/gi, ''))
-                edits.ownership = $('#ownership').val().replace().replace(/[^a-z0-9,. ]/gi, '')
+                edits.ownership = $('#ownership').val().replace(/[^a-z0-9,. ]/gi, '');
                 edits.comment = $('#Comment').val();
                 edits.ms_moat = $('#ms_moat').val();
                 edits.ms_fair_value = $('#ms_fair_value').val().replace(/[^a-z0-9,. ]/gi, '');
@@ -129,11 +128,11 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                 edits.emoticon = $('#emote').val();
                 edits.jdv = $('#jdv').val();
                 edits.price = $('#cur_price').val().replace(/[^a-z0-9,. ]/gi, '');
-                resolve(edits)
+                resolve(edits);
             }
-        })
-    })
-};
+        });
+    });
+}
 
 /**
  * Opens the edit menu then passes data to the server
@@ -153,9 +152,9 @@ function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
     edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership).then((resolve) => {
         ajax_Call(resolve, '/edits').then((server_resolve) => {
             $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
-        })
-    })
-};
+        });
+    });
+}
 
 /**
  * Opens a menu that calculates dfc's
@@ -235,22 +234,22 @@ function calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv) {
                     </div>
             </div>
                 `,
-        })
-    })
-};
+        });
+    });
+}
 
 function dfcAverage(arrList) {
     let total = 0;
     let counter = 0;
     let finalString = '';
-    for (i in arrList) {
+    for (let i in arrList) {
         if (arrList[i] != 'null') {
-            total += parseFloat(arrList[i])
-            counter++
-            finalString = `${finalString} + ${arrList[i]}`
+            total += parseFloat(arrList[i]);
+            counter++;
+            finalString = `${finalString} + ${arrList[i]}`;
         }
     }
-    return `${finalString.substr(2)} / ${counter} = ${Math.round((total) * 100) / 100}`
+    return `${finalString.substr(2)} / ${counter} = ${Math.round((total) * 100) / 100}`;
 }
 
 /**
@@ -266,10 +265,10 @@ function dfcAverage(arrList) {
  */
 function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty) {
     //console.log(`${eps} ${gr} ${tgr} ${dr} ${gy} ${ty} `)
-    let fv = dcf(eps, Math.round((gr5 / 100) * 100000) / 100000, tgr, dr, gy, ty)
+    let fv = dcf(eps, Math.round((gr5 / 100) * 100000) / 100000, tgr, dr, gy, ty);
     // console.log(fv)
-    calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv)
-};
+    calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv);
+}
 
 /**
  * calculates on input change
@@ -280,15 +279,14 @@ function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty) {
 function eps_onchange(gr5, gr10, gr15) {
     if (isNaN($('#gr_form').val()) == true) {
         if ($('#gr_form').val() == 'years 5') {
-            $('#gr_form').val(gr5)
+            $('#gr_form').val(gr5);
         }
         else if ($('#gr_form').val() == 'years 10') {
-            $('#gr_form').val(gr10)
+            $('#gr_form').val(gr10);
         }
         else if ($('#gr_form').val() == 'years 15') {
-            $('#gr_form').val(gr15)
+            $('#gr_form').val(gr15);
         }
-
     }
     dcf_results = dcf(
         $('#eps_form').val(),
@@ -297,11 +295,11 @@ function eps_onchange(gr5, gr10, gr15) {
         $('#dr_form').val() / 100,
         $('#gy_form').val(),
         $('#ty_form').val(),
-    )
-    $('#gv_form').val(dcf_results.growth_value)
-    $('#tv_form').val(dcf_results.terminal_value)
-    $('#fv_form').val(dcf_results.fair_value)
-};
+    );
+    $('#gv_form').val(dcf_results.growth_value);
+    $('#tv_form').val(dcf_results.terminal_value);
+    $('#fv_form').val(dcf_results.fair_value);
+}
 
 /**
  * Sends changes for the dfc options to the server
@@ -309,10 +307,10 @@ function eps_onchange(gr5, gr10, gr15) {
 function calc_edit() {
 
     let stock_id_list = [];
-    let selected = $table.rows('.selected').data()
-    for (i in selected) {
+    let selected = $table.rows('.selected').data();
+    for (let i in selected) {
         if (selected[i].symbol) {
-            stock_id_list.push(selected[i].stock_id)
+            stock_id_list.push(selected[i].stock_id);
         }
         else {
             break;
@@ -320,18 +318,16 @@ function calc_edit() {
     }
     if (stock_id_list.length != 0) {
         calc_edit_menu().then((values) => {
-            let to_send = { stock_id_list: stock_id_list, values: values }
-            console.log(values)
+            let to_send = { stock_id_list: stock_id_list, values: values };
             ajax_Call(to_send, '/calc_edit').then((res) => {
-                console.log(res)
                 if (res == "OK") {
                     location.reload();
                 }
-            })
-        })
+            });
+        });
     }
     else {
-        alert("NO ROWS SELECTED")
+        alert("NO ROWS SELECTED");
     }
 }
 
@@ -378,18 +374,18 @@ function calc_edit_menu() {
                 // values.dr = document.getElementById('dr_form').value / 100;
                 // values.gy = document.getElementById('gy_form').value;
                 // values.ty = document.getElementById('ty_form').value;
-                for (i in arr) {
+                for (let i in arr) {
                     if (document.getElementById(`${arr[i]}_form`).value.length != 0) {
-                        values[arr[i]] = document.getElementById(`${arr[i]}_form`).value
+                        values[arr[i]] = document.getElementById(`${arr[i]}_form`).value;
                     }
                     else {
                         values[arr[i]] = 5;
                     }
                 }
-                resolve(values)
+                resolve(values);
             }
-        })
-    })
+        });
+    });
 }
 
 function dcf(eps, growth_rate, terminal_growth, discount_rate, g_years = 10, t_years = 10) {
@@ -397,13 +393,13 @@ function dcf(eps, growth_rate, terminal_growth, discount_rate, g_years = 10, t_y
     let results = {};
     let x = (1 + parseFloat(growth_rate)) / (1 + parseFloat(discount_rate));
     let y = (1 + parseFloat(terminal_growth)) / (1 + parseFloat(discount_rate));
-    results['growth_value'] = dfc_growth(x, parseFloat(eps), g_years);
-    results['terminal_value'] = dcf_terminal(x, y, parseFloat(eps), g_years, t_years);
-    results['fair_value'] = Math.round((results.growth_value + results.terminal_value) * 100) / 100;
-    results['growth_value'] = Math.round((results.growth_value) * 100) / 100;
-    results['terminal_value'] = Math.round((results.terminal_value) * 100) / 100;
+    results.growth_value = dfc_growth(x, parseFloat(eps), g_years);
+    results.terminal_value = dcf_terminal(x, y, parseFloat(eps), g_years, t_years);
+    results.fair_value = Math.round((results.growth_value + results.terminal_value) * 100) / 100;
+    results.growth_value = Math.round((results.growth_value) * 100) / 100;
+    results.terminal_value = Math.round((results.terminal_value) * 100) / 100;
     return results;
-};
+}
 
 /**
  * calculates the growth value
@@ -416,11 +412,11 @@ function dfc_growth(x, eps, years) {
     let growth_value = 0;
     //console.log(`X: ${x} ; Y: ${y}`)
     for (let i = 1; i <= years; i++) {
-        let pow = Math.pow(x, i)
-        growth_value += pow * eps
+        let pow = Math.pow(x, i);
+        growth_value += pow * eps;
     }
     return growth_value;
-};
+}
 
 /**
  * @param {float} x - growth rate devided by discount rate
@@ -433,13 +429,12 @@ function dfc_growth(x, eps, years) {
 function dcf_terminal(x, y, eps, g_years, t_years) {
     let terminal_value = 0;
     for (let i = 1; i <= t_years; i++) {
-        part1 = Math.pow(x, g_years)
-        part2 = Math.pow(y, i)
-        terminal_value += part1 * part2 * eps
-        //console.log(part1*part2*eps)
+        part1 = Math.pow(x, g_years);
+        part2 = Math.pow(y, i);
+        terminal_value += part1 * part2 * eps;
     }
-    return terminal_value
-};
+    return terminal_value;
+}
 
 /**
  * displays historical data in a sweet alert
@@ -448,8 +443,7 @@ function dcf_terminal(x, y, eps, g_years, t_years) {
  * @param {Integer} years 
  */
 function show_financials(symbol, stockdata, years) {
-    // console.log(stockdata)
-    let financials = ""
+    let financials = "";
     for (let i = 1; i <= years; i++) {
         try {
             financials += `<tr>
@@ -475,9 +469,9 @@ function show_financials(symbol, stockdata, years) {
             <td>${stockdata[i].capeXae_format}</td>
             <td>${stockdata[i].datestring}</td>
             </tr>
-            `
+            `;
         }
-        catch{
+        catch(e){
             break;
         }
     }
@@ -516,27 +510,25 @@ function show_financials(symbol, stockdata, years) {
                 ${financials}
             </table>
             `
-    })
-};
+    });
+}
 
 /**
  * Hides all rows in the table but the selected ones
  */
 function show_selected() {
     to_show = [];
-    let selected = $table.rows('.selected').data()
-    for (i in selected) {
+    let selected = $table.rows('.selected').data();
+    for (let i in selected) {
         if (selected[i].symbol) {
-            to_show.push(selected[i].symbol)
+            to_show.push(selected[i].symbol);
         }
         else {
             break;
         }
     }
-    console.log(to_show)
-    let mergedVal = to_show.join('|')
+    let mergedVal = to_show.join('|');
     $table.column(1).search(mergedVal, true).draw();
-    // $table.column(1).search("GOOGL|MSFT", true).draw();
 }
 
 /**
@@ -544,17 +536,16 @@ function show_selected() {
  */
 function share() {
     to_share = [];
-    let selected = $table.rows('.selected').data()
-    for (i in selected) {
+    let selected = $table.rows('.selected').data();
+    for (let i in selected) {
         if (selected[i].symbol) {
-            to_share.push(selected[i].stock_id)
+            to_share.push(selected[i].stock_id);
         }
         else {
             break;
         }
     }
-
-    ajax_Call(to_share, '/share')
+    ajax_Call(to_share, '/share');
 }
 
 /**
@@ -566,26 +557,24 @@ function share() {
  * @param {String} link 
  */
 function counter_ajax(active_num, end_num, symbols, ids, link) {
-    // console.log(`${active_num} ${end_num}`)
-    // console.log(arr[active_num])
-    Swal.update({ text: `Progress: ${active_num}/${end_num}` })
+    Swal.update({ text: `Progress: ${active_num}/${end_num}` });
     if (active_num == end_num) {
         Swal.update({
             type: 'success',
             text: 'Update Complete'
-        })
+        });
         setTimeout(function () {
             Swal.close();
-        }, 3000)
-        return
-    };
+        }, 3000);
+        return;
+    }
     $.ajax({
         type: 'POST',
         url: link,
         data: { action: [{ symbol: symbols[active_num], stock_id: ids[active_num] }] },
         success: function (resolved) {
             // alert(JSON.stringify(data))
-            console.log(resolved.data)
+            console.log(resolved.data);
             try {
                 // console.log(resolved.data[0])
                 $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
@@ -593,9 +582,9 @@ function counter_ajax(active_num, end_num, symbols, ids, link) {
             catch (e) {
                 // console.log(e)
             }
-            counter_ajax(active_num + 1, end_num, symbols, ids, link)
+            counter_ajax(active_num + 1, end_num, symbols, ids, link);
         }
-    })
+    });
 }
 
 /**
@@ -606,32 +595,32 @@ function counter_ajax(active_num, end_num, symbols, ids, link) {
  * @param {String} link 
  */
 function adder_ajax(active_num, end_num, list, link) {
-    swal.update({ text: `Progress: ${active_num}/${end_num}` })
+    swal.update({ text: `Progress: ${active_num}/${end_num}` });
     if (active_num == end_num) {
         Swal.update({
             type: 'success',
             text: 'Update Complete'
-        })
+        });
         setTimeout(function () {
             Swal.close();
-        }, 3000)
-        return
-    };
+        }, 3000);
+        return;
+    }
     $.ajax({
         type: 'POST',
         url: link,
         data: { action: [{ 'symbol': list[active_num].toUpperCase(), 'comment': '', 'company': '', 'exchange': '' }] },
         success: function (stockinfo) {
-            console.log(stockinfo)
+            console.log(stockinfo);
             try {
                 $table.row.add(stockinfo.data[0]).draw();
             }
             catch (e) {
-                console.log(e)
+                console.log(e);
             }
-            adder_ajax(active_num + 1, end_num, list, link)
+            adder_ajax(active_num + 1, end_num, list, link);
         }
-    })
+    });
 }
 
 /**
@@ -641,19 +630,19 @@ function set_categories() {
     to_set = [];
     categories = [];
     symbols = [];
-    let selected = $table.rows('.selected').data()
-    console.log(selected)
-    for (i in selected) {
+    let selected = $table.rows('.selected').data();
+    console.log(selected);
+    for (let i in selected) {
         if (selected[i].symbol) {
-            to_set.push(selected[i].stock_id)
-            symbols.push(selected[i].symbol)
+            to_set.push(selected[i].stock_id);
+            symbols.push(selected[i].symbol);
         }
         else {
             break;
         }
     }
     if (to_set.length == 0) {
-        alert('MUST SELECT AT LEAST ONE!')
+        alert('MUST SELECT AT LEAST ONE!');
     }
     else {
         Swal.fire({
@@ -669,19 +658,17 @@ function set_categories() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ stocks_list: to_set, categories: user_input.toUpperCase(), symbols: symbols })
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data)
-                        for (i in data) {
-                            $table.row(document.getElementById(`${data[i][0].symbol}`)).data(data[i][0]).invalidate();
-                        }
-                        $table.columns.adjust().draw(false)
-                    })
-
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    for (let i in data) {
+                        $table.row(document.getElementById(`${data[i][0].symbol}`)).data(data[i][0]).invalidate();
+                    }
+                    $table.columns.adjust().draw(false);
+                });
             }
-        })
+        });
     }
-    console.log(to_set)
 }
 
 /**
@@ -694,17 +681,17 @@ function value_calculator(val, price) {
     // console.log(`${val} ${price}`)
     if (val != 'null' && price != 'null') {
         if (price <= val * 1.10 && price >= val * 0.9) {
-            return 'Expected'
+            return 'Expected';
         }
         else if (price >= val * 1.10) {
-            return 'OverValued'
+            return 'OverValued';
         }
         else {
-            return 'UnderValued'
+            return 'UnderValued';
         }
     }
     else {
-        return 'Missing Values'
+        return 'Missing Values';
     }
 }
 
@@ -785,11 +772,11 @@ function createAggregation() {
             `,
     }).then((result) => {
         if (!result.dismiss) {
-            to_send.name = document.getElementById('nameForm').value
-            to_send.columns = []
-            for (i of 10) {
+            to_send.name = document.getElementById('nameForm').value;
+            to_send.columns = [];
+            for (let i of 10) {
                 if (document.getElementById(`columnForm${i + 1}`).value != "") {
-                    to_send.columns.push(document.getElementById(`columnForm${i + 1}`).value)
+                    to_send.columns.push(document.getElementById(`columnForm${i + 1}`).value);
                 }
             }
             fetch('/aggregation/create', {
@@ -798,21 +785,21 @@ function createAggregation() {
                 body: JSON.stringify(to_send)
             }).then(response => response.json())
                 .then(data => {
-                    console.log(data)
-                })
+                    console.log(data);
+                });
         }
-    })
+    });
 }
 
 function createColumnList() {
-    let optionString = '<datalist id="columnList">'
-    let tableList = document.getElementById('headerRow').childNodes
+    let optionString = '<datalist id="columnList">';
+    let tableList = document.getElementById('headerRow').childNodes;
     for (let i = 0; i < tableList.length; i++) {
         if (tableList[i].innerHTML != '') {
-            optionString += `<option value="${tableList[i].innerHTML}">`
+            optionString += `<option value="${tableList[i].innerHTML}">`;
         }
     }
-    return `${optionString}</datalist>`
+    return `${optionString}</datalist>`;
 }
 
 function settingAggregation(columnNum, ver) {
@@ -823,7 +810,7 @@ function settingAggregation(columnNum, ver) {
         .then(response => response.json())
         .then(data => {
             // console.log(data)
-            createSelector(data)
+            createSelector(data);
             Swal.fire({
                 title: 'Select Aggregate',
                 input: 'select',
@@ -837,32 +824,31 @@ function settingAggregation(columnNum, ver) {
                     (ver == 'set') ? sendColumnData(result.value.split(', '), columnNum)
                         : (ver == 'edit') ? editAggregations(data, result)
                             : (ver == 'delete') ? deleteAggregations(data, result)
-                                : console.log("Error")
+                                : console.log("Error");
                 }
-            })
-
-        })
+            });
+        });
 }
 
 function createSelector(arr) {
-    let selectors = {}
-    for (i in arr) {
-        selectors[`${arr[i].aggregate_string}`] = arr[i].name
+    let selectors = {};
+    for (let i in arr) {
+        selectors[`${arr[i].aggregate_string}`] = arr[i].name;
     }
-    return selectors
+    return selectors;
 }
 
 
 function sendColumnData(valueList, columnNum) {
     let toSend = [];
-    let tableRows = $table.rows().data()
+    let tableRows = $table.rows().data();
 
-    for (j in valueList) {
-        let columnHeader = valueList[j].split(' !')[0]
-        toSend.push({ row: valueList[j], values: [] })
-        for (i in tableRows) {
+    for (let j in valueList) {
+        let columnHeader = valueList[j].split(' !')[0];
+        toSend.push({ row: valueList[j], values: [] });
+        for (let i in tableRows) {
             if (tableRows[i].symbol) {
-                toSend[j].values.push(FAD(tableRows[i], columnHeader))
+                toSend[j].values.push(FAD(tableRows[i], columnHeader));
             }
         }
     }
@@ -873,13 +859,13 @@ function sendColumnData(valueList, columnNum) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            console.log(data);
             $table.rows().every(function (index) {
-                let stockIndex = data.symbols.indexOf($table.cell({ row: index, column: 1 }).data())
-                $table.cell({ row: index, column: columnNum }).data(data.score[stockIndex]).invalidate()
-            })
-            $table.draw()
-        })
+                let stockIndex = data.symbols.indexOf($table.cell({ row: index, column: 1 }).data());
+                $table.cell({ row: index, column: columnNum }).data(data.score[stockIndex]).invalidate();
+            });
+            $table.draw();
+        });
 
 }
 
@@ -977,16 +963,16 @@ function FAD(data, column) {
         'ROIC %': 'stockdata roic_format',
         'WACC %': 'stockdata wacc_format',
         'ROIC-WACC': 'stockdata roicwacc_format',
-    }
-    return { symbol: data.symbol, value: data[keyvalues[column]] }
+    };
+    return { symbol: data.symbol, value: data[keyvalues[column]].replace(/[^a-z0-9,. ]/gi, '') };
 }
 
 function editAggregations(data, result) {
-    let to_send = {}
+    let to_send = {};
     let selected = '';
-    for (i in data) {
+    for (let i in data) {
         if (result.value == data[i].aggregate_string) {
-            selected = result.value
+            selected = result.value;
             break;
         }
     }
@@ -1022,11 +1008,11 @@ function editAggregations(data, result) {
             `
             }).then((result) => {
                 if (!result.dismiss) {
-                    to_send.name = document.getElementById('nameForm').value
-                    to_send.columns = []
-                    for (i of 10) {
+                    to_send.name = document.getElementById('nameForm').value;
+                    to_send.columns = [];
+                    for (let i of 10) {
                         if (document.getElementById(`columnForm${i + 1}`).value != "") {
-                            to_send.columns.push(document.getElementById(`columnForm${i + 1}`).value)
+                            to_send.columns.push(document.getElementById(`columnForm${i + 1}`).value);
                         }
                     }
                     fetch('/aggregation/edit', {
@@ -1035,11 +1021,11 @@ function editAggregations(data, result) {
                         body: JSON.stringify(to_send)
                     }).then(response => response.json())
                         .then(data => {
-                            console.log(data)
-                        })
+                            console.log(data);
+                        });
                 }
-            })
-        })
+            });
+        });
 
     function SWAL_AggregationStringSet(aggregate_string) {
         let div_string;
@@ -1050,14 +1036,14 @@ function editAggregations(data, result) {
                         <div class="row mt-3">
                             <div class="col">
                             <input id="columnForm${i + 1}" type="text" list="columnList" class="form-control" value="${aggregate_string[i]}">
-                            </div>`
+                            </div>`;
                 }
                 else if (i % 2 == 1) {
                     div_string = div_string + `
                         <div class="col">
                         <input id="columnForm${i + 1}" type="text" list="columnList" class="form-control" value="${aggregate_string[i]}">
                         </div>
-                    </div>`
+                    </div>`;
                 }
             }
             else {
@@ -1066,28 +1052,28 @@ function editAggregations(data, result) {
                         <div class="row mt-3">
                             <div class="col">
                             <input id="columnForm${i + 1}" type="text" list="columnList" class="form-control">
-                            </div>`
+                            </div>`;
                 }
                 else if (i % 2 == 1) {
                     div_string = div_string + `
                     <div class="col">
                     <input id="columnForm${i + 1}" type="text" list="columnList" class="form-control">
                     </div>
-                </div>`
+                </div>`;
                 }
             }
 
         }
-        return (div_string)
+        return (div_string);
     }
 }
 
 function deleteAggregations(data, result) {
-    let to_send = {}
+    let to_send = {};
     let selected = '';
-    for (i in data) {
+    for (let i in data) {
         if (result.value == data[i].aggregate_string) {
-            selected = data[i].aggregation_id
+            selected = data[i].aggregation_id;
             break;
         }
     }
@@ -1098,6 +1084,6 @@ function deleteAggregations(data, result) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log('success')
-        })
+            console.log('success');
+        });
 }   

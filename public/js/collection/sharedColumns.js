@@ -1,4 +1,4 @@
-const perm = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+const perm = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 var column_list = ['check',
     'Symbol',
@@ -99,7 +99,7 @@ var column_list = ['check',
     'ROIC %',
     'WACC %',
     'ROIC-WACC',
-]
+];
 
 /**
  * Loops through columns and hides the undesired columns
@@ -111,112 +111,111 @@ function hide_loop(start, end, count = 0) {
     for (let i = count; i < total_columns; i++) {
         if (i >= end || i <= start) {
             if (perm.indexOf(i) == -1) {
-                $table.column(i).visible(false, false)
+                $table.column(i).visible(false, false);
             }
         }
-
         else {
-            $table.column(i).visible(true, false)
+            $table.column(i).visible(true, false);
         }
     }
 }
 
 function show_all() {
-    hide_loop(0, total_columns)
-    $table.columns.adjust().draw(false)
+    hide_loop(0, total_columns);
+    $table.columns.adjust().draw(false);
 }
 
 function basic_stats() {
     hide_loop(column_list.indexOf('Market Cap (M)') - 1,
-        column_list.indexOf('Effective Tax Rate') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('Effective Tax Rate') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function basic_info() {
     hide_loop(column_list.indexOf('Market Cap (M)') - 1,
-        column_list.indexOf('Date') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('Date') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function financials() {
     hide_loop(column_list.indexOf('Enterprise Value') - 1,
-        column_list.indexOf('Effective Tax Rate') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('Effective Tax Rate') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function show_values() {
     hide_loop(column_list.indexOf('Guru Rating') - 1,
-        column_list.indexOf('DCF Fair Value 15Y') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('DCF Fair Value 15Y') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function show_msguru() {
     hide_loop(column_list.indexOf('Guru Rating') - 1,
-        column_list.indexOf('MS 1* Price') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('MS 1* Price') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function show_dcf() {
     hide_loop(column_list.indexOf('EPS') - 1,
-        column_list.indexOf('DCF Fair Value 15Y') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('DCF Fair Value 15Y') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function all_growth() {
     hide_loop(column_list.indexOf('FCF (M)') - 1,
-        column_list.indexOf('FCF Growth(10Y)') + 1)
+        column_list.indexOf('FCF Growth(10Y)') + 1);
     hide_loop(column_list.indexOf('Price Growth (1y)') - 1,
-        column_list.indexOf('Price Growth (10y)') + 1, 50)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('Price Growth (10y)') + 1, 50);
+    $table.columns.adjust().draw(false);
 }
 
 function fcf_growth() {
     hide_loop(column_list.indexOf('FCF (M)') - 1,
-        column_list.indexOf('FCF Growth(10Y)') + 1)
+        column_list.indexOf('FCF Growth(10Y)') + 1);
     hide_loop(column_list.indexOf('FCF/aBITDA') - 1,
-        column_list.indexOf('FCF/aBITDA') + 1, 50)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('FCF/aBITDA') + 1, 50);
+    $table.columns.adjust().draw(false);
 }
 
 function price_growth() {
     hide_loop(column_list.indexOf('Price Growth (1y)') - 1,
-        column_list.indexOf('Price Growth (10y)') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('Price Growth (10y)') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function so_growth() {
     hide_loop(column_list.indexOf('S/O Change (1Y)(M)') - 1,
-        column_list.indexOf('S/O Change (10Y)(%)') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('S/O Change (10Y)(%)') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function rev_growth() {
     hide_loop(column_list.indexOf('Revenue Growth (1Y)') - 1,
-        column_list.indexOf('Revenue Growth (10Y)') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('Revenue Growth (10Y)') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function ae_growth() {
     hide_loop(column_list.indexOf('aEBITDA Growth(1Y)') - 1,
-        column_list.indexOf('aEBITDA Growth(10Y)') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('aEBITDA Growth(10Y)') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function asset_light() {
     hide_loop(column_list.indexOf('Capex (M)') - 1,
-        column_list.indexOf('FCF/aBITDA') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('FCF/aBITDA') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function capex() {
     hide_loop(column_list.indexOf('Capex (M)') - 1,
-        column_list.indexOf('Capex/aEBITDA 10Y') + 1)
-    $table.columns.adjust().draw(false)
+        column_list.indexOf('Capex/aEBITDA 10Y') + 1);
+    $table.columns.adjust().draw(false);
 }
 
 function profitability() {
     hide_loop(column_list.indexOf('ROIC %') - 1,
-        total_columns)
-    $table.columns.adjust().draw(false)
+        total_columns);
+    $table.columns.adjust().draw(false);
 }
 

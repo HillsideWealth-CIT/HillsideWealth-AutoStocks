@@ -13,9 +13,8 @@ function add(){
         showCancelButton: true,
         confirmButtonText: 'Add Stocks',
         preConfirm: (result) => {
-            let promises = []
             let stockstring = result.replace(/\s/g, "");
-            stocks = stockstring.split(',')
+            stocks = stockstring.split(',');
         }
     }).then((result) => {
         if(!result.dismiss){
@@ -23,37 +22,35 @@ function add(){
             type: 'success',
             title: 'Currently Saving To Database!',
             showConfirmButton: false
-        })
-        adder_ajax(0, stocks.length, stocks, '/append/shared')
+        });
+        adder_ajax(0, stocks.length, stocks, '/append/shared');
         }
-    })
-};
+    });
+}
 
 /**
  * Selected stocks get removed from the database
  */
 function remove(){
     let to_remove = [];
-    let selected = $table.rows('.selected').data()
-    for( i in selected ){
+    let selected = $table.rows('.selected').data();
+    for(let i in selected ){
         if(selected[i].symbol){
             if(selected[i].username == $('#username').attr('user')){
-                to_remove.push(selected[i].symbol)
+                to_remove.push(selected[i].symbol);
             }
         }   
         else{
             break;
         }
     }
-    console.log(to_remove)
     ajax_Call(to_remove, '/remove/shared').then((resolved) => {
-        console.log(resolved)
-            for(i in to_remove){
-                console.log(i)
-                $table.row(document.getElementById(`${to_remove[i]}`)).remove().draw()
+            for(let i in to_remove){
+                console.log(i);
+                $table.row(document.getElementById(`${to_remove[i]}`)).remove().draw();
             }
-    })
-};
+    });
+}
 
 /**
  * Updates All selected stocks
@@ -61,20 +58,17 @@ function remove(){
  */
 function update(link){
     to_update = [];
-    to_stock_id = []
-    let selected = $table.rows('.selected').data()
-    for( i in selected ){
+    to_stock_id = [];
+    let selected = $table.rows('.selected').data();
+    for(let i in selected ){
         if(selected[i].symbol){
-        to_update.push(selected[i].symbol)
-        to_stock_id.push(selected[i].username)
+        to_update.push(selected[i].symbol);
+        to_stock_id.push(selected[i].username);
         }   
         else{
             break;
         }
     }
-
-    console.log(to_update)
-    console.log(to_stock_id)
 
     Swal.fire({
         position:'center',
@@ -85,6 +79,6 @@ function update(link){
         showConfirmButton: false,
     });
 
-    counter_ajax(0, to_update.length, to_update, to_stock_id, `${link}/shared`)
+    counter_ajax(0, to_update.length, to_update, to_stock_id, `${link}/shared`);
 
-};
+}

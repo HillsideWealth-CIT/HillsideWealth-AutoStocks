@@ -66,3 +66,4 @@ typings/
 # vscode files
 .vscode/
 tempCodeRunnerFile.js
+.jshintrc
