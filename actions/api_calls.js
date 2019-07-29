@@ -149,7 +149,6 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     try { currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f]); }
                         catch { currentData.fcf = NaN; }
 
-                console.log(currentData)
                 currentStock.data.push(currentData)
             }
         } catch (err) {

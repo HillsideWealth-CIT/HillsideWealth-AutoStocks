@@ -1,23 +1,23 @@
-var $table
-var stockdb
-var total_columns
+var $table;
+var stockdb;
+var total_columns;
 
 $(document).ready(function(){
 Initialize_table();
-})
+});
 
 /**
  * Initializes table
  */
 function Initialize_table(){
     ajax_Call("init_shared", "/init_table").then((resolve) => {
-        stockdb = resolve.data
-        $table = fill_table(resolve.data)
+        stockdb = resolve.data;
+        $table = fill_table(resolve.data);
         // console.log(stockdb)
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
-    })
+    });
 }
 
 /**
@@ -40,7 +40,7 @@ function fill_table(data){
         scroller: true,
         order : [[9, 'desc']],
     });
-    return datatable
+    return datatable;
 }
 
 /**
@@ -51,44 +51,42 @@ function button_builder(){
         'selectAll', 'selectNone',
         {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove();}},
-        {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-sm", action: function(){update('update_prices')}},
+        {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-sm", action: function(){update('update_prices');}},
         {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-sm", action: function(){update('update_financials');}},
-        {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit()}},
+        {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
        
-        {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected()}},
-        {text: '<span class="fas fa-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories()}},
+        {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
+        {text: '<span class="fas fa-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
         {text: '<span class="fas fa-cog"></span> Aggregate', className:"btn-sm", extend: 'collection',
         buttons: [
-            { text:'Create', action: function(){createAggregation()} },
-            { text:'Set', action: function(){settingAggregation(7, 'set')} },
-            { text:'Edit', action: function(){settingAggregation(0,'edit')} },
-            { text:'Delete', action: function(){settingAggregation(0, 'delete')} },
+            { text:'Create', action: function(){createAggregation();} },
+            { text:'Set', action: function(){settingAggregation(7, 'set');} },
+            { text:'Edit', action: function(){settingAggregation(0,'edit');} },
+            { text:'Delete', action: function(){settingAggregation(0, 'delete');} },
         ]},
         {text: '<span class="fas fa-cog"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
-                { text:'<b>Show All</b>', action: function(){show_all()} },
-                { text:'<b>Basic Stats</b>', action: function(){basic_stats()} },
-                { text:'Basic Info', action: function(){basic_info()}},
-                { text:'Financials', action: function(){financials()}},
-                { text:'<b>Values</b>', action: function(){show_values()}},
-                { text:'MS/GURU', action: function(){show_msguru()}},
-                { text:'DCF', action: function(){show_dcf()}},
-                { text:'<b>Growth</b>', action: function(){all_growth()}},
-                { text:'FCF Growth', action: function(){fcf_growth()}},
-                { text:'Price Growth', action: function(){price_growth()}},
-                { text:'SO Growth', action: function(){so_growth()}},
-                { text:'Rev Growth', action: function(){rev_growth()}},
-                { text:'aEBITDA Growth', action: function(){ae_growth()} },
-                { text:'<b>Asset Light</b>', action: function(){asset_light()}},
-                { text:'CapEx', action: function(){capex()}},
-                { text: '<b>Profitability</b>', action: function(){profitability()}},
+                { text:'<b>Show All</b>', action: function(){show_all();}},
+                { text:'<b>Basic Stats</b>', action: function(){basic_stats();}},
+                { text:'Basic Info', action: function(){basic_info();}},
+                { text:'Financials', action: function(){financials();}},
+                { text:'<b>Values</b>', action: function(){show_values();}},
+                { text:'MS/GURU', action: function(){show_msguru();}},
+                { text:'DCF', action: function(){show_dcf();}},
+                { text:'<b>Growth</b>', action: function(){all_growth();}},
+                { text:'FCF Growth', action: function(){fcf_growth();}},
+                { text:'Price Growth', action: function(){price_growth();}},
+                { text:'SO Growth', action: function(){so_growth();}},
+                { text:'Rev Growth', action: function(){rev_growth();}},
+                { text:'aEBITDA Growth', action: function(){ae_growth();}},
+                { text:'<b>Asset Light</b>', action: function(){asset_light();}},
+                { text:'CapEx', action: function(){capex();}},
+                { text: '<b>Profitability</b>', action: function(){profitability();}},
             ]
         },
         'excel'
     ];
-    return buttons
-
-    //  ['selectAll', 'selectNone']
+    return buttons;
 }
 
 /**
@@ -104,7 +102,7 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 1: takes user to gurufocus graph
-                return `<button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>`
+                return `<button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>`;
             }    
         },
         {   data : null,
@@ -112,7 +110,7 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 2: Comments, emoticon, morning star, guru rating, JDV
-                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`.replace(/[\n\r]/g, "")
+                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`.replace(/[\n\r]/g, "");
             }    
         },
         {   data : null,
@@ -120,7 +118,7 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 3: DCF calculator
-                return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`
+                return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`;
             }    
         },
         {   data : null,
@@ -128,7 +126,7 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 4: 15 Year historical Financial Data
-                return `<button type="button" onclick='show_financials( "${row.symbol}" , ${JSON.stringify(row.stockdata)}, 15)' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`
+                return `<button type="button" onclick='show_financials( "${row.symbol}" , ${JSON.stringify(row.stockdata)}, 15)' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`;
             }    
         },
         { 
@@ -198,7 +196,7 @@ function column_builder(){
         { data : "fcf_growth_5" },
         { data : "fcf_growth_10" },
 
-        { data : "stockdata.0.capex"},
+        { data : "stockdata.0.capex_format"},
         { data : "capeXfcfAverage5"},
         { data : "capeXfcfAverage10"},
         { data : "stockdata.0.capeXae_format"},
@@ -233,27 +231,8 @@ function column_builder(){
         { data : "stockdata.0.roic_format" },
         { data : "stockdata.0.wacc_format" },
         { data : "stockdata.0.roicwacc_format" },
-    ]
-    return columns
-}
-
-/**
- * calculates the average of numbers
- * @param {JSON} data 
- * @param {String} column 
- * @param {Integer} years 
- */
-function calculate_average(data, column, years){
-    try{
-        let total = 0;
-        for(let i = 0; i < years; i++){
-            total += parseFloat(data[i][`${column}`])
-        }
-        return Math.round((total/years)*1000)/1000
-        }
-        catch{
-            return 'Missing Values'
-        }
+    ];
+    return columns;
 }
 
 /**
@@ -273,6 +252,6 @@ function ajax_Call(action, link) {
             url: link,
         }).done(function (returned_data) {
             resolve(returned_data);
-        })
-    })
+        });
+    });
 }

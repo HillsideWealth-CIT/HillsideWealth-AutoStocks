@@ -36,6 +36,7 @@ function dfc_growth(x, eps, years){
     }
     return growth_value;
 }
+
 /**
  * @param {float} x - growth rate devided by discount rate
  * @param {float} y - terminal growth rate devided by discount rate
@@ -44,7 +45,7 @@ function dfc_growth(x, eps, years){
  * @param {float} t_years - terminal growth years
  * @returns {float} terminal_value
  */
-dcf_terminal = (x, y, eps, g_years ,t_years) => {
+function dcf_terminal(x, y, eps, g_years ,t_years){
     let terminal_value = 0;
     for (let i = 1; i <= t_years; i ++){
         part1 = Math.pow(x,g_years)
@@ -97,7 +98,6 @@ function createAggregationString(arr) {
  * @returns {String}
  */
 function value_calculator(val, price){
-    // console.log(`${val} ${price}`)
     if(val != 'null'  && price != 'null'){
         if(price <= val * 1.10 && price >= val * 0.9){
             return 'Expected'
