@@ -83,7 +83,8 @@ app.get("/login", (request, response) => {
 
 app.get("/indicators", (request, response) => {
     response.render("indicators.hbs", {
-        in: true
+        in: true,
+        admin: (request.session.status == 'admin')
     });
 });
 
@@ -474,7 +475,6 @@ app.post('/aggregation/get', sessionCheck, statusCheck, (request, response) => {
 app.post('/aggregation/aggregate', sessionCheck, statusCheck, (request, response) => {
     let track = [];
     let symbols = [];
-    console.log(request.body[0])
     for (let i in request.body) {
         if (request.body[i].row.split(' !').length != 1) {
             trackPositions(track, symbols, sorter(request.body[i].values).reverse());
