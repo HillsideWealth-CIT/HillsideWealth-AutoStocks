@@ -328,29 +328,29 @@ app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
 /* Adds Stock to Personal Database */
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
     api_calls.gurufocusAdd(request.body.action, request.session.user)
-        .then((resolve) => {
-            db.get_added(request.body.action[0].symbol, request.session.user)
-                .then((res) => {
-                    res.forEach((stock) => {
-                        format_data(stock);
-                    });
-                    //fs.writeFileSync('test.json', JSON.stringify(res))
-                    response.send({ data: res });
-                });
-        })
-        .catch((reason) => console.log(reason));
+    .then((resolve) => {
+        db.get_added(request.body.action[0].symbol, request.session.user)
+        .then((res) => {
+            res.forEach((stock) => {
+                format_data(stock);
+            });
+            //fs.writeFileSync('test.json', JSON.stringify(res))
+            response.send({ data: res });
+        });
+    })
+    .catch((reason) => console.log(reason));
 });
 
 /* Adds Stock to Shared Database */
 app.post('/append/shared', sessionCheck, statusCheck, (request, response) => {
     api_calls.gurufocusAdd(request.body.action, request.session.user, true, true)
-        .then((resolve) => {
-            db.get_added(request.body.action[0].symbol, request.session.user)
-                .then((res) => {
-                    res.forEach((stock) => { format_data(stock); });
-                    response.send({ data: res });
-                });
+    .then((resolve) => {
+        db.get_added(request.body.action[0].symbol, request.session.user)
+        .then((res) => {
+            res.forEach((stock) => { format_data(stock); });
+            response.send({ data: res });
         });
+    });
 });
 
 /* removes stocks from the database */
@@ -360,9 +360,9 @@ app.post('/remove', sessionCheck, statusCheck, (request, response) => {
         promises.push(db.removeStocks(request.body.action[i], request.session.user));
     }
     Promise.all(promises)
-        .then((returned) => {
-            response.send({ status: 'OK' });
-        });
+    .then((returned) => {
+        response.send({ status: 'OK' });
+    });
 });
 
 /* Hides stocks from the shared database */
@@ -372,71 +372,71 @@ app.post('/remove/shared', sessionCheck, statusCheck, (request, response) => {
         promises.push(db.unsharestock(request.body.action[i], request.session.user));
     }
     Promise.all(promises)
-        .then((returned) => {
-            response.send({ status: 'OK' });
-        });
+    .then((returned) => {
+        response.send({ status: 'OK' });
+    });
 });
 
 /* Enables stocks to be displayed in the shared database */
 app.post('/share', sessionCheck, statusCheck, (request, response) => {
     db.sharestock(calc.multi_dfc_string(request.body.action), request.session.user)
-        .then((resolve) => {
-            response.send({ status: 'OK' });
-        });
+    .then((resolve) => {
+        response.send({ status: 'OK' });
+    });
 });
 
 /* Updates Historical Financial Data */
 app.post('/update_financials', sessionCheck, statusCheck, (request, response) => {
     api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)
-        .then((r) => {
-            db.get_added(request.body.action[0].symbol, request.session.user)
-                .then((res) => {
-                    res.forEach((stock) => { format_data(stock); });
-                    response.send({ data: res });
-                });
-        });
+    .then((r) => {
+        db.get_added(request.body.action[0].symbol, request.session.user)
+            .then((res) => {
+                res.forEach((stock) => { format_data(stock); });
+                response.send({ data: res });
+            });
+    });
 });
 
 /* Updates Current Price Data  */
 app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
     api_calls.update_prices(request.body.action, request.session.user)
-        .then((resolve) => {
-            db.get_added(request.body.action[0].symbol, request.session.user)
-                .then((res) => {
-                    res.forEach((stock) => { format_data(stock); });
-                    response.send({ data: res });
-                });
-        }).catch(function (err) {
-            console.log(err);
-            response.send(JSON.stringify({ 'Error': `${request.body.action[0].symbol}` }));
-        });
+    .then((resolve) => {
+        db.get_added(request.body.action[0].symbol, request.session.user)
+            .then((res) => {
+                res.forEach((stock) => { format_data(stock); });
+                response.send({ data: res });
+            });
+    }).catch(function (err) {
+        console.log(err);
+        response.send(JSON.stringify({ 'Error': `${request.body.action[0].symbol}` }));
+    });
 });
 
 /* Updates Historical Financial Data on shared */
 app.post('/update_financials/shared', sessionCheck, statusCheck, (request, response) => {
     api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = false)
-        .then((r) => {
-            db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
-                .then((res) => {
-                    res.forEach((stock) => { format_data(stock); });
-                    response.send({ data: res });
-                });
-        });
+    .then((r) => {
+        db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
+            .then((res) => {
+                res.forEach((stock) => { format_data(stock); });
+                response.send({ data: res });
+            });
+    });
 });
 
 /* Updates Current Price Data on shared */
 app.post('/update_prices/shared', sessionCheck, statusCheck, (request, response) => {
     api_calls.update_prices(request.body.action, request.body.action[0].stock_id)
-        .then((resolve) => {
-            db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
-                .then((res) => {
-                    res.forEach((stock) => {format_data(stock);});
-                    response.send({ data: res });
-                });
-        }).catch(function (err) {
-            console.log(err);
-            response.send(JSON.stringify({ 'Error': `${request.body.action[0].symbol}` }));
-        });
+    .then((resolve) => {
+        db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
+            .then((res) => {
+                res.forEach((stock) => {format_data(stock);});
+                response.send({ data: res });
+            });
+    }).catch(function (err) {
+        console.log(err);
+        response.send(JSON.stringify({ 'Error': `${request.body.action[0].symbol}` }));
+    });
 });
 
 /* Sets Catagorie Strings for stocks */
@@ -444,18 +444,18 @@ app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
     let combined_string = calc.multi_dfc_string(request.body.stocks_list);
     let retrieve_info = [];
     db.set_categories(request.body.categories, combined_string)
-        .then((resolve) => {
-            console.log(resolve);
-            for (let i in request.body.stocks_list) {
-                retrieve_info.push(db.get_added(request.body.symbols[i], request.session.user));
+    .then((resolve) => {
+        console.log(resolve);
+        for (let i in request.body.stocks_list) {
+            retrieve_info.push(db.get_added(request.body.symbols[i], request.session.user));
+        }
+        Promise.all(retrieve_info).then((resolved) => {
+            for (let i in resolved) {
+                resolved[i].forEach((stock) => {format_data(stock);});
             }
-            Promise.all(retrieve_info).then((resolved) => {
-                for (let i in resolved) {
-                    resolved[i].forEach((stock) => {format_data(stock);});
-                }
-                response.send(JSON.stringify(resolved));
-            });
+            response.send(JSON.stringify(resolved));
         });
+    });
 });
 
 app.post('/aggregation/create', sessionCheck, statusCheck, (request, response) => {
@@ -473,7 +473,6 @@ app.post('/aggregation/get', sessionCheck, statusCheck, (request, response) => {
 app.post('/aggregation/aggregate', sessionCheck, statusCheck, (request, response) => {
     let track = [];
     let symbols = [];
-    console.log(request.body[0])
     for (let i in request.body) {
         if (request.body[i].row.split(' !').length != 1) {
             trackPositions(track, symbols, sorter(request.body[i].values).reverse());
@@ -547,16 +546,13 @@ quarter_updates;
 // Add comma separator to numbers in thousands
 function formatNumber(num) {
     try {
+        num = clearNAN(num);
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     }
     catch(e) {
         return null;
     }
 }
-
-hbs.registerHelper('calculate_default_growth', function (years, ttm, eps) {
-    return calculate_default_growth_func(years, ttm, eps);
-});
 
 function clearNAN(param, extraSymbol) {
     if (isNaN(param) || !isFinite(param)) {
@@ -596,14 +592,14 @@ function format_data(stock) {
         data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%';
         data.fcf_format = formatNumber(Math.round(data.fcf));
 
-        data.roic_format = clearNAN(formatNumber(data.roic));
-        data.wacc_format = clearNAN(formatNumber(data.wacc));
-        data.roicwacc_format = clearNAN(formatNumber(Math.round((data.roic - data.wacc) * 100) / 100));
+        data.roic_format = formatNumber(data.roic);
+        data.wacc_format = formatNumber(data.wacc);
+        data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100);
         data.capex_format = '$' + formatNumber(Math.round((data.capex * -1) * 100) / 100);
         data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100) / 100);
         data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100);
         data.capeXfcf_format = formatNumber(Math.round((data.capex / data.fcf) * 100) / 100);
-        data.fcfXae_format = clearNAN(formatNumber(Math.round((data.fcf / data.aebitda) * 100) / 100));
+        data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100) / 100);
 
         data.eps_without_nri_format = Math.round((data.eps_without_nri) * 100) / 100;
         data.eps_growth_rate = Math.round((data.eps_basic) * 100) / 100;
