@@ -36,7 +36,7 @@ function fill_0(field) {
  * @param {Float} price 
  * @param {Float} gf_rating 
  */
-function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership) {
+function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse) {
     //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
     // console.log(fill_0(ms_1_star))
     let edits = {};
@@ -81,13 +81,13 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                 <div class="col">
                     <label for="ms_5_star">MS 5 Star</label>
                     <input id="ms_5_star" type="text" class="form-control" value="${fill_0(ms_5_star)}">
-                </div>        
-            </div>
-            <div class="row">
+                </div>    
                 <div class="col">
                     <label for="ms_fair_value">MS Fair Value</label>
                     <input id="ms_fair_value" type="text" class="form-control" value="${fill_0(ms_fv)}">
-                </div>
+                </div>    
+            </div>
+            <div class="row">
                 <div class="col">
                     <label for="ms_moat">MS Moat</label>
                     <select id="ms_moat" type="text" class="form-control">
@@ -96,7 +96,11 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                         <option value="Narrow">Narrow</option>
                         <option value="Wide">Wide</option>
                     </select>
-                </div>        
+                </div>
+            <div class="col">
+                <label for="ms_stock_exchange">MS Stock Exchange</label>
+                <input id="ms_stock_exchange" type="text" class="form-control" value="${msse}">
+            </div>        
             </div>
             <div class="row">
                 <div class="col">
@@ -128,6 +132,7 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                 edits.emoticon = $('#emote').val();
                 edits.jdv = $('#jdv').val();
                 edits.price = $('#cur_price').val().replace(/[^a-z0-9,. ]/gi, '');
+                edits.msse = $('#ms_stock_exchange').val();
                 resolve(edits);
             }
         });
@@ -148,8 +153,8 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
  * @param {String} price 
  * @param {String} gf_rating 
  */
-function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership) {
-    edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership).then((resolve) => {
+function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse) {
+    edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse).then((resolve) => {
         ajax_Call(resolve, '/edits').then((server_resolve) => {
             $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
         });
@@ -972,7 +977,18 @@ function FAD(data, column) {
         'WACC %': 'stockdata wacc_format',
         'ROIC-WACC': 'stockdata roicwacc_format',
     };
-    return { symbol: data.symbol, value: data[keyvalues[column]].replace(/[^a-z0-9,. ]/gi, '') };
+    let splitString = keyvalues[column].split(' ');
+    if(keyvalues[column].split(' ').length == 1){
+        return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,. ]/gi, '') };
+    }
+    else if (splitString[0] == 'stockdata'){
+        return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,. ]/gi, '')};
+    }
+    else{
+        // let dcf = data[splitString[0]][splitString[1]].replace(/[^a-z0-9,. ]/gi, '');      
+        return { symbol: data.symbol, value: data[splitString[0]][splitString[1]]};
+    }   
+    
 }
 
 function editAggregations(data, result) {
@@ -1036,7 +1052,7 @@ function editAggregations(data, result) {
         });
 
     function SWAL_AggregationStringSet(aggregate_string) {
-        let div_string;
+        let div_string = '';
         for (let i = 0; i < 10; i++) {
             if (aggregate_string[i]) {
                 if (i % 2 == 0) {
