@@ -59,6 +59,10 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                 </select>
                 </div>
                 <div class="col">
+                    <label for="ownership">Ownership %</label>
+                    <input id="ownership" type="text" class="form-control" value="${fill_0(ownership)}">
+                </div> 
+                <div class="col">
                     <label for="emoticon">Emoticon</label>
                     <select id="emote" class="form-control">
                         <option selected hidden>${emote}</option>
@@ -67,10 +71,6 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                         <option value="😫">😫</option>
                         <option value="💩">💩</option>
                     </select>
-                </div> 
-                <div class="col">
-                    <label for="ownership">Ownership %</label>
-                    <input id="ownership" type="text" class="form-control" value="${fill_0(ownership)}">
                 </div>       
             </div>
             <div class="row">
@@ -807,27 +807,35 @@ function settingAggregation(columnNum, ver) {
         method: 'POST',
         headers: { "Content-Type": "application/json" }
     })
-        .then(response => response.json())
-        .then(data => {
-            // console.log(data)
-            createSelector(data);
-            Swal.fire({
-                title: 'Select Aggregate',
-                input: 'select',
-                inputOptions: createSelector(data),
-                inputPlaceholder: 'Select a setting',
-                showCancelButton: 'true',
-                showConfirmButton: 'true',
-            }).then(result => {
-                if (!result.dismiss) {
-                    // (ver) ? sendColumnData(result.value.split(', '), columnNum) : editAggregations(data, result);
-                    (ver == 'set') ? sendColumnData(result.value.split(', '), columnNum)
-                        : (ver == 'edit') ? editAggregations(data, result)
-                            : (ver == 'delete') ? deleteAggregations(data, result)
-                                : console.log("Error");
+    .then(response => response.json())
+    .then(data => {
+        // console.log(data)
+        createSelector(data);
+        Swal.fire({
+            title: 'Select Aggregate',
+            input: 'select',
+            inputOptions: createSelector(data),
+            inputPlaceholder: 'Select a setting',
+            showCancelButton: 'true',
+            showConfirmButton: 'true',
+        }).then(result => {
+            if (!result.dismiss) {
+                // (ver) ? sendColumnData(result.value.split(', '), columnNum) : editAggregations(data, result);
+                if(ver == 'set') {
+                    sendColumnData(result.value.split(', '), columnNum);
                 }
-            });
+                else if(ver == 'edit') {
+                    editAggregations(data, result);
+                }
+                else if (ver == 'delete') { 
+                    deleteAggregations(data, result);
+                }
+                else{
+                    alert('error');
+                }
+            }
         });
+    });
 }
 
 function createSelector(arr) {
@@ -857,15 +865,15 @@ function sendColumnData(valueList, columnNum) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(toSend)
     })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            $table.rows().every(function (index) {
-                let stockIndex = data.symbols.indexOf($table.cell({ row: index, column: 1 }).data());
-                $table.cell({ row: index, column: columnNum }).data(data.score[stockIndex]).invalidate();
-            });
-            $table.draw();
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        $table.rows().every(function (index) {
+            let stockIndex = data.symbols.indexOf($table.cell({ row: index, column: 1 }).data());
+            $table.cell({ row: index, column: columnNum }).data(data.score[stockIndex]).invalidate();
         });
+        $table.draw();
+    });
 
 }
 
@@ -1086,4 +1094,4 @@ function deleteAggregations(data, result) {
         .then(data => {
             console.log('success');
         });
-}   
+}
