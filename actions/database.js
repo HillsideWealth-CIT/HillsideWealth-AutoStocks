@@ -268,7 +268,10 @@ const dfc_edits = async(values, list) => {
 }
 
 const edits = async(edit) => {
-    return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7, current_price = $8, ownership = $9 where stock_id = $10`, [edit.comment, edit.ms_moat, edit.ms_fair_value, edit.ms_5_star, edit.ms_1_star, edit.emoticon, edit.jdv, edit.price, edit.ownership ,edit.id])
+    if(edit.msse == 'null' || edit.msse.length < 1){
+        edit.msse = null
+    }
+    return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7, current_price = $8, ownership = $9,ms_stock_exchange = $10 where stock_id = $11`, [edit.comment, edit.ms_moat, edit.ms_fair_value, edit.ms_5_star, edit.ms_1_star, edit.emoticon, edit.jdv, edit.price, edit.ownership, edit.msse, edit.id])
 }
 
 const set_categories = async(category_string, conditions) => {
@@ -369,7 +372,8 @@ function getdata(stocks, stockdata){
             emoticon: stocks.rows[i].emoticons,
             username: stocks.rows[i].username,
             categories: `${stocks.rows[i].categories}`,
-            ownership: stocks.rows[i].ownership
+            ownership: stocks.rows[i].ownership,
+            msse: stocks.rows[i].ms_stock_exchange
         })
     }
     return stockAndData

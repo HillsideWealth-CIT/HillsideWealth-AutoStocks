@@ -308,6 +308,7 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
 
 /* Edit Fields */
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body.action)
     db.edits(request.body.action).then(() => {
         db.get_by_id(request.body.action.id).then((res) => {
             res.forEach((stock) => {
@@ -473,6 +474,7 @@ app.post('/aggregation/get', sessionCheck, statusCheck, (request, response) => {
 app.post('/aggregation/aggregate', sessionCheck, statusCheck, (request, response) => {
     let track = [];
     let symbols = [];
+    console.log(request.body[0])
     for (let i in request.body) {
         if (request.body[i].row.split(' !').length != 1) {
             trackPositions(track, symbols, sorter(request.body[i].values).reverse());
