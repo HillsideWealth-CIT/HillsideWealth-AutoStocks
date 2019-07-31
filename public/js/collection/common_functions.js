@@ -952,7 +952,7 @@ function FAD(data, column) {
         'Capex/aEBITDA 5Y': 'capeXaeAverage5',
         'Capex/aEBITDA 10Y': 'capeXaeAverage10',
 
-        'FCF/aBITDA': 'stockdata fcfXae_format',
+        'FCF/aEBITDA': 'stockdata fcfXae_format',
         'Price Growth (1y)': 'price_growth_1',
         'Price Growth (3y)': 'price_growth_3',
         'Price Growth (5y)': 'price_growth_5',
@@ -977,18 +977,22 @@ function FAD(data, column) {
         'WACC %': 'stockdata wacc_format',
         'ROIC-WACC': 'stockdata roicwacc_format',
     };
-    let splitString = keyvalues[column].split(' ');
-    if(keyvalues[column].split(' ').length == 1){
-        return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,. ]/gi, '') };
+    try{
+        let splitString = keyvalues[column].split(' ');
+        if(keyvalues[column].split(' ').length == 1){
+            return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,. ]/gi, '') };
+        }
+        else if (splitString[0] == 'stockdata'){
+            return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,. ]/gi, '')};
+        }
+        else{
+            // let dcf = data[splitString[0]][splitString[1]].replace(/[^a-z0-9,. ]/gi, '');      
+            return { symbol: data.symbol, value: data[splitString[0]][splitString[1]]};
+        }
     }
-    else if (splitString[0] == 'stockdata'){
-        return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,. ]/gi, '')};
-    }
-    else{
-        // let dcf = data[splitString[0]][splitString[1]].replace(/[^a-z0-9,. ]/gi, '');      
-        return { symbol: data.symbol, value: data[splitString[0]][splitString[1]]};
+    catch(e){
+        console.log(column);
     }   
-    
 }
 
 function editAggregations(data, result) {

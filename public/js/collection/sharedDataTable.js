@@ -141,6 +141,7 @@ function column_builder(){
         { data : "stockdata.0.yield_format" },
         
         { data : "note" },
+        { data : "msse"},
         { data : "ownership"},
         { data : "emoticon" },
         { data : "categories"},
