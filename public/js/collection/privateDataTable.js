@@ -169,15 +169,15 @@ function column_builder(){
         { data : "fivestar" },
         { data : "onestar" },
 
-        { data : "stockdata.0.eps_without_nri_format" },
+        { data : "stockdata.0.eps_without_nri_string_format" },
         { data : "stockdata.0.growth_years_format" },
         { data : "growth_rate_5y" },
         { data : "growth_rate_10y" },
         { data : "growth_rate_15y" },
         { data : "stockdata.0.terminal_years_format" },
 
-        { data : "stockdata.0.terminal_growth_rate_format" },
-        { data : "stockdata.0.discount_rate_format" },
+        { data : "stockdata.0.terminal_growth_rate_string_format" },
+        { data : "stockdata.0.discount_rate_string_format" },
 
         { data : "dcf_values_5y.growth_value" },
         { data : "dcf_values_5y.terminal_value" },

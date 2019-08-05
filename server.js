@@ -577,7 +577,7 @@ function initial_values_calc(years, id, ttm, prev_eps, terminal_growth, discount
 function calculate_default_growth_func(years, ttm, eps) {
     let part1 = parseFloat(ttm) / parseFloat(eps);
     let part2 = (Math.pow(part1, 1 / years) - 1) * 100;
-    return Math.round((part2) * 100) / 100;
+    return Math.round((part2) * 100) / 100 ;
 }
 
 function format_data(stock) {
@@ -585,12 +585,12 @@ function format_data(stock) {
         data.yield_format = data.yield + '%';
         data.price_format = '$' + formatNumber(data.price);
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
-        data.market_cap_format = formatNumber(Math.round(data.market_cap));
-        data.net_debt_format = formatNumber(Math.round(data.net_debt));
-        data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10);
-        data.revenue_format = formatNumber(Math.round(data.revenue));
-        data.aebitda_format = formatNumber(data.aebitda);
-        data.roe_format = Math.round(data.roe * 10) / 10;
+        data.market_cap_format = '$' + formatNumber(Math.round(data.market_cap));
+        data.net_debt_format = '$' + formatNumber(Math.round(data.net_debt));
+        data.enterprise_value_format = '$' + formatNumber(Math.round(data.enterprise_value * 10) / 10);
+        data.revenue_format = '$' + formatNumber(Math.round(data.revenue));
+        data.aebitda_format = '$' + formatNumber(data.aebitda);
+        data.roe_format = formatNumber(Math.round(data.roe * 10) / 10) + '%';
         data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%';
         data.fcf_format = formatNumber(Math.round(data.fcf));
 
@@ -599,16 +599,19 @@ function format_data(stock) {
         data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100);
         data.capex_format = '$' + formatNumber(Math.round((data.capex * -1) * 100) / 100);
         data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100) / 100);
-        data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100);
+        data.aeXsho_format = '$' + formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100);
         data.capeXfcf_format = formatNumber(Math.round((data.capex / data.fcf) * 100) / 100);
         data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100) / 100);
 
-        data.eps_without_nri_format = Math.round((data.eps_without_nri) * 100) / 100;
+        data.eps_without_nri_format =  Math.round((data.eps_without_nri) * 100) / 100;
+        data.eps_without_nri_string_format = '$' +  Math.round((data.eps_without_nri) * 100) / 100;
         data.eps_growth_rate = Math.round((data.eps_basic) * 100) / 100;
         data.growth_years_format = data.growth_years;
         data.terminal_years_format = data.terminal_years;
         data.terminal_growth_rate_format = (data.terminal_growth_rate) * 100;
+        data.terminal_growth_rate_string_format = (data.terminal_growth_rate) * 100 + '%'; 
         data.discount_rate_format = (data.discount_rate) * 100;
+        data.discount_rate_string_format = (data.discount_rate) * 100 + '%';
 
         data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%';
         data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100);
@@ -623,7 +626,7 @@ function format_data(stock) {
     stock.valueConditions = calc.value_calculator(stock.fairvalue, stock.stock_current_price.replace(/[^a-z0-9,. ]/gi, ''));
 
     try {
-        stock.growth_rate_5y = calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format);
+        stock.growth_rate_5y = calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format) + '%';
         stock.dcf_values_5y = initial_values_calc(5, stock.stock_id,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[4].eps_without_nri,
@@ -639,7 +642,7 @@ function format_data(stock) {
     }
 
     try {
-        stock.growth_rate_10y = calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format);
+        stock.growth_rate_10y = calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format) + '%';
         stock.dcf_values_10y = initial_values_calc(10, stock.stock_id,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[9].eps_without_nri,
@@ -656,7 +659,7 @@ function format_data(stock) {
     }
 
     try {
-        stock.growth_rate_15y = calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format);
+        stock.growth_rate_15y = calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format) + '%';
         stock.dcf_values_15y = initial_values_calc(15, stock.stock_id,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[14].eps_without_nri,

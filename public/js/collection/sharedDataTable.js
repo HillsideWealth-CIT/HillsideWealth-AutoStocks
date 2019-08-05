@@ -170,7 +170,7 @@ function column_builder(){
         { data : "fivestar" },
         { data : "onestar" },
 
-        { data : "stockdata.0.eps_without_nri_format" },
+        { data : "stockdata.0.eps_without_nri_string_format" },
         { data : "stockdata.0.growth_years_format" },
         { data : "growth_rate_5y" },
         { data : "growth_rate_10y" },
