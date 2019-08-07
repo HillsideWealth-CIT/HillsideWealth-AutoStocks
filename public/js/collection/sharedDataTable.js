@@ -13,7 +13,7 @@ function Initialize_table(){
     ajax_Call("init_shared", "/init_table").then((resolve) => {
         stockdb = resolve.data;
         $table = fill_table(resolve.data);
-        console.log(stockdb)
+        console.log(stockdb);
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
