@@ -309,9 +309,9 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
 
 /* Edit Fields */
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
-    // console.log(request.body.action)
-    db.edits(request.body.action).then(() => {
-        db.get_by_id(request.body.action.id).then((res) => {
+    // console.log(request.body)
+    db.edits(request.body).then(() => {
+        db.get_by_id(request.body.id).then((res) => {
             res.forEach((stock) => {
                 format_data(stock);
             });
@@ -322,7 +322,8 @@ app.post('/edits', sessionCheck, statusCheck, (request, response) => {
 
 /* DFC Values Edit */
 app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
-    db.dfc_edits(request.body.action.values, calc.multi_dfc_string(request.body.action.stock_id_list)).then((resolve) => {
+    // console.log(request.body);
+    db.dfc_edits(request.body.values, calc.multi_dfc_string(request.body.stock_id_list)).then((resolve) => {
         response.send("OK");
     });
 });
@@ -381,7 +382,8 @@ app.post('/remove/shared', sessionCheck, statusCheck, (request, response) => {
 
 /* Enables stocks to be displayed in the shared database */
 app.post('/share', sessionCheck, statusCheck, (request, response) => {
-    db.sharestock(calc.multi_dfc_string(request.body.action), request.session.user)
+    // console.log(request.body);
+    db.sharestock(calc.multi_dfc_string(request.body), request.session.user)
     .then((resolve) => {
         response.send({ status: 'OK' });
     });
@@ -679,7 +681,7 @@ function format_data(stock) {
 
     try {
         stock.growth_rate_5y = formatNumber(calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format), '%');
-        stock.dcf_values_5y = initial_values_calc(5, stock.stock_id,
+        stock.dcf_values_5y = initial_values_calc(5,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[4].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,
@@ -695,7 +697,7 @@ function format_data(stock) {
 
     try {
         stock.growth_rate_10y = formatNumber(calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format), '%');
-        stock.dcf_values_10y = initial_values_calc(10, stock.stock_id,
+        stock.dcf_values_10y = initial_values_calc(10,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[9].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,
@@ -712,7 +714,7 @@ function format_data(stock) {
 
     try {
         stock.growth_rate_15y = formatNumber(calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format), '%');
-        stock.dcf_values_15y = initial_values_calc(15, stock.stock_id,
+        stock.dcf_values_15y = initial_values_calc(15,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[14].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,

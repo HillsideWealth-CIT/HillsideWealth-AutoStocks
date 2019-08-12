@@ -155,8 +155,14 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
  */
 function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse) {
     edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse).then((resolve) => {
-        ajax_Call(resolve, '/edits').then((server_resolve) => {
-            $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
+        fetch('/edits', {
+            method: 'POST',
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify(resolve)
+        })
+        .then(response => response.json())
+        .then(data => {
+            $table.row(document.getElementById(`${symbol}`)).data(data.data[0]).invalidate();
         });
     });
 }
@@ -269,10 +275,10 @@ function dfcAverage(arrList) {
  * @param {String} ty 
  */
 function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty) {
-    //console.log(`${eps} ${gr} ${tgr} ${dr} ${gy} ${ty} `)
-    let fv = dcf(eps, Math.round((gr5 / 100) * 100000) / 100000, tgr, dr, gy, ty);
+    console.log(`${eps} ${gr5} ${gr10} ${gr15} ${tgr} ${dr} ${gy} ${ty} `)
+    let fv = dcf(eps, Math.round((gr5.replace(/[^a-z0-9,. ]/gi, '') / 100) * 100000) / 100000, tgr, dr, gy, ty);
     // console.log(fv)
-    calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv);
+    calc_menu(eps, gr5.replace(/[^a-z0-9,. ]/gi, ''), gr10.replace(/[^a-z0-9,. ]/gi, ''), gr15.replace(/[^a-z0-9,. ]/gi, ''), tgr, dr, gy, ty, fv);
 }
 
 /**
@@ -324,10 +330,14 @@ function calc_edit() {
     if (stock_id_list.length != 0) {
         calc_edit_menu().then((values) => {
             let to_send = { stock_id_list: stock_id_list, values: values };
-            ajax_Call(to_send, '/calc_edit').then((res) => {
-                if (res == "OK") {
-                    location.reload();
-                }
+            fetch('/calc_edit', {
+                method: 'POST',
+                headers: { "Content-Type" : "application/json"},
+                body: JSON.stringify(to_send)
+            })
+            .then(response => response.json)
+            .then(data => {
+                location.reload();
             });
         });
     }
@@ -550,7 +560,16 @@ function share() {
             break;
         }
     }
-    ajax_Call(to_share, '/share');
+    fetch('/share', {
+        method: 'POST',
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify(to_share)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("OK")
+    })
+    // ajax_Call(to_share, '/share');
 }
 
 /**
