@@ -4,7 +4,7 @@ const test_array = ['$1','$2','$3'];
 /***  DCF Calculations  ***/
 test('Calculate DFC', () => {
     expect(calc.dcf(5.07, 0.1464, 0.04, 0.12, 10, 10))
-        .toStrictEqual({"fair_value": 101.31, "growth_value": 57.76, "terminal_value": 43.55});
+        .toStrictEqual({"fair_value": "$101.31", "growth_value": "$57.76", "terminal_value": "$43.55"});
 });
 
 test('Create DCF saving string', () => {
