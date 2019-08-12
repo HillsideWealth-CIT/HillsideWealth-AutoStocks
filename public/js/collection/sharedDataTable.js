@@ -13,7 +13,7 @@ function Initialize_table(){
     ajax_Call("init_shared", "/init_table").then((resolve) => {
         stockdb = resolve.data;
         $table = fill_table(resolve.data);
-        console.log(stockdb)
+        console.log(stockdb);
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
@@ -51,20 +51,23 @@ function button_builder(){
         'selectAll', 'selectNone',
         {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove();}},
-        {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-sm", action: function(){update('update_prices');}},
-        {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-sm", action: function(){update('update_financials');}},
+        {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", extend: 'collection',
+        buttons:[
+            {text: 'Prices', className:"btn-sm", action: function(){update('update_prices');}},
+            {text: 'Financials', className:"btn-sm", action: function(){update('update_financials');}},
+        ]},
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
-        {text: '<span class="fas fa-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
-        {text: '<span class="fas fa-cog"></span> Aggregate', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
+        {text: '<span class="fas fa-layer-group"></span> Aggregate', className:"btn-sm", extend: 'collection',
         buttons: [
+            { text:'<b>Set</b>', action: function(){settingAggregation(7, 'set');} },
             { text:'Create', action: function(){createAggregation();} },
-            { text:'Set', action: function(){settingAggregation(7, 'set');} },
             { text:'Edit', action: function(){settingAggregation(0,'edit');} },
             { text:'Delete', action: function(){settingAggregation(0, 'delete');} },
         ]},
-        {text: '<span class="fas fa-cog"></span> Table Config', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-columns"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all();}},
                 { text:'<b>Basic Stats</b>', action: function(){basic_stats();}},

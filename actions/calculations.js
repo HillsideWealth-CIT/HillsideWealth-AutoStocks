@@ -56,8 +56,8 @@ function dcf_growth(x, eps, years){
 function dcf_terminal(x, y, eps, g_years ,t_years){
     let terminal_value = 0;
     for (let i = 1; i <= t_years; i ++){
-        part1 = Math.pow(x,g_years)
-        part2 = Math.pow(y,i)
+        part1 = Math.pow(x,g_years);
+        part2 = Math.pow(y,i);
         terminal_value += part1 * part2 * eps;
         //console.log(part1*part2*eps)
     }
@@ -82,6 +82,10 @@ function multi_dfc_string(list) {
     return conditions;
 }
 
+/**
+ * Creates a string to be stored in the database
+ * @param {List} arr - List of column headers 
+ */
 function createAggregationString(arr) {
     let aggregateString = '';
     for(let i in arr){

@@ -309,7 +309,7 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
 
 /* Edit Fields */
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
-    console.log(request.body.action)
+    // console.log(request.body.action)
     db.edits(request.body.action).then(() => {
         db.get_by_id(request.body.action.id).then((res) => {
             res.forEach((stock) => {
@@ -545,7 +545,13 @@ quarter_updates;
 
 /*** Functions ***/
 
-// Add comma separator to numbers in thousands
+/**
+ * Adds a comma sparator to numbers in thousads
+ * Clears NaNs
+ * Adds symbols at the end of strings
+ * @param {Float} num 
+ * @param {String} extraSymbol 
+ */
 function formatNumber(num, extraSymbol) {
     try {
         num = clearNAN(num);
@@ -572,6 +578,11 @@ function formatNumber(num, extraSymbol) {
     }
 }
 
+/**
+ * returns null if param is NaN
+ * @param {*} param
+ * @param {*} extraSymbol 
+ */
 function clearNAN(param, extraSymbol) {
     if (isNaN(param)){
         return null;
@@ -584,12 +595,30 @@ function clearNAN(param, extraSymbol) {
     }
 }
 
-function initial_values_calc(years, id, ttm, prev_eps, terminal_growth, discount, growth_years, terminal_years) {
+/**
+ * Caclulates the dcf values on request
+ * @param {float} years 
+ * @param {float} ttm 
+ * @param {float} prev_eps 
+ * @param {float} terminal_growth 
+ * @param {float} discount 
+ * @param {Integer} growth_years 
+ * @param {Integer} terminal_years 
+ * @returns {JSON} 
+ */
+function initial_values_calc(years, ttm, prev_eps, terminal_growth, discount, growth_years, terminal_years) {
     let growth_rate = (calculate_default_growth_func(years, ttm, prev_eps)) / 100;
     let calculated = calc.dcf(ttm, growth_rate, terminal_growth, discount, growth_years, terminal_years);
     return calculated;
 }
 
+/**
+ * Calculates the default DCF growth
+ * @param {Float} years 
+ * @param {Float} ttm 
+ * @param {Float} eps 
+ * @returns {Float}
+ */
 function calculate_default_growth_func(years, ttm, eps) {
     let part1 = parseFloat(ttm) / parseFloat(eps);
     let part2 = (Math.pow(part1, 1 / years) - 1) * 100;
@@ -599,6 +628,10 @@ function calculate_default_growth_func(years, ttm, eps) {
     return null;
 }
 
+/**
+ * Formats a JSON object
+ * @param {JSON} stock 
+ */
 function format_data(stock) {
     stock.stockdata.forEach((data) => {
         data.yield_format = data.yield + '%';

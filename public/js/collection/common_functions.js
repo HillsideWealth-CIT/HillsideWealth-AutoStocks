@@ -701,7 +701,9 @@ function value_calculator(val, price) {
 }
 
 
-
+/***
+ * Creates the aggregation menu
+ */
 function createAggregation() {
     let to_send = {};
     Swal.fire({
@@ -796,6 +798,9 @@ function createAggregation() {
     });
 }
 
+/**
+ * Creates the list of Columns
+ */
 function createColumnList() {
     let optionString = '<datalist id="columnList">';
     let tableList = document.getElementById('headerRow').childNodes;
@@ -807,6 +812,11 @@ function createColumnList() {
     return `${optionString}</datalist>`;
 }
 
+/**
+ * requests data from servers then determins what actions to take
+ * @param {Integer} columnNum - The column number
+ * @param {String} ver - the correct function to use
+ */
 function settingAggregation(columnNum, ver) {
     fetch('/aggregation/get', {
         method: 'POST',
@@ -843,6 +853,10 @@ function settingAggregation(columnNum, ver) {
     });
 }
 
+/**
+ * Creates a JSON
+ * @param {List} arr 
+ */
 function createSelector(arr) {
     let selectors = {};
     for (let i in arr) {
@@ -851,7 +865,11 @@ function createSelector(arr) {
     return selectors;
 }
 
-
+/**
+ * Sends the Column data to the server then changes the aggregate column numbers
+ * @param {List} valueList 
+ * @param {Integer} columnNum 
+ */
 function sendColumnData(valueList, columnNum) {
     let toSend = [];
     let tableRows = $table.rows().data();
@@ -995,6 +1013,11 @@ function FAD(data, column) {
     }   
 }
 
+/**
+ * Edits the aggreagtions stored in the database
+ * @param {JSON} data - Original Aggregate Settings
+ * @param {JSON} result - User Input
+ */
 function editAggregations(data, result) {
     let to_send = {};
     let selected = '';
@@ -1055,6 +1078,10 @@ function editAggregations(data, result) {
             });
         });
 
+    /**
+     * Creates the custom sweetalert string for the original aggregate settings
+     * @param {String} aggregate_string - comma seperated string
+     */
     function SWAL_AggregationStringSet(aggregate_string) {
         let div_string = '';
         for (let i = 0; i < 10; i++) {
@@ -1096,6 +1123,11 @@ function editAggregations(data, result) {
     }
 }
 
+/**
+ * Deletes aggregation settings stored in the database
+ * @param {*} data - yes
+ * @param {*} result - User Input
+ */
 function deleteAggregations(data, result) {
     let to_send = {};
     let selected = '';
