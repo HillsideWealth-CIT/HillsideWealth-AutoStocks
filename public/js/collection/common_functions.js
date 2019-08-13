@@ -898,7 +898,18 @@ function sendColumnData(valueList, columnNum) {
         toSend.push({ row: valueList[j], values: [] });
         for (let i in tableRows) {
             if (tableRows[i].symbol) {
-                toSend[j].values.push(FAD(tableRows[i], columnHeader));
+                let fad = FAD(tableRows[i], columnHeader);
+                if(fad.symbol){
+                toSend[j].values.push(fad);
+                }
+                else{
+                    swal.fire({
+                        type: 'error',
+                        title: 'Error',
+                        text: 'The column ['+ fad.error + '] does not exist' 
+                    });
+                    return
+                }
             }
         }
     }
@@ -1028,7 +1039,7 @@ function FAD(data, column) {
         }
     }
     catch(e){
-        console.log(column);
+        return {error : column};
     }   
 }
 
