@@ -166,7 +166,7 @@ function all_growth() {
     hide_loop(column_list.indexOf('FCF (M)') - 1,
         column_list.indexOf('FCF Growth(10Y)') + 1);
     hide_loop(column_list.indexOf('Price Growth (1y)') - 1,
-        column_list.indexOf('Price Growth (10y)') + 1, 50);
+        column_list.indexOf('Price Growth (10y)') + 1, 65);
     $table.columns.adjust().draw(false);
 }
 
@@ -174,7 +174,7 @@ function fcf_growth() {
     hide_loop(column_list.indexOf('FCF (M)') - 1,
         column_list.indexOf('FCF Growth(10Y)') + 1);
     hide_loop(column_list.indexOf('FCF/aBITDA') - 1,
-        column_list.indexOf('FCF/aBITDA') + 1, 50);
+        column_list.indexOf('FCF/aBITDA') + 1, 65);
     $table.columns.adjust().draw(false);
 }
 

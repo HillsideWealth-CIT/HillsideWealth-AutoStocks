@@ -141,10 +141,48 @@ function calculate_average(data, column, years){
         }
 }
 
+/**
+ * Calculates the default DCF growth
+ * @param {Float} years 
+ * @param {Float} ttm 
+ * @param {Float} eps 
+ * @returns {Float}
+ */
+function calculate_default_growth_func(years, ttm, eps) {
+    let part1 = parseFloat(ttm) / parseFloat(eps);
+    let part2 = (Math.pow(part1, 1 / years) - 1) * 100;
+    if(isNaN(part2) == false){
+        return Math.round((part2) * 100) / 100 ;
+    }
+    return null;
+}
+
+/**
+ * Caclulates the dcf values on request
+ * @param {float} years 
+ * @param {float} ttm 
+ * @param {float} prev_eps 
+ * @param {float} terminal_growth 
+ * @param {float} discount 
+ * @param {Integer} growth_years 
+ * @param {Integer} terminal_years 
+ * @returns {JSON} 
+ */
+function initial_values_calc(years, ttm, prev_eps, terminal_growth, discount, growth_years, terminal_years) {
+    // console.log(`${years}, ${ttm}, ${prev_eps}, ${terminal_growth}, ${discount}, ${growth_years}, ${terminal_years} `)
+    let growth_rate = (calculate_default_growth_func(years, ttm, prev_eps)) / 100;
+    let calculated = dcf(ttm, growth_rate, terminal_growth, discount, growth_years, terminal_years);
+    // console.log(calculated);
+    return calculated;
+}
+
+
 module.exports={
     dcf,
     multi_dfc_string,
     createAggregationString,
     value_calculator,
-    calculate_average
+    calculate_average,
+    calculate_default_growth_func,
+    initial_values_calc
 };
