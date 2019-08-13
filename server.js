@@ -181,11 +181,6 @@ app.post("/entercode", sessionCheck, (request, response) => {
         });
 });
 
-// app.post('/toggleStock', sessionCheck, (request, response) => {
-//     console.log(request.body);
-//     db.toggleStock(request.body.stock_id, request.session.user).then((res) => { console.log(res); response.send(res.rows[0].enabled) }).catch(err => console.log(err))
-// });
-
 /* Login */
 app.post("/login", (request, response) => {
     auth.login(request.body.username, request.body.password)
@@ -449,7 +444,7 @@ app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
     let retrieve_info = [];
     db.set_categories(request.body.categories, combined_string)
     .then((resolve) => {
-        console.log(resolve);
+        // console.log(resolve);
         for (let i in request.body.stocks_list) {
             retrieve_info.push(db.get_added(request.body.symbols[i], request.session.user));
         }
@@ -586,7 +581,7 @@ function formatNumber(num, extraSymbol) {
  * @param {*} extraSymbol 
  */
 function clearNAN(param, extraSymbol) {
-    if (isNaN(param)){
+    if (isNaN(param) || !isFinite(param)){
         return null;
     }
     else if (extraSymbol) {
@@ -595,39 +590,6 @@ function clearNAN(param, extraSymbol) {
     else {
         return param;
     }
-}
-
-/**
- * Caclulates the dcf values on request
- * @param {float} years 
- * @param {float} ttm 
- * @param {float} prev_eps 
- * @param {float} terminal_growth 
- * @param {float} discount 
- * @param {Integer} growth_years 
- * @param {Integer} terminal_years 
- * @returns {JSON} 
- */
-function initial_values_calc(years, ttm, prev_eps, terminal_growth, discount, growth_years, terminal_years) {
-    let growth_rate = (calculate_default_growth_func(years, ttm, prev_eps)) / 100;
-    let calculated = calc.dcf(ttm, growth_rate, terminal_growth, discount, growth_years, terminal_years);
-    return calculated;
-}
-
-/**
- * Calculates the default DCF growth
- * @param {Float} years 
- * @param {Float} ttm 
- * @param {Float} eps 
- * @returns {Float}
- */
-function calculate_default_growth_func(years, ttm, eps) {
-    let part1 = parseFloat(ttm) / parseFloat(eps);
-    let part2 = (Math.pow(part1, 1 / years) - 1) * 100;
-    if(isNaN(part2) == false){
-        return Math.round((part2) * 100) / 100 ;
-    }
-    return null;
 }
 
 /**
@@ -680,8 +642,8 @@ function format_data(stock) {
     stock.valueConditions = calc.value_calculator(stock.fairvalue, stock.stock_current_price.replace(/[^a-z0-9,. ]/gi, ''));
 
     try {
-        stock.growth_rate_5y = formatNumber(calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format), '%');
-        stock.dcf_values_5y = initial_values_calc(5,
+        stock.growth_rate_5y = formatNumber(calc.calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format), '%');
+        stock.dcf_values_5y = calc.initial_values_calc(5,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[4].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,
@@ -696,8 +658,8 @@ function format_data(stock) {
     }
 
     try {
-        stock.growth_rate_10y = formatNumber(calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format), '%');
-        stock.dcf_values_10y = initial_values_calc(10,
+        stock.growth_rate_10y = formatNumber(calc.calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format), '%');
+        stock.dcf_values_10y = calc.initial_values_calc(10,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[9].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,
@@ -713,8 +675,8 @@ function format_data(stock) {
     }
 
     try {
-        stock.growth_rate_15y = formatNumber(calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format), '%');
-        stock.dcf_values_15y = initial_values_calc(15,
+        stock.growth_rate_15y = formatNumber(calc.calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format), '%');
+        stock.dcf_values_15y = calc.initial_values_calc(15,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[14].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,
