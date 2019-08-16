@@ -575,6 +575,14 @@ function formatNumber(num, extraSymbol) {
     }
 }
 
+function add_zero(num){
+    var num = Number(num);
+    if(String(num).split(".").length < 2 || String(num).split(".")[1].length <=2){
+        num = num.toFixed(2)
+    }
+    return num
+}
+
 /**
  * returns null if param is NaN
  * @param {*} param
@@ -613,11 +621,11 @@ function format_data(stock) {
         data.roic_format = formatNumber(data.roic, '%');
         data.wacc_format = formatNumber(data.wacc, '%');
         data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100);
-        data.capex_format = formatNumber(Math.round((data.capex * -1) * 100) / 100, '$');
-        data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100) / 100);
+        data.capex_format = formatNumber(add_zero(Math.round((data.capex * -1) * 100) / 100, '$'));
+        data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100), '%');
         data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100, '$');
         data.capeXfcf_format = formatNumber(Math.round((data.capex / data.fcf) * 100) / 100);
-        data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100) / 100);
+        data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100), '%');
 
         data.eps_without_nri_format =  Math.round((data.eps_without_nri) * 100) / 100;
         data.eps_without_nri_string_format = '$' +  Math.round((data.eps_without_nri) * 100) / 100;
@@ -747,11 +755,11 @@ function format_data(stock) {
             }
         }
 
-        stock.capeXfcfAverage5 = calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5);
-        stock.capeXfcfAverage10 = calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10);
+        stock.capeXfcfAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5) * 100), '%');
+        stock.capeXfcfAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10) * 100), '%');
 
-        stock.capeXaeAverage5 = calc.calculate_average(stock.stockdata, 'capeXae_format', 5);
-        stock.capeXaeAverage10 = calc.calculate_average(stock.stockdata, 'capeXae_format', 10);
+        stock.capeXaeAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXae_format', 5) * 100), '%');
+        stock.capeXaeAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXae_format', 10) * 100), '%');
         stock.categories == "null" ? stock.categories = null :null;
         !stock.ownership ? stock.ownership = '0%' : stock.ownership = `${stock.ownership}%`;
         stock.fairvalue == "null" ? stock.fairvalue = null : stock.fairvalue = '$' + stock.fairvalue;
