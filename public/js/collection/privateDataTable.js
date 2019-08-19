@@ -12,8 +12,8 @@ Initialize_table();
 function Initialize_table(){
     ajax_Call("init_user", "/init_table").then((resolve) => {
         stockdb = resolve.data;
-        $table = fill_table(resolve.data);
         console.log(stockdb);
+        $table = fill_table(resolve.data);
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
@@ -148,7 +148,7 @@ function column_builder(){
         { data : "categories"},
 
         { data : "stockdata.0.datestring" },
-        { data : "stockdata.0.shares_outstanding_format" },
+        { data : "stockdata.0.shares_outstanding_quarterly" },
         { data : "stockdata.0.enterprise_value_format" },
         { data : "stockdata.0.revenue_format" },
         { data : "stockdata.0.aebitda_format" },

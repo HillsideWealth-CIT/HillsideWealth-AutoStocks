@@ -574,13 +574,17 @@ function formatNumber(num, extraSymbol) {
         return null;
     }
 }
-
+// shares outstanding + latest quarter
+// check growth metrics *for tsx
+// aebitagrowth + %
+// remove decimals from capex
+// 
 function add_zero(num){
     var num = Number(num);
     if(String(num).split(".").length < 2 || String(num).split(".")[1].length <=2){
-        num = num.toFixed(2)
+        num = num.toFixed(2);
     }
-    return num
+    return num;
 }
 
 /**
@@ -609,6 +613,7 @@ function format_data(stock) {
         data.yield_format = data.yield + '%';
         data.price_format = formatNumber(data.price, '$');
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
+        data.shares_outstanding_quarterly = formatNumber(Math.round(data.shares_outstanding_quarterly * 100) / 100);
         data.market_cap_format = formatNumber(Math.round(data.market_cap), '$');
         data.net_debt_format = formatNumber(Math.round(data.net_debt) * -1, '$');
         data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10, '$');
