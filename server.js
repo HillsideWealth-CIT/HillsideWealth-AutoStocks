@@ -575,13 +575,16 @@ function formatNumber(num, extraSymbol) {
     }
 }
 
-function add_zero(num){
-    var num = Number(num);
-    if(String(num).split(".").length < 2 || String(num).split(".")[1].length <=2){
-        num = num.toFixed(2)
-    }
-    return num
-}
+// check growth metrics *for tsx
+// aebitagrowth + %
+
+// function add_zero(num){
+//     var num = Number(num);
+//     if(String(num).split(".").length < 2 || String(num).split(".")[1].length <=2){
+//         num = num.toFixed(2);
+//     }
+//     return num;
+// }
 
 /**
  * returns null if param is NaN
@@ -589,8 +592,11 @@ function add_zero(num){
  * @param {*} extraSymbol 
  */
 function clearNAN(param, extraSymbol) {
-    if (isNaN(param) || !isFinite(param)){
+    if (isNaN(param)){
         return null;
+    }
+    if( !isFinite(param)){
+        return 88888888 + extraSymbol;
     }
     else if (extraSymbol) {
         return param + extraSymbol;
@@ -609,6 +615,7 @@ function format_data(stock) {
         data.yield_format = data.yield + '%';
         data.price_format = formatNumber(data.price, '$');
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
+        data.shares_outstanding_quarterly = formatNumber(Math.round(data.shares_outstanding_quarterly * 100) / 100);
         data.market_cap_format = formatNumber(Math.round(data.market_cap), '$');
         data.net_debt_format = formatNumber(Math.round(data.net_debt) * -1, '$');
         data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10, '$');
@@ -621,8 +628,8 @@ function format_data(stock) {
         data.roic_format = formatNumber(data.roic, '%');
         data.wacc_format = formatNumber(data.wacc, '%');
         data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100);
-        data.capex_format = formatNumber(add_zero(Math.round((data.capex * -1) * 100) / 100, '$'));
-        data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100), '%');
+        data.capex_format = formatNumber(Math.round((data.capex * -1), '$'));
+        data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100)/100, '%');
         data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100, '$');
         data.capeXfcf_format = formatNumber(Math.round((data.capex / data.fcf) * 100) / 100);
         data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100), '%');
@@ -776,10 +783,10 @@ function format_data(stock) {
         stock.revenue_growth_3 = clearNAN(Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100), '%');
         stock.revenue_growth_1 = clearNAN(Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100), '%');
 
-        stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100);
-        stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100);
-        stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100);
-        stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100);
+        stock.aebitda_growth_10 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100), '%');
+        stock.aebitda_growth_5 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100), '%');
+        stock.aebitda_growth_3 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100), '%');
+        stock.aebitda_growth_1 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100), '%');
 
         stock.fcf_growth_10 = clearNAN(Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100), '%');
         stock.fcf_growth_5 = clearNAN(Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100), '%');

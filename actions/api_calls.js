@@ -103,14 +103,23 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
 
         }
         try {
-            let financials = await financialsAPI(list[i].symbol)
-            let annuals = financials.financials.annuals
+            let financials = await financialsAPI(list[i].symbol);
+            let annuals = financials.financials.annuals;
+            let quarterly = financials.financials.quarterly;
             for (f in annuals["Fiscal Year"]) {
                 let currentData = {
                     ttm: annuals["Fiscal Year"][f] === "TTM",
                     date: (annuals["Fiscal Year"][f] === "TTM") ? new Date() : new Date(annuals["Fiscal Year"][f].slice(0, 4), annuals["Fiscal Year"][f].slice(6, 8)),
                     symbol: list[i].symbol,
                     }
+
+                    try{
+                        let qSharesOutstanding = quarterly.valuation_and_quality["Shares Outstanding (EOP)"]
+                        let current_quarter_so = Object.keys(qSharesOutstanding).splice(-1)[0]
+                        currentData.shares_outstanding_quarterly = qSharesOutstanding[current_quarter_so]
+                    }
+                    catch{currentData.shares_outstanding_quarterly = null;}
+
                     try{currentData.price =  parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f])}
                         catch{currentData.price =  null}
                     try{ currentData.net_debt =  parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Short-Term Debt & Capital Lease Obligation"][f]) + parseFloat(annuals.balance_sheet["Minority Interest"][f]) - parseFloat(annuals.balance_sheet["Cash And Cash Equivalents"][f]) - parseFloat(annuals.balance_sheet["Marketable Securities"][f])}
@@ -141,7 +150,6 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                         catch{currentData.eps_basic =  null}
                     try{currentData.eps_without_nri =  parseFloat(annuals.per_share_data_array["EPS without NRI"][f])}
                         catch{currentData.eps_without_nri = null}
-
                     try { currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f]); }
                         catch { currentData.roe = "Does not exist" }
                     try{ currentData.roic = parseFloat(annuals.common_size_ratios["ROIC %"][f]); }

@@ -149,7 +149,7 @@ function column_builder(){
         { data : "categories"},
 
         { data : "stockdata.0.datestring" },
-        { data : "stockdata.0.shares_outstanding_format" },
+        { data : "stockdata.0.shares_outstanding_quarterly" },
         { data : "stockdata.0.enterprise_value_format" },
         { data : "stockdata.0.revenue_format" },
         { data : "stockdata.0.aebitda_format" },
