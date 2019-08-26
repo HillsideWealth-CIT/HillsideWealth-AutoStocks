@@ -583,6 +583,11 @@ function share() {
 function counter_ajax(active_num, end_num, symbols, ids, link) {
     Swal.update({ text: `Progress: ${active_num}/${end_num}` });
     if (active_num == end_num) {
+        if(end_num >= 100){
+            $table.destroy();
+            $('tbody').empty();
+            Initialize_table();
+        }
         Swal.update({
             type: 'success',
             text: 'Update Complete'
@@ -598,7 +603,7 @@ function counter_ajax(active_num, end_num, symbols, ids, link) {
         data: { action: [{ symbol: symbols[active_num], stock_id: ids[active_num] }] },
         success: function (resolved) {
             // alert(JSON.stringify(data))
-            console.log(resolved.data);
+            // console.log(resolved.data);
             try {
                 // console.log(resolved.data[0])
                 $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
