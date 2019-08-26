@@ -155,8 +155,14 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
  */
 function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse) {
     edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse).then((resolve) => {
-        ajax_Call(resolve, '/edits').then((server_resolve) => {
-            $table.row(document.getElementById(`${symbol}`)).data(server_resolve.data[0]).invalidate();
+        fetch('/edits', {
+            method: 'POST',
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify(resolve)
+        })
+        .then(response => response.json())
+        .then(data => {
+            $table.row(document.getElementById(`${symbol}`)).data(data.data[0]).invalidate();
         });
     });
 }
@@ -269,10 +275,10 @@ function dfcAverage(arrList) {
  * @param {String} ty 
  */
 function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty) {
-    //console.log(`${eps} ${gr} ${tgr} ${dr} ${gy} ${ty} `)
-    let fv = dcf(eps, Math.round((gr5 / 100) * 100000) / 100000, tgr, dr, gy, ty);
+    console.log(`${eps} ${gr5} ${gr10} ${gr15} ${tgr} ${dr} ${gy} ${ty} `)
+    let fv = dcf(eps, Math.round((gr5.replace(/[^a-z0-9,. ]/gi, '') / 100) * 100000) / 100000, tgr, dr, gy, ty);
     // console.log(fv)
-    calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv);
+    calc_menu(eps, gr5.replace(/[^a-z0-9,. ]/gi, ''), gr10.replace(/[^a-z0-9,. ]/gi, ''), gr15.replace(/[^a-z0-9,. ]/gi, ''), tgr, dr, gy, ty, fv);
 }
 
 /**
@@ -324,10 +330,14 @@ function calc_edit() {
     if (stock_id_list.length != 0) {
         calc_edit_menu().then((values) => {
             let to_send = { stock_id_list: stock_id_list, values: values };
-            ajax_Call(to_send, '/calc_edit').then((res) => {
-                if (res == "OK") {
-                    location.reload();
-                }
+            fetch('/calc_edit', {
+                method: 'POST',
+                headers: { "Content-Type" : "application/json"},
+                body: JSON.stringify(to_send)
+            })
+            .then(response => response.json)
+            .then(data => {
+                location.reload();
             });
         });
     }
@@ -550,7 +560,16 @@ function share() {
             break;
         }
     }
-    ajax_Call(to_share, '/share');
+    fetch('/share', {
+        method: 'POST',
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify(to_share)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("OK")
+    })
+    // ajax_Call(to_share, '/share');
 }
 
 /**
@@ -564,6 +583,11 @@ function share() {
 function counter_ajax(active_num, end_num, symbols, ids, link) {
     Swal.update({ text: `Progress: ${active_num}/${end_num}` });
     if (active_num == end_num) {
+        if(end_num >= 100){
+            $table.destroy();
+            $('tbody').empty();
+            Initialize_table();
+        }
         Swal.update({
             type: 'success',
             text: 'Update Complete'
@@ -579,7 +603,7 @@ function counter_ajax(active_num, end_num, symbols, ids, link) {
         data: { action: [{ symbol: symbols[active_num], stock_id: ids[active_num] }] },
         success: function (resolved) {
             // alert(JSON.stringify(data))
-            console.log(resolved.data);
+            // console.log(resolved.data);
             try {
                 // console.log(resolved.data[0])
                 $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
@@ -701,7 +725,9 @@ function value_calculator(val, price) {
 }
 
 
-
+/***
+ * Creates the aggregation menu
+ */
 function createAggregation() {
     let to_send = {};
     Swal.fire({
@@ -796,6 +822,9 @@ function createAggregation() {
     });
 }
 
+/**
+ * Creates the list of Columns
+ */
 function createColumnList() {
     let optionString = '<datalist id="columnList">';
     let tableList = document.getElementById('headerRow').childNodes;
@@ -807,6 +836,11 @@ function createColumnList() {
     return `${optionString}</datalist>`;
 }
 
+/**
+ * requests data from servers then determins what actions to take
+ * @param {Integer} columnNum - The column number
+ * @param {String} ver - the correct function to use
+ */
 function settingAggregation(columnNum, ver) {
     fetch('/aggregation/get', {
         method: 'POST',
@@ -843,6 +877,10 @@ function settingAggregation(columnNum, ver) {
     });
 }
 
+/**
+ * Creates a JSON
+ * @param {List} arr 
+ */
 function createSelector(arr) {
     let selectors = {};
     for (let i in arr) {
@@ -851,7 +889,11 @@ function createSelector(arr) {
     return selectors;
 }
 
-
+/**
+ * Sends the Column data to the server then changes the aggregate column numbers
+ * @param {List} valueList 
+ * @param {Integer} columnNum 
+ */
 function sendColumnData(valueList, columnNum) {
     let toSend = [];
     let tableRows = $table.rows().data();
@@ -861,7 +903,18 @@ function sendColumnData(valueList, columnNum) {
         toSend.push({ row: valueList[j], values: [] });
         for (let i in tableRows) {
             if (tableRows[i].symbol) {
-                toSend[j].values.push(FAD(tableRows[i], columnHeader));
+                let fad = FAD(tableRows[i], columnHeader);
+                if(fad.symbol){
+                toSend[j].values.push(fad);
+                }
+                else{
+                    swal.fire({
+                        type: 'error',
+                        title: 'Error',
+                        text: 'The column ['+ fad.error + '] does not exist' 
+                    });
+                    return
+                }
             }
         }
     }
@@ -898,16 +951,16 @@ function FAD(data, column) {
         'Categories': 'categories',
 
         'Date': 'stockdata datestring',
-        'Shares Outstanding': 'stockdata shares_outstanding_format',
-        'Enterprise Value': 'stockdata enterprise_value_format',
-        'Revenue': 'stockdata revenue_format',
+        'Shares Outstanding(M)': 'stockdata shares_outstanding_format',
+        'Enterprise Value(M)': 'stockdata enterprise_value_format',
+        'Revenue(M)': 'stockdata revenue_format',
         'aEBITDA(M)': 'stockdata aebitda_format',
         'aEBITDA/Share': 'stockdata aeXsho_format',
         'aEBITDA%': 'stockdata aebitda_percent',
         'Asset Turn': 'stockdata asset_turnover',
         'aEBITDA AT': 'stockdata aebitda_at',
         'EV/aEBITDA': 'stockdata ev_aebita',
-        'Net Debt': 'stockdata net_debt_format',
+        'Net Debt(M)': 'stockdata net_debt_format',
         'ND/aEBITDA': 'stockdata nd_aebitda',
         'ROE': 'stockdata roe_format',
         'ROE Spice': 'stockdata roe_spice',
@@ -920,14 +973,14 @@ function FAD(data, column) {
         'MS 5* Price': 'fivestar',
         'MS 1* Price': 'onestar',
 
-        'EPS': 'stockdata eps_without_nri_format',
+        'EPS': 'stockdata eps_without_nri_string_format',
         'Growth Years': 'stockdata growth_years_format',
         'Growth % 5Y': 'growth_rate_5y',
         'Growth % 10Y': 'growth_rate_10y',
         'Growth % 15Y': 'growth_rate_15y',
         'terminalyears': 'stockdata terminal_years_format',
-        'Terminal Growth %': 'stockdata terminal_growth_rate_format',
-        'Discount Rate': 'stockdata discount_rate_format',
+        'Terminal Growth %': 'stockdata terminal_growth_rate_string_format',
+        'Discount Rate': 'stockdata discount_rate_string_format',
         'Growth Value 5Y': 'dcf_values_5y growth_value',
         'Terminal Value 5Y': 'dcf_values_5y terminal_value',
         'DCF Fair Value 5Y': 'dcf_values_5y fair_value',
@@ -952,7 +1005,7 @@ function FAD(data, column) {
         'Capex/aEBITDA 5Y': 'capeXaeAverage5',
         'Capex/aEBITDA 10Y': 'capeXaeAverage10',
 
-        'FCF/aBITDA': 'stockdata fcfXae_format',
+        'FCF/aEBITDA': 'stockdata fcfXae_format',
         'Price Growth (1y)': 'price_growth_1',
         'Price Growth (3y)': 'price_growth_3',
         'Price Growth (5y)': 'price_growth_5',
@@ -977,20 +1030,29 @@ function FAD(data, column) {
         'WACC %': 'stockdata wacc_format',
         'ROIC-WACC': 'stockdata roicwacc_format',
     };
-    let splitString = keyvalues[column].split(' ');
-    if(keyvalues[column].split(' ').length == 1){
-        return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,. ]/gi, '') };
+    try{
+        let splitString = keyvalues[column].split(' ');
+        if(keyvalues[column].split(' ').length == 1){
+            return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,. ]/gi, '') };
+        }
+        else if (splitString[0] == 'stockdata'){
+            return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,. ]/gi, '')};
+        }
+        else{
+            // let dcf = data[splitString[0]][splitString[1]].replace(/[^a-z0-9,. ]/gi, '');      
+            return { symbol: data.symbol, value: data[splitString[0]][splitString[1]]};
+        }
     }
-    else if (splitString[0] == 'stockdata'){
-        return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,. ]/gi, '')};
-    }
-    else{
-        // let dcf = data[splitString[0]][splitString[1]].replace(/[^a-z0-9,. ]/gi, '');      
-        return { symbol: data.symbol, value: data[splitString[0]][splitString[1]]};
+    catch(e){
+        return {error : column};
     }   
-    
 }
 
+/**
+ * Edits the aggreagtions stored in the database
+ * @param {JSON} data - Original Aggregate Settings
+ * @param {JSON} result - User Input
+ */
 function editAggregations(data, result) {
     let to_send = {};
     let selected = '';
@@ -1051,6 +1113,10 @@ function editAggregations(data, result) {
             });
         });
 
+    /**
+     * Creates the custom sweetalert string for the original aggregate settings
+     * @param {String} aggregate_string - comma seperated string
+     */
     function SWAL_AggregationStringSet(aggregate_string) {
         let div_string = '';
         for (let i = 0; i < 10; i++) {
@@ -1092,6 +1158,11 @@ function editAggregations(data, result) {
     }
 }
 
+/**
+ * Deletes aggregation settings stored in the database
+ * @param {*} data - yes
+ * @param {*} result - User Input
+ */
 function deleteAggregations(data, result) {
     let to_send = {};
     let selected = '';

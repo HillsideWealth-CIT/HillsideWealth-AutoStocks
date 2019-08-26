@@ -13,7 +13,7 @@ function Initialize_table(){
     ajax_Call("init_shared", "/init_table").then((resolve) => {
         stockdb = resolve.data;
         $table = fill_table(resolve.data);
-        // console.log(stockdb)
+        console.log(stockdb);
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
@@ -21,8 +21,9 @@ function Initialize_table(){
 }
 
 /**
- * Fills table with JSON data
+ * Creates a datatable then Fills the table with JSON data
  * @param {JSON} data 
+ * @returns {object} Datatable
  */
 function fill_table(data){
     var datatable = $('#datatable').DataTable({
@@ -45,26 +46,30 @@ function fill_table(data){
 
 /**
  * Builds the button array for the table
+ * @returns {list}
  */
 function button_builder(){
     let buttons = [
         'selectAll', 'selectNone',
         {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove();}},
-        {text: '<span class="fas fa-sync-alt"></span> Prices', className:"btn-sm", action: function(){update('update_prices');}},
-        {text: '<span class="fas fa-sync-alt"></span> Financials', className:"btn-sm", action: function(){update('update_financials');}},
+        {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", extend: 'collection',
+        buttons:[
+            {text: 'Prices', className:"btn-sm", action: function(){update('update_prices');}},
+            {text: 'Financials', className:"btn-sm", action: function(){update('update_financials');}},
+        ]},
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
-        {text: '<span class="fas fa-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
-        {text: '<span class="fas fa-cog"></span> Aggregate', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
+        {text: '<span class="fas fa-layer-group"></span> Aggregate', className:"btn-sm", extend: 'collection',
         buttons: [
+            { text:'<b>Set</b>', action: function(){settingAggregation(7, 'set');} },
             { text:'Create', action: function(){createAggregation();} },
-            { text:'Set', action: function(){settingAggregation(7, 'set');} },
             { text:'Edit', action: function(){settingAggregation(0,'edit');} },
             { text:'Delete', action: function(){settingAggregation(0, 'delete');} },
         ]},
-        {text: '<span class="fas fa-cog"></span> Table Config', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-columns"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all();}},
                 { text:'<b>Basic Stats</b>', action: function(){basic_stats();}},
@@ -91,6 +96,7 @@ function button_builder(){
 
 /**
  * Builds the column array for the table
+ * @returns {List}
  */
 function column_builder(){
     let columns = [
@@ -146,7 +152,7 @@ function column_builder(){
         { data : "categories"},
 
         { data : "stockdata.0.datestring" },
-        { data : "stockdata.0.shares_outstanding_format" },
+        { data : "stockdata.0.shares_outstanding_quarterly" },
         { data : "stockdata.0.enterprise_value_format" },
         { data : "stockdata.0.revenue_format" },
         { data : "stockdata.0.aebitda_format" },
@@ -164,20 +170,21 @@ function column_builder(){
 
         { data : "gfrating" },
         { data : "jdv" },
+        { data : "msse"},
         { data : "moat" },
         { data : "fairvalue" },
         { data : "fivestar" },
         { data : "onestar" },
 
-        { data : "stockdata.0.eps_without_nri_format" },
+        { data : "stockdata.0.eps_without_nri_string_format" },
         { data : "stockdata.0.growth_years_format" },
         { data : "growth_rate_5y" },
         { data : "growth_rate_10y" },
         { data : "growth_rate_15y" },
         { data : "stockdata.0.terminal_years_format" },
 
-        { data : "stockdata.0.terminal_growth_rate_format" },
-        { data : "stockdata.0.discount_rate_format" },
+        { data : "stockdata.0.terminal_growth_rate_string_format" },
+        { data : "stockdata.0.discount_rate_string_format" },
 
         { data : "dcf_values_5y.growth_value" },
         { data : "dcf_values_5y.terminal_value" },
@@ -240,6 +247,7 @@ function column_builder(){
  * @param {String} action - What the server will do with the request
  * @param {String} id - The Primary key of the stock for the database
  * @param {JSON} userInput - What the user inputs into the app
+ * @returns {Promise} JSON data
  */
 function ajax_Call(action, link) {
     return new Promise((resolve, reject) => {

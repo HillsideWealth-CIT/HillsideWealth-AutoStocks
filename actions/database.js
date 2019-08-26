@@ -202,6 +202,10 @@ const arrayAddStockData = async (data) => {
                 if (i == 0) columns.push('eps_without_nri')
                 placeholders.push(`$${params.push(parseFloat(data[i].eps_without_nri))}`)
             }
+            if(data[i].shares_outstanding_quarterly != null){
+                if(i == 0) columns.push('shares_outstanding_quarterly')
+                placeholders.push(`$${params.push(parseFloat(data[i].shares_outstanding_quarterly))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }

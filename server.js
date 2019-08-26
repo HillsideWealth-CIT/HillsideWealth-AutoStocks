@@ -181,11 +181,6 @@ app.post("/entercode", sessionCheck, (request, response) => {
         });
 });
 
-// app.post('/toggleStock', sessionCheck, (request, response) => {
-//     console.log(request.body);
-//     db.toggleStock(request.body.stock_id, request.session.user).then((res) => { console.log(res); response.send(res.rows[0].enabled) }).catch(err => console.log(err))
-// });
-
 /* Login */
 app.post("/login", (request, response) => {
     auth.login(request.body.username, request.body.password)
@@ -309,9 +304,9 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
 
 /* Edit Fields */
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
-    console.log(request.body.action)
-    db.edits(request.body.action).then(() => {
-        db.get_by_id(request.body.action.id).then((res) => {
+    // console.log(request.body)
+    db.edits(request.body).then(() => {
+        db.get_by_id(request.body.id).then((res) => {
             res.forEach((stock) => {
                 format_data(stock);
             });
@@ -322,7 +317,8 @@ app.post('/edits', sessionCheck, statusCheck, (request, response) => {
 
 /* DFC Values Edit */
 app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
-    db.dfc_edits(request.body.action.values, calc.multi_dfc_string(request.body.action.stock_id_list)).then((resolve) => {
+    // console.log(request.body);
+    db.dfc_edits(request.body.values, calc.multi_dfc_string(request.body.stock_id_list)).then((resolve) => {
         response.send("OK");
     });
 });
@@ -381,7 +377,8 @@ app.post('/remove/shared', sessionCheck, statusCheck, (request, response) => {
 
 /* Enables stocks to be displayed in the shared database */
 app.post('/share', sessionCheck, statusCheck, (request, response) => {
-    db.sharestock(calc.multi_dfc_string(request.body.action), request.session.user)
+    // console.log(request.body);
+    db.sharestock(calc.multi_dfc_string(request.body), request.session.user)
     .then((resolve) => {
         response.send({ status: 'OK' });
     });
@@ -447,7 +444,7 @@ app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
     let retrieve_info = [];
     db.set_categories(request.body.categories, combined_string)
     .then((resolve) => {
-        console.log(resolve);
+        // console.log(resolve);
         for (let i in request.body.stocks_list) {
             retrieve_info.push(db.get_added(request.body.symbols[i], request.session.user));
         }
@@ -545,20 +542,51 @@ quarter_updates;
 
 /*** Functions ***/
 
-// Add comma separator to numbers in thousands
-function formatNumber(num) {
+/**
+ * Adds a comma sparator to numbers in thousads
+ * Clears NaNs
+ * Adds symbols at the end of strings
+ * @param {Float} num 
+ * @param {String} extraSymbol 
+ */
+function formatNumber(num, extraSymbol) {
     try {
         num = clearNAN(num);
-        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+        if(!isFinite(num)){
+            return null;
+        }
+        else if(num != null){
+            if(extraSymbol == '%' ){
+                return `${num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}%`;
+            }
+            else if(extraSymbol == '$'){
+                return `$${num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
+            }
+            else{
+                return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+            }
+        }
+        else{
+            return null;
+        }
     }
     catch(e) {
         return null;
     }
 }
 
+/**
+ * returns null if param is NaN
+ * @param {*} param
+ * @param {*} extraSymbol
+ * @returns {string} 
+ */
 function clearNAN(param, extraSymbol) {
-    if (isNaN(param) || !isFinite(param)) {
+    if (isNaN(param)){
         return null;
+    }
+    if( !isFinite(param)){
+        return 88888888 + extraSymbol;
     }
     else if (extraSymbol) {
         return param + extraSymbol;
@@ -568,47 +596,43 @@ function clearNAN(param, extraSymbol) {
     }
 }
 
-function initial_values_calc(years, id, ttm, prev_eps, terminal_growth, discount, growth_years, terminal_years) {
-    let growth_rate = (calculate_default_growth_func(years, ttm, prev_eps)) / 100;
-    let calculated = calc.dcf(ttm, growth_rate, terminal_growth, discount, growth_years, terminal_years);
-    return calculated;
-}
-
-function calculate_default_growth_func(years, ttm, eps) {
-    let part1 = parseFloat(ttm) / parseFloat(eps);
-    let part2 = (Math.pow(part1, 1 / years) - 1) * 100;
-    return Math.round((part2) * 100) / 100;
-}
-
+/**
+ * Formats a JSON object
+ * @param {JSON} stock 
+ */
 function format_data(stock) {
     stock.stockdata.forEach((data) => {
         data.yield_format = data.yield + '%';
-        data.price_format = '$' + formatNumber(data.price);
+        data.price_format = formatNumber(data.price, '$');
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
-        data.market_cap_format = formatNumber(Math.round(data.market_cap));
-        data.net_debt_format = formatNumber(Math.round(data.net_debt));
-        data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10);
-        data.revenue_format = formatNumber(Math.round(data.revenue));
-        data.aebitda_format = formatNumber(data.aebitda);
-        data.roe_format = Math.round(data.roe * 10) / 10;
-        data.effective_tax_format = Math.round(data.effective_tax * 10) / 10 + '%';
-        data.fcf_format = formatNumber(Math.round(data.fcf));
+        data.shares_outstanding_quarterly = formatNumber(Math.round(data.shares_outstanding_quarterly * 100) / 100);
+        data.market_cap_format = formatNumber(Math.round(data.market_cap), '$');
+        data.net_debt_format = formatNumber(Math.round(data.net_debt) * -1, '$');
+        data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10, '$');
+        data.revenue_format = formatNumber(Math.round(data.revenue), '$');
+        data.aebitda_format = formatNumber(data.aebitda, '$');
+        data.roe_format = formatNumber(Math.round(data.roe * 10) / 10, '%');
+        data.effective_tax_format = formatNumber(Math.round(data.effective_tax * 10) / 10,'%');
+        data.fcf_format = formatNumber(Math.round(data.fcf), '$');
 
-        data.roic_format = formatNumber(data.roic);
-        data.wacc_format = formatNumber(data.wacc);
+        data.roic_format = formatNumber(data.roic, '%');
+        data.wacc_format = formatNumber(data.wacc, '%');
         data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100);
-        data.capex_format = '$' + formatNumber(Math.round((data.capex * -1) * 100) / 100);
-        data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100) / 100);
-        data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100);
+        data.capex_format = formatNumber(Math.round((data.capex * -1), '$'));
+        data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100)/100, '%');
+        data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100, '$');
         data.capeXfcf_format = formatNumber(Math.round((data.capex / data.fcf) * 100) / 100);
-        data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100) / 100);
+        data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100), '%');
 
-        data.eps_without_nri_format = Math.round((data.eps_without_nri) * 100) / 100;
+        data.eps_without_nri_format =  Math.round((data.eps_without_nri) * 100) / 100;
+        data.eps_without_nri_string_format = '$' +  Math.round((data.eps_without_nri) * 100) / 100;
         data.eps_growth_rate = Math.round((data.eps_basic) * 100) / 100;
         data.growth_years_format = data.growth_years;
         data.terminal_years_format = data.terminal_years;
         data.terminal_growth_rate_format = (data.terminal_growth_rate) * 100;
+        data.terminal_growth_rate_string_format = (data.terminal_growth_rate) * 100 + '%'; 
         data.discount_rate_format = (data.discount_rate) * 100;
+        data.discount_rate_string_format = (data.discount_rate) * 100 + '%';
 
         data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%';
         data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100);
@@ -617,14 +641,14 @@ function format_data(stock) {
         data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.datestring = moment(data.date).format('MMM DD, YYYY');
-        data.fcf_yield = Math.round(data.fcf / data.market_cap * 100) + '%';
+        data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 100), '%');
     });
 
     stock.valueConditions = calc.value_calculator(stock.fairvalue, stock.stock_current_price.replace(/[^a-z0-9,. ]/gi, ''));
 
     try {
-        stock.growth_rate_5y = calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format);
-        stock.dcf_values_5y = initial_values_calc(5, stock.stock_id,
+        stock.growth_rate_5y = formatNumber(calc.calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format), '%');
+        stock.dcf_values_5y = calc.initial_values_calc(5,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[4].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,
@@ -639,8 +663,8 @@ function format_data(stock) {
     }
 
     try {
-        stock.growth_rate_10y = calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format);
-        stock.dcf_values_10y = initial_values_calc(10, stock.stock_id,
+        stock.growth_rate_10y = formatNumber(calc.calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format), '%');
+        stock.dcf_values_10y = calc.initial_values_calc(10,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[9].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,
@@ -656,8 +680,8 @@ function format_data(stock) {
     }
 
     try {
-        stock.growth_rate_15y = calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format);
-        stock.dcf_values_15y = initial_values_calc(15, stock.stock_id,
+        stock.growth_rate_15y = formatNumber(calc.calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format), '%');
+        stock.dcf_values_15y = calc.initial_values_calc(15,
             stock.stockdata[0].eps_without_nri_format,
             stock.stockdata[14].eps_without_nri,
             stock.stockdata[0].terminal_growth_rate,
@@ -728,31 +752,31 @@ function format_data(stock) {
             }
         }
 
-        stock.capeXfcfAverage5 = calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5);
-        stock.capeXfcfAverage10 = calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10);
+        stock.capeXfcfAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5) * 100), '%');
+        stock.capeXfcfAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10) * 100), '%');
 
-        stock.capeXaeAverage5 = calc.calculate_average(stock.stockdata, 'capeXae_format', 5);
-        stock.capeXaeAverage10 = calc.calculate_average(stock.stockdata, 'capeXae_format', 10);
+        stock.capeXaeAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXae_format', 5) * 100), '%');
+        stock.capeXaeAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXae_format', 10) * 100), '%');
         stock.categories == "null" ? stock.categories = null :null;
         !stock.ownership ? stock.ownership = '0%' : stock.ownership = `${stock.ownership}%`;
         stock.fairvalue == "null" ? stock.fairvalue = null : stock.fairvalue = '$' + stock.fairvalue;
         stock.onestar == "null" ? stock.onestar = null : stock.onestar = '$' + stock.onestar;
         stock.fivestar == "null" ? stock.fivestar = null : stock.fivestar = '$' + stock.fivestar;
 
-        stock.price_growth_10 = Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100);
-        stock.price_growth_5 = Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100);
-        stock.price_growth_3 = Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100);
-        stock.price_growth_1 = Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100);
+        stock.price_growth_10 = formatNumber(Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100), '%');
+        stock.price_growth_5 = formatNumber(Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100), '%');
+        stock.price_growth_3 = formatNumber(Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100), '%');
+        stock.price_growth_1 = formatNumber(Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100), '%');
 
         stock.revenue_growth_10 = clearNAN(Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100), '%');
         stock.revenue_growth_5 = clearNAN(Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100), '%');
         stock.revenue_growth_3 = clearNAN(Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100), '%');
         stock.revenue_growth_1 = clearNAN(Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100), '%');
 
-        stock.aebitda_growth_10 = Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100);
-        stock.aebitda_growth_5 = Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100);
-        stock.aebitda_growth_3 = Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100);
-        stock.aebitda_growth_1 = Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100);
+        stock.aebitda_growth_10 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100), '%');
+        stock.aebitda_growth_5 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100), '%');
+        stock.aebitda_growth_3 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100), '%');
+        stock.aebitda_growth_1 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100), '%');
 
         stock.fcf_growth_10 = clearNAN(Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100), '%');
         stock.fcf_growth_5 = clearNAN(Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100), '%');
