@@ -22,6 +22,7 @@ function Initialize_table(){
 
 /**
  * Creates a datatable then Fills the table with JSON data
+ * Link to Library: Datatables.net
  * @param {JSON} data 
  * @returns {object} Datatable
  */
