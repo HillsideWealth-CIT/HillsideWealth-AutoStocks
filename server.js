@@ -575,21 +575,11 @@ function formatNumber(num, extraSymbol) {
     }
 }
 
-// check growth metrics *for tsx
-// aebitagrowth + %
-
-// function add_zero(num){
-//     var num = Number(num);
-//     if(String(num).split(".").length < 2 || String(num).split(".")[1].length <=2){
-//         num = num.toFixed(2);
-//     }
-//     return num;
-// }
-
 /**
  * returns null if param is NaN
  * @param {*} param
- * @param {*} extraSymbol 
+ * @param {*} extraSymbol
+ * @returns {string} 
  */
 function clearNAN(param, extraSymbol) {
     if (isNaN(param)){

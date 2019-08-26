@@ -1,5 +1,7 @@
+/** Columns that can't be hidden */
 const perm = [0, 1, 2, 3, 4, 5, 6, 7];
 
+/** list of table columns following the order on the site */
 var column_list = ['check',
     'Symbol',
     'Graph',
@@ -120,6 +122,10 @@ function hide_loop(start, end, count = 0) {
         }
     }
 }
+
+/**
+ * button functions for displaying stocks
+ */
 
 function show_all() {
     hide_loop(0, total_columns);

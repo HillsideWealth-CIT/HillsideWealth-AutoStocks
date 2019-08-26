@@ -20,8 +20,9 @@ function Initialize_table(){
     });
 }
 /**
- * Fills table with JSON data
+ * Creates a datatable then Fills the table with JSON data
  * @param {JSON} data 
+ * @returns {object} the datatable
  */
 function fill_table(data){
     var datatable = $('#datatable').DataTable({
@@ -44,6 +45,7 @@ function fill_table(data){
 
 /**
  * Builds the button array for the table
+ * @returns {List}
  */
 function button_builder(){
     let buttons = [
@@ -94,6 +96,7 @@ function button_builder(){
 
 /**
  * Builds the column array for the table
+ * @returns {List}
  */
 function column_builder(){
     let columns = [
@@ -243,6 +246,7 @@ function column_builder(){
  * @param {String} action - What the server will do with the request
  * @param {String} id - The Primary key of the stock for the database
  * @param {JSON} userInput - What the user inputs into the app
+ * @returns {Promise} JSON
  */
 function ajax_Call(action, link) {
     return new Promise((resolve, reject) => {
