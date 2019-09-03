@@ -759,9 +759,9 @@ function format_data(stock) {
         stock.capeXaeAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXae_format', 10) * 100), '%');
         stock.categories == "null" ? stock.categories = null :null;
         !stock.ownership ? stock.ownership = '0%' : stock.ownership = `${stock.ownership}%`;
-        stock.fairvalue == "null" ? stock.fairvalue = null : stock.fairvalue = '$' + stock.fairvalue;
-        stock.onestar == "null" ? stock.onestar = null : stock.onestar = '$' + stock.onestar;
-        stock.fivestar == "null" ? stock.fivestar = null : stock.fivestar = '$' + stock.fivestar;
+        stock.fairvalue == "null" ? stock.fairvalue = null : stock.fairvalue = '$' + Math.round(stock.fairvalue * 100) / 100;
+        stock.onestar == "null" ? stock.onestar = null : stock.onestar = '$' + Math.round(stock.onestar * 100) / 100;
+        stock.fivestar == "null" ? stock.fivestar = null : stock.fivestar = '$' + Math.round(stock.fivestar * 100) / 100;
 
         stock.price_growth_10 = formatNumber(Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100), '%');
         stock.price_growth_5 = formatNumber(Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100), '%');
