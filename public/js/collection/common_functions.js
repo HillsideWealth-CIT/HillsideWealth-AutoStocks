@@ -480,7 +480,7 @@ function show_financials(symbol, stockdata, years) {
             <td>${stockdata[i].fcf_format}</td>
             <td>${stockdata[i].fcfXae_format}</td>
             <td>${stockdata[i].fcf_yield}</td>
-            <td>${stockdata[i].capex}</td>
+            <td>${stockdata[i].capex_format}</td>
             <td>${stockdata[i].capeXae_format}</td>
             <td>${stockdata[i].datestring}</td>
             </tr>
