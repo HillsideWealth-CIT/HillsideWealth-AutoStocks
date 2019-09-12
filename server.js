@@ -618,8 +618,8 @@ function format_data(stock) {
         data.roic_format = formatNumber(data.roic, '%');
         data.wacc_format = formatNumber(data.wacc, '%');
         data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100);
-        data.capex_format = formatNumber(Math.round((data.capex * -1), '$'));
-        data.capeXae_format = formatNumber(Math.round((data.capex / data.aebitda) * 100)/100, '%');
+        data.capex_format = formatNumber(Math.round((data.capex * -1)), '$');
+        data.capeXae_format = formatNumber(Math.round(((data.capex / data.aebitda)* 100)), '%');
         data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100, '$');
         data.capeXfcf_format = formatNumber(Math.round((data.capex / data.fcf) * 100) / 100);
         data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100), '%');
