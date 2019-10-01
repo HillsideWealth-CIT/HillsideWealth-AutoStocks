@@ -170,7 +170,6 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                         catch{ currentData.roic = NaN; }
                     try { currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f]); }
                         catch { currentData.fcf = NaN; }
-
                 currentStock.data.push(currentData)
             }
         } catch (err) {
@@ -178,11 +177,9 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
         } finally {
             currentData = []
         }
-
-
-
         try {
-            if(currentStock.company != 'Failed to get company name'){
+            console.log(currentStock.data.length)
+            if(currentStock.company != 'Failed to get company name' && currentStock.data.length != 0){
                 var stocks = await db.addStocks(currentStock.symbol, currentStock.company, currentStock.sector, currentStock.current_price, username, currentStock.comment, currentStock.gfrating, shared)
             }
         }

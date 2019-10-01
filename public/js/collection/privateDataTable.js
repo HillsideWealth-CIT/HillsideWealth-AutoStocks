@@ -124,7 +124,13 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 3: DCF calculator
-                return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`;
+                try{
+                    return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`;
+                }
+                catch(e){
+                    return `<button type="button" onclick='open_calc("${0}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${0}","${0}","${0}","${0}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`
+                }
+               
             }    
         },
         {   defaultContent: 0.00,
