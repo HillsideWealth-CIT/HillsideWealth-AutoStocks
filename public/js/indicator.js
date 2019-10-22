@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 function Initialize_table() {
     retrieve_data().then(res => {
+        console.log(res)
         fill_table(res)
+        $table.order([1, 'asc']).draw()
     })
 }
 
@@ -26,7 +28,12 @@ function retrieve_data() {
 
 function fill_table(data) {
     $table = $('#datatable').DataTable({
+        processing : true,
         data: data,
+        scrollX : true,
+        scrollY: '70vh',
+        deferRendering : true,
+        scroller: true,
         rowId: 'indicator_id',
         columns: columnBuilder(),
         dom: 'Brti',
