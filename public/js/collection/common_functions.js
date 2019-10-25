@@ -260,7 +260,7 @@ function dfcAverage(arrList) {
             finalString = `${finalString} + ${arrList[i]}`;
         }
     }
-    return `${finalString.substr(2)} / ${counter} = ${Math.round((total/counter) * 100) / 100}`;
+    return `${finalString.substr(2)} / ${counter} = ${Math.round((total) * 100) / 100}`;
 }
 
 /**
