@@ -206,6 +206,10 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('shares_outstanding_quarterly')
                 placeholders.push(`$${params.push(parseFloat(data[i].shares_outstanding_quarterly))}`)
             }
+            if(data[i].ppe != null){
+                if(i == 0) columns.push('ppe')
+                placeholders.push(`$${params.push(parseFloat(data[i].ppe))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }

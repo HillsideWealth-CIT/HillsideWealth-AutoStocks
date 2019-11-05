@@ -85,7 +85,6 @@ function button_builder(){
                 { text:'SO Growth', action: function(){so_growth();}},
                 { text:'Rev Growth', action: function(){rev_growth();}},
                 { text:'aEBITDA Growth', action: function(){ae_growth();}},
-                { text:'<b>Asset Light</b>', action: function(){asset_light();}},
                 { text:'CapEx', action: function(){capex();}},
                 { text: '<b>Profitability</b>', action: function(){profitability();}},
             ]
@@ -205,6 +204,7 @@ function column_builder(){
         { data : "fcf_growth_10" },
 
         { data : "stockdata.0.capex_format"},
+        { data : "capexgrowth"},
         { data : "capeXfcfAverage5"},
         { data : "capeXfcfAverage10"},
         { data : "stockdata.0.capeXae_format"},
