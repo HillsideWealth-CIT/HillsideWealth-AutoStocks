@@ -642,6 +642,7 @@ function format_data(stock) {
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.datestring = moment(data.date).format('MMM DD, YYYY');
         data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 100), '%');
+        // data.ppe_percent = formatNumber(data.ppe/data.revenue)
     });
 
     stock.valueConditions = calc.value_calculator(stock.fairvalue, stock.stock_current_price.replace(/[^a-z0-9,. ]/gi, ''));
@@ -704,6 +705,7 @@ function format_data(stock) {
             end_aebitda = stock.stockdata[0].aebitda,
             end_fcf = stock.stockdata[0].fcf,
             end_so = stock.stockdata[0].shares_outstanding;
+            end_ppe = stock.stockdata[0].ppe
         var price_10 = null,
             price_5 = null,
             price_3 = null,
@@ -792,6 +794,13 @@ function format_data(stock) {
         stock.soChangePercent_5 = clearNAN(Math.round((formatNumber((Math.round(((so_5 - end_so) / so_5) * 100) / 100) * -1) * 100) * 100) / 100, '%');
         stock.soChangePercent_3 = clearNAN(Math.round((formatNumber((Math.round(((so_3 - end_so) / so_3) * 100) / 100) * -1) * 100) * 100) / 100, '%');
         stock.soChangePercent_1 = clearNAN(Math.round((formatNumber((Math.round(((so_1 - end_so) / so_1) * 100) / 100) * -1) * 100) * 100) / 100, '%');
+        
+        if(end_ppe){
+            stock.capexgrowth = Math.round((end_ppe/end_revenue)*(end_revenue - revenue_1)*100)/100
+        }
+        else{
+            stock.capexgrowth = null;
+        }
     }
     catch (err) {
         ///

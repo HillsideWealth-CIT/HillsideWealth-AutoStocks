@@ -69,7 +69,9 @@ var column_list = ['check',
     'FCF Growth(3Y)',
     'FCF Growth(5Y)',
     'FCF Growth(10Y)',
+
     'Capex (M)',
+    'Growth Capex',
     'Capex/FCF 5Y',
     'Capex/FCF 10Y',
     'Capex/aEBITDA',
@@ -199,12 +201,6 @@ function rev_growth() {
 function ae_growth() {
     hide_loop(column_list.indexOf('aEBITDA Growth(1Y)') - 1,
         column_list.indexOf('aEBITDA Growth(10Y)') + 1);
-    $table.columns.adjust().draw(false);
-}
-
-function asset_light() {
-    hide_loop(column_list.indexOf('Capex (M)') - 1,
-        column_list.indexOf('FCF/aBITDA') + 1);
     $table.columns.adjust().draw(false);
 }
 
