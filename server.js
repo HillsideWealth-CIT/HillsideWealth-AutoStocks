@@ -601,7 +601,7 @@ function clearNAN(param, extraSymbol) {
  * @param {JSON} stock 
  */
 function format_data(stock) {
-    stock.stockdata.forEach((data) => {
+    stock.stockdata.forEach((data, index) => {
         data.yield_format = data.yield + '%';
         data.price_format = formatNumber(data.price, '$');
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
@@ -619,7 +619,6 @@ function format_data(stock) {
         data.wacc_format = formatNumber(data.wacc, '%');
         data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100);
         data.capex_format = formatNumber(Math.round((data.capex * -1)), '$');
-        data.capeXae_format = formatNumber(Math.round(((data.capex / data.aebitda)* 100)), '%');
         data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100, '$');
         data.capeXfcf_format = formatNumber(Math.round((data.capex / data.fcf) * 100) / 100);
         data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100), '%');
@@ -642,7 +641,27 @@ function format_data(stock) {
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.datestring = moment(data.date).format('MMM DD, YYYY');
         data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 100), '%');
-        // data.ppe_percent = formatNumber(data.ppe/data.revenue)
+            
+        try{
+            data.growth_capex = calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index+1].revenue);
+        }
+        catch(e){
+            data.growth_capex = null;
+        }
+        
+        if(data.growth_capex != null){
+            data.maintenance_capex = data.capex - data.growth_capex;
+            data.capeXae_format = formatNumber(Math.round(((data.maintenance_capex / data.aebitda)* 100)), '%');
+        }
+        else{
+            data.maintenance_capex = null;
+            data.capeXae_format = null;
+        }
+
+
+
+
+        // console.log(stock.stockdata[0].revenue)
     });
 
     stock.valueConditions = calc.value_calculator(stock.fairvalue, stock.stock_current_price.replace(/[^a-z0-9,. ]/gi, ''));
@@ -705,7 +724,6 @@ function format_data(stock) {
             end_aebitda = stock.stockdata[0].aebitda,
             end_fcf = stock.stockdata[0].fcf,
             end_so = stock.stockdata[0].shares_outstanding;
-            end_ppe = stock.stockdata[0].ppe
         var price_10 = null,
             price_5 = null,
             price_3 = null,
@@ -718,7 +736,7 @@ function format_data(stock) {
             aebitda_5 = null,
             aebitda_3 = null,
             aebitda_1 = null;
-        fcf_10 = null,
+            fcf_10 = null,
             fcf_5 = null,
             fcf_3 = null,
             fcf_1 = null,
@@ -753,6 +771,9 @@ function format_data(stock) {
                 so_1 = stock.stockdata[i].shares_outstanding;
             }
         }
+        stock.mCapAve_5 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 5)
+        stock.mCapAve_10 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 10)
+        stock.mCapAve_15 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 15)
 
         stock.capeXfcfAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5) * 100), '%');
         stock.capeXfcfAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10) * 100), '%');
@@ -794,15 +815,22 @@ function format_data(stock) {
         stock.soChangePercent_5 = clearNAN(Math.round((formatNumber((Math.round(((so_5 - end_so) / so_5) * 100) / 100) * -1) * 100) * 100) / 100, '%');
         stock.soChangePercent_3 = clearNAN(Math.round((formatNumber((Math.round(((so_3 - end_so) / so_3) * 100) / 100) * -1) * 100) * 100) / 100, '%');
         stock.soChangePercent_1 = clearNAN(Math.round((formatNumber((Math.round(((so_1 - end_so) / so_1) * 100) / 100) * -1) * 100) * 100) / 100, '%');
-        
-        if(end_ppe){
-            stock.capexgrowth = Math.round((end_ppe/end_revenue)*(end_revenue - revenue_1)*100)/100
-        }
-        else{
-            stock.capexgrowth = null;
-        }
+
     }
     catch (err) {
         ///
     }
+
+    function calculate_growth_capex(ppe, revenue, next_revenue){
+        // console.log(`${ppe} ${revenue} ${next_revenue}`)
+        if(ppe && next_revenue){
+            growthCapex = Math.round((ppe/revenue)*(revenue - next_revenue))*100/100 
+            // console.log(`${ppe} ${revenue} ${next_revenue} ${growthCapex}`)
+            return growthCapex;
+        }
+        else{
+            return null;
+        }
+    }
+
 }
