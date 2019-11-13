@@ -36,8 +36,8 @@ function fill_0(field) {
  * @param {Float} price 
  * @param {Float} gf_rating 
  */
-function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse) {
-    //console.log(`${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${ms_moat} ${jdv} `)
+function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse, mcap5, mcap10, mcap15) {
+    // console.log(`${symbol} ${id} ${comment} ${emote} ${ms_1_star} ${ms_5_star} ${ms_fv} ${moat} ${jdv} ${price} ${gf_rating} ${ownership} ${msse} ${mcap5} `)
     // console.log(fill_0(ms_1_star))
     let edits = {};
     return new Promise((resolve, reject) => {
@@ -118,6 +118,25 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                     <input id="Comment" type="text" class="form-control" value="${comment}">
                 </div>
             </div>
+            <div>
+                <div class="col">
+                    <label>Maintenance Capex Average</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="gfrating">5Y</label>
+                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap5)}" readonly>
+                </div>
+                <div class="col">
+                    <label for="gfrating">10Y</label>
+                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap10)}" readonly>
+                </div>
+                <div class="col">
+                    <label for="gfrating">15Y</label>
+                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap15)}" readonly>
+                </div>
+            </div>
             `,
         }
         ).then((result) => {
@@ -153,8 +172,8 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
  * @param {String} price 
  * @param {String} gf_rating 
  */
-function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse) {
-    edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse).then((resolve) => {
+function open_edit(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse, mcap5, mcap10, mcap15) {
+    edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat, jdv, price, gf_rating, ownership, msse, mcap5, mcap10, mcap15).then((resolve) => {
         fetch('/edits', {
             method: 'POST',
             headers: { "Content-Type" : "application/json" },
@@ -275,7 +294,7 @@ function dfcAverage(arrList) {
  * @param {String} ty 
  */
 function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty) {
-    console.log(`${eps} ${gr5} ${gr10} ${gr15} ${tgr} ${dr} ${gy} ${ty} `)
+    // console.log(`${eps} ${gr5} ${gr10} ${gr15} ${tgr} ${dr} ${gy} ${ty} `)
     let fv = dcf(eps, Math.round((gr5.replace(/[^a-z0-9,. ]/gi, '') / 100) * 100000) / 100000, tgr, dr, gy, ty);
     // console.log(fv)
     calc_menu(eps, gr5.replace(/[^a-z0-9,. ]/gi, ''), gr10.replace(/[^a-z0-9,. ]/gi, ''), gr15.replace(/[^a-z0-9,. ]/gi, ''), tgr, dr, gy, ty, fv);
@@ -459,7 +478,7 @@ function dcf_terminal(x, y, eps, g_years, t_years) {
  */
 function show_financials(symbol, stockdata, years) {
     let financials = "";
-    for (let i = 1; i <= years; i++) {
+    for (let i = 0; i <= years; i++) {
         try {
             financials += `<tr>
             <td>${stockdata[i].datestring}</td>
@@ -481,6 +500,8 @@ function show_financials(symbol, stockdata, years) {
             <td>${stockdata[i].fcfXae_format}</td>
             <td>${stockdata[i].fcf_yield}</td>
             <td>${stockdata[i].capex_format}</td>
+            <td>${stockdata[i].growth_capex}</td>
+            <td>${stockdata[i].maintenance_capex}</td>
             <td>${stockdata[i].capeXae_format}</td>
             <td>${stockdata[i].datestring}</td>
             </tr>
@@ -518,6 +539,8 @@ function show_financials(symbol, stockdata, years) {
                         <th>FCF/aEBITDA</th>
                         <th>FCF Yield</th>
                         <th>Capex</th>
+                        <th>Growth Capex</th>
+                        <th>Maintenance Capex</th>
                         <th>Capex/aEBITDA</th>
                         <th>Date</th>
                     </tr>

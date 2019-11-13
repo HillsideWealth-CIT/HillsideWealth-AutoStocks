@@ -75,9 +75,9 @@ var column_list = ['check',
     'Growth Capex',
     'Capex/FCF 5Y',
     'Capex/FCF 10Y',
-    'Capex/aEBITDA',
-    'Capex/aEBITDA 5Y',
-    'Capex/aEBITDA 10Y',
+    'Maintenance Capex/aEBITDA',
+    'Maintenance Capex/aEBITDA 5Y',
+    'Maintenance Capex/aEBITDA 10Y',
 
     'FCF/aBITDA',
     'Price Growth (1y)',
@@ -212,7 +212,7 @@ function ae_growth() {
 
 function capex() {
     hide_loop(column_list.indexOf('Capex (M)') - 1,
-        column_list.indexOf('Capex/aEBITDA 10Y') + 1);
+        column_list.indexOf('Maintenance Capex/aEBITDA 10Y') + 1);
     $table.columns.adjust().draw(false);
 }
 
