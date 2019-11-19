@@ -559,6 +559,9 @@ function formatNumber(num, extraSymbol) {
             if(extraSymbol == '%' ){
                 return `${num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}%`;
             }
+            else if(extraSymbol == '$' && num < 0){
+                return `-$${(num*-1).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
+            }
             else if(extraSymbol == '$'){
                 return `$${num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
             }
@@ -641,9 +644,12 @@ function format_data(stock) {
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.datestring = moment(data.date).format('MMM DD, YYYY');
         data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 100), '%');
-            
+        
+        
+
         try{
             data.growth_capex = calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index+1].revenue);
+            data.growth_capex_format = formatNumber(calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index+1].revenue), '$');
         }
         catch(e){
             data.growth_capex = null;
@@ -651,6 +657,7 @@ function format_data(stock) {
         
         if(data.growth_capex != null){
             data.maintenance_capex = data.capex - data.growth_capex;
+            data.maintenance_capex_format = formatNumber(Math.round(data.maintenance_capex*-1), '$')
             data.capeXae_format = formatNumber(Math.round(((data.maintenance_capex / data.aebitda)* 100)), '%');
         }
         else{
@@ -821,11 +828,10 @@ function format_data(stock) {
         ///
     }
 
-    function calculate_growth_capex(ppe, revenue, next_revenue){
-        // console.log(`${ppe} ${revenue} ${next_revenue}`)
-        if(ppe && next_revenue){
-            growthCapex = Math.round((ppe/revenue)*(revenue - next_revenue))*100/100 
-            // console.log(`${ppe} ${revenue} ${next_revenue} ${growthCapex}`)
+    function calculate_growth_capex(ppe, cur_revenue, prev_revenue){
+        // console.log(`${ppe} ${cur_revenue} ${prev_revenue}`)
+        if(ppe && prev_revenue){
+            growthCapex = Math.round((ppe/cur_revenue)*(prev_revenue - cur_revenue))*100/100 
             return growthCapex;
         }
         else{

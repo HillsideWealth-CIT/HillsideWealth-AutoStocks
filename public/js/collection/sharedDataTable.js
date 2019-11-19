@@ -204,7 +204,7 @@ function column_builder(){
         { data : "fcf_growth_10" },
 
         { data : "stockdata.0.capex_format"},
-        { data : "stockdata.0.growth_capex"},
+        { data : "stockdata.0.growth_capex_format"},
         { data : "capeXfcfAverage5"},
         { data : "capeXfcfAverage10"},
         { data : "stockdata.0.capeXae_format"},
