@@ -649,7 +649,7 @@ function format_data(stock) {
 
         try{
             data.growth_capex = calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index+1].revenue);
-            data.growth_capex_format = formatNumber(calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index+1].revenue), '$');
+            data.growth_capex_format = formatNumber(calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index+1].revenue)*-1, '$');
         }
         catch(e){
             data.growth_capex = null;
