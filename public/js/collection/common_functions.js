@@ -126,15 +126,15 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
             <div class="row">
                 <div class="col">
                     <label for="gfrating">5Y</label>
-                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap5*-1)}" readonly>
+                    <input id="gfrating" type="text" class="form-control" value="$${fill_0(mcap5*-1).toLocaleString()}" readonly>
                 </div>
                 <div class="col">
                     <label for="gfrating">10Y</label>
-                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap10*-1)}" readonly>
+                    <input id="gfrating" type="text" class="form-control" value="$${fill_0(mcap10*-1).toLocaleString()}" readonly>
                 </div>
                 <div class="col">
                     <label for="gfrating">15Y</label>
-                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap15*-1)}" readonly>
+                    <input id="gfrating" type="text" class="form-control" value="$${fill_0(mcap15*-1).toLocaleString()}" readonly>
                 </div>
             </div>
             `,
