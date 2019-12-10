@@ -221,7 +221,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
                 let dbdata = resolved2;
                 for (i = 0; i < dbdata.length; i++) {
                     _.remove(xlsxdata, function (e) {
-                        return true == dbdata[i].symbol.includes(e.Ticker);
+                        return true == dbdata[i].symbol.includes(e.Symbol);
                     });
                 }
                 response.render('compare.hbs', { data: xlsxdata, dbdata: dbdata, i: true, admin: (request.session.status == 'admin') });
