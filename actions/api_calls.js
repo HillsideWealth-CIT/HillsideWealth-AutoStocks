@@ -148,7 +148,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                         catch{currentData.asset_turnover = null}
                     try{currentData.revenue =  parseFloat(annuals.income_statement.Revenue[f])}
                         catch{currentData.revenue = null}
-                    try{ currentData.enterprise_value =  parseFloat(annuals.valuation_and_quality["Enterprise Value"][f])}
+                    try{ currentData.enterprise_value =  parseFloat(annuals.valuation_and_quality["Enterprise Value ($M)"][f])}
                         catch{ currentData.enterprise_value =  null}
                     try{currentData.effective_tax =  parseFloat(annuals.income_statement["Tax Rate %"][f])}
                         catch{currentData.effective_tax = null}
