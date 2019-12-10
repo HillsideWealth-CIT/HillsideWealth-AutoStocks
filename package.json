@@ -20,7 +20,11 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "client-sessions": "^0.8.0",
+<<<<<<< HEAD
     "csv-parse": "^4.4.6",
+=======
+    "csv-parse": "^4.8.2",
+>>>>>>> 4a1dbfc7ff572cae3395524153768891527e019d
     "csv-parser": "^2.1.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",

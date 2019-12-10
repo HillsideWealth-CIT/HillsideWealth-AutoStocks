@@ -778,9 +778,9 @@ function format_data(stock) {
                 so_1 = stock.stockdata[i].shares_outstanding;
             }
         }
-        stock.mCapAve_5 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 5)
-        stock.mCapAve_10 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 10)
-        stock.mCapAve_15 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 15)
+        stock.mCapAve_5 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 5))
+        stock.mCapAve_10 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 10))
+        stock.mCapAve_15 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 15))
 
         stock.capeXfcfAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5) * 100), '%');
         stock.capeXfcfAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10) * 100), '%');
