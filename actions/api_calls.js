@@ -144,7 +144,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                         catch{ currentData.yield = null}
                     try{currentData.dividend =  parseFloat(annuals.common_size_ratios["Dividend Payout Ratio"][f])}
                         catch{currentData.dividend = null}
-                    try{currentData.asset_turnover =  parseFloat(annuals.common_size_ratios["Asset Turnover"][f])}
+                    try{currentData.asset_turnover =  parseFloat(annuals.common_size_ratios["Turnover Ratio"][f])}
                         catch{currentData.asset_turnover = null}
                     try{currentData.revenue =  parseFloat(annuals.income_statement.Revenue[f])}
                         catch{currentData.revenue = null}
