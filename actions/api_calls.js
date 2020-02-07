@@ -155,7 +155,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                     try{currentData.shares_outstanding =  parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f])}
                         catch{currentData.shares_outstanding = null}
                     try{currentData.aebitda =  Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f]))}
-                        catch{currentData.aebitda = null}
+                        catch{currentData.aebitda = Math.round( 0 + parseFloat(annuals.income_statement.EBITDA[f]))}
                     try{ currentData.wacc =  parseFloat(annuals.common_size_ratios["WACC %"][f])}
                         catch{ currentData.wacc = null}
                     try{currentData.capex =  parseFloat(annuals.cashflow_statement["Capital Expenditure"][f])}
