@@ -1,6 +1,5 @@
 body {
-	background-image: url("/imgs/nature.jpg");
-	background-size: cover;
+	background-color: #255A85 !important;
 	/* background-repeat: no-repeat; */
 	font-family: sans-serif;
 }

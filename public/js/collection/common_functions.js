@@ -747,7 +747,6 @@ function value_calculator(val, price) {
     }
 }
 
-
 /***
  * Creates the aggregation menu
  */
@@ -1056,10 +1055,10 @@ function FAD(data, column) {
     try{
         let splitString = keyvalues[column].split(' ');
         if(keyvalues[column].split(' ').length == 1){
-            return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,. ]/gi, '') };
+            return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,.\- ]/gi, '') };
         }
         else if (splitString[0] == 'stockdata'){
-            return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,. ]/gi, '')};
+            return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,.\- ]/gi, '')};
         }
         else{
             // let dcf = data[splitString[0]][splitString[1]].replace(/[^a-z0-9,. ]/gi, '');      
@@ -1080,11 +1079,12 @@ function editAggregations(data, result) {
     let to_send = {};
     let selected = '';
     for (let i in data) {
-        if (result.value == data[i].aggregate_string) {
-            selected = result.value;
+        if (result.value.trim() === data[i].aggregate_string.trim()) {
+            selected = result.value.trim();
             break;
         }
     }
+    console.log(`|${selected}|`)
     fetch("/aggregation/get_single", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
