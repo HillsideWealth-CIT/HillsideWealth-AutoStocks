@@ -317,7 +317,7 @@ const getAggregateSingle = async(aggString, username) => {
 }
 
 const editAggregate = async(username, aggregate_string, name) => {
-    return await runQuery(`update aggregation set aggregate_string = $1 where username = $2 and name=$3;`, [aggregate_string, username, name])
+    return await runQuery(`update aggregation set aggregate_string = $1 where username = $2 and name=$3;`, [aggregate_string.trim(), username, name])
 }
 
 const deleteAggregate = async(id) => {
