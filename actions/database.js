@@ -210,6 +210,10 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('ppe')
                 placeholders.push(`$${params.push(parseFloat(data[i].ppe))}`)
             }
+            if(data[i].purchase_of_business != null){
+                if(i == 0) columns.push('purchase_of_business')
+                placeholders.push(`$${params.push(parseFloat(data[i].purchase_of_business))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }

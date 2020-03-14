@@ -172,6 +172,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                         catch { currentData.fcf = NaN; }
                     try { currentData.ppe = parseFloat(annuals.balance_sheet["Property, Plant and Equipment"][f]); }
                         catch{ currentData.ppe = NaN; }
+                    try { currentData.purchase_of_business = parseFloat(annuals.cashflow_statement["Purchase Of Business"][f]); }
+                        catch{ currentData.purchase_of_business = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {

@@ -617,6 +617,7 @@ function format_data(stock) {
         data.roe_format = formatNumber(Math.round(data.roe * 10) / 10, '%');
         data.effective_tax_format = formatNumber(Math.round(data.effective_tax * 10) / 10,'%');
         data.fcf_format = formatNumber(Math.round(data.fcf), '$');
+        data.purchase_of_business_format = data.purchase_of_business;
 
         data.roic_format = formatNumber(data.roic, '%');
         data.wacc_format = formatNumber(data.wacc, '%');
@@ -643,7 +644,7 @@ function format_data(stock) {
         data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.datestring = moment(data.date).format('MMM DD, YYYY');
-        data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 100), '%');
+        data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 10000)/100, '%');
         
         
 
