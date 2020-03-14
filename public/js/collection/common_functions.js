@@ -499,6 +499,7 @@ function show_financials(symbol, stockdata, years) {
             <td>${stockdata[i].fcf_format}</td>
             <td>${stockdata[i].fcfXae_format}</td>
             <td>${stockdata[i].fcf_yield}</td>
+            <td>${stockdata[i].purchase_of_business}</td>
             <td>${stockdata[i].capex_format}</td>
             <td>${stockdata[i].growth_capex_format}</td>
             <td>${stockdata[i].maintenance_capex_format}</td>
@@ -538,6 +539,7 @@ function show_financials(symbol, stockdata, years) {
                         <th>FCF</th>
                         <th>FCF/aEBITDA</th>
                         <th>FCF Yield</th>
+                        <th>Purchase Of Business</th>
                         <th>Capex</th>
                         <th>Growth Capex</th>
                         <th>Maintenance Capex</th>
