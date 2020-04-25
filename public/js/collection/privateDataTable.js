@@ -62,7 +62,11 @@ function button_builder(){
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
         {text: '<span class="fas fa-share"></span> Share', className:"btn-sm", action: function(){share();}},
-        {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
+        {text: '<span class="fas fa-users-cog"></span> Catagorize', className:"btn-sm", extend: 'collection',
+        buttons: [
+            {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
+            {text: '<span class="fas fa-plus"></span> Select Filtered', className:"btn-sm", action: function(){$table.rows({search: 'applied'}).select();}},
+        ]},
         {text: '<span class="fas fa-layer-group"></span> Aggregate', className:"btn-sm", extend: 'collection',
         buttons: [
             { text:'<b>Set</b>', action: function(){settingAggregation(6, 'set');} },
