@@ -610,7 +610,7 @@ function format_data(stock) {
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
         data.shares_outstanding_quarterly = formatNumber(Math.round(data.shares_outstanding_quarterly * 100) / 100);
         data.market_cap_format = formatNumber(Math.round(data.market_cap), '$');
-        data.net_debt_format = formatNumber(Math.round(data.net_debt) * -1, '$');
+        data.net_debt_format = formatNumber(Math.round(data.net_debt) * 1, '$');
         data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10, '$');
         data.revenue_format = formatNumber(Math.round(data.revenue), '$');
         data.aebitda_format = formatNumber(data.aebitda, '$');
