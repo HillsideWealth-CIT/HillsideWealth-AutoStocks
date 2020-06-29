@@ -13,7 +13,7 @@ autoUpdate = async (user) => {
             symbol: test[i].symbol,
             stock_id: test[i].stock_id,
         }]
-        await api_calls.gurufocusAdd(temp, user, summaryCall=false);
+        await api_calls.gurufocusAdd(temp, user, summaryCall=true);
         // Exits Process when Complete
         if(i == test.length - 1) process.exit();
     }
