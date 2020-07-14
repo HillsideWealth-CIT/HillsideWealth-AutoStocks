@@ -69,7 +69,7 @@ const update_prices = async (list, username) => {
         catch (err) {
             console.log(err)
         }
-        db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating);
+        await db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating);
         clearTimeout(timer);
     }
     return;
