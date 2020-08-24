@@ -2,7 +2,7 @@ const request = require('request');
 require('dotenv').config
 
 const db = require("../actions/database");
-
+const timeout_ms = 120000;
 /**
  * Gets the summary of a stock using the gurufocus api
  * @param {String} symbol The stock symbol
@@ -52,7 +52,7 @@ const update_prices = async (list, username) => {
         let summary = await summaryAPI(list[i].symbol)
         timer = setTimeout(() => {
             throw 'Timeout';
-        }, 10000);
+        }, timeout_ms);
 
         try{
             if (summary.summary){
@@ -69,7 +69,7 @@ const update_prices = async (list, username) => {
         catch (err) {
             console.log(err)
         }
-        db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating);
+        await db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating);
         clearTimeout(timer);
     }
     return;
@@ -93,7 +93,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                 let summary = await summaryAPI(list[i].symbol)
                 timer = setTimeout(() => {
                     throw 'Timeout'
-                }, 10000)
+                }, timeout_ms)
 
                 if (summary.summary) {
                     currentStock.company = summary.summary.general.company;
@@ -148,14 +148,14 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                         catch{currentData.asset_turnover = null}
                     try{currentData.revenue =  parseFloat(annuals.income_statement.Revenue[f])}
                         catch{currentData.revenue = null}
-                    try{ currentData.enterprise_value =  parseFloat(annuals.valuation_and_quality["Enterprise Value"][f])}
+                    try{ currentData.enterprise_value =  parseFloat(annuals.valuation_and_quality["Enterprise Value ($M)"][f])}
                         catch{ currentData.enterprise_value =  null}
                     try{currentData.effective_tax =  parseFloat(annuals.income_statement["Tax Rate %"][f])}
                         catch{currentData.effective_tax = null}
                     try{currentData.shares_outstanding =  parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f])}
                         catch{currentData.shares_outstanding = null}
                     try{currentData.aebitda =  Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f]))}
-                        catch{currentData.aebitda = null}
+                        catch{currentData.aebitda = Math.round( 0 + parseFloat(annuals.income_statement.EBITDA[f]))}
                     try{ currentData.wacc =  parseFloat(annuals.common_size_ratios["WACC %"][f])}
                         catch{ currentData.wacc = null}
                     try{currentData.capex =  parseFloat(annuals.cashflow_statement["Capital Expenditure"][f])}
@@ -172,6 +172,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
                         catch { currentData.fcf = NaN; }
                     try { currentData.ppe = parseFloat(annuals.balance_sheet["Property, Plant and Equipment"][f]); }
                         catch{ currentData.ppe = NaN; }
+                    try { currentData.purchase_of_business = parseFloat(annuals.cashflow_statement["Purchase Of Business"][f]); }
+                        catch{ currentData.purchase_of_business = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {

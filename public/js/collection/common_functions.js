@@ -126,15 +126,15 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
             <div class="row">
                 <div class="col">
                     <label for="gfrating">5Y</label>
-                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap5*-1)}" readonly>
+                    <input id="gfrating" type="text" class="form-control" value="$${fill_0(mcap5*-1).toLocaleString()}" readonly>
                 </div>
                 <div class="col">
                     <label for="gfrating">10Y</label>
-                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap10*-1)}" readonly>
+                    <input id="gfrating" type="text" class="form-control" value="$${fill_0(mcap10*-1).toLocaleString()}" readonly>
                 </div>
                 <div class="col">
                     <label for="gfrating">15Y</label>
-                    <input id="gfrating" type="text" class="form-control" value="${fill_0(mcap15*-1)}" readonly>
+                    <input id="gfrating" type="text" class="form-control" value="$${fill_0(mcap15*-1).toLocaleString()}" readonly>
                 </div>
             </div>
             `,
@@ -499,6 +499,7 @@ function show_financials(symbol, stockdata, years) {
             <td>${stockdata[i].fcf_format}</td>
             <td>${stockdata[i].fcfXae_format}</td>
             <td>${stockdata[i].fcf_yield}</td>
+            <td>${stockdata[i].purchase_of_business}</td>
             <td>${stockdata[i].capex_format}</td>
             <td>${stockdata[i].growth_capex_format}</td>
             <td>${stockdata[i].maintenance_capex_format}</td>
@@ -538,6 +539,7 @@ function show_financials(symbol, stockdata, years) {
                         <th>FCF</th>
                         <th>FCF/aEBITDA</th>
                         <th>FCF Yield</th>
+                        <th>Purchase Of Business</th>
                         <th>Capex</th>
                         <th>Growth Capex</th>
                         <th>Maintenance Capex</th>
@@ -746,7 +748,6 @@ function value_calculator(val, price) {
         return 'Missing Values';
     }
 }
-
 
 /***
  * Creates the aggregation menu
@@ -1056,10 +1057,10 @@ function FAD(data, column) {
     try{
         let splitString = keyvalues[column].split(' ');
         if(keyvalues[column].split(' ').length == 1){
-            return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,. ]/gi, '') };
+            return { symbol: data.symbol, value: (''+data[keyvalues[column]]).replace(/[^a-z0-9,.\- ]/gi, '') };
         }
         else if (splitString[0] == 'stockdata'){
-            return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,. ]/gi, '')};
+            return { symbol: data.symbol, value: (''+data[splitString[0]][0][splitString[1]]).replace(/[^a-z0-9,.\- ]/gi, '')};
         }
         else{
             // let dcf = data[splitString[0]][splitString[1]].replace(/[^a-z0-9,. ]/gi, '');      
@@ -1080,11 +1081,12 @@ function editAggregations(data, result) {
     let to_send = {};
     let selected = '';
     for (let i in data) {
-        if (result.value == data[i].aggregate_string) {
-            selected = result.value;
+        if (result.value.trim() === data[i].aggregate_string.trim()) {
+            selected = result.value.trim();
             break;
         }
     }
+    console.log(`|${selected}|`)
     fetch("/aggregation/get_single", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

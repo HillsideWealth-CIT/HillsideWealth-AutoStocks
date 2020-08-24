@@ -221,7 +221,7 @@ app.post('/upload', upload.single('myfile'), sessionCheck, statusCheck, (request
                 let dbdata = resolved2;
                 for (i = 0; i < dbdata.length; i++) {
                     _.remove(xlsxdata, function (e) {
-                        return true == dbdata[i].symbol.includes(e.Ticker);
+                        return true == dbdata[i].symbol.includes(e.Symbol);
                     });
                 }
                 response.render('compare.hbs', { data: xlsxdata, dbdata: dbdata, i: true, admin: (request.session.status == 'admin') });
@@ -613,13 +613,14 @@ function format_data(stock) {
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
         data.shares_outstanding_quarterly = formatNumber(Math.round(data.shares_outstanding_quarterly * 100) / 100);
         data.market_cap_format = formatNumber(Math.round(data.market_cap), '$');
-        data.net_debt_format = formatNumber(Math.round(data.net_debt) * -1, '$');
+        data.net_debt_format = formatNumber(Math.round(data.net_debt) * 1, '$');
         data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10, '$');
         data.revenue_format = formatNumber(Math.round(data.revenue), '$');
         data.aebitda_format = formatNumber(data.aebitda, '$');
         data.roe_format = formatNumber(Math.round(data.roe * 10) / 10, '%');
         data.effective_tax_format = formatNumber(Math.round(data.effective_tax * 10) / 10,'%');
         data.fcf_format = formatNumber(Math.round(data.fcf), '$');
+        data.purchase_of_business_format = data.purchase_of_business;
 
         data.roic_format = formatNumber(data.roic, '%');
         data.wacc_format = formatNumber(data.wacc, '%');
@@ -646,7 +647,7 @@ function format_data(stock) {
         data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;
         data.datestring = moment(data.date).format('MMM DD, YYYY');
-        data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 100), '%');
+        data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 10000)/100, '%');
         
         
 
@@ -781,9 +782,9 @@ function format_data(stock) {
                 so_1 = stock.stockdata[i].shares_outstanding;
             }
         }
-        stock.mCapAve_5 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 5)
-        stock.mCapAve_10 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 10)
-        stock.mCapAve_15 = calc.calculate_average(stock.stockdata, 'maintenance_capex', 15)
+        stock.mCapAve_5 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 5))
+        stock.mCapAve_10 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 10))
+        stock.mCapAve_15 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 15))
 
         stock.capeXfcfAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5) * 100), '%');
         stock.capeXfcfAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10) * 100), '%');

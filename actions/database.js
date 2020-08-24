@@ -210,6 +210,10 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('ppe')
                 placeholders.push(`$${params.push(parseFloat(data[i].ppe))}`)
             }
+            if(data[i].purchase_of_business != null){
+                if(i == 0) columns.push('purchase_of_business')
+                placeholders.push(`$${params.push(parseFloat(data[i].purchase_of_business))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
@@ -317,7 +321,7 @@ const getAggregateSingle = async(aggString, username) => {
 }
 
 const editAggregate = async(username, aggregate_string, name) => {
-    return await runQuery(`update aggregation set aggregate_string = $1 where username = $2 and name=$3;`, [aggregate_string, username, name])
+    return await runQuery(`update aggregation set aggregate_string = $1 where username = $2 and name=$3;`, [aggregate_string.trim(), username, name])
 }
 
 const deleteAggregate = async(id) => {

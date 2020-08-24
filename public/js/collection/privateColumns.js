@@ -72,6 +72,7 @@ var column_list = ['check',
     'FCF Growth(10Y)',
 
     'Capex (M)',
+    'Purchase Of Business',
     'Growth Capex',
     'Capex/FCF 5Y',
     'Capex/FCF 10Y',
