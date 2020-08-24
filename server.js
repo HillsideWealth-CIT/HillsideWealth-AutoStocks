@@ -345,7 +345,10 @@ app.post('/append/shared', sessionCheck, statusCheck, (request, response) => {
     .then((resolve) => {
         db.get_added(request.body.action[0].symbol, request.session.user)
         .then((res) => {
-            res.forEach((stock) => { format_data(stock); });
+            res.forEach((stock) => { 
+                db.sharestock(calc.multi_dfc_string([stock.stock_id]), request.session.user)
+                format_data(stock); 
+            });
             response.send({ data: res });
         });
     });
@@ -377,7 +380,7 @@ app.post('/remove/shared', sessionCheck, statusCheck, (request, response) => {
 
 /* Enables stocks to be displayed in the shared database */
 app.post('/share', sessionCheck, statusCheck, (request, response) => {
-    // console.log(request.body);
+    console.log(request.body);
     db.sharestock(calc.multi_dfc_string(request.body), request.session.user)
     .then((resolve) => {
         response.send({ status: 'OK' });
