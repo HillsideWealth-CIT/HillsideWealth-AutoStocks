@@ -62,7 +62,11 @@ function button_builder(){
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
-        {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
+        {text: '<span class="fas fa-users-cog"></span> Catagorize', className:"btn-sm", extend: 'collection',
+        buttons: [
+            {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
+            {text: '<span class="fas fa-plus"></span> Select Filtered', className:"btn-sm", action: function(){$table.rows({search: 'applied'}).select();}},
+        ]},
         {text: '<span class="fas fa-layer-group"></span> Aggregate', className:"btn-sm", extend: 'collection',
         buttons: [
             { text:'<b>Set</b>', action: function(){settingAggregation(7, 'set');} },
@@ -204,6 +208,7 @@ function column_builder(){
         { data : "fcf_growth_10" },
 
         { data : "stockdata.0.capex_format"},
+        { data : "stockdata.0.purchase_of_business"},
         { data : "stockdata.0.growth_capex_format"},
         { data : "capeXfcfAverage5"},
         { data : "capeXfcfAverage10"},
