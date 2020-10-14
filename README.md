@@ -1,7 +1,5 @@
 # HillsideWealth-AutoStocks
 
-![Hillside Wealth Logo](/public/imgs/hillside_logo.png)
-
 # Description
 
 A web application built for ACIT 4900. The purpose of the application is to:
