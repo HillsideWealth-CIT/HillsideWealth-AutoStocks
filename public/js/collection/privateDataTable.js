@@ -31,7 +31,7 @@ function fill_table(data){
         data : data,
         dom : 'Bfrtip',
         buttons : button_builder(),
-        rowId : `symbol`,
+        rowId : `stock_id`,
         select : { selector: 'td:first-child', style : 'multi' },
         columns : column_builder(),
         fixedColumns: { leftColumns: 2 },
@@ -51,13 +51,9 @@ function fill_table(data){
 function button_builder(){
     let buttons = [
         'selectAll', 'selectNone',
-        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
-        {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove();}},
-        {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", extend: 'collection',
-        buttons:[
-            {text: 'Prices', className:"btn-sm", action: function(){update('update_prices');}},
-            {text: 'Financials', className:"btn-sm", action: function(){update('update_financials');}},
-        ]},
+        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add('/append?table=all');}},
+        {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove('/remove?table=all');}},
+        {text: '<span class="fas fa-sync-alt"></span> Update', className: "btn-sm", action: function(){update('update_financials?table=all');}},
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
@@ -273,5 +269,27 @@ function ajax_Call(action, link) {
         }).done(function (returned_data) {
             resolve(returned_data);
         });
+    });
+}
+
+/**
+ * Selected stocks get removed from the database
+ */
+function remove(){
+    // console.log(window.location.href.includes('shared'))
+    let to_remove = [];
+    let selected = $table.rows('.selected').data();
+    for(let  i in selected ){
+        if(selected[i].symbol){
+        to_remove.push(selected[i].symbol);
+        }   
+        else{
+            break;
+        }
+    }
+    ajax_Call(to_remove, '/remove?table=all').then((resolved) => {
+            for(let i in to_remove){
+                $table.row(document.getElementById(`${to_remove[i]}`)).remove().draw();
+            }
     });
 }

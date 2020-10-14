@@ -16,16 +16,47 @@ function add(){
             let stockstring = result.replace(/\s/g, "");
             stocks = stockstring.split(',');
         }
-    }).then((result) => {
+    }).then(async (result) => {
         if(!result.dismiss){
             Swal.fire({
-            type: 'success',
-            title: 'Currently Saving To Database!',
+            type: 'question',
+            title: 'Currently Saving Stocks To Database!',
+            text: `progress: 0/${stocks.length}`,
             showConfirmButton: false
         });
-        adder_ajax(0, stocks.length, stocks, '/append/shared');
+        for(let i in stocks){
+            swal.update({
+                text: `Progress: ${Number(i)+1}/${stocks.length} - Current: ${stocks[i].toUpperCase()}`
+            })
+            await ajax_request(stocks[i].toUpperCase())
+        }
+        Swal.update({
+            type: 'success',
+            text: 'Update Complete'
+        });
+        setTimeout(function () {
+            Swal.close();
+        }, 3000);
+        return
         }
     });
+
+    function ajax_request(symbol){
+        return $.ajax({
+            type: 'POST',
+            url: '/append?table=shared',
+            data: { action: [{ 'symbol': symbol, 'comment': '', 'company': '', 'exchange': '' }] },
+            success: function (stockinfo) {
+                console.log(stockinfo);
+                try {
+                    $table.row.add(stockinfo.data[0]).draw();
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+        });
+    }
 }
 
 /**
@@ -33,21 +64,24 @@ function add(){
  */
 function remove(){
     let to_remove = [];
+    let row = [];
     let selected = $table.rows('.selected').data();
     for(let i in selected ){
         if(selected[i].symbol){
+            console.log(selected[i])
             if(selected[i].username == $('#username').attr('user')){
                 to_remove.push(selected[i].symbol);
+                row.push(selected[i].stock_id)
             }
         }   
         else{
             break;
         }
     }
-    ajax_Call(to_remove, '/remove/shared').then((resolved) => {
+    ajax_Call(to_remove, '/remove?table=shared').then((resolved) => {
             for(let i in to_remove){
                 console.log(i);
-                $table.row(document.getElementById(`${to_remove[i]}`)).remove().draw();
+                $table.row(document.getElementById(`${row[0]}`)).remove().draw();
             }
     });
 }
@@ -56,15 +90,15 @@ function remove(){
  * Updates All selected stocks
  * @param {String} link 
  */
-function update(link){
+async function update(link){
     to_update = [];
-    to_stock_id = [];
     let selected = $table.rows('.selected').data();
     for(let i in selected ){
         if(selected[i].symbol){
-        to_update.push(selected[i].symbol);
-        to_stock_id.push(selected[i].username);
-        }   
+        to_update.push({
+            stock_id: selected[i].username,
+            symbol: selected[i].symbol})
+        }     
         else{
             break;
         }
@@ -79,6 +113,38 @@ function update(link){
         showConfirmButton: false,
     });
 
-    counter_ajax(0, to_update.length, to_update, to_stock_id, `${link}/shared`);
+    for(let i = 0; i < to_update.length; i++){
+        swal.update({ text: `Progress: ${i+1}/${to_update.length} - Current: ${to_update[i].symbol}` });
+        await ajax_request(to_update[i], link)
+    }
+    Swal.update({
+        type: 'success',
+        text: 'Update Complete'
+    });
+    if(to_update.length >= 50){
+        $table.destroy();
+        $('tbody').empty();
+        Initialize_table();
+    }
+    setTimeout(function () {
+        Swal.close();
+    }, 3000);
+    return;
+
+    function ajax_request(updateDict, link){
+        return $.ajax({
+            type: 'POST',
+            url: link,
+            data: { action: [updateDict] },
+            success: function (resolved) {
+                try {
+                    $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
+                }
+                catch (e) {
+                    console.log(e)
+                }
+            }
+        });
+    }
 
 }
