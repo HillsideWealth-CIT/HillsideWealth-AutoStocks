@@ -1,9 +1,10 @@
 var update_counter = 0;
 var to_update = [];
+
 /**
  * Opens a sweetalert and adds all stocks user inputs
  */
-function add(){
+function add(link){
     let stocks;
     Swal.fire({
         title: 'Add Stocks',
@@ -15,35 +16,74 @@ function add(){
             let stockstring = result.replace(/\s/g, "");
             stocks = stockstring.split(',');
         }
-    }).then((result) => {
+    }).then(async (result) => {
         if(!result.dismiss){
             Swal.fire({
-            type: 'success',
-            title: 'Currently Saving To Database!',
+            type: 'question',
+            title: 'Currently Saving stocks to Database!',
+            text: `progress: 0/${stocks.length}`,
             showConfirmButton: false
         });
-        adder_ajax(0, stocks.length, stocks, '/append');
+        for(let i in stocks){
+            swal.update({
+                text: `Progress: ${Number(i)+1}/${stocks.length} - Current: ${stocks[i].toUpperCase()}`
+            })
+            await ajax_request(stocks[i].toUpperCase())
+        }
+        Swal.update({
+            type: 'success',
+            text: 'Update Complete'
+        });
+        setTimeout(function () {
+            Swal.close();
+        }, 3000);
+        return
         }
     });
+
+    function ajax_request(symbol){
+        return $.ajax({
+            type: 'POST',
+            url: '/append?table=table',
+            data: { action: [{ 'symbol': symbol, 'comment': '', 'company': '', 'exchange': '' }] },
+            success: function (stockinfo) {
+                console.log(stockinfo);
+                try {
+                    $table.row.add(stockinfo.data[0]).draw();
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+        });
+    }
 }
 
 /**
  * Selected stocks get removed from the database
  */
-function remove(){
+function remove(link){
     let to_remove = [];
+    let ids = [];
     let selected = $table.rows('.selected').data();
     for(let  i in selected ){
-        if(selected[i].symbol){
-        to_remove.push(selected[i].symbol);
-        }   
-        else{
+        if(window.location.href.includes('shared') && selected[i].symbol){
+            if(selected[i].username == $('#username').attr('user')){
+                to_remove.push(selected[i].symbol);
+                ids.push(selected[i].stock_id);
+            }
+        }
+        else if (selected[i].symbol) {
+            to_remove.push(selected[i].symbol);
+            ids.push(selected[i].stock_id);
+        }
+        else {
             break;
         }
     }
-    ajax_Call(to_remove, '/remove').then((resolved) => {
+    ajax_Call(to_remove, link).then((resolved) => {
             for(let i in to_remove){
-                $table.row(document.getElementById(`${to_remove[i]}`)).remove().draw();
+                $table.row(document.getElementById(`${ids[i]}`)).remove().draw();
             }
     });
 }
@@ -52,14 +92,14 @@ function remove(){
  * Updates All selected stocks
  * @param {String} link 
  */
-function update(link){
+async function update(link){
     to_update = [];
-    to_stock_id = [];
     let selected = $table.rows('.selected').data();
     for(let i in selected ){
         if(selected[i].symbol){
-        to_update.push(selected[i].symbol);
-        to_stock_id.push(selected[i].stock_id);
+        to_update.push({
+            stock_id: selected[i].stock_id,
+            symbol: selected[i].symbol})
         }   
         else{
             break;
@@ -74,5 +114,37 @@ function update(link){
         footer: 'This might take a while, you might want to do something else',
         showConfirmButton: false,
     });
-    counter_ajax(0, to_update.length, to_update, to_stock_id, link);
+    for(let i = 0; i < to_update.length; i++){
+        swal.update({ text: `Progress: ${i+1}/${to_update.length} - Current: ${to_update[i].symbol}` });
+        await ajax_request(to_update[i], link)
+    }
+    Swal.update({
+        type: 'success',
+        text: 'Update Complete'
+    });
+    if(to_update.length >= 50){
+        $table.destroy();
+        $('tbody').empty();
+        Initialize_table();
+    }
+    setTimeout(function () {
+        Swal.close();
+    }, 3000);
+    return;
+
+    function ajax_request(updateDict, link){
+        return $.ajax({
+            type: 'POST',
+            url: link,
+            data: { action: [updateDict] },
+            success: function (resolved) {
+                try {
+                    $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
+                }
+                catch (e) {
+                    console.log(e)
+                }
+            }
+        });
+    }
 }
