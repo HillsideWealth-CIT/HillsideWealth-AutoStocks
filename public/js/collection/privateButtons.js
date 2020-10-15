@@ -44,7 +44,7 @@ function add(link){
     function ajax_request(symbol){
         return $.ajax({
             type: 'POST',
-            url: '/append?table=table',
+            url: link,
             data: { action: [{ 'symbol': symbol, 'comment': '', 'company': '', 'exchange': '' }] },
             success: function (stockinfo) {
                 console.log(stockinfo);

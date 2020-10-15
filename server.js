@@ -325,9 +325,11 @@ app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
 
 /* Adds Stock to Personal Database */
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
-    console.log('append')
+    console.log(request.query)
     let shared = false;
-    if(request.query.table === 'shared') shared = true;
+    let placeholder = false;
+    if(request.query.share === 'true') shared = true;
+    if(request.query.placeholder === 'true') placeholder = true;
     api_calls.gurufocusAdd(
         request.body.action,
         request.session.user,
