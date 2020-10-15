@@ -44,7 +44,7 @@ function add(link){
     function ajax_request(symbol){
         return $.ajax({
             type: 'POST',
-            url: '/append?table=table',
+            url: link,
             data: { action: [{ 'symbol': symbol, 'comment': '', 'company': '', 'exchange': '' }] },
             success: function (stockinfo) {
                 console.log(stockinfo);
@@ -139,7 +139,7 @@ async function update(link){
             data: { action: [updateDict] },
             success: function (resolved) {
                 try {
-                    $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
+                    $table.row(document.getElementById(`${resolved.data[0].stock_id}`)).data(resolved.data[0]).invalidate();
                 }
                 catch (e) {
                     console.log(e)

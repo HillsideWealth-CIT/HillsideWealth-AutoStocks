@@ -25,25 +25,87 @@ function button_builder(){
     return buttons
 }
 
-function add(){
+async function add(){
     //[ { symbol: 'AAON', comment: '', company: '', exchange: '' } ]
     let to_add = [];
     let selected = compare_table.rows({selected: true}).data();
-    console.log(selected)
-    for( i in selected ){
+    // console.log(selected)
+    for(i in selected){
+        console.log(selected[i])
         if(selected[i][1]){
-            to_add.push(selected[i][1])
+            if(selected[i][3] !== 'NAS'){
+                to_add.push(`${selected[i][3]}:${selected[i][1]}`)
+            }
+            else{
+                to_add.push(selected[i][1]);
+            }
         }
         else{
             break
         }
     }
-    Swal.fire({
-        type: 'success',
-        title: 'Currently Saving To Database!',
-        showConfirmButton: false
-    })
-    adder_ajax(0, to_add.length, to_add, '/append')
+    console.log(to_add)
+    await Swal.fire({
+        title: 'Which database do you want to save to?',
+        showCancelButton: true,
+        html: `
+        <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="checkbox1">
+                <label class="form-check-label" for="checkbox1" style="width: 6em">
+                    placeholder
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="commondb">
+                <label class="form-check-label" for="checkbox2" style="width: 6em">
+                    CommonDB
+                </label>
+            </div>
+        `,
+        preConfirm: async () => {
+            let placeholder = document.getElementById('checkbox1').checked;
+            let share = document.getElementById('commondb').checked;
+            
+            Swal.fire({
+                position:'center',
+                type: 'question',
+                title: 'The selected stocks are currently being updated!',
+                text: `Progress: ${0}/${to_add.length}`,
+                footer: 'This might take a while, you might want to do something else',
+                showConfirmButton: false,
+            });
+
+            for(let i in to_add){
+                swal.update({ text: `Progress: ${Number(i)+1}/${to_add.length} - Current: ${to_add[i]}` });
+                await ajax_request(to_add[i], `/append?share=${share}&placeholder=${placeholder}`)
+            }
+            Swal.update({
+                type: 'success',
+                text: 'Update Complete'
+            });
+            setTimeout(function () {
+                Swal.close();
+            }, 3000);
+            return
+        }
+    });
+    
+    function ajax_request(stock, link){
+        return $.ajax({
+            type: 'POST',
+            url: link,
+            data: {action: [{
+                'symbol': stock,
+                'comment': '',
+                'company':'',
+                'exchange': ''}]},
+            success: function(stockinfo){
+                console.log(stockinfo)
+            }
+        })
+    }
+
+    // adder_ajax(0, to_add.length, to_add, '/append')
 }
 
 function adder_ajax(active_num, end_num, list, link){

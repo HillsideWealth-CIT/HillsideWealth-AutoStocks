@@ -51,7 +51,7 @@ function fill_table(data){
 function button_builder(){
     let buttons = [
         'selectAll', 'selectNone',
-        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add('/append?table=all');}},
+        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add('/append');}},
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove('/remove?table=all');}},
         {text: '<span class="fas fa-sync-alt"></span> Update', className: "btn-sm", action: function(){update('update_financials?table=all');}},
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},

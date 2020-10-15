@@ -51,7 +51,7 @@ function fill_table(data){
 function button_builder(){
     let buttons = [
         'selectAll', 'selectNone',
-        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add('/append?table=shared');}},
+        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add('/append?share=true');}},
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove('/remove?table=shared');}},
         {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", action: function(){update('update_financials?table=shared');}},
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
