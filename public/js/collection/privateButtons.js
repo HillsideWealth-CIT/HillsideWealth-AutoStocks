@@ -139,7 +139,7 @@ async function update(link){
             data: { action: [updateDict] },
             success: function (resolved) {
                 try {
-                    $table.row(document.getElementById(`${resolved.data[0].symbol}`)).data(resolved.data[0]).invalidate();
+                    $table.row(document.getElementById(`${resolved.data[0].stock_id}`)).data(resolved.data[0]).invalidate();
                 }
                 catch (e) {
                     console.log(e)
