@@ -23,7 +23,7 @@ const xlsx_parse = require("./actions/xlsx_parse");
 const db = require("./actions/database");
 const calc = require('./actions/calculations');
 
-const {formatNumber, format_data, clearNAN} = require('./actions/formatData')
+const {format_data} = require('./actions/formatData');
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -116,6 +116,20 @@ app.get("/shared", sessionCheck, statusCheck, (request, response) => {
             });
         });
 });
+
+app.get("/special", sessionCheck, statusCheck, (request, response) => {
+    db.showSpecial(request.session.user)
+    .then(res => {
+        // Calculates data before rendering
+        res.forEach((stock) => {
+            format_data(stock);
+        });
+        response.render("collection.hbs", {
+            sd: true,
+            admin: (request.session.status == 'admin')
+        });
+    });
+})
 
 app.get("/documentation", sessionCheck, statusCheck, (request, response) => {
     response.render("documentation.hbs", { d: true, admin: (request.session.status == 'admin') });
@@ -283,7 +297,7 @@ app.post('/indicators/delete', sessionCheck, statusCheck, (request, response) =>
 
 //Initializes Tables
 app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
-    //console.log(request.body.action)
+    console.log(request.body.action)
     if (request.body.action == "init_user") {
         db.showstocks(request.session.user).then(resolve => {
             resolve.forEach((stock) => {
@@ -294,6 +308,14 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
     }
     else if (request.body.action == "init_shared") {
         db.showshared(request.session.user).then(resolve => {
+            resolve.forEach((stock) => {
+                format_data(stock);
+            });
+            response.send({ data: resolve });
+        });
+    }
+    else if (request.body.action == "init_special"){
+        db.showSpecial(request.session.user).then(resolve => {
             resolve.forEach((stock) => {
                 format_data(stock);
             });
@@ -327,14 +349,15 @@ app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
     console.log(request.query)
     let shared = false;
-    let placeholder = false;
+    let special = false;
     if(request.query.share === 'true') shared = true;
-    if(request.query.placeholder === 'true') placeholder = true;
+    if(request.query.special === 'true') special = true;
     api_calls.gurufocusAdd(
         request.body.action,
         request.session.user,
         true,
-        shared
+        shared,
+        special
         )
     .then((resolve) => {
         db.get_added(request.body.action[0].symbol, request.session.user)
@@ -364,6 +387,9 @@ app.post('/remove', sessionCheck, statusCheck, (request, response) => {
         else if(query === 'shared'){
             promises.push(db.unsharestock(request.body.action[i], request.session.user));
         }
+        else if(query === 'special'){
+            promises.push(db.unsetSpecial(request.body.action[i], request.session.user))
+        }
     }
     Promise.all(promises)
     .then((returned) => {
@@ -373,8 +399,14 @@ app.post('/remove', sessionCheck, statusCheck, (request, response) => {
 
 /* Enables stocks to be displayed in the shared database */
 app.post('/share', sessionCheck, statusCheck, (request, response) => {
-    console.log(request.body);
     db.sharestock(calc.multi_dfc_string(request.body), request.session.user)
+    .then((resolve) => {
+        response.send({ status: 'OK' });
+    });
+});
+
+app.post('/setSpecial', sessionCheck, statusCheck, (request, response) => {
+    db.setSpecial(calc.multi_dfc_string(request.body), request.session.user)
     .then((resolve) => {
         response.send({ status: 'OK' });
     });

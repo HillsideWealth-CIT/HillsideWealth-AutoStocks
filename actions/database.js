@@ -83,6 +83,12 @@ const showshared = async (username) => {
     return getdata(stocks, stockdata)
 }
 
+const showSpecial = async (username) => {
+    let stocks = await runQuery("SELECT * FROM STOCKS WHERE USERNAME = $1 AND special = true", [username]);
+    let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`);
+    return getdata(stocks, stockdata);
+}
+
 const get_added = async (symbol, username) => {
     let stocks = await runQuery('SELECT * from stocks WHERE symbol = $1 AND username = $2', [symbol, username])
     let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
@@ -103,6 +109,17 @@ const sharestock = async(id_string) => {
 
 const unsharestock = async(symbol, user) => {
     await runQuery(`UPDATE stocks SET shared='False' where symbol='${symbol}' and username='${user}';`);
+    return symbol
+}
+
+const setSpecial = async(id_string) => {
+    console.log(id_string)
+    await runQuery(`UPDATE stocks SET special=true WHERE ${id_string};`);
+    return
+}
+
+const unsetSpecial = async(symbol, user) => {
+    await runQuery(`UPDATE stocks SET special=false WHERE symbol='${symbol}'`);
     return symbol
 }
 
@@ -243,8 +260,19 @@ const updatePrices = async(stock, username, sector, current_price, gfrating) => 
     return await runQuery(`UPDATE stocks SET sector = '${sector}', current_price = ${current_price}, gfrating = '${gfrating}' where username = '${username}' and symbol = '${stock}'`)
 }
 
-const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, gfrating ,shared = false) => {
-    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, gfrating,shared) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING stock_id`, [symbol, stock_name, stock_sector, current_price, username, note, gfrating,shared])
+const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, gfrating ,shared, special) => {
+    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, gfrating, shared, special) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING stock_id`, 
+    [
+        symbol,
+        stock_name,
+        stock_sector,
+        current_price,
+        username, 
+        note, 
+        gfrating, 
+        shared, 
+        special
+    ])
 }
 
 
@@ -335,6 +363,7 @@ module.exports = {
     retrieveUser,
     showstocks,
     showshared,
+    showSpecial,
     addStocks,
     removeStocks,
     runQuery,
@@ -346,6 +375,8 @@ module.exports = {
     toggleStock,
     sharestock,
     unsharestock,
+    setSpecial,
+    unsetSpecial,
     updatePrices,
     get_added,
     get_by_id,

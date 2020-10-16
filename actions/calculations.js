@@ -79,6 +79,7 @@ function multi_dfc_string(list) {
         }
         
     }
+    console.log(conditions)
     return conditions;
 }
 
