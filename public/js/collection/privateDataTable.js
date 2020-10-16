@@ -10,7 +10,9 @@ Initialize_table();
  * Initializes table
  */
 function Initialize_table(){
-    ajax_Call("init_user", "/init_table").then((resolve) => {
+    console.log(action)
+    ajax_Call(action, "/init_table").then((resolve) => {
+        console.log(resolve.data)
         stockdb = resolve.data;
         console.log(stockdb);
         $table = fill_table(resolve.data);
@@ -51,13 +53,17 @@ function fill_table(data){
 function button_builder(){
     let buttons = [
         'selectAll', 'selectNone',
-        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add('/append');}},
-        {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove('/remove?table=all');}},
-        {text: '<span class="fas fa-sync-alt"></span> Update', className: "btn-sm", action: function(){update('update_financials?table=all');}},
+        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add(addLink);}},
+        {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove(removeLink);}},
+        {text: '<span class="fas fa-sync-alt"></span> Update', className: "btn-sm", action: function(){update(updateLink);}},
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
-        {text: '<span class="fas fa-share"></span> Share', className:"btn-sm", action: function(){share();}},
+        {text: '<span class="fas fa-share"></span> Save', className:"btn-sm", extend: 'collection',
+        buttons: [
+            {text: 'Set Special', className:"btn-sm", action: function(){setSpecial();}},
+            {text: 'Share', className:"btn-sm", action: function(){share();}},
+        ]},
         {text: '<span class="fas fa-users-cog"></span> Catagorize', className:"btn-sm", extend: 'collection',
         buttons: [
             {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},

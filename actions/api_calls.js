@@ -79,7 +79,7 @@ const update_prices = async (list, username) => {
  * @param {Array} list List of stock symbols
  * @param {Boolean} summary_call Whether summary call should be used.
  */
-const gurufocusAdd = async (list, username, summaryCall = true, shared = false) => {
+const gurufocusAdd = async (list, username, summaryCall = true, shared = false, special = false) => {
     await update_prices(list, username);
     console.log(1)
     for (i in list) {
@@ -185,7 +185,16 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false) 
         try {
             console.log(currentStock.data.length)
             if(currentStock.company != 'Failed to get company name' && currentStock.data.length != 0){
-                var stocks = await db.addStocks(currentStock.symbol, currentStock.company, currentStock.sector, currentStock.current_price, username, currentStock.comment, currentStock.gfrating, shared)
+                var stocks = await db.addStocks(
+                    currentStock.symbol, 
+                    currentStock.company, 
+                    currentStock.sector, 
+                    currentStock.current_price, 
+                    username, 
+                    currentStock.comment, 
+                    currentStock.gfrating, 
+                    shared, 
+                    special)
             }
         }
         catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }

@@ -57,6 +57,11 @@ function button_builder(){
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
+        {text: '<span class="fas fa-share"></span> Save', className:"btn-sm", extend: 'collection',
+        buttons: [
+            {text: 'Set Special', className:"btn-sm", action: function(){setSpecial();}},
+            {text: 'Share', className:"btn-sm", action: function(){share();}},
+        ]},
         {text: '<span class="fas fa-users-cog"></span> Catagorize', className:"btn-sm", extend: 'collection',
         buttons: [
             {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
