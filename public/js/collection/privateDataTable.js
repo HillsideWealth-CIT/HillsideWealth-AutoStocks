@@ -144,7 +144,7 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 4: 15 Year historical Financial Data
-                return `<button type="button" onclick='show_financials( "${row.symbol}" , ${JSON.stringify(row.stockdata)}, 15)' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`;
+                return `<button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`;
             }    
         },
         { 

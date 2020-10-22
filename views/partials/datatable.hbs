@@ -121,6 +121,12 @@
 
 
 {{#if sc}}
+        <script type="text/JavaScript">
+            const config = {
+                shareConf: true,
+            }
+            const { shareConf } = config
+        </script>
     <script src="/js/collection/sharedDataTable.js"></script>
     <script src="/js/collection/sharedColumns.js"></script>
     {{else}}
@@ -131,8 +137,9 @@
                 addLink: '/append?special=true',
                 removeLink: '/remove?table=special',
                 updateLink: 'update_financials?table=all',
+                shareConf: false,
             }
-            const { action, addLink, removeLink, updateLink } = config
+            const { action, addLink, removeLink, updateLink, shareConf } = config
         </script>
         {{else}}
         <script type="text/JavaScript">
@@ -141,8 +148,9 @@
                 addLink: '/append',
                 removeLink: '/remove?table=all',
                 updateLink: 'update_financials?table=all',
+                shareConf: false,
             }
-            const { action, addLink, removeLink, updateLink } = config
+            const { action, addLink, removeLink, updateLink, shareConf  } = config
 
         </script>
         {{/if}}

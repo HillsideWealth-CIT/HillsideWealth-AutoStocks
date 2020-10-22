@@ -300,8 +300,32 @@ function clearNAN(param, extraSymbol) {
   }
 }
 
+function formatHistorical(data) {
+    let toSend = [];
+    let sd = data[0].stockdata
+    for(let i = 0; i < 20; i++){
+        let year = {
+            date: i===0 ? 'TTM' : moment(sd[i].date).format('MMM, YYYY'),
+            fcfroic: `${(Number(sd[i].fcf)/(Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100).toFixed(2)}%`,
+            fcfroa: `${(Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)).toFixed(2)}%`,
+            fcfmargin: `${(Number(sd[i].fcfmargin)).toFixed(2)}%`,
+            netdebtfcf: `${(Number(sd[i].net_debt)/Number(sd[i].fcf)).toFixed(2)}`,
+            salesshare: (Number(sd[i].revenue)/Number(sd[i].shares_outstanding)).toFixed(2),
+            fcfshare: (Number(sd[i].fcf)/Number(sd[i].shares_outstanding)).toFixed(2),
+            sgr: ((Number(sd[i].fcf)/(Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100) * (1 - sd[i].dividend)).toFixed(2),
+            fcf_net_income: `${((Number(sd[i].fcf)/Number(sd[i].net_income)) * 100).toFixed(2)}%`,
+            shares_outstanding: Number(sd[i].shares_outstanding),
+            fcf_yield: `${((Number(sd[i].fcf) / Number(sd[i].enterprise_value)) * 100).toFixed(2)}%`,
+            fcf_spice: ((Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)) / (Number(sd[i].enterprise_value) / Number(sd[i].fcf))).toFixed(2),
+        }
+        toSend.push(year)
+    }
+    return toSend
+}
+
 module.exports = {
   formatNumber,
   format_data,
   clearNAN,
+  formatHistorical,
 }
