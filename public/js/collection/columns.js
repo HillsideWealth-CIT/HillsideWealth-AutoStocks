@@ -1,7 +1,5 @@
-/** Columns that can't be hidden */
 const perm = [0, 1, 2, 3, 4, 5, 6, 7];
 
-/** list of table columns following the order on the site */
 var column_list = ['check',
     'Symbol',
     'Graph',
@@ -106,6 +104,10 @@ var column_list = ['check',
     'ROIC-WACC',
 ];
 
+if(shareConf) {
+    column_list.splice(2, 0, 'Owner')
+    perm.push(8)
+}
 /**
  * Loops through columns and hides the undesired columns
  * @param {Integer} start 
@@ -119,16 +121,11 @@ function hide_loop(start, end, count = 0) {
                 $table.column(i).visible(false, false);
             }
         }
-
         else {
             $table.column(i).visible(true, false);
         }
     }
 }
-
-/**
- * button functions for displaying stocks
- */
 
 function show_all() {
     hide_loop(0, total_columns);
@@ -212,6 +209,7 @@ function ae_growth() {
 }
 
 function capex() {
+    console.log(column_list.indexOf('Capex (M)'))
     hide_loop(column_list.indexOf('Capex (M)') - 1,
         column_list.indexOf('Maintenance Capex/aEBITDA 10Y') + 1);
     $table.columns.adjust().draw(false);
@@ -222,3 +220,4 @@ function profitability() {
         total_columns);
     $table.columns.adjust().draw(false);
 }
+

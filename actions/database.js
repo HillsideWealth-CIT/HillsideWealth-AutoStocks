@@ -199,6 +199,10 @@ const arrayAddStockData = async (data) => {
                 if (i == 0) columns.push('fcf')
                 placeholders.push(`$${params.push(parseFloat(data[i].fcf))}`)
             }
+            if (data[i].fcfmargin != null) {
+                if (i == 0) columns.push('fcfmargin')
+                placeholders.push(`$${params.push(parseFloat(data[i].fcfmargin))}`)
+            }
             if (data[i].roic != null) {
                 if (i == 0) columns.push('roic')
                 placeholders.push(`$${params.push(parseFloat(data[i].roic))}`)
@@ -230,6 +234,22 @@ const arrayAddStockData = async (data) => {
             if(data[i].purchase_of_business != null){
                 if(i == 0) columns.push('purchase_of_business')
                 placeholders.push(`$${params.push(parseFloat(data[i].purchase_of_business))}`)
+            }
+            if(data[i].total_stockholder_equity != null){
+                if(i == 0) columns.push('total_stockholder_equity')
+                placeholders.push(`$${params.push(parseFloat(data[i].total_stockholder_equity))}`)
+            }
+            if(data[i].st_debt_lease_obligations != null){
+                if(i == 0) columns.push('st_debt_lease_obligations')
+                placeholders.push(`$${params.push(parseFloat(data[i].st_debt_lease_obligations))}`)
+            }
+            if(data[i].lt_debt_lease_obligations != null){
+                if(i == 0) columns.push('lt_debt_lease_obligations')
+                placeholders.push(`$${params.push(parseFloat(data[i].lt_debt_lease_obligations))}`)
+            }
+            if(data[i].net_income != null){
+                if(i == 0) columns.push('net_income')
+                placeholders.push(`$${params.push(parseFloat(data[i].net_income))}`)
             }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)

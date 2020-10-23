@@ -171,10 +171,20 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                         catch{ currentData.roic = NaN; }
                     try { currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f]); }
                         catch { currentData.fcf = NaN; }
+                    try { currentData.fcfmargin = parseFloat(annuals.common_size_ratios["FCF Margin %"][f]); }
+                        catch { currentData.fcfmargin = NaN; }
                     try { currentData.ppe = parseFloat(annuals.balance_sheet["Property, Plant and Equipment"][f]); }
                         catch{ currentData.ppe = NaN; }
                     try { currentData.purchase_of_business = parseFloat(annuals.cashflow_statement["Purchase Of Business"][f]); }
                         catch{ currentData.purchase_of_business = NaN; }
+                    try { currentData.total_stockholder_equity = parseFloat(annuals.balance_sheet["Total Stockholders Equity"][f]); }
+                        catch{ currentData.total_stockholder_equity = NaN; }
+                    try { currentData.st_debt_lease_obligations = parseFloat(annuals.balance_sheet["Short-Term Debt & Capital Lease Obligation"][f]); }
+                        catch{ currentData.st_debt_lease_obligations = NaN; }
+                    try { currentData.lt_debt_lease_obligations = parseFloat(annuals.balance_sheet["Long-Term Debt & Capital Lease Obligation"][f]); }
+                        catch{ currentData.lt_debt_lease_obligations = NaN; }
+                    try { currentData.net_income = parseFloat(annuals.income_statement["Net Income"][f]); }
+                        catch{ currentData.net_income = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {
@@ -199,7 +209,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
         }
         catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }
 
-        //console.log(stocksList[i].data)
+        console.log(stocks.rows[0])
         for (d in currentStock.data) {
             currentStock.data[d].stock_id = stocks.rows[0].stock_id
         }
@@ -209,5 +219,6 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
 
 module.exports = {
     gurufocusAdd,
-    update_prices
+    update_prices,
+    financialsAPI
 }

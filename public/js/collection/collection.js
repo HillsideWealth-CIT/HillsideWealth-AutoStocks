@@ -10,12 +10,10 @@ Initialize_table();
  * Initializes table
  */
 function Initialize_table(){
-    console.log(action)
     ajax_Call(action, "/init_table").then((resolve) => {
-        console.log(resolve.data)
         stockdb = resolve.data;
-        console.log(stockdb);
         $table = fill_table(resolve.data);
+        console.log(stockdb);
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
@@ -25,7 +23,7 @@ function Initialize_table(){
  * Creates a datatable then Fills the table with JSON data
  * Link to Library: Datatables.net
  * @param {JSON} data 
- * @returns {object} the datatable
+ * @returns {object} Datatable
  */
 function fill_table(data){
     var datatable = $('#datatable').DataTable({
@@ -41,21 +39,21 @@ function fill_table(data){
         scrollY : '70vh',
         deferRender : true,
         scroller: true,
-        order : [[8, 'desc']],
+        order : [[shareConf ? 9 : 8, 'desc']],
     });
     return datatable;
 }
 
 /**
  * Builds the button array for the table
- * @returns {List}
+ * @returns {list}
  */
 function button_builder(){
     let buttons = [
         'selectAll', 'selectNone',
         {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add(addLink);}},
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove(removeLink);}},
-        {text: '<span class="fas fa-sync-alt"></span> Update', className: "btn-sm", action: function(){update(updateLink);}},
+        {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", action: function(){update(updateLink);}},
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
        
         {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
@@ -71,15 +69,15 @@ function button_builder(){
         ]},
         {text: '<span class="fas fa-layer-group"></span> Aggregate', className:"btn-sm", extend: 'collection',
         buttons: [
-            { text:'<b>Set</b>', action: function(){settingAggregation(6, 'set');} },
+            { text:'<b>Set</b>', action: function(){settingAggregation(7, 'set');} },
             { text:'Create', action: function(){createAggregation();} },
             { text:'Edit', action: function(){settingAggregation(0,'edit');} },
             { text:'Delete', action: function(){settingAggregation(0, 'delete');} },
         ]},
-        {text: '<span class="fas fa-columns"></span> Column Sets', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-columns"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
-                { text:'<b>Show All</b>', action: function(){show_all();} },
-                { text:'<b>Basic Stats</b>', action: function(){basic_stats();} },
+                { text:'<b>Show All</b>', action: function(){show_all();}},
+                { text:'<b>Basic Stats</b>', action: function(){basic_stats();}},
                 { text:'Basic Info', action: function(){basic_info();}},
                 { text:'Financials', action: function(){financials();}},
                 { text:'<b>Values</b>', action: function(){show_values();}},
@@ -108,6 +106,7 @@ function column_builder(){
     let columns = [
         { data : null , defaultContent: '', checkboxes : { selectRow : true } ,orderable: false, targets:0, className: 'select-checkbox'},
         { data : "symbol" },
+        // { data : "username"},
         {   data : null,
             orderable : false,
             className: 'setting_cell',
@@ -121,7 +120,6 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 2: Comments, emoticon, morning star, guru rating, JDV
-                // console.log(row.)
                 return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}", "${row.msse}", "${row.mCapAve_5}", "${row.mCapAve_10}", "${row.mCapAve_15}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`.replace(/[\n\r]/g, "");
             }    
         },
@@ -130,21 +128,15 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 3: DCF calculator
-                try{
-                    return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`;
-                }
-                catch(e){
-                    return `<button type="button" onclick='open_calc("${0}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${0}","${0}","${0}","${0}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`
-                }
-               
+                return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`;
             }    
         },
-        {   defaultContent: 0.00,
+        {   data : null,
             orderable : false,
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 4: 15 Year historical Financial Data
-                return `<button type="button" onclick='show_financials( "${row.symbol}" , ${JSON.stringify(row.stockdata)}, 15)' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`;
+                return `<button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`;
             }    
         },
         { 
@@ -159,7 +151,7 @@ function column_builder(){
         { data : "stockdata.0.yield_format" },
         
         { data : "note" },
-        { data : "ownership" },
+        { data : "ownership"},
         { data : "emoticon" },
         { data : "categories"},
 
@@ -216,7 +208,7 @@ function column_builder(){
         { data : "fcf_growth_10" },
 
         { data : "stockdata.0.capex_format"},
-        { data : "stockdata.0.purchase_of_business_format"},
+        { data : "stockdata.0.purchase_of_business"},
         { data : "stockdata.0.growth_capex_format"},
         { data : "capeXfcfAverage5"},
         { data : "capeXfcfAverage10"},
@@ -253,6 +245,7 @@ function column_builder(){
         { data : "stockdata.0.wacc_format" },
         { data : "stockdata.0.roicwacc_format" },
     ];
+    if(shareConf) columns.splice(2, 0, { data : "username"})
     return columns;
 }
 
@@ -261,7 +254,7 @@ function column_builder(){
  * @param {String} action - What the server will do with the request
  * @param {String} id - The Primary key of the stock for the database
  * @param {JSON} userInput - What the user inputs into the app
- * @returns {Promise} JSON
+ * @returns {Promise} JSON data
  */
 function ajax_Call(action, link) {
     return new Promise((resolve, reject) => {
@@ -275,27 +268,5 @@ function ajax_Call(action, link) {
         }).done(function (returned_data) {
             resolve(returned_data);
         });
-    });
-}
-
-/**
- * Selected stocks get removed from the database
- */
-function remove(){
-    // console.log(window.location.href.includes('shared'))
-    let to_remove = [];
-    let selected = $table.rows('.selected').data();
-    for(let  i in selected ){
-        if(selected[i].symbol){
-        to_remove.push(selected[i].symbol);
-        }   
-        else{
-            break;
-        }
-    }
-    ajax_Call(to_remove, '/remove?table=all').then((resolved) => {
-            for(let i in to_remove){
-                $table.row(document.getElementById(`${to_remove[i]}`)).remove().draw();
-            }
     });
 }

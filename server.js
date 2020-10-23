@@ -23,7 +23,7 @@ const xlsx_parse = require("./actions/xlsx_parse");
 const db = require("./actions/database");
 const calc = require('./actions/calculations');
 
-const {format_data} = require('./actions/formatData');
+const {format_data, formatHistorical} = require('./actions/formatData');
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -156,6 +156,13 @@ app.get('/admin', sessionCheck, (request, response) => {
         });
     }
 });
+
+app.get('/historic', sessionCheck, async (request, response) => {
+    console.log(request.query.id);
+    let stockdata = await db.get_by_id(request.query.id);
+    let formattedData = formatHistorical(stockdata)
+    response.send({data: formattedData})
+})
 
 /** POST **/
 
@@ -414,6 +421,8 @@ app.post('/setSpecial', sessionCheck, statusCheck, (request, response) => {
 
 /* Updates Historical Financial Data */
 app.post('/update_financials', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.body)
+    console.log(request.session.user)
     switch(request.query.table) {
         case 'all':
         api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)

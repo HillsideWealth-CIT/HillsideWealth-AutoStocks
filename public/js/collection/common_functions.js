@@ -13,39 +13,35 @@ function open_chart(symbol) {
  * @param {JSON} stockdata 
  * @param {Integer} years 
  */
-function show_financials(symbol, stockdata, years) {
+async function show_financials(symbol, stock_id) {
+    swal.fire({
+        type: 'question',
+        title: 'Loading Data...',
+    })
+    let response = await fetch(`/historic?id=${stock_id}`);
+    let json = await response.json();
+    let historicData = json.data;
     let financials = "";
-    for (let i = 0; i <= years; i++) {
+    for(let i = 0; i <= historicData.length; i++){
         try {
-            financials += `<tr>
-            <td>${stockdata[i].datestring}</td>
-            <td>${stockdata[i].price_format}</td>
-            <td>${stockdata[i].aebitda_spice}</td>
-            <td>${stockdata[i].shares_outstanding_format}</td>
-            <td>${stockdata[i].enterprise_value_format}</td>
-            <td>${stockdata[i].revenue_format}</td>
-            <td>${stockdata[i].aebitda_format}</td>
-            <td>${stockdata[i].aeXsho_format}</td>
-            <td>${stockdata[i].aebitda_percent}</td>
-            <td>${stockdata[i].asset_turnover}</td>
-            <td>${stockdata[i].aebitda_at}</td>
-            <td>${stockdata[i].ev_aebitda}</td>
-            <td>${stockdata[i].net_debt_format}</td>
-            <td>${stockdata[i].nd_aebitda}</td>
-            <td>${stockdata[i].roe_format}</td>
-            <td>${stockdata[i].fcf_format}</td>
-            <td>${stockdata[i].fcfXae_format}</td>
-            <td>${stockdata[i].fcf_yield}</td>
-            <td>${stockdata[i].purchase_of_business}</td>
-            <td>${stockdata[i].capex_format}</td>
-            <td>${stockdata[i].growth_capex_format}</td>
-            <td>${stockdata[i].maintenance_capex_format}</td>
-            <td>${stockdata[i].capeXae_format}</td>
-            <td>${stockdata[i].datestring}</td>
-            </tr>
-            `;
+            financials += `
+                <tr>
+                    <td>${historicData[i].date}</td>
+                    <td>${historicData[i].fcfroic}</td>
+                    <td>${historicData[i].fcfroa}</td>
+                    <td>${historicData[i].fcfmargin}</td>
+                    <td>${historicData[i].netdebtfcf}</td>
+                    <td>${historicData[i].salesshare}</td>
+                    <td>${historicData[i].fcfshare}</td>
+                    <td>${historicData[i].sgr}</td>
+                    <td>${historicData[i].fcf_net_income}</td>
+                    <td>${historicData[i].shares_outstanding}</td>
+                    <td>${historicData[i].fcf_yield}</td>
+                    <td>${historicData[i].fcf_spice}</td>
+                </tr>
+            `
         }
-        catch(e){
+        catch(e) {
             break;
         }
     }
@@ -59,29 +55,17 @@ function show_financials(symbol, stockdata, years) {
                 <thead class="thead-dark">
                     <tr>
                         <th>Date</th>
-                        <th>Price</th>
-                        <th>aEBITDA Spice</th>
-                        <th>Share Outstanding</th>
-                        <th>Enterprise Value</th>
-                        <th>Revenue</th>
-                        <th>aEBITDA</th>
-                        <th>aEBITDA/Share</th>
-                        <th>aEBITDA%</th>
-                        <th>Asset Turn</th>
-                        <th>aEBITDA AT</th>
-                        <th>EV/aEBITDA</th>
-                        <th>Net Debt</th>
-                        <th>ND/aEBITDA</th>
-                        <th>ROE</th>
-                        <th>FCF</th>
-                        <th>FCF/aEBITDA</th>
-                        <th>FCF Yield</th>
-                        <th>Purchase Of Business</th>
-                        <th>Capex</th>
-                        <th>Growth Capex</th>
-                        <th>Maintenance Capex</th>
-                        <th>Capex/aEBITDA</th>
-                        <th>Date</th>
+                        <th>FCFROIC%</th>
+                        <th>FCFROA%</th>
+                        <th>FCFMargin%</th>
+                        <th>Net Debt/FCF</th>
+                        <th>Sales/Share</th>
+                        <th>FCF/Share</th>
+                        <th>SGR</th>
+                        <th>FCF/Net Income%</th>
+                        <th>Shares Outstanding</th> 
+                        <th>FCF Yield%</th> 
+                        <th>FCF Spice</th> 
                     </tr>
                 </thead>
                 ${financials}
@@ -278,7 +262,7 @@ function add(link){
             data: { action: [{ 'symbol': symbol, 'comment': '', 'company': '', 'exchange': '' }] },
             success: function (stockinfo) {
                 try {
-                    $table.row(document.getElementById(stockinfo.data[0].stock_id)).remove().draw();
+                    // $table.row(document.getElementById(stockinfo.data[0].stock_id)).remove().draw();
                     $table.row.add(stockinfo.data[0]).draw();
                 }
                 catch (e) {
@@ -328,8 +312,9 @@ async function update(link){
     for(let i in selected ){
         if(selected[i].symbol){
         to_update.push({
-            stock_id: selected[i].stock_id,
-            symbol: selected[i].symbol})
+            stock_id: shareConf ? selected[i].username : selected[i].stock_id,
+            symbol: selected[i].symbol
+        })
         }   
         else{
             break;
