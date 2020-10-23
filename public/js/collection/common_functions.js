@@ -262,7 +262,7 @@ function add(link){
             data: { action: [{ 'symbol': symbol, 'comment': '', 'company': '', 'exchange': '' }] },
             success: function (stockinfo) {
                 try {
-                    $table.row(document.getElementById(stockinfo.data[0].stock_id)).remove().draw();
+                    // $table.row(document.getElementById(stockinfo.data[0].stock_id)).remove().draw();
                     $table.row.add(stockinfo.data[0]).draw();
                 }
                 catch (e) {
@@ -363,86 +363,3 @@ async function update(link){
         });
     }
 }
-
-// /**
-//  * displays historical data in a sweet alert
-//  * @param {String} symbol 
-//  * @param {JSON} stockdata 
-//  * @param {Integer} years 
-//  */
-// function show_financials(symbol, stockdata, years) {
-//     let financials = "";
-//     for (let i = 0; i <= years; i++) {
-//         try {
-//             financials += `<tr>
-//             <td>${stockdata[i].datestring}</td>
-//             <td>${stockdata[i].price_format}</td>
-//             <td>${stockdata[i].aebitda_spice}</td>
-//             <td>${stockdata[i].shares_outstanding_format}</td>
-//             <td>${stockdata[i].enterprise_value_format}</td>
-//             <td>${stockdata[i].revenue_format}</td>
-//             <td>${stockdata[i].aebitda_format}</td>
-//             <td>${stockdata[i].aeXsho_format}</td>
-//             <td>${stockdata[i].aebitda_percent}</td>
-//             <td>${stockdata[i].asset_turnover}</td>
-//             <td>${stockdata[i].aebitda_at}</td>
-//             <td>${stockdata[i].ev_aebitda}</td>
-//             <td>${stockdata[i].net_debt_format}</td>
-//             <td>${stockdata[i].nd_aebitda}</td>
-//             <td>${stockdata[i].roe_format}</td>
-//             <td>${stockdata[i].fcf_format}</td>
-//             <td>${stockdata[i].fcfXae_format}</td>
-//             <td>${stockdata[i].fcf_yield}</td>
-//             <td>${stockdata[i].purchase_of_business}</td>
-//             <td>${stockdata[i].capex_format}</td>
-//             <td>${stockdata[i].growth_capex_format}</td>
-//             <td>${stockdata[i].maintenance_capex_format}</td>
-//             <td>${stockdata[i].capeXae_format}</td>
-//             <td>${stockdata[i].datestring}</td>
-//             </tr>
-//             `;
-//         }
-//         catch(e){
-//             break;
-//         }
-//     }
-//     swal.fire({
-//         title: `${symbol} Historical Data`,
-//         showConfirmButton: true,
-//         width: '90vw',
-//         html:
-//             `
-//             <table class="table table-sm table-bordered table-light table-responsive">
-//                 <thead class="thead-dark">
-//                     <tr>
-//                         <th>Date</th>
-//                         <th>Price</th>
-//                         <th>aEBITDA Spice</th>
-//                         <th>Share Outstanding</th>
-//                         <th>Enterprise Value</th>
-//                         <th>Revenue</th>
-//                         <th>aEBITDA</th>
-//                         <th>aEBITDA/Share</th>
-//                         <th>aEBITDA%</th>
-//                         <th>Asset Turn</th>
-//                         <th>aEBITDA AT</th>
-//                         <th>EV/aEBITDA</th>
-//                         <th>Net Debt</th>
-//                         <th>ND/aEBITDA</th>
-//                         <th>ROE</th>
-//                         <th>FCF</th>
-//                         <th>FCF/aEBITDA</th>
-//                         <th>FCF Yield</th>
-//                         <th>Purchase Of Business</th>
-//                         <th>Capex</th>
-//                         <th>Growth Capex</th>
-//                         <th>Maintenance Capex</th>
-//                         <th>Capex/aEBITDA</th>
-//                         <th>Date</th>
-//                     </tr>
-//                 </thead>
-//                 ${financials}
-//             </table>
-//             `
-//     });
-// }

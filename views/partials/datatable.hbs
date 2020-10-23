@@ -123,17 +123,20 @@
 {{#if sc}}
         <script type="text/JavaScript">
             const config = {
+                action: 'init_shared',
+                addLink: '/append?share=true',
+                removeLink: '/remove?table=shared',
+                updateLink: 'update_financials?table=shared',
                 shareConf: true,
             }
-            const { shareConf } = config
+            const { action, addLink, removeLink, updateLink, shareConf } = config
         </script>
-    <script src="/js/collection/sharedDataTable.js"></script>
-    <script src="/js/collection/sharedColumns.js"></script>
+
     {{else}}
         {{#if sd}}
         <script type="text/JavaScript">
             const config = {
-                action: "init_special",
+                action:'init_special',
                 addLink: '/append?special=true',
                 removeLink: '/remove?table=special',
                 updateLink: 'update_financials?table=all',
@@ -144,21 +147,20 @@
         {{else}}
         <script type="text/JavaScript">
             let config = {
-                action: "init_user",
+                action: 'init_user',
                 addLink: '/append',
                 removeLink: '/remove?table=all',
                 updateLink: 'update_financials?table=all',
                 shareConf: false,
             }
             const { action, addLink, removeLink, updateLink, shareConf  } = config
-
         </script>
         {{/if}}
-    <script src="/js/collection/privateDataTable.js"></script>
-    <script src="/js/collection/privateColumns.js"></script>
 {{/if}}
-<script src="/js/collection/modules/edit.js"></script>
-<script src="/js/collection/modules/dcfCalculations.js"></script>
-<script src="/js/collection/modules/aggregations.js"></script>
-<script src="/js/collection/modules/common_functions.js"></script>
+<script src="/js/collection/collection.js"></script>
+<script src="/js/collection/columns.js"></script>
 
+<script src="/js/collection/edit.js"></script>
+<script src="/js/collection/dcfCalculations.js"></script>
+<script src="/js/collection/aggregations.js"></script>
+<script src="/js/collection/common_functions.js"></script>
