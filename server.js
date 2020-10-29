@@ -102,19 +102,32 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
         });
 });
 
+app.get("/edit", (request, response) => {
+    response.render("edit.hbs", {
+        in: true,
+        admin: (request.session.status == 'admin')
+    });
+});
+
 app.get("/shared", sessionCheck, statusCheck, (request, response) => {
-    db.showshared(request.session.user)
-        .then(res => {
-            // Calculates data before rendering
-            res.forEach((stock) => {
-                format_data(stock);
-            });
+    // db.showshared(request.session.user)
+    //     .then(res => {
+    //         // Calculates data before rendering
+    //         res.forEach((stock) => {
+    //             format_data(stock);
+    //         });
+    //         response.render("collection.hbs", {
+    //             user: request.session.user,
+    //             sc: true,
+    //             admin: (request.session.status == 'admin')
+    //         });
+    //     });
+
             response.render("collection.hbs", {
-                user: request.session.user,
-                sc: true,
-                admin: (request.session.status == 'admin')
-            });
-        });
+            user: request.session.user,
+            sc: true,
+            admin: (request.session.status == 'admin')
+        })
 });
 
 app.get("/special", sessionCheck, statusCheck, (request, response) => {
@@ -333,7 +346,7 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
 
 /* Edit Fields */
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
-    // console.log(request.body)
+    console.log(request.body)
     db.edits(request.body).then(() => {
         db.get_by_id(request.body.id).then((res) => {
             res.forEach((stock) => {

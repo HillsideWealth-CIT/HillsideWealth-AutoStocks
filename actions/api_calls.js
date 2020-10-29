@@ -185,6 +185,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                         catch{ currentData.lt_debt_lease_obligations = NaN; }
                     try { currentData.net_income = parseFloat(annuals.income_statement["Net Income"][f]); }
                         catch{ currentData.net_income = NaN; }
+                    try { currentData.employees = Number(annuals.valuation_and_quality["Number of Employees"][f]); }
+                        catch{ currentData.employees = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {
