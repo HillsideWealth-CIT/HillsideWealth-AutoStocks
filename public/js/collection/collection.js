@@ -120,7 +120,7 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 2: Comments, emoticon, morning star, guru rating, JDV
-                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}", "${row.msse}", "${row.mCapAve_5}", "${row.mCapAve_10}", "${row.mCapAve_15}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`.replace(/[\n\r]/g, "");
+                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note.replaceAll('\n', '\\n')}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}", "${row.msse}", "${row.mCapAve_5}", "${row.mCapAve_10}", "${row.mCapAve_15}", "${row.links}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`.replace(/[\n\r]/g, "");
             }    
         },
         {   data : null,
@@ -137,6 +137,14 @@ function column_builder(){
             render: function( data, type, row, meta){
                 // button 4: 15 Year historical Financial Data
                 return `<button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`;
+            }    
+        },
+        {   data : null,
+            orderable : false,
+            className: 'setting_cell',
+            render: function( data, type, row, meta){
+                // button 4: 15 Year historical Financial Data
+                return `<button type="button" onclick='linksMenu("${row.links}", "${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-external-link-alt"></span></button>`;
             }    
         },
         { 
@@ -206,6 +214,10 @@ function column_builder(){
         { data : "fcf_growth_3" },
         { data : "fcf_growth_5" },
         { data : "fcf_growth_10" },
+        { data: "fcfEmployee3" },
+        { data: "fcfEmployee5" },
+        { data: "fcfEmployee10" },
+        { data: "fcfEmployee15" },
 
         { data : "stockdata.0.capex_format"},
         { data : "stockdata.0.purchase_of_business"},
