@@ -255,6 +255,34 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('employees')
                 placeholders.push(`$${params.push(parseFloat(data[i].employees))}`)
             }
+            if(data[i].totalAssets != null){
+                if(i == 0) columns.push('totalAssets')
+                placeholders.push(`$${params.push(parseFloat(data[i].totalAssets))}`)
+            }
+            if(data[i].grossMargin != null){
+                if(i == 0) columns.push('grossMargin')
+                placeholders.push(`$${params.push(parseFloat(data[i].grossMargin))}`)
+            }
+            if(data[i].operatingMargin != null){
+                if(i == 0) columns.push('operatingMargin')
+                placeholders.push(`$${params.push(parseFloat(data[i].operatingMargin))}`)
+            }
+            if(data[i].owner_earning != null){
+                if(i == 0) columns.push('owner_earning')
+                placeholders.push(`$${params.push(parseFloat(data[i].owner_earning))}`)
+            }
+            if(data[i].book_value_per_share != null){
+                if(i == 0) columns.push('book_value_per_share')
+                placeholders.push(`$${params.push(parseFloat(data[i].book_value_per_share))}`)
+            }
+            if(data[i].netmargin != null){
+                if(i == 0) columns.push('netmargin')
+                placeholders.push(`$${params.push(parseFloat(data[i].netmargin))}`)
+            }
+            if(data[i].dividend_yield != null){
+                if(i == 0) columns.push('dividend_yield')
+                placeholders.push(`$${params.push(parseFloat(data[i].dividend_yield))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
@@ -280,12 +308,22 @@ const arrayAddStockData = async (data) => {
 /* runQuery('update stockdata set date = $1 WHERE date= $2', [new Date(new Date().setDate(new Date().getDate()-1)), new Date()])
  */
 
-const updatePrices = async(stock, username, sector, current_price, gfrating) => {
-    return await runQuery(`UPDATE stocks SET sector = '${sector}', current_price = ${current_price}, gfrating = '${gfrating}' where username = '${username}' and symbol = '${stock}'`)
+const updatePrices = async(stock, username, sector, current_price, gfrating, predictability, financialStrength) => {
+    return await runQuery(`UPDATE stocks SET sector = $1, current_price = $2, gfrating = $3, predictability = $4, financialstrength = $5 where username = $6 and symbol = $7`,
+        [
+            sector,
+            current_price,
+            gfrating,
+            predictability,
+            financialStrength,
+            username,
+            stock,
+
+        ])
 }
 
-const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, gfrating ,shared, special) => {
-    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, gfrating, shared, special) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING stock_id`, 
+const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, gfrating, predictability, financialStrength, shared, special) => {
+    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, gfrating, predictability, financialStrength, shared, special) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING stock_id`, 
     [
         symbol,
         stock_name,
@@ -294,6 +332,8 @@ const addStocks = async (symbol, stock_name, stock_sector, current_price,usernam
         username, 
         note, 
         gfrating, 
+        predictability,
+        financialStrength,
         shared, 
         special
     ])
@@ -442,6 +482,8 @@ function getdata(stocks, stockdata){
             ownership: stocks.rows[i].ownership,
             msse: stocks.rows[i].ms_stock_exchange,
             links: stocks.rows[i].links,
+            predictability: stocks.rows[i].predictability,
+            financialStrength: stocks.rows[i].financialstrength,
         })
     }
     return stockAndData

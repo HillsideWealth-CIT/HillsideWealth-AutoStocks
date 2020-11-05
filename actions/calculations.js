@@ -1,3 +1,5 @@
+const stDev = require('node-stdev');
+
 /**Calculates the dcf using the following parameters
  * @param {String} eps - earnings per share
  * @param {String} growth_rate
@@ -133,13 +135,26 @@ function calculate_average(data, column, years){
     try{
         let total = 0;
         for(let i = 0; i < years; i++){
-            total += parseFloat(data[i][`${column}`]);
+            total += parseFloat(data[i][column].replace(/[^0-9.]/g, ""));
         }
         return Math.round((total/years)*1000)/1000;
         }
         catch(e){
-            return null;
+            return 0;
         }
+}
+
+function calculate_stDev(data, column, years){
+    try{
+        let numList = [];
+        for(let i = 0 ; i < years; i++){
+            numList.push(Number(data[i][column].replace('%','')));
+        }
+        return stDev.sample(numList)
+    }
+    catch(e){
+        return 0;
+    }
 }
 
 /**
@@ -184,6 +199,7 @@ module.exports={
     createAggregationString,
     value_calculator,
     calculate_average,
+    calculate_stDev,
     calculate_default_growth_func,
     initial_values_calc
 };

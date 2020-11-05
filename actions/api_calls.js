@@ -59,6 +59,8 @@ const update_prices = async (list, username) => {
                 currentStock.sector = summary.summary.general.sector;
                 currentStock.current_price = parseFloat(summary.summary.general.price);
                 currentStock.gfrating = summary.summary.general.rating;
+                currentStock.predictability = summary.summary.company_data.rank_predictability;
+                currentStock.financialStrength = summary.summary.company_data.rank_financial_strength;
             }
             else{
                 throw 'no Api response'
@@ -68,7 +70,7 @@ const update_prices = async (list, username) => {
         catch (err) {
             console.log(err)
         }
-        await db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating);
+        await db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating, currentStock.predictability, currentStock.financialStrength);
         clearTimeout(timer);
     }
     return;
@@ -101,6 +103,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     currentStock.sector = summary.summary.general.sector;
                     currentStock.current_price = parseFloat(summary.summary.general.price);
                     currentStock.gfrating = summary.summary.general.rating;
+                    currentStock.predictability = summary.summary.company_data.rank_predictability;
+                    currentStock.financialStrength = summary.summary.company_data.rank_financial_strength;
                 } else {
                     throw 'Error: No API Response'
                 }
@@ -187,6 +191,20 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                         catch{ currentData.net_income = NaN; }
                     try { currentData.employees = Number(annuals.valuation_and_quality["Number of Employees"][f]); }
                         catch{ currentData.employees = NaN; }
+                    try { currentData.totalAssets = Number(annuals.balance_sheet["Total Assets"][f]); }
+                        catch{ currentData.totalAssets = NaN; }
+                    try { currentData.grossMargin = Number(annuals.income_statement["Gross Margin %"][f]); }
+                        catch{ currentData.grossMargin = NaN; }
+                    try { currentData.operatingMargin = Number(annuals.income_statement["Operating Margin %"][f]); }
+                        catch{ currentData.operatingMargin = NaN; }
+                    try { currentData.owner_earning = Number(annuals.per_share_data_array["Owner Earnings per Share (TTM)"][f]); }
+                        catch{ currentData.owner_earning = NaN; }
+                    try { currentData.book_value_per_share = Number(annuals.per_share_data_array["Book Value per Share"][f]); }
+                        catch{ currentData.dividend_payout_ratio = NaN; }
+                    try { currentData.netmargin = Number(annuals.common_size_ratios["Net Margin %"][f]); }
+                        catch{ currentData.netmargin = NaN; }
+                    try { currentData.dividend_yield = Number(annuals.valuation_ratios["Dividend Yield %"][f]); }
+                        catch{ currentData.dividend_yield = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {
@@ -205,6 +223,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     username, 
                     currentStock.comment, 
                     currentStock.gfrating, 
+                    currentStock.predictability,
+                    currentStock.financialStrength,
                     shared, 
                     special)
             }

@@ -12,8 +12,9 @@ Initialize_table();
 function Initialize_table(){
     ajax_Call(action, "/init_table").then((resolve) => {
         stockdb = resolve.data;
-        $table = fill_table(resolve.data);
         console.log(stockdb);
+        $table = fill_table(resolve.data);
+
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
@@ -129,6 +130,7 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // button 3: DCF calculator
+                // return 'hi'
                 return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`;
             }    
         },
