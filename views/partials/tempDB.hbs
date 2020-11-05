@@ -1,0 +1,287 @@
+<div id="table_main" class="dataTables_wrapper">
+    <table id="datatable" class="table table-light table-striped">
+        <thead class="thead-dark">
+            <tr id = "headerRow">
+                <th></th>
+                <th>Symbol</th>
+                {{#if sc}}
+                <th>Owner</th>
+                {{/if}}
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Aggregated</th>
+                <th>Stock Name</th>
+                <th>FCFROIC%</th>
+                <th>FCFROIC% 3yr</th>
+                <th>FCFROIC% 5yr</th>
+                <th>FCFROIC% 10yr</th>
+                <th>FCFROIC% TTM/5yr</th>
+                <th>FCFROIC% TTM/10yr</th>
+                <th>FCFROIC SD 5yr</th>
+                <th>FCFROIC SD 10yr</th>
+
+                <th>FCFROA%</th>
+                <th>FCFROA% 3yr</th>
+                <th>FCFROA% 5yr</th>
+                <th>FCFROA% 10yr</th>
+                <th>FCFROA% TTM/5yr</th>
+                <th>FCFROA% TTM/10yr</th>
+                <th>FCFROA SD 5yr</th>
+                <th>FCFROA SD 10yr</th>
+
+                <th>FCFROE%</th>
+                <th>FCFROE% 3yr </th>
+                <th>FCFROE% 5yr</th>
+                <th>FCFROE% 10yr</th>
+                <th>FCFROE% TTM/5yr</th>
+                <th>FCFROE% TTM/10yr</th>
+                <th>FCFROE% SD 5yr</th>
+                <th>FCFROE% SD 10yr</th>
+
+                <th>GrossMargin%</th>
+                <th>GrossMargin% 3yr </th>
+                <th>GrossMargin% 5yr</th>
+                <th>GrossMargin% 10yr</th>
+                <th>GrossMargin% TTM/5yr</th>
+                <th>GrossMargin% TTM/10yr</th>
+                <th>GrossMargin% SD 5yr</th>
+                <th>GrossMargin% SD 10yr</th>
+
+                <th>OperatingMargin%</th>
+                <th>OperatingMargin% 3yr </th>
+                <th>OperatingMargin% 5yr</th>
+                <th>OperatingMargin% 10yr</th>
+                <th>OperatingMargin% TTM/5yr</th>
+                <th>OperatingMargin% TTM/10yr</th>
+                <th>OperatingMargin% SD 5yr</th>
+                <th>OperatingMargin% SD 10yr</th>
+
+                <th>NetMargin%</th>
+                <th>NetMargin% 3yr </th>
+                <th>NetMargin% 5yr</th>
+                <th>NetMargin% 10yr</th>
+                <th>NetMargin% TTM/5yr</th>
+                <th>NetMargin% TTM/10yr</th>
+                <th>NetMargin% SD 5yr</th>
+                <th>NetMargin% SD 10yr</th>
+
+                <th>FCFMargin%</th>
+                <th>FCFMargin% 3yr </th>
+                <th>FCFMargin% 5yr</th>
+                <th>FCFMargin% 10yr</th>
+                <th>FCFMargin% TTM/5yr</th>
+                <th>FCFMargin% TTM/10yr</th>
+                <th>FCFMargin% SD 5yr</th>
+                <th>FCFMargin% SD 10yr</th>
+
+                <th>Net Debt/Ebitda</th>
+                <th>Net Debt/Ebitda 3yr </th>
+                <th>Net Debt/Ebitda 5yr</th>
+                <th>Net Debt/Ebitda 10yr</th>
+                <th>Net Debt/Ebitda TTM/5yr</th>
+                <th>Net Debt/Ebitda TTM/10yr</th>
+                <th>Net Debt/Ebitda SD 5yr</th>
+                <th>Net Debt/Ebitda SD 10yr</th>
+
+                <th>Net Debt/FCF</th>
+                <th>Net Debt/FCF 3yr </th>
+                <th>Net Debt/FCF 5yr</th>
+                <th>Net Debt/FCF 10yr</th>
+                <th>Net Debt/FCF TTM/5yr</th>
+                <th>Net Debt/FCF TTM/10yr</th>
+                <th>Net Debt/FCF SD 5yr</th>
+                <th>Net Debt/FCF SD 10yr</th>
+
+                <th>Sales</th>
+                <th>Sales 3yr </th>
+                <th>Sales 5yr</th>
+                <th>Sales 10yr</th>
+                <th>Sales TTM/5yr</th>
+                <th>Sales TTM/10yr</th>
+                <th>Sales SD 5yr</th>
+                <th>Sales SD 10yr</th>
+
+                <th>Sales/Share</th>
+                <th>Sales/Share 3yr </th>
+                <th>Sales/Share 5yr</th>
+                <th>Sales/Share 10yr</th>
+                <th>Sales/Share TTM/5yr</th>
+                <th>Sales/Share TTM/10yr</th>
+                <th>Sales/Share SD 5yr</th>
+                <th>Sales/Share SD 10yr</th>
+
+                <th>OwnerEarnings/Share</th>
+                <th>OwnerEarnings/Share 3yr </th>
+                <th>OwnerEarnings/Share 5yr</th>
+                <th>OwnerEarnings/Share 10yr</th>
+                <th>OwnerEarnings/Share TTM/5yr</th>
+                <th>OwnerEarnings/Share TTM/10yr</th>
+                <th>OwnerEarnings/Share SD 5yr</th>
+                <th>OwnerEarnings/Share SD 10yr</th>
+
+                <th>FCF/Share</th>
+                <th>FCF/Share 3yr </th>
+                <th>FCF/Share 5yr</th>
+                <th>FCF/Share 10yr</th>
+                <th>FCF/Share TTM/5yr</th>
+                <th>FCF/Share TTM/10yr</th>
+                <th>FCF/Share SD 5yr</th>
+                <th>FCF/Share SD 10yr</th>
+
+                <th>SGR</th>
+                <th>SGR 3yr</th>
+                <th>SGR 5yr</th>
+                <th>SGR 10yr</th>
+                <th>SGR TTM/5yr</th>
+                <th>SGR TTM/10yr</th>
+                <th>SGR SD 5yr</th>
+                <th>SGR SD 10yr</th>
+
+                <th>SGR 10yr</th>
+                <th>SGR 5yr</th>
+                <th>BVPS In Yr 10</th>
+                <th>FCF/Share Yr 10</th>
+                <th>Stock Price Yr 10</th>
+                <th>Avg Dividend Yield 10 yr</th>
+                <th>Projected 10 Yr ROR</th>
+                <th>Total Projected 10 yr ROR</th>
+
+
+                <th>FCF/Net Income %</th>
+                <th>FCF/Net Income % 3yr</th>
+                <th>FCF/Net Income % 5yr</th>
+                <th>FCF/Net Income % 10yr</th>
+                <th>FCF/Net Income % TTM/5yr</th>
+                <th>FCF/Net Income % TTM/10yr</th>
+                <th>FCF/Net Income % SD 5yr</th>
+                <th>FCF/Net Income % SD 10yr</th>
+
+                <th>FCF/Owner Earning %</th>
+                <th>FCF/Owner Earning % 3yr</th>
+                <th>FCF/Owner Earning % 5yr</th>
+                <th>FCF/Owner Earning % 10yr</th>
+                <th>FCF/Owner Earning % TTM/5yr</th>
+                <th>FCF/Owner Earning % TTM/10yr</th>
+                <th>FCF/Owner Earning % SD 5yr</th>
+                <th>FCF/Owner Earning % SD 10yr</th>
+
+                <th>Dividend/Share</th>
+                <th>Dividend/Share 3yr</th>
+                <th>Dividend/Share 5yr</th>
+                <th>Dividend/Share 10yr</th>
+                <th>Dividend/Share TTM/5yr</th>
+                <th>Dividend/Share TTM/10yr</th>
+                <th>Dividend/Share SD 5yr</th>
+                <th>Dividend/Share SD 10yr</th>
+
+                <th>Shares Outstanding</th>
+                <th>Shares Outstanding 3yr</th>
+                <th>Shares Outstanding 5yr</th>
+                <th>Shares Outstanding 10yr</th>
+                <th>Shares Outstanding TTM/5yr</th>
+                <th>Shares Outstanding TTM/10yr</th>
+                <th>Shares Outstanding SD 5yr</th>
+                <th>Shares Outstanding SD 10yr</th>
+                
+                <th>PE Ratio</th>
+                <th>PE Ratio 3yr</th>
+                <th>PE Ratio 5yr</th>
+                <th>PE Ratio 10yr</th>
+                <th>PE Ratio TTM/5yr</th>
+                <th>PE Ratio TTM/10yr</th>
+                <th>PE Ratio SD 5yr</th>
+                <th>PE Ratio SD 10yr</th>
+                
+                <th>PFCF Ratio</th>
+                <th>PFCF Ratio 3yr</th>
+                <th>PFCF Ratio 5yr</th>
+                <th>PFCF Ratio 10yr</th>
+                <th>PFCF Ratio TTM/5yr</th>
+                <th>PFCF Ratio TTM/10yr</th>
+                <th>PFCF Ratio SD 5yr</th>
+                <th>PFCF Ratio SD 10yr</th>
+                
+                <th>EV/FCF</th>
+                <th>EV/FCF 3yr</th>
+                <th>EV/FCF 5yr</th>
+                <th>EV/FCF 10yr</th>
+                <th>EV/FCF TTM/5yr</th>
+                <th>EV/FCF TTM/10yr</th>
+                <th>EV/FCF SD 5yr</th>
+                <th>EV/FCF SD 10yr</th>
+                
+                <th>fcfYield</th>
+                <th>fcfYield 3yr</th>
+                <th>fcfYield 5yr</th>
+                <th>fcfYield 10yr</th>
+                <th>fcfYield TTM/5yr</th>
+                <th>fcfYield TTM/10yr</th>
+                <th>fcfYield SD 5yr</th>
+                <th>fcfYield SD 10yr</th>
+                
+                <th>FCF Spice</th>
+                <th>FCF Spice 3yr</th>
+                <th>FCF Spice 5yr</th>
+                <th>FCF Spice 10yr</th>
+                <th>FCF Spice TTM/5yr</th>
+                <th>FCF Spice TTM/10yr</th>
+                <th>FCF Spice SD 5yr</th>
+                <th>FCF Spice SD 10yr</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+{{#if sc}}
+        <script type="text/JavaScript">
+            const config = {
+                action: 'init_shared',
+                addLink: '/append?share=true',
+                removeLink: '/remove?table=shared',
+                updateLink: 'update_financials?table=shared',
+                shareConf: true,
+            }
+            const { action, addLink, removeLink, updateLink, shareConf } = config
+        </script>
+
+    {{else}}
+        {{#if sd}}
+        <script type="text/JavaScript">
+            const config = {
+                action:'init_special',
+                addLink: '/append?special=true',
+                removeLink: '/remove?table=special',
+                updateLink: 'update_financials?table=all',
+                shareConf: false,
+            }
+            const { action, addLink, removeLink, updateLink, shareConf } = config
+        </script>
+        {{else}}
+        <script type="text/JavaScript">
+            let config = {
+                action: 'init_user',
+                addLink: '/append',
+                removeLink: '/remove?table=all',
+                updateLink: 'update_financials?table=all',
+                shareConf: false,
+            }
+            const { action, addLink, removeLink, updateLink, shareConf  } = config
+        </script>
+        {{/if}}
+{{/if}}
+<script src="/js/temp/collection.js"></script>
+<script src="/js/collection/columns.js"></script>
+
+<script src="/js/collection/edit.js"></script>
+<script src="/js/collection/links.js"></script>
+<script src="/js/collection/dcfCalculations.js"></script>
+<script src="/js/collection/aggregations.js"></script>
+<script src="/js/collection/common_functions.js"></script>
