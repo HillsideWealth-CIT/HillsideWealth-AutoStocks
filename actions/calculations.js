@@ -150,7 +150,7 @@ function calculate_stDev(data, column, years){
         for(let i = 0 ; i < years; i++){
             numList.push(Number(data[i][column].replace('%','')));
         }
-        return stDev.sample(numList)
+        return stDev.population(numList)
     }
     catch(e){
         return 0;
@@ -201,5 +201,5 @@ module.exports={
     calculate_average,
     calculate_stDev,
     calculate_default_growth_func,
-    initial_values_calc
+    initial_values_calc,
 };

@@ -1,5 +1,6 @@
 const { set } = require("lodash");
 const moment = require("moment");
+const { calculate_stDev } = require("./calculations");
 const calc = require('./calculations');
 /**
  * Adds a comma sparator to numbers in thousads
@@ -288,9 +289,10 @@ function format_data(stock) {
 
 function tempFormat(stock) {
     stock.stockdata.forEach((data, index) => {
-        data.fcfroic = `${((Number(data.fcf) / (Number(data.total_stockholder_equity) + Number(data.st_debt_lease_obligations) + Number(data.lt_debt_lease_obligations))) * 100).toFixed(2)}%`;
+        data.investedCapital = (Number(data.total_stockholder_equity) + Number(data.st_debt_lease_obligations) + Number(data.lt_debt_lease_obligations))
+        data.fcfroic = `${((Number(data.fcf) / data.investedCapital) * 100).toFixed(2)}%`;
         data.fcfroa = `${(Number(data.fcfmargin) * Number(data.asset_turnover)).toFixed(2)}%`;
-        data.fcfroe = `${((Number(data.fcfmargin) * Number(data.asset_turnover) * (Number(data.totalassets)/Number(data.total_stockholder_equity))) * 100).toFixed(2)}%`
+        data.fcfroe = `${((Number(data.fcfmargin) * Number(data.asset_turnover) * (Number(data.totalassets)/Number(data.total_stockholder_equity)))).toFixed(2)}%`
         data.grossmargin = `${Number(data.grossmargin)}%`;
         data.operatingmargin = `${Number(data.operatingmargin)}%`;
         data.netmargin = `${Number(data.netmargin)}%`;
@@ -363,6 +365,7 @@ function tempFormat(stock) {
     stock.calculations.projected10ror = `${(1/(Math.pow(Number(stock.stockdata[10].price) / Number(stock.stockdata[0].price), 0.9))).toFixed(2)}`;
     stock.calculations.projected10Total = `${Number(stock.calculations.projected10ror) + Number(stock.setup.dividendYield["10yrAvg"])}`;
 
+
     function setup(column){
         let stockinfo = {}
         stockinfo['3yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 3)}`;
@@ -371,7 +374,7 @@ function tempFormat(stock) {
         stockinfo['ttm/5yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 5))).toFixed(2)}`;
         stockinfo['ttm/10yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 10))).toFixed(2)}`;
         stockinfo['5stdev'] = `${calc.calculate_stDev(stock.stockdata, column, 5)}`;
-        stockinfo['10stdev'] = `${calc.calculate_stDev(stock.stockdatastockdata, column, 10)}`;
+        stockinfo['10stdev'] = `${calc.calculate_stDev(stock.stockdata, column, 10)}`;
 
         if(stockinfo['3yrAvg'] === 'NaN'){
             stockinfo['3yrAvg'] = '---'
@@ -422,21 +425,27 @@ function formatHistorical(data) {
     let toSend = [];
     let sd = data[0].stockdata
     for (let i = 0; i < 20; i++) {
-        let year = {
-            date: i === 0 ? 'TTM' : moment(sd[i].date).format('MMM, YYYY'),
-            fcfroic: `${(Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100).toFixed(2)}%`,
-            fcfroa: `${(Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)).toFixed(2)}%`,
-            fcfmargin: `${(Number(sd[i].fcfmargin)).toFixed(2)}%`,
-            netdebtfcf: `${(Number(sd[i].net_debt) / Number(sd[i].fcf)).toFixed(2)}`,
-            salesshare: (Number(sd[i].revenue) / Number(sd[i].shares_outstanding)).toFixed(2),
-            fcfshare: (Number(sd[i].fcf) / Number(sd[i].shares_outstanding)).toFixed(2),
-            sgr: ((Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100) * (1 - sd[i].dividend)).toFixed(2),
-            fcf_net_income: `${((Number(sd[i].fcf) / Number(sd[i].net_income)) * 100).toFixed(2)}%`,
-            shares_outstanding: Number(sd[i].shares_outstanding),
-            fcf_yield: `${((Number(sd[i].fcf) / Number(sd[i].enterprise_value)) * 100).toFixed(2)}%`,
-            fcf_spice: ((Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)) / (Number(sd[i].enterprise_value) / Number(sd[i].fcf))).toFixed(2),
+        try{
+            let year = {
+                date: i === 0 ? 'TTM' : moment(sd[i].date).format('MMM, YYYY'),
+                fcfroic: `${(Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100).toFixed(2)}%`,
+                fcfroa: `${(Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)).toFixed(2)}%`,
+                fcfmargin: `${(Number(sd[i].fcfmargin)).toFixed(2)}%`,
+                netdebtfcf: `${(Number(sd[i].net_debt) / Number(sd[i].fcf)).toFixed(2)}`,
+                salesshare: (Number(sd[i].revenue) / Number(sd[i].shares_outstanding)).toFixed(2),
+                fcfshare: (Number(sd[i].fcf) / Number(sd[i].shares_outstanding)).toFixed(2),
+                sgr: ((Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100) * (1 - sd[i].dividend)).toFixed(2),
+                fcf_net_income: `${((Number(sd[i].fcf) / Number(sd[i].net_income)) * 100).toFixed(2)}%`,
+                shares_outstanding: Number(sd[i].shares_outstanding),
+                fcf_yield: `${((Number(sd[i].fcf) / Number(sd[i].enterprise_value)) * 100).toFixed(2)}%`,
+                fcf_spice: ((Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)) / (Number(sd[i].enterprise_value) / Number(sd[i].fcf))).toFixed(2),
+            }
+            toSend.push(year)
         }
-        toSend.push(year)
+        catch(e){
+            break;
+        }
+
     }
     return toSend
 }
