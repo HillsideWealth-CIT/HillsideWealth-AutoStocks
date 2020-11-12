@@ -283,6 +283,10 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('dividend_yield')
                 placeholders.push(`$${params.push(parseFloat(data[i].dividend_yield))}`)
             }
+            if(data[i].dividendspershare != null){
+                if(i == 0) columns.push('dividendspershare')
+                placeholders.push(`$${params.push(parseFloat(data[i].dividendspershare))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }

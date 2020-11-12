@@ -106,7 +106,7 @@ function column_builder(){
         { data : "setup.fcfroic.5stdev" },
         { data : "setup.fcfroic.10stdev" },
 
-        { data : "stockdata.0.grossmargin" },
+        { data : "stockdata.0.fcfroa" },
         { data : "setup.fcfroa.3yrAvg" },
         { data : "setup.fcfroa.5yrAvg" },
         { data : "setup.fcfroa.10yrAvg" },
@@ -115,7 +115,7 @@ function column_builder(){
         { data : "setup.fcfroa.5stdev" },
         { data : "setup.fcfroa.10stdev" },
 
-        { data : "stockdata.0.grossmargin" },
+        { data : "stockdata.0.fcfroe" },
         { data : "setup.fcfroe.3yrAvg" },
         { data : "setup.fcfroe.5yrAvg" },
         { data : "setup.fcfroe.10yrAvg" },
@@ -178,6 +178,9 @@ function column_builder(){
         { data : "setup.nd_aebitdaFcf.5stdev" },
         { data : "setup.nd_aebitdaFcf.10stdev" },
 
+        { data : "predictability" },
+        { data : "financialStrength" },
+
         { data : "stockdata.0.revenue" },
         { data : "setup.sales.3yrAvg" },
         { data : "setup.sales.5yrAvg" },
@@ -223,8 +226,6 @@ function column_builder(){
         { data : "setup.sgr.5stdev" },
         { data : "setup.sgr.10stdev" },
 
-        { data : "calculations.sgr10yr" },
-        { data : "calculations.sgr5yr"},
         { data : "calculations.bvpsY10"},
         { data : "calculations.fcfShareY10"},
         { data : "calculations.stockPriceY10"},
@@ -268,14 +269,7 @@ function column_builder(){
         { data : "setup.shares_outstanding.5stdev" },
         { data : "setup.shares_outstanding.10stdev" },
 
-        { data : "stockdata.0.peRatio" },
-        { data : "setup.peRatio.3yrAvg" },
-        { data : "setup.peRatio.5yrAvg" },
-        { data : "setup.peRatio.10yrAvg" },
-        { data : "setup.peRatio.ttm/5yr" },
-        { data : "setup.peRatio.ttm/10yr" },
-        { data : "setup.peRatio.5stdev" },
-        { data : "setup.peRatio.10stdev" },
+        { data : "stockdata.0.dividendPayoutRatio" },
 
         { data : "stockdata.0.pFcfRatio" },
         { data : "setup.pFcfRatio.3yrAvg" },
