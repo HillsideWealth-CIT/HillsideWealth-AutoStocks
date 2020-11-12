@@ -159,7 +159,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                         catch{currentData.effective_tax = null}
                     try{currentData.shares_outstanding =  parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f])}
                         catch{currentData.shares_outstanding = null}
-                    try{currentData.aebitda =  Math.round(parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) + parseFloat(annuals.income_statement.EBITDA[f]))}
+                    try{currentData.aebitda =  Math.round(parseFloat(annuals.income_statement.EBITDA[f]))}
+                    // parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f]) +
                         catch{currentData.aebitda = Math.round( 0 + parseFloat(annuals.income_statement.EBITDA[f]))}
                     try{ currentData.wacc =  parseFloat(annuals.common_size_ratios["WACC %"][f])}
                         catch{ currentData.wacc = null}
@@ -205,6 +206,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                         catch{ currentData.netmargin = NaN; }
                     try { currentData.dividend_yield = Number(annuals.valuation_ratios["Dividend Yield %"][f]); }
                         catch{ currentData.dividend_yield = NaN; }
+                    try { currentData.dividendspershare = Number(annuals.per_share_data_array['Dividends per Share'][f]); }
+                        catch{ currentData.dividendspershare = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {

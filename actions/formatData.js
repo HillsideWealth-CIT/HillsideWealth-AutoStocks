@@ -298,8 +298,8 @@ function tempFormat(stock) {
         data.netmargin = `${Number(data.netmargin)}%`;
         data.fcfmargin = `${Number(data.fcfmargin)}%`;
         
-        data.nd_aebitda = `${((Number(data.net_debt) / Number(data.aebitda)) * 100).toFixed(2)}`;
-        data.nd_aebitdaFcf = `${(Number(data.nd_aebitda) / Number(data.fcf)).toFixed(2)}`;
+        data.nd_aebitda = `${((Number(data.net_debt) / Number(data.aebitda)) * 10).toFixed(2)}`;
+        data.nd_aebitdaFcf = `${(Number(data.nd_aebitda) / Number(data.fcf) * 100).toFixed(2)}`;
         data.salesshare = `${(Number(data.revenue) / Number(data.shares_outstanding)).toFixed(2)}`;
         data.ownerEarningShare = `${(Number(data.owner_earning) / Number(data.shares_outstanding)).toFixed(2)}`;
         data.fcfShare = `${(Number(data.fcf) / Number(data.shares_outstanding)).toFixed(2)}`;
@@ -312,40 +312,36 @@ function tempFormat(stock) {
         data.fcfNetIncome = `${((Number(data.fcf) / Number(data.net_income)) * 100).toFixed(2)}`;
         data.fcfOwnerEarnings = `${((Number(data.fcf) / Number(data.owner_earning)) * 100).toFixed(2)}`;
 
-        data.dividendShare = `${(Number(data.dividend) / Number(data.shares_outstanding)).toFixed(2)}`;
-        data.dividendPayoutRatio = `${Number(data.dividend) * 100}`;
+        data.dividendShare = `${Number(data.dividendspershare).toFixed(2)}$`;
+        data.dividendPayoutRatio = `${(Number(data.dividend) * 100).toFixed(2)}%`;
 
         data.peRatio = `${(Number(data.price) / Number(data.shares_outstanding)).toFixed(2)}`;
         data.pFcfRatio = `${((Number(data.price) / Number(data.fcf))).toFixed(2)}`;
         data.evFcf = `${(Number(data.enterprise_value) / Number(data.fcf)).toFixed(2)}`;
         data.fcfYield = `${(Number(data.fcf) / Number(data.enterprise_value)).toFixed(2)}`;
         data.fcfSpice = `${((Number(data.fcfmargin.replace('%', '')) * Number(data.asset_turnover)) * (Number(data.fcfYield))).toFixed(2)}`;
-
-        // let test = (Number(data.fcf) / Number(data.enterprise_value))
-        // console.log(`${data.fcf} ${data.enterprise_value}`)
-        // console.log(test)
     })
     stock.setup = {};
 
-    stock.setup.fcfroic = setup('fcfroic');
-    stock.setup.fcfroa = setup('fcfroa');
-    stock.setup.fcfroe = setup('fcfroe');
-    stock.setup.grossMargin = setup('grossmargin');
-    stock.setup.operatingmargin = setup('operatingmargin');
+    stock.setup.fcfroic = setup('fcfroic', '%');
+    stock.setup.fcfroa = setup('fcfroa', '%');
+    stock.setup.fcfroe = setup('fcfroe', '%');
+    stock.setup.grossMargin = setup('grossmargin', '%');
+    stock.setup.operatingmargin = setup('operatingmargin', '%');
     stock.setup.netmargin = setup('netmargin');
     stock.setup.fcfmargin = setup('fcfmargin');
     stock.setup.nd_aebitda = setup('nd_aebitda');
     stock.setup.nd_aebitdaFcf = setup('nd_aebitdaFcf');
-    stock.setup.sales = setup('revenue');
+    stock.setup.sales = setup('revenue', 'M');
     stock.setup.salesshare = setup('salesshare');
     stock.setup.ownerEarningShare = setup('ownerEarningShare');
     stock.setup.fcfShare = setup('fcfShare');
     stock.setup.dividend = setup('dividend');
-    stock.setup.sgr = setup( 'sgr');
-    stock.setup.bvps = setup( 'book_value_per_share');
-    stock.setup.fcfNetIncome = setup( 'fcfNetIncome');
-    stock.setup.fcfOwnerEarnings = setup( 'fcfOwnerEarnings');
-    stock.setup.dividendShare = setup('dividendShare');
+    stock.setup.sgr = setup('sgr');
+    stock.setup.bvps = setup('book_value_per_share');
+    stock.setup.fcfNetIncome = setup('fcfNetIncome', '%');
+    stock.setup.fcfOwnerEarnings = setup('fcfOwnerEarnings', '%');
+    stock.setup.dividendShare = setup('dividendShare', '$');
     stock.setup.dividendYield = setup('dividend_yield');
     stock.setup.shares_outstanding = setup('shares_outstanding');
     stock.setup.peRatio = setup('peRatio');
@@ -359,39 +355,42 @@ function tempFormat(stock) {
     stock.calculations.sgr5yr = `${(Number(stock.setup.sgr['5yrAvg']) / 1 - Number(stock.setup.dividend['5yrAvg']))}`;
     stock.calculations.sgr10yr = `${(Number(stock.setup.sgr['10yrAvg']) / 1 - Number(stock.setup.dividend['10yrAvg']))}`;
 
-    stock.calculations.bvpsY10 = `${(Number(stock.stockdata[0].book_value_per_share) * (1 + Math.pow(Number(stock.calculations.sgr10yr), 10)))}`;
-    stock.calculations.fcfShareY10 = `${(Number(stock.stockdata[10].book_value_per_share) * Number(stock.setup.fcfroic['10yrAvg'])).toFixed(2)}`;
-    stock.calculations.stockPriceY10 = `${(Number(stock.stockdata[10].fcfShare) * Number(stock.setup.pFcfRatio['10yrAvg']))}`;
-    stock.calculations.projected10ror = `${(1/(Math.pow(Number(stock.stockdata[10].price) / Number(stock.stockdata[0].price), 0.9))).toFixed(2)}`;
-    stock.calculations.projected10Total = `${Number(stock.calculations.projected10ror) + Number(stock.setup.dividendYield["10yrAvg"])}`;
+    stock.calculations.bvpsY10 = `${((Math.pow( 1 + Number(stock.calculations.sgr10yr/ 100), 10)) * Number(stock.stockdata[0].book_value_per_share)).toFixed(2)}$`;
+    stock.calculations.fcfShareY10 = `${(Number(stock.stockdata[10].book_value_per_share) * Number(stock.setup.fcfroic['10yrAvg'])).toFixed(2)}$`;
+    stock.calculations.stockPriceY10 = `${(Number(stock.stockdata[10].fcfShare) * Number(stock.setup.pFcfRatio['10yrAvg']))}$`;
+    stock.calculations.projected10ror = `${(1/(Math.pow(Number(stock.stockdata[10].price) / Number(stock.stockdata[0].price), 0.9))).toFixed(2)}%`;
+    stock.calculations.projected10Total = `${Number(stock.calculations.projected10ror) + Number(stock.setup.dividendYield["10yrAvg"])}%`;
 
 
-    function setup(column){
+    function setup(column, sign=''){
         let stockinfo = {}
-        stockinfo['3yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 3)}`;
-        stockinfo['5yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 5)}`;
-        stockinfo['10yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 10)}`;
-        stockinfo['ttm/5yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 5))).toFixed(2)}`;
-        stockinfo['ttm/10yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 10))).toFixed(2)}`;
-        stockinfo['5stdev'] = `${calc.calculate_stDev(stock.stockdata, column, 5)}`;
-        stockinfo['10stdev'] = `${calc.calculate_stDev(stock.stockdata, column, 10)}`;
+        stockinfo['3yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 3)}${sign}`;
+        stockinfo['5yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 5)}${sign}`;
+        stockinfo['10yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 10)}${sign}`;
+        stockinfo['ttm/5yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 5))).toFixed(2)}${sign}`;
+        stockinfo['ttm/10yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 10))).toFixed(2)}${sign}`;
+        stockinfo['5stdev'] = `${calc.calculate_stDev(stock.stockdata, column, 5)}${sign}`;
+        stockinfo['10stdev'] = `${calc.calculate_stDev(stock.stockdata, column, 10)}${sign}`;
 
-        if(stockinfo['3yrAvg'] === 'NaN'){
+        if(stockinfo['3yrAvg'] === `NaN${sign}`){
             stockinfo['3yrAvg'] = '---'
         }
-        if(stockinfo['5yrAvg'] === 'NaN'){
+        if(stockinfo['5yrAvg'] === `NaN${sign}`){
             stockinfo['5yrAvg'] = '---'
         }
-        if(stockinfo['ttm/5yr'] === 'NaN'){
+        if(stockinfo['10yrAvg'] === `NaN${sign}`){
+            stockinfo['10yrAvg'] = '---'
+        }
+        if(stockinfo['ttm/5yr'] === `NaN${sign}`){
             stockinfo['ttm/5yr'] = '---'
         }
-        if(stockinfo['ttm/10yr'] === 'NaN'){
+        if(stockinfo['ttm/10yr'] === `NaN${sign}`){
             stockinfo['ttm/10yr'] = '---'
         }
-        if(stockinfo['5stdev'] === 'NaN'){
+        if(stockinfo['5stdev'] === `NaN${sign}`){
             stockinfo['5stdev'] = '---'
         }
-        if(stockinfo['10stdev'] === 'NaN'){
+        if(stockinfo['10stdev'] === `NaN${sign}`){
             stockinfo['10stdev'] = '---'
         }
 
