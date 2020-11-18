@@ -1,6 +1,6 @@
 const { set } = require("lodash");
 const moment = require("moment");
-const { calculate_stDev } = require("./calculations");
+const { evalExpression } = require("./calculations");
 const calc = require('./calculations');
 /**
  * Adds a comma sparator to numbers in thousads
@@ -420,24 +420,28 @@ function clearNAN(param, extraSymbol) {
     }
 }
 
-function formatHistorical(data) {
+function formatHistorical(data, cs) {
+    let customString = cs.split(',');
     let toSend = [];
     let sd = data[0].stockdata
     for (let i = 0; i < 20; i++) {
         try{
-            let year = {
-                date: i === 0 ? 'TTM' : moment(sd[i].date).format('MMM, YYYY'),
-                fcfroic: `${(Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100).toFixed(2)}%`,
-                fcfroa: `${(Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)).toFixed(2)}%`,
-                fcfmargin: `${(Number(sd[i].fcfmargin)).toFixed(2)}%`,
-                netdebtfcf: `${(Number(sd[i].net_debt) / Number(sd[i].fcf)).toFixed(2)}`,
-                salesshare: (Number(sd[i].revenue) / Number(sd[i].shares_outstanding)).toFixed(2),
-                fcfshare: (Number(sd[i].fcf) / Number(sd[i].shares_outstanding)).toFixed(2),
-                sgr: ((Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100) * (1 - sd[i].dividend)).toFixed(2),
-                fcf_net_income: `${((Number(sd[i].fcf) / Number(sd[i].net_income)) * 100).toFixed(2)}%`,
-                shares_outstanding: Number(sd[i].shares_outstanding),
-                fcf_yield: `${((Number(sd[i].fcf) / Number(sd[i].enterprise_value)) * 100).toFixed(2)}%`,
-                fcf_spice: ((Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)) / (Number(sd[i].enterprise_value) / Number(sd[i].fcf))).toFixed(2),
+            let year = {date: i === 0 ? 'TTM' : moment(sd[i].date).format('MMM, YYYY'),}
+            for(let j = 0; j < customString.length; j++){
+                let rowData = customString[j].split('|');
+                let headerSign = (rowData[0].indexOf('(') !== -1)
+                    ? rowData[0].slice(rowData[0].indexOf('(')+1, rowData[0].indexOf(')'))
+                    : ''
+                if(rowData.length == 2){
+                    year[rowData[0]] = sToSD(rowData[1].trim(), i, headerSign);
+                }
+                else{
+                    let variables =[];
+                    for(let p of rowData[1].split(" ")){
+                        if(p.length > 0) variables.push(Number(sToSD(p, i)));
+                    }
+                    year[rowData[0]] = `${evalExpression(variables, rowData[2]).toFixed(2)}${headerSign}`;
+                }
             }
             toSend.push(year)
         }
@@ -447,8 +451,149 @@ function formatHistorical(data) {
 
     }
     return toSend
-}
 
+    function sToSD(columnString, row, headerSign = ''){
+        let value;
+        switch(columnString) {
+            case 'aebitda':
+                value = sd[row].aebitda;
+                break;
+            case 'assetTurn':
+                value = sd[row].asset_turnover;
+                break;
+            case 'bvps':
+                value = sd[row].book_value_per_share;
+                break;
+            case 'capex':
+                value = sd[row].capex;
+                break;
+            case 'discountRate':
+                value = sd[row].discount_rate;
+                break;
+            case 'dividend':
+                value = sd[row].dividend;
+                break;
+            case 'dividendYield':
+                value = sd[row].dividendYield;
+                break;
+            case 'dividendPerShare':
+                value = sd[row].dividendShare;
+                break;
+            case 'effectiveTax':
+                value = sd[row].effective_tax;
+                break;
+            case 'employees':
+                value = sd[row].employees;
+                break;
+            case 'enterpriseValue':
+                value = sd[row].enterprise_value;
+                break;
+            case 'epsBasic':
+                value = sd[row].eps_basic;
+                break;
+            case 'epsWithoutNri':
+                value = sd[row].eps_without_nri;
+                break;
+            case 'fcf':
+                value = sd[row].fcf;
+                break;
+            case 'fcfMargin':
+                value = sd[row].fcfmargin;
+                break;
+            case 'grossMargin':
+                value = sd[row].grossMargin;
+                break;
+            case 'growthYears':
+                value = sd[row].growth_years;
+                break;
+            case 'longTermDebt':
+                value = sd[row].lt_debt_lease_obligations;
+                break;
+            case 'marketCap':
+                value = sd[row].market_cap;
+                break;
+            case 'netDebt':
+                value = sd[row].net_debt;
+                break;
+            case 'netIncome':
+                value = sd[row].net_income;
+                break;
+            case 'netMargin':
+                value = sd[row].netmargin;
+                break;
+            case 'operatingMargin':
+                value = sd[row].operatingmargin;
+                break;
+            case 'ownerEarning':
+                value = sd[row].ownerEarningShare
+                break;
+            case 'ppe':
+                value = sd[row].ppe;
+                break;
+            case 'price':
+                value = sd[row].price;
+                break;
+            case 'purchaseOfBusiness':
+                value = sd[row].purchase_of_business;
+                break;
+            case 'revenue':
+                value = sd[row].revenue;
+                break;
+            case 'roe':
+                value = sd[row].roe;
+                break;
+            case 'roic':
+                value = sd[row].roic;
+                break;
+            case 'sharesOutstanding':
+                value = sd[row].shares_outstanding;
+                break;
+            case 'sharesOutstandingQuarterly':
+                value = sd[row].shares_outstanding_quarterly;
+                break;
+            case 'shortTermDebt':
+                value = sd[row].st_debt_lease_obligations;
+                break;
+            case 'terminalGrowthRate':
+                value = sd[row].terminal_growth_rate;
+                break;
+            case 'TerminalYears':
+                value = sd[row].terminal_years;
+                break;
+            case 'totalStockholderEquity':
+                value = sd[row].total_stockholder_equity;
+                break;
+            case 'totalAssets':
+                value = sd[row].totalassets;
+                break;
+            case 'ttm':
+                value = sd[row].ttm;
+                break;
+            case 'wacc':
+                value = sd[row].wacc;
+                break;
+            case 'yield':
+                value = sd[row].yield;
+                break;
+            default:
+                value = 'N/A'
+        }
+        return `${value}${headerSign}`;
+    }
+
+    // fcfroic: `${(Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100).toFixed(2)}%`,
+    // fcfroa: `${(Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)).toFixed(2)}%`,
+    // fcfmargin: `${(Number(sd[i].fcfmargin)).toFixed(2)}%`,
+    // netdebtfcf: `${(Number(sd[i].net_debt) / Number(sd[i].fcf)).toFixed(2)}`,
+    // salesshare: (Number(sd[i].revenue) / Number(sd[i].shares_outstanding)).toFixed(2),
+    // fcfshare: (Number(sd[i].fcf) / Number(sd[i].shares_outstanding)).toFixed(2),
+    // sgr: ((Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100) * (1 - sd[i].dividend)).toFixed(2),
+    // fcf_net_income: `${((Number(sd[i].fcf) / Number(sd[i].net_income)) * 100).toFixed(2)}%`,
+    // shares_outstanding: Number(sd[i].shares_outstanding),
+    // fcf_yield: `${((Number(sd[i].fcf) / Number(sd[i].enterprise_value)) * 100).toFixed(2)}%`,
+    // fcf_spice: ((Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)) / (Number(sd[i].enterprise_value) / Number(sd[i].fcf))).toFixed(2),
+
+}
 module.exports = {
     formatNumber,
     format_data,

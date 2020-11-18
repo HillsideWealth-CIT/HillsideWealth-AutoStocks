@@ -424,6 +424,17 @@ const deleteAggregate = async(id) => {
     return await runQuery(`DELETE FROM aggregation where aggregation_id = $1`, [id])
 }
 
+const addTableConfig = async(username, table_type, config_string) => {
+    let test = await runQuery(`select * from tableconfig where username = $1 and table_type = $2;`, [username, table_type]);
+    if(test.rows.length < 1){
+        return await runQuery(`INSERT INTO tableconfig (username, table_type, config_string) VALUES ($1, $2, $3);`, [username, table_type, config_string]);
+    }
+    return await runQuery(`UPDATE tableconfig set config_string = $1 where username = $2 and table_type = $3`, [config_string, username, table_type]);
+}
+
+const getTableConfig = async(username, table_type) => {
+    return await runQuery(`SELECT * from tableconfig where username = $1 and table_type = $2;`, [username, table_type]);
+}
 
 module.exports = {
     addUser,
@@ -459,7 +470,9 @@ module.exports = {
     retrieveAggregates,
     getAggregateSingle,
     editAggregate,
-    deleteAggregate
+    deleteAggregate,
+    addTableConfig,
+    getTableConfig,
 }
 
 function getdata(stocks, stockdata){

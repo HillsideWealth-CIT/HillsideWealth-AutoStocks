@@ -20,58 +20,46 @@ async function show_financials(symbol, stock_id) {
     })
     let response = await fetch(`/historic?id=${stock_id}`);
     let json = await response.json();
-    let historicData = json.data;
-    let financials = "";
-    for(let i = 0; i <= historicData.length; i++){
-        try {
-            financials += `
-                <tr>
-                    <td>${historicData[i].date}</td>
-                    <td>${historicData[i].fcfroic}</td>
-                    <td>${historicData[i].fcfroa}</td>
-                    <td>${historicData[i].fcfmargin}</td>
-                    <td>${historicData[i].netdebtfcf}</td>
-                    <td>${historicData[i].salesshare}</td>
-                    <td>${historicData[i].fcfshare}</td>
-                    <td>${historicData[i].sgr}</td>
-                    <td>${historicData[i].fcf_net_income}</td>
-                    <td>${historicData[i].shares_outstanding}</td>
-                    <td>${historicData[i].fcf_yield}</td>
-                    <td>${historicData[i].fcf_spice}</td>
-                </tr>
-            `
+    if(json.error !== true){
+        let historicData = json.data;
+        let configString = json.test.split(',');
+        let headers = "";
+        let financials = "";
+        for(let i of configString) headers += `<th>${i.split('|')[0]}</th>`;
+        for(let i = 0; i <= historicData.length; i++){
+            let rowString = '';
+            for(let y in historicData[i]){
+                try{
+                    rowString += `<td>${historicData[i][y]}</td>`
+                }
+                catch(e) {
+                    break;
+                }
+            }
+            financials += `<tr>${rowString}</tr>`
         }
-        catch(e) {
-            break;
-        }
+        swal.fire({
+            title: `${symbol} Historical Data`,
+            showConfirmButton: true,
+            width: '90vw',
+            html:
+                `
+                <table class="table table-sm table-bordered table-light table-responsive">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Date</th>
+                            ${headers}
+                        </tr>
+                    </thead>
+                    ${financials}
+                </table>
+                <button class="btn btn-secondary" onClick="historicalCustomization('${json.test.replaceAll('\n', '')}')">Customize</button>
+                `
+        });
     }
-    swal.fire({
-        title: `${symbol} Historical Data`,
-        showConfirmButton: true,
-        width: '90vw',
-        html:
-            `
-            <table class="table table-sm table-bordered table-light table-responsive">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Date</th>
-                        <th>FCFROIC%</th>
-                        <th>FCFROA%</th>
-                        <th>FCFMargin%</th>
-                        <th>Net Debt/FCF</th>
-                        <th>Sales/Share</th>
-                        <th>FCF/Share</th>
-                        <th>SGR</th>
-                        <th>FCF/Net Income%</th>
-                        <th>Shares Outstanding</th> 
-                        <th>FCF Yield%</th> 
-                        <th>FCF Spice</th> 
-                    </tr>
-                </thead>
-                ${financials}
-            </table>
-            `
-    });
+    else{
+        historicalCustomization('');
+    }
 }
 
 /**
@@ -362,4 +350,44 @@ async function update(link){
             }
         });
     }
+}
+
+function historicalCustomization(configString){
+    console.log(configString.replace(',', ',</br>'));
+    let toSend = {};
+    swal.fire({
+        title: 'Historical Edit',
+        showConfirmButton: true,
+        showCancelButton: true,
+        width: '80vw',
+        html:`
+        <div class="form-group">
+        <label for="historicalDataConfig">Format:Header|column, Header(Sign)|Column Column| A + B</label>
+        <textarea
+            style="height:25em;"
+            id="historicalDataConfig"
+            spellcheck="false" 
+            type="text" 
+            class="form-control"
+            >${configString.replaceAll(',', ',\r\n')}</textarea>
+        <div>
+        `
+    }).then((result) => {
+        console.log($('#historicalDataConfig').val().replaceAll(',\n',','))
+        console.log(result)
+        if (result.value) {
+            fetch('/tableconfig', {
+                method: 'POST',
+                body: JSON.stringify({
+                    table: 'historic',
+                    queryString: $('#historicalDataConfig').val().replaceAll(',\n',',')
+                }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8'
+                }
+            })
+            .then(response => response.json())
+            .then(Json => console.log(json))
+        }
+    })
 }
