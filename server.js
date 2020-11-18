@@ -157,10 +157,16 @@ app.get('/admin', sessionCheck, (request, response) => {
 });
 
 app.get('/historic', sessionCheck, async (request, response) => {
-    console.log(request.query.id);
-    let stockdata = await db.get_by_id(request.query.id);
-    let formattedData = formatHistorical(stockdata)
-    response.send({data: formattedData})
+    try{
+        let stockdata = await db.get_by_id(request.query.id);
+        let tableconfig = await db.getTableConfig(request.session.user, 'historic');
+        let formattedData = await formatHistorical(stockdata, tableconfig.rows[0].config_string);
+        response.send({data: formattedData, test: tableconfig.rows[0].config_string})
+    }
+    catch(e){
+        response.send({error: true})
+    }
+
 })
 
 /** POST **/
@@ -337,6 +343,10 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
         });
     }
 });
+
+app.post('/tableconfig', sessionCheck, statusCheck, (request, response ) => {
+    db.addTableConfig(request.session.user, request.body.table, request.body.queryString.replace('\n', ''))
+})
 
 /* Edit Fields */
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {

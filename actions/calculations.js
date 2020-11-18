@@ -1,4 +1,5 @@
 const stDev = require('node-stdev');
+const math = require('mathjs');
 
 /**Calculates the dcf using the following parameters
  * @param {String} eps - earnings per share
@@ -192,6 +193,15 @@ function initial_values_calc(years, ttm, prev_eps, terminal_growth, discount, gr
     return calculated;
 }
 
+function evalExpression(variables, equation){
+    const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    let scope = {};
+    for(let i = 0; i < variables.length; i ++){
+        scope[alphabet[i]] = variables[i];
+    }
+    return math.evaluate(equation, scope);
+}
+
 
 module.exports={
     dcf,
@@ -202,4 +212,5 @@ module.exports={
     calculate_stDev,
     calculate_default_growth_func,
     initial_values_calc,
+    evalExpression,
 };
