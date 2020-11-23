@@ -287,6 +287,38 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('dividendspershare')
                 placeholders.push(`$${params.push(parseFloat(data[i].dividendspershare))}`)
             }
+            if(data[i].cap_lease_debt != null){
+                if(i == 0) columns.push('cap_lease_debt')
+                placeholders.push(`$${params.push(parseFloat(data[i].cap_lease_debt))}`)
+            }
+            if(data[i].fror != null){
+                if(i == 0) columns.push('fror')
+                placeholders.push(`$${params.push(parseFloat(data[i].fror))}`)
+            }
+            if(data[i].flow_ratio != null){
+                if(i == 0) columns.push('flow_ratio')
+                placeholders.push(`$${params.push(parseFloat(data[i].flow_ratio))}`)
+            }
+            if(data[i].operating_cushion != null){
+                if(i == 0) columns.push('operating_cushion')
+                placeholders.push(`$${params.push(parseFloat(data[i].operating_cushion))}`)
+            }
+            if(data[i].working_capital != null){
+                if(i == 0) columns.push('working_capital')
+                placeholders.push(`$${params.push(parseFloat(data[i].working_capital))}`)
+            }
+            if(data[i].ebit != null){
+                if(i == 0) columns.push('ebit')
+                placeholders.push(`$${params.push(parseFloat(data[i].ebit))}`)
+            }
+            if(data[i].capital_employed != null){
+                if(i == 0) columns.push('capital_employed')
+                placeholders.push(`$${params.push(parseFloat(data[i].capital_employed))}`)
+            }
+            if(data[i].cashflow_reinvestment_rate != null){
+                if(i == 0) columns.push('cashflow_reinvestment_rate')
+                placeholders.push(`$${params.push(parseFloat(data[i].cashflow_reinvestment_rate))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }

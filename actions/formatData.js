@@ -9,11 +9,11 @@ const calc = require('./calculations');
  * @param {Float} num 
  * @param {String} extraSymbol 
  */
-function formatNumber(num, extraSymbol) {
+function formatNumber(nums, extraSymbol) {
     try {
-        num = clearNAN(num);
+        num = clearNAN(nums);
         if (!isFinite(num)) {
-            return null;
+            return 'Infinity';
         }
         else if (num != null) {
             if (extraSymbol == '%') {
@@ -30,11 +30,32 @@ function formatNumber(num, extraSymbol) {
             }
         }
         else {
-            return null;
+            return 'Cannot Represent';
         }
     }
     catch (e) {
+        return '---';
+    }
+}
+
+/**
+ * returns null if param is NaN
+ * @param {*} param
+ * @param {*} extraSymbol
+ * @returns {string} 
+ */
+function clearNAN(param, extraSymbol) {
+    if (isNaN(param)) {
         return null;
+    }
+    if (!isFinite(param)) {
+        return Infinity;
+    }
+    else if (extraSymbol) {
+        return param + extraSymbol;
+    }
+    else {
+        return param;
     }
 }
 
@@ -288,9 +309,9 @@ function format_data(stock) {
 }
 
 function tempFormat(stock) {
+    console.log(stock.symbol)
     stock.stockdata.forEach((data, index) => {
-        data.investedCapital = (Number(data.total_stockholder_equity) + Number(data.st_debt_lease_obligations) + Number(data.lt_debt_lease_obligations))
-        data.fcfroic = `${((Number(data.fcf) / data.investedCapital) * 100).toFixed(2)}%`;
+        data.fcfroic = `${((Number(data.fcf) / data.roic) * 100).toFixed(2)}%`;
         data.fcfroa = `${(Number(data.fcfmargin) * Number(data.asset_turnover)).toFixed(2)}%`;
         data.fcfroe = `${((Number(data.fcfmargin) * Number(data.asset_turnover) * (Number(data.totalassets)/Number(data.total_stockholder_equity)))).toFixed(2)}%`
         data.grossmargin = `${Number(data.grossmargin)}%`;
@@ -298,12 +319,16 @@ function tempFormat(stock) {
         data.netmargin = `${Number(data.netmargin)}%`;
         data.fcfmargin = `${Number(data.fcfmargin)}%`;
         
-        data.nd_aebitda = `${((Number(data.net_debt) / Number(data.aebitda)) * 10).toFixed(2)}`;
+        data.nd_aebitda = `${(Number(data.net_debt) / Number(data.aebitda)).toFixed(2)}`;
         data.nd_aebitdaFcf = `${(Number(data.nd_aebitda) / Number(data.fcf) * 100).toFixed(2)}`;
+        data.cap_lease_debt = `${Number(data.cap_lease_debt).toFixed(2)}`;
+
         data.salesshare = `${(Number(data.revenue) / Number(data.shares_outstanding)).toFixed(2)}`;
         data.ownerEarningShare = `${(Number(data.owner_earning) / Number(data.shares_outstanding)).toFixed(2)}`;
         data.fcfShare = `${(Number(data.fcf) / Number(data.shares_outstanding)).toFixed(2)}`;
         data.sgr = `${(Number(data.fcfroic.replace('%','')) * (1 - data.dividend)).toFixed(2)}`;
+
+        data.fror = `${data.fror}%`;
 
         data.capexSales = `${((Number(data.capex)/Number(data.revenue)) * 100).toFixed(2)}`;
         data.capexOwnerEarnings = `${((Number(data.capex) / Number(data.owner_earning)) * 100).toFixed(2)}`
@@ -320,6 +345,20 @@ function tempFormat(stock) {
         data.evFcf = `${(Number(data.enterprise_value) / Number(data.fcf)).toFixed(2)}`;
         data.fcfYield = `${(Number(data.fcf) / Number(data.enterprise_value)).toFixed(2)}`;
         data.fcfSpice = `${((Number(data.fcfmargin.replace('%', '')) * Number(data.asset_turnover)) * (Number(data.fcfYield))).toFixed(2)}`;
+        
+        data.coreOp = `${(Number(data.operating_cushion) - Number(data.working_capital)).toFixed(2)}%`;
+        data.flow_ratio = `${Number(data.flow_ratio).toFixed(2)}`;
+        data.operating_cushion = `${Number(data.operating_cushion).toFixed(2)}%`;
+        data.working_capital = `${Number(data.working_capital).toFixed(2)}%`
+
+        data.expected_annual_total_return = `${(Number(data.fcfYield) + Number(data.sgr)).toFixed(2)}%`
+
+        data.capex_sales = `${((Number(data.capex) / Number(data.revenue)) * 100).toFixed(2)}%`;
+        data.capex_ownerEarnings = `${((Number(data.capex) / Number(data.owner_earning)) * 100).toFixed(2)}%`;
+        data.capex_fcf = `${((Number(data.capex) / Number(data.fcf)) * 100).toFixed(2)}%`;
+
+        data.cashflow_reinvestment_rate = `${Number(data.cashflow_reinvestment_rate).toFixed(2)}`
+
     })
     stock.setup = {};
 
@@ -355,69 +394,66 @@ function tempFormat(stock) {
     stock.calculations.sgr5yr = `${(Number(stock.setup.sgr['5yrAvg']) / 1 - Number(stock.setup.dividend['5yrAvg']))}`;
     stock.calculations.sgr10yr = `${(Number(stock.setup.sgr['10yrAvg']) / 1 - Number(stock.setup.dividend['10yrAvg']))}`;
 
-    stock.calculations.bvpsY10 = `${((Math.pow( 1 + Number(stock.calculations.sgr10yr/ 100), 10)) * Number(stock.stockdata[0].book_value_per_share)).toFixed(2)}$`;
+    stock.calculations.bvpsY10 = formatNumber(((Math.pow( 1 + (Number(stock.setup.sgr['10yrAvg'])/ 100), 10)) * Number(stock.stockdata[0].book_value_per_share)).toFixed(2), '$');
     stock.calculations.fcfShareY10 = `${(Number(stock.stockdata[10].book_value_per_share) * Number(stock.setup.fcfroic['10yrAvg'])).toFixed(2)}$`;
     stock.calculations.stockPriceY10 = `${(Number(stock.stockdata[10].fcfShare) * Number(stock.setup.pFcfRatio['10yrAvg']))}$`;
-    stock.calculations.projected10ror = `${(1/(Math.pow(Number(stock.stockdata[10].price) / Number(stock.stockdata[0].price), 0.9))).toFixed(2)}%`;
-    stock.calculations.projected10Total = `${Number(stock.calculations.projected10ror) + Number(stock.setup.dividendYield["10yrAvg"])}%`;
-
+    stock.calculations.projected10ror = formatNumber((1/(Math.pow(Number(stock.stockdata[10].price) / Number(stock.stockdata[0].price), 0.9))).toFixed(2), '%');
+    stock.calculations.projected10Total = formatNumber(Number(stock.calculations.projected10ror) + Number(stock.setup.dividendYield["10yrAvg"]), '%');
+    
+    stock.calculations.roce = `${(Number(stock.stockdata[0].ebit) / ((Number(stock.stockdata[1].capital_employed) + Number(stock.stockdata[0].capital_employed))/2) * 100).toFixed(2)}%`
+    stock.calculations.rule_of_40 = `${(Number(stock.setup.fcfmargin["5yrAvg"]) + Number(stock.calculations.sgr5yr)).toFixed(2)}%`;
 
     function setup(column, sign=''){
+        let stockinfoNum = {}
         let stockinfo = {}
-        stockinfo['3yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 3)}${sign}`;
-        stockinfo['5yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 5)}${sign}`;
-        stockinfo['10yrAvg'] = `${calc.calculate_average(stock.stockdata, column, 10)}${sign}`;
-        stockinfo['ttm/5yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 5))).toFixed(2)}${sign}`;
-        stockinfo['ttm/10yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 10))).toFixed(2)}${sign}`;
-        stockinfo['5stdev'] = `${calc.calculate_stDev(stock.stockdata, column, 5)}${sign}`;
-        stockinfo['10stdev'] = `${calc.calculate_stDev(stock.stockdata, column, 10)}${sign}`;
+        stockinfoNum['3yrAvg'] = calc.calculate_average(stock.stockdata, column, 3);
+        stockinfoNum['5yrAvg'] = calc.calculate_average(stock.stockdata, column, 5);
+        stockinfoNum['10yrAvg'] = calc.calculate_average(stock.stockdata, column, 10);
+        stockinfoNum['ttm/5yr'] = Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 5));
+        stockinfoNum['ttm/10yr'] = Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 10));
+        stockinfoNum['5stdev'] = ((Number(calc.calculate_stDev(stock.stockdata, column, 5)) / Number(stockinfoNum['5yrAvg'])) * 100);
+        stockinfoNum['10stdev'] = ((Number(calc.calculate_stDev(stock.stockdata, column, 10)) / Number(stockinfoNum['10yrAvg'])) * 100);
 
-        if(stockinfo['3yrAvg'] === `NaN${sign}`){
-            stockinfo['3yrAvg'] = '---'
-        }
-        if(stockinfo['5yrAvg'] === `NaN${sign}`){
-            stockinfo['5yrAvg'] = '---'
-        }
-        if(stockinfo['10yrAvg'] === `NaN${sign}`){
-            stockinfo['10yrAvg'] = '---'
-        }
-        if(stockinfo['ttm/5yr'] === `NaN${sign}`){
-            stockinfo['ttm/5yr'] = '---'
-        }
-        if(stockinfo['ttm/10yr'] === `NaN${sign}`){
-            stockinfo['ttm/10yr'] = '---'
-        }
-        if(stockinfo['5stdev'] === `NaN${sign}`){
-            stockinfo['5stdev'] = '---'
-        }
-        if(stockinfo['10stdev'] === `NaN${sign}`){
-            stockinfo['10stdev'] = '---'
-        }
+        stockinfo['3yrAvg'] = stockinfoNum['3yrAvg'] === 'NaN'
+            ? '-----'
+            : `${formatNumber(stockinfoNum['3yrAvg'].toFixed(2), sign)}`
+
+        stockinfo['5yrAvg'] = stockinfoNum['5yrAvg'] === 'NaN'
+            ? '-----'
+            : `${formatNumber(stockinfoNum['5yrAvg'].toFixed(2), sign)}`
+
+        stockinfo['10yrAvg'] = stockinfoNum['10yrAvg'] === 'NaN'
+            ? '-----'
+            : `${formatNumber(stockinfoNum['10yrAvg'].toFixed(2), sign)}`
+
+        stockinfo['ttm/5yr'] = stockinfoNum['ttm/5yr'] === 'NaN'
+            ? '-----'
+            : `${formatNumber(stockinfoNum['ttm/5yr'].toFixed(2), sign)}`
+
+        stockinfo['ttm/10yr'] = stockinfoNum['ttm/10yr'] === 'NaN'
+            ? '-----'
+            : `${formatNumber(stockinfoNum['ttm/10yr'].toFixed(2), sign)}`
+
+        stockinfo['5stdev'] = stockinfoNum['5stdev'] === 'NaN'
+            ? '-----'
+            : `+/- ${formatNumber(stockinfoNum['5stdev'].toFixed(1), sign)} = (${calc.calculate_stDev(stock.stockdata, column, 5)}/${stockinfoNum['5yrAvg'].toFixed(2)})`
+            
+        stockinfo['10stdev'] = stockinfoNum['10stdev'] === 'NaN'
+            ? '-----'
+            : `+/- ${formatNumber(stockinfoNum['10stdev'].toFixed(1), sign)} = (${calc.calculate_stDev(stock.stockdata, column, 5)}/${stockinfoNum['5yrAvg'].toFixed(2)})`
+
+
+        // stockinfo['3yrAvg'] = `${(calc.calculate_average(stock.stockdata, column, 3)).toFixed(2)}`;
+        // stockinfo['5yrAvg'] = `${(calc.calculate_average(stock.stockdata, column, 5)).toFixed(2)}`;
+        // stockinfo['10yrAvg'] = `${(calc.calculate_average(stock.stockdata, column, 10)).toFixed(2)}`;
+        // stockinfo['ttm/5yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 5))).toFixed(2)}`;
+        // stockinfo['ttm/10yr'] = `${(Number(stock.stockdata[0][column].replace('%','')) / Number(calc.calculate_average(stock.stockdata, column, 10))).toFixed(2)}`;
+        // stockinfo['5stdev'] = `+/- ${((Number(calc.calculate_stDev(stock.stockdata, column, 5)) / Number(stockinfo['5yrAvg'].replace(sign, ''))) * 100).toFixed(1)} = (${calc.calculate_stDev(stock.stockdata, column, 5)}/${Number(stockinfo['5yrAvg'].replace(sign, ''))})`;
+        // stockinfo['10stdev'] = `+/- ${((Number(calc.calculate_stDev(stock.stockdata, column, 10)) / Number(stockinfo['10yrAvg'].replace(sign, ''))) * 100).toFixed(1)} = (${calc.calculate_stDev(stock.stockdata, column, 10)}/${Number(stockinfo['10yrAvg'].replace(sign, ''))})`;
 
         return stockinfo;
     };
 
-}
-
-/**
- * returns null if param is NaN
- * @param {*} param
- * @param {*} extraSymbol
- * @returns {string} 
- */
-function clearNAN(param, extraSymbol) {
-    if (isNaN(param)) {
-        return null;
-    }
-    if (!isFinite(param)) {
-        return 88888888 + extraSymbol;
-    }
-    else if (extraSymbol) {
-        return param + extraSymbol;
-    }
-    else {
-        return param;
-    }
 }
 
 function formatHistorical(data, cs) {
@@ -580,19 +616,6 @@ function formatHistorical(data, cs) {
         }
         return `${value}${headerSign}`;
     }
-
-    // fcfroic: `${(Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100).toFixed(2)}%`,
-    // fcfroa: `${(Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)).toFixed(2)}%`,
-    // fcfmargin: `${(Number(sd[i].fcfmargin)).toFixed(2)}%`,
-    // netdebtfcf: `${(Number(sd[i].net_debt) / Number(sd[i].fcf)).toFixed(2)}`,
-    // salesshare: (Number(sd[i].revenue) / Number(sd[i].shares_outstanding)).toFixed(2),
-    // fcfshare: (Number(sd[i].fcf) / Number(sd[i].shares_outstanding)).toFixed(2),
-    // sgr: ((Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100) * (1 - sd[i].dividend)).toFixed(2),
-    // fcf_net_income: `${((Number(sd[i].fcf) / Number(sd[i].net_income)) * 100).toFixed(2)}%`,
-    // shares_outstanding: Number(sd[i].shares_outstanding),
-    // fcf_yield: `${((Number(sd[i].fcf) / Number(sd[i].enterprise_value)) * 100).toFixed(2)}%`,
-    // fcf_spice: ((Number(sd[i].fcfmargin) * Number(sd[i].asset_turnover)) / (Number(sd[i].enterprise_value) / Number(sd[i].fcf))).toFixed(2),
-
 }
 module.exports = {
     formatNumber,

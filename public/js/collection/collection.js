@@ -40,7 +40,8 @@ function fill_table(data){
         scrollY : '70vh',
         deferRender : true,
         scroller: true,
-        order : [[shareConf ? 9 : 8, 'desc']],
+        order : [[shareConf ? 1 : 1, 'desc']],
+        colReorder:{realtime: false}
     });
     return datatable;
 }
@@ -154,16 +155,11 @@ function column_builder(){
             defaultContent: 0
         },
         { data : "stock_name"},
-        { data : "stockdata.0.market_cap_format" },
-        { data : "stocksector" },
+
         { data : "stockdata.0.aebitda_spice" },
         { data : "stock_current_price" },
-        { data : 'valueConditions' },
         { data : "stockdata.0.yield_format" },
         
-        { data : "note" },
-        { data : "ownership"},
-        { data : "emoticon" },
         { data : "categories"},
 
         { data : "stockdata.0.datestring" },
@@ -177,21 +173,10 @@ function column_builder(){
         { data : "stockdata.0.aebitda_at" },
         { data : "stockdata.0.ev_aebitda" },
         { data : "stockdata.0.net_debt_format" },
-        { data : "stockdata.0.nd_aebitda" },
 
         { data : 'stockdata.0.roe_format'},
         { data : "stockdata.0.roe_spice" },
-        { data : "stockdata.0.effective_tax_format" },
 
-        { data : "gfrating" },
-        { data : "jdv" },
-        { data : "msse"},
-        { data : "moat" },
-        { data : "fairvalue" },
-        { data : "fivestar" },
-        { data : "onestar" },
-
-        { data : "stockdata.0.eps_without_nri_string_format" },
         { data : "stockdata.0.growth_years_format" },
         { data : "growth_rate_5y" },
         { data : "growth_rate_10y" },
@@ -227,19 +212,12 @@ function column_builder(){
         { data : "stockdata.0.growth_capex_format"},
         { data : "capeXfcfAverage5"},
         { data : "capeXfcfAverage10"},
-        { data : "stockdata.0.capeXae_format"},
-        { data : "capeXaeAverage5" },
-        { data : "capeXaeAverage10" },
+        
         { data : "stockdata.0.fcfXae_format" },
         { data : "price_growth_1" },
         { data : "price_growth_3"},
         { data : "price_growth_5" },
         { data : "price_growth_10" },
-
-        { data : "so_change_1" },
-        { data : "so_change_3" },
-        { data : "so_change_5" },
-        { data : "so_change_10" },
 
         { data : "soChangePercent_1"},
         { data : "soChangePercent_3"},
@@ -250,11 +228,6 @@ function column_builder(){
         { data : "revenue_growth_3"},
         { data : "revenue_growth_5"},
         { data : "revenue_growth_10"},
-
-        { data : "aebitda_growth_1"},
-        { data : "aebitda_growth_3"},
-        { data : "aebitda_growth_5"},
-        { data : "aebitda_growth_10"},
 
         { data : "stockdata.0.roic_format" },
         { data : "stockdata.0.wacc_format" },
