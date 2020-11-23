@@ -124,6 +124,8 @@ function column_builder(){
         { data : "setup.fcfroe.5stdev" },
         { data : "setup.fcfroe.10stdev" },
 
+        { data : "calculations.roce"},
+
         { data : "stockdata.0.grossmargin" },
         { data : "setup.grossMargin.3yrAvg" },
         { data : "setup.grossMargin.5yrAvg" },
@@ -160,6 +162,8 @@ function column_builder(){
         { data : "setup.fcfmargin.5stdev" },
         { data : "setup.fcfmargin.10stdev" },
 
+        { data : "stockdata.0.cashflow_reinvestment_rate" },
+
         { data : "stockdata.0.nd_aebitda" },
         { data : "setup.nd_aebitda.3yrAvg" },
         { data : "setup.nd_aebitda.5yrAvg" },
@@ -177,6 +181,8 @@ function column_builder(){
         { data : "setup.nd_aebitdaFcf.ttm/10yr" },
         { data : "setup.nd_aebitdaFcf.5stdev" },
         { data : "setup.nd_aebitdaFcf.10stdev" },
+
+        { data : "stockdata.0.cap_lease_debt"},
 
         { data : "predictability" },
         { data : "financialStrength" },
@@ -226,12 +232,20 @@ function column_builder(){
         { data : "setup.sgr.5stdev" },
         { data : "setup.sgr.10stdev" },
 
+        { data : "stockdata.0.fror"},
+
         { data : "calculations.bvpsY10"},
         { data : "calculations.fcfShareY10"},
         { data : "calculations.stockPriceY10"},
         { data : "setup.dividendYield.10yrAvg"},
         { data : "calculations.projected10ror"},
         { data : "calculations.projected10Total"},
+
+        { data: "stockdata.0.expected_annual_total_return"},
+
+        { data : "stockdata.0.capex_sales"},
+        { data : "stockdata.0.capex_ownerEarnings"},
+        { data : "stockdata.0.capex_fcf"},
 
         { data : "stockdata.0.fcfNetIncome" },
         { data : "setup.fcfNetIncome.3yrAvg" },
@@ -306,6 +320,12 @@ function column_builder(){
         { data : "setup.fcfSpice.ttm/10yr" },
         { data : "setup.fcfSpice.5stdev" },
         { data : "setup.fcfSpice.10stdev" },
+
+        { data : "stockdata.0.flow_ratio" },
+        { data : "stockdata.0.operating_cushion" },
+        { data : "stockdata.0.working_capital" },
+        { data : "stockdata.0.coreOp" },
+        { data : "calculations.rule_of_40" },
 
     ];
     return columns;
