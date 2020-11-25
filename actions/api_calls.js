@@ -172,7 +172,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     catch{currentData.eps_without_nri = null}
                     try { currentData.roe = parseFloat(annuals.common_size_ratios["ROE %"][f]); }
                     catch { currentData.roe = "Does not exist" }
-                    try{ currentData.roic = (Number(annuals.balance_sheet['Total Stockholders Equity'][f]) + Number(annuals.balance_sheet["Short-Term Debt"][f]) + Number(annuals.balance_sheet["Long-Term Debt"][f]) - Number(annuals.balance_sheet['Cash, Cash Equivalents, Marketable Securities'][f]) + Number(annuals.balance_sheet['Other Long-Term Liabilities'][f])); }
+                    try{ currentData.roic = (parseFloat(annuals.balance_sheet['Total Stockholders Equity'][f]) + parseFloat(annuals.balance_sheet["Short-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) - parseFloat(annuals.balance_sheet['Cash, Cash Equivalents, Marketable Securities'][f]) + parseFloat(annuals.balance_sheet['Other Long-Term Liabilities'][f])); }
                     catch{ currentData.roic = NaN; }
                     try { currentData.fcf = parseFloat(annuals.cashflow_statement["Free Cash Flow"][f]); }
                     catch { currentData.fcf = NaN; }
@@ -190,39 +190,41 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     catch{ currentData.lt_debt_lease_obligations = NaN; }
                     try { currentData.net_income = parseFloat(annuals.income_statement["Net Income"][f]); }
                     catch{ currentData.net_income = NaN; }
-                    try { currentData.employees = Number(annuals.valuation_and_quality["Number of Employees"][f]); }
+                    try { currentData.employees = parseFloat(annuals.valuation_and_quality["Number of Employees"][f]); }
                     catch{ currentData.employees = NaN; }
-                    try { currentData.totalAssets = Number(annuals.balance_sheet["Total Assets"][f]); }
+                    try { currentData.totalAssets = parseFloat(annuals.balance_sheet["Total Assets"][f]); }
                     catch{ currentData.totalAssets = NaN; }
-                    try { currentData.grossMargin = Number(annuals.income_statement["Gross Margin %"][f]); }
+                    try { currentData.grossMargin = parseFloat(annuals.income_statement["Gross Margin %"][f]); }
                     catch{ currentData.grossMargin = NaN; }
-                    try { currentData.operatingMargin = Number(annuals.income_statement["Operating Margin %"][f]); }
+                    try { currentData.operatingMargin = parseFloat(annuals.income_statement["Operating Margin %"][f]); }
                     catch{ currentData.operatingMargin = NaN; }
-                    try { currentData.owner_earning = Number(annuals.per_share_data_array["Owner Earnings per Share (TTM)"][f]); }
+                    try { currentData.owner_earning = parseFloat(annuals.per_share_data_array["Owner Earnings per Share (TTM)"][f]); }
                     catch{ currentData.owner_earning = NaN; }
-                    try { currentData.book_value_per_share = Number(annuals.per_share_data_array["Book Value per Share"][f]); }
+                    try { currentData.book_value_per_share = parseFloat(annuals.per_share_data_array["Book Value per Share"][f]); }
                     catch{ currentData.dividend_payout_ratio = NaN; }
-                    try { currentData.netmargin = Number(annuals.common_size_ratios["Net Margin %"][f]); }
+                    try { currentData.netmargin = parseFloat(annuals.common_size_ratios["Net Margin %"][f]); }
                     catch{ currentData.netmargin = NaN; }
-                    try { currentData.dividend_yield = Number(annuals.valuation_ratios["Dividend Yield %"][f]); }
+                    try { currentData.dividend_yield = parseFloat(annuals.valuation_ratios["Dividend Yield %"][f]); }
                     catch{ currentData.dividend_yield = NaN; }
-                    try { currentData.dividendspershare = Number(annuals.per_share_data_array['Dividends per Share'][f]); }
+                    try { currentData.dividendspershare = parseFloat(annuals.per_share_data_array['Dividends per Share'][f]); }
                     catch{ currentData.dividendspershare = NaN; }
-                    try { currentData.cap_lease_debt = (Number(annuals.balance_sheet["Long-Term Capital Lease Obligation"][f]) + Number(annuals.balance_sheet["Short-Term Capital Lease Obligation"][f]))/(Number(annuals.balance_sheet["Short-Term Debt"][f]) + Number(annuals.balance_sheet["Long-Term Debt"][f]))}
+                    try { currentData.cap_lease_debt = (parseFloat(annuals.balance_sheet["Long-Term Capital Lease Obligation"][f]) + parseFloat(annuals.balance_sheet["Short-Term Capital Lease Obligation"][f]))/(parseFloat(annuals.balance_sheet["Short-Term Debt"][f]) + parseFloat(annuals.balance_sheet["Long-Term Debt"][f]))}
                     catch{ currentData.cap_lease_debt = NaN; }
-                    try { currentData.fror = Number(annuals.valuation_ratios['Forward Rate of Return (Yacktman) %'][f]); }
+                    try { currentData.fror = parseFloat(annuals.valuation_ratios['Forward Rate of Return (Yacktman) %'][f]); }
                     catch{ currentData.fror = NaN; }
-                    try { currentData.flow_ratio = (Number(annuals.balance_sheet['Total Current Assets'][f]) - Number(annuals.balance_sheet['Cash And Cash Equivalents'][f]) - Number(annuals.balance_sheet['Marketable Securities'][f])) / (Number(annuals.balance_sheet['Total Current Liabilities'][f]) - Number(annuals.balance_sheet['Short-Term Capital Lease Obligation'][f])); }
+                    try { currentData.flow_ratio = (parseFloat(annuals.balance_sheet['Total Current Assets'][f]) - parseFloat(annuals.balance_sheet['Cash And Cash Equivalents'][f]) - parseFloat(annuals.balance_sheet['Marketable Securities'][f])) / (parseFloat(annuals.balance_sheet['Total Current Liabilities'][f]) - parseFloat(annuals.balance_sheet['Short-Term Capital Lease Obligation'][f])); }
                     catch{ currentData.flow_ratio = NaN; }
-                    try { currentData.operating_cushion = Number(annuals.common_size_ratios["Gross Margin %"][f]) - (Number(annuals.income_statement["Selling, General, & Admin. Expense"][f])/Number(annuals.income_statement["Revenue"][f])) }
+                    try { currentData.operating_cushion = parseFloat(annuals.common_size_ratios["Gross Margin %"][f]) - (parseFloat(annuals.income_statement["Selling, General, & Admin. Expense"][f])/parseFloat(annuals.income_statement["Revenue"][f])) }
                     catch{ currentData.operating_cushion = NaN; }
-                    try { currentData.working_capital = -(( Number(annuals.balance_sheet["Accounts Receivable"][f]) + Number(annuals.balance_sheet["Other Current Receivables"][f]) ) / Number(annuals.income_statement["Revenue"][f])) - (Number(annuals.balance_sheet["Total Inventories"][f]) / Number(annuals.income_statement["Revenue"][f])) + (Number(annuals.balance_sheet["Accounts Payable & Accrued Expense"][f])/Number(annuals.income_statement["Revenue"][f]) + (Number(annuals.balance_sheet["Current Deferred Revenue"][f])/Number(annuals.income_statement["Revenue"][f])) + (Number(annuals.balance_sheet["Other Current Assets"][f])/Number(annuals.income_statement["Revenue"][f]))) }
+                    try { currentData.working_capital = -(( parseFloat(annuals.balance_sheet["Accounts Receivable"][f]) + parseFloat(annuals.balance_sheet["Other Current Receivables"][f]) ) / parseFloat(annuals.income_statement["Revenue"][f])) - (parseFloat(annuals.balance_sheet["Total Inventories"][f]) / parseFloat(annuals.income_statement["Revenue"][f])) + (parseFloat(annuals.balance_sheet["Accounts Payable & Accrued Expense"][f])/parseFloat(annuals.income_statement["Revenue"][f]) + (parseFloat(annuals.balance_sheet["Current Deferred Revenue"][f])/parseFloat(annuals.income_statement["Revenue"][f])) + (parseFloat(annuals.balance_sheet["Other Current Assets"][f])/parseFloat(annuals.income_statement["Revenue"][f]))) }
                     catch{ currentData.working_capital = NaN; }
-                    try { currentData.ebit = Number(annuals.income_statement["EBIT"][f])}
+                    try { currentData.ebit = parseFloat(annuals.income_statement["EBIT"][f])}
                     catch{ currentData.ebit = NaN; }
-                    try { currentData.capital_employed = Number(annuals.balance_sheet["Total Assets"][f]) - Number(annuals.balance_sheet["Total Current Liabilities"][f])}
+                    try { currentData.capital_employed = parseFloat(annuals.balance_sheet["Total Assets"][f]) - parseFloat(annuals.balance_sheet["Total Current Liabilities"][f])}
                     catch{ currentData.capital_employed = NaN; }
-                    try { currentData.cashflow_reinvestment_rate = ((-(Number(annuals.cashflow_statement["Cash Flow from Investing"][f])) - Number(annuals.cashflow_statement["Cash Flow from Investing"][f]) + Number(annuals.cashflow_statement["Cash Flow for Dividends"][f]))/Number(annuals.cashflow_statement["Cash Flow from Operations"][f]))  }
+                    try { 
+                        currentData.cashflow_reinvestment_rate = ((-parseFloat(annuals.cashflow_statement["Cash Flow from Investing"][f])) - parseFloat(annuals.cashflow_statement["Cash Flow from Financing"][f]) + parseFloat(annuals.cashflow_statement["Cash Flow for Dividends"][f]))/parseFloat(annuals.cashflow_statement["Cash Flow from Operations"][f])  
+                    }
                     catch{ currentData.cashflow_reinvestment_rate = NaN; }
                 currentStock.data.push(currentData)
             }

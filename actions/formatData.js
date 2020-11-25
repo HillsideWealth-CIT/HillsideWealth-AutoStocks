@@ -107,7 +107,6 @@ function format_data(stock) {
         data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 10000) / 100, '%');
         // data.fcfroic: `${(Number(sd[i].fcf) / (Number(sd[i].total_stockholder_equity) + Number(sd[i].st_debt_lease_obligations) + Number(sd[i].lt_debt_lease_obligations)) * 100).toFixed(2)}%`;
 
-
         try {
             data.growth_capex = calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index + 1].revenue);
             data.growth_capex_format = formatNumber(calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index + 1].revenue) * -1, '$');
@@ -311,6 +310,9 @@ function format_data(stock) {
 function tempFormat(stock) {
     console.log(stock.symbol)
     stock.stockdata.forEach((data, index) => {
+        if(index == 0){
+            console.log(data.roic)
+        }
         data.fcfroic = `${((Number(data.fcf) / data.roic) * 100).toFixed(2)}%`;
         data.fcfroa = `${(Number(data.fcfmargin) * Number(data.asset_turnover)).toFixed(2)}%`;
         data.fcfroe = `${((Number(data.fcfmargin) * Number(data.asset_turnover) * (Number(data.totalassets)/Number(data.total_stockholder_equity)))).toFixed(2)}%`
@@ -357,7 +359,7 @@ function tempFormat(stock) {
         data.capex_ownerEarnings = `${((Number(data.capex) / Number(data.owner_earning)) * 100).toFixed(2)}%`;
         data.capex_fcf = `${((Number(data.capex) / Number(data.fcf)) * 100).toFixed(2)}%`;
 
-        data.cashflow_reinvestment_rate = `${Number(data.cashflow_reinvestment_rate).toFixed(2)}`
+        data.cashflow_reinvestment_rate = `${(Number(data.cashflow_reinvestment_rate)*100).toFixed(2)}`
 
     })
     stock.setup = {};
@@ -428,19 +430,19 @@ function tempFormat(stock) {
 
         stockinfo['ttm/5yr'] = stockinfoNum['ttm/5yr'] === 'NaN'
             ? '-----'
-            : `${formatNumber(stockinfoNum['ttm/5yr'].toFixed(2), sign)}`
+            : `${formatNumber(stockinfoNum['ttm/5yr'].toFixed(2))}`
 
         stockinfo['ttm/10yr'] = stockinfoNum['ttm/10yr'] === 'NaN'
             ? '-----'
-            : `${formatNumber(stockinfoNum['ttm/10yr'].toFixed(2), sign)}`
+            : `${formatNumber(stockinfoNum['ttm/10yr'].toFixed(2))}`
 
         stockinfo['5stdev'] = stockinfoNum['5stdev'] === 'NaN'
             ? '-----'
-            : `+/- ${formatNumber(stockinfoNum['5stdev'].toFixed(1), sign)} = (${calc.calculate_stDev(stock.stockdata, column, 5)}/${stockinfoNum['5yrAvg'].toFixed(2)})`
+            : `+/- ${formatNumber(stockinfoNum['5stdev'].toFixed(1), sign)}`
             
         stockinfo['10stdev'] = stockinfoNum['10stdev'] === 'NaN'
             ? '-----'
-            : `+/- ${formatNumber(stockinfoNum['10stdev'].toFixed(1), sign)} = (${calc.calculate_stDev(stock.stockdata, column, 5)}/${stockinfoNum['5yrAvg'].toFixed(2)})`
+            : `+/- ${formatNumber(stockinfoNum['10stdev'].toFixed(1), sign)}`
 
 
         // stockinfo['3yrAvg'] = `${(calc.calculate_average(stock.stockdata, column, 3)).toFixed(2)}`;
