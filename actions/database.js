@@ -148,176 +148,176 @@ const arrayAddStockData = async (data) => {
             }
             if (data[i].dividend != null) {
                 if (i == 0) columns.push('dividend')
-                placeholders.push(`$${params.push(parseFloat(data[i].dividend))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].dividend) ? data[i].dividend : 0.0))}`)
             }
             if (data[i].yield != null) {
                 if (i == 0) columns.push('yield')
-                placeholders.push(`$${params.push(parseFloat(data[i].yield))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].yield) ? data[i].yield : 0.0))}`)
             }
             if (data[i].price != null) {
                 if (i == 0) columns.push('price')
-                placeholders.push(`$${params.push(parseFloat(data[i].price))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].price) ? data[i].price : 0.0))}`)
             }
             if (data[i].shares_outstanding != null) {
                 if (i == 0) columns.push('shares_outstanding')
-                placeholders.push(`$${params.push(parseFloat(data[i].shares_outstanding))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].shares_outstanding) ? data[i].shares_outstanding : 0.0))}`)
             }
             if (data[i].market_cap != null) {
                 if (i == 0) columns.push('market_cap')
-                placeholders.push(`$${params.push(parseFloat(data[i].market_cap))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].market_cap) ? data[i].market_cap : 0.0))}`)
             }
             if (data[i].net_debt != null) {
                 if (i == 0) columns.push('net_debt')
-                placeholders.push(`$${params.push(parseFloat(data[i].net_debt))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].net_debt) ? data[i].net_debt : 0.0))}`)
 
             }
             if (data[i].enterprise_value != null) {
                 if (i == 0) columns.push('enterprise_value')
-                placeholders.push(`$${params.push(parseFloat(data[i].enterprise_value))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].enterprise_value) ? data[i].enterprise_value : 0.0))}`)
             }
             if (data[i].revenue != null) {
                 if (i == 0) columns.push('revenue')
-                placeholders.push(`$${params.push(parseFloat(data[i].revenue))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].revenue) ? data[i].revenue : 0.0))}`)
             }
             if (data[i].aebitda != null) {
                 if (i == 0) columns.push('aebitda')
-                placeholders.push(`$${params.push(parseFloat(data[i].aebitda))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].aebitda) ? data[i].aebitda : 0.0))}`)
             }
             if (data[i].asset_turnover != null) {
                 if (i == 0) columns.push('asset_turnover')
-                placeholders.push(`$${params.push(parseFloat(data[i].asset_turnover))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].asset_turnover) ? data[i].asset_turnover : 0.0))}`)
             }
             if (data[i].roe != null) {
                 if (i == 0) columns.push('roe')
-                placeholders.push(`$${params.push(parseFloat(data[i].roe))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].roe) ? data[i].roe : 0.0))}`)
             }
             if (data[i].effective_tax != null) {
                 if (i == 0) columns.push('effective_tax')
-                placeholders.push(`$${params.push(parseFloat(data[i].effective_tax))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].effective_tax) ? data[i].effective_tax : 0.0))}`)
             }
             if (data[i].fcf != null) {
                 if (i == 0) columns.push('fcf')
-                placeholders.push(`$${params.push(parseFloat(data[i].fcf))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].fcf) ? data[i].fcf : 0.0))}`)
             }
             if (data[i].fcfmargin != null) {
                 if (i == 0) columns.push('fcfmargin')
-                placeholders.push(`$${params.push(parseFloat(data[i].fcfmargin))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].fcfmargin) ? data[i].fcfmargin : 0.0))}`)
             }
             if (data[i].roic != null) {
                 if (i == 0) columns.push('roic')
-                placeholders.push(`$${params.push(parseFloat(data[i].roic))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].roic) ? data[i].roic : 0.0))}`)
             }
             if (data[i].wacc != null) {
                 if (i == 0) columns.push('wacc')
-                placeholders.push(`$${params.push(parseFloat(data[i].wacc))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].wacc) ? data[i].wacc : 0.0))}`)
             }
             if (data[i].capex != null) {
                 if (i == 0) columns.push('capex')
-                placeholders.push(`$${params.push(parseFloat(data[i].capex))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].capex) ? data[i].capex : 0.0))}`)
             }
             if (data[i].eps_basic != null) {
                 if (i == 0) columns.push('eps_basic')
-                placeholders.push(`$${params.push(parseFloat(data[i].eps_basic))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].eps_basic) ? data[i].eps_basic : 0.0))}`)
             }
             if (data[i].eps_without_nri != null) {
                 if (i == 0) columns.push('eps_without_nri')
-                placeholders.push(`$${params.push(parseFloat(data[i].eps_without_nri))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].eps_without_nri) ? data[i].eps_without_nri : 0.0))}`)
             }
             if(data[i].shares_outstanding_quarterly != null){
                 if(i == 0) columns.push('shares_outstanding_quarterly')
-                placeholders.push(`$${params.push(parseFloat(data[i].shares_outstanding_quarterly))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].shares_outstanding_quarterly) ? data[i].shares_outstanding_quarterly : 0.0))}`)
             }
             if(data[i].ppe != null){
                 if(i == 0) columns.push('ppe')
-                placeholders.push(`$${params.push(parseFloat(data[i].ppe))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].ppe) ? data[i].ppe : 0.0))}`)
             }
             if(data[i].purchase_of_business != null){
                 if(i == 0) columns.push('purchase_of_business')
-                placeholders.push(`$${params.push(parseFloat(data[i].purchase_of_business))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].purchase_of_business) ? data[i].purchase_of_business : 0.0))}`)
             }
             if(data[i].total_stockholder_equity != null){
                 if(i == 0) columns.push('total_stockholder_equity')
-                placeholders.push(`$${params.push(parseFloat(data[i].total_stockholder_equity))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].total_stockholder_equity) ? data[i].total_stockholder_equity : 0.0))}`)
             }
             if(data[i].st_debt_lease_obligations != null){
                 if(i == 0) columns.push('st_debt_lease_obligations')
-                placeholders.push(`$${params.push(parseFloat(data[i].st_debt_lease_obligations))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].st_debt_lease_obligations) ? data[i].st_debt_lease_obligations : 0.0))}`)
             }
             if(data[i].lt_debt_lease_obligations != null){
                 if(i == 0) columns.push('lt_debt_lease_obligations')
-                placeholders.push(`$${params.push(parseFloat(data[i].lt_debt_lease_obligations))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].lt_debt_lease_obligations) ? data[i].lt_debt_lease_obligations : 0.0))}`)
             }
             if(data[i].net_income != null){
                 if(i == 0) columns.push('net_income')
-                placeholders.push(`$${params.push(parseFloat(data[i].net_income))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].net_income) ? data[i].net_income : 0.0))}`)
             }
             if(data[i].employees != null){
                 if(i == 0) columns.push('employees')
-                placeholders.push(`$${params.push(parseFloat(data[i].employees))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].employees) ? data[i].employees : 0.0))}`)
             }
             if(data[i].totalAssets != null){
                 if(i == 0) columns.push('totalAssets')
-                placeholders.push(`$${params.push(parseFloat(data[i].totalAssets))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].totalAssets) ? data[i].totalAssets : 0.0))}`)
             }
             if(data[i].grossMargin != null){
                 if(i == 0) columns.push('grossMargin')
-                placeholders.push(`$${params.push(parseFloat(data[i].grossMargin))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].grossMargin) ? data[i].grossMargin : 0.0))}`)
             }
             if(data[i].operatingMargin != null){
                 if(i == 0) columns.push('operatingMargin')
-                placeholders.push(`$${params.push(parseFloat(data[i].operatingMargin))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].operatingMargin) ? data[i].operatingMargin : 0.0))}`)
             }
             if(data[i].owner_earning != null){
                 if(i == 0) columns.push('owner_earning')
-                placeholders.push(`$${params.push(parseFloat(data[i].owner_earning))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].owner_earning) ? data[i].owner_earning : 0.0))}`)
             }
             if(data[i].book_value_per_share != null){
                 if(i == 0) columns.push('book_value_per_share')
-                placeholders.push(`$${params.push(parseFloat(data[i].book_value_per_share))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].book_value_per_share) ? data[i].book_value_per_share : 0.0))}`)
             }
             if(data[i].netmargin != null){
                 if(i == 0) columns.push('netmargin')
-                placeholders.push(`$${params.push(parseFloat(data[i].netmargin))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].netmargin) ? data[i].netmargin : 0.0))}`)
             }
             if(data[i].dividend_yield != null){
                 if(i == 0) columns.push('dividend_yield')
-                placeholders.push(`$${params.push(parseFloat(data[i].dividend_yield))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].dividend_yield) ? data[i].dividend_yield : 0.0))}`)
             }
             if(data[i].dividendspershare != null){
                 if(i == 0) columns.push('dividendspershare')
-                placeholders.push(`$${params.push(parseFloat(data[i].dividendspershare))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].dividendspershare) ? data[i].dividendspershare : 0.0))}`)
             }
             if(data[i].cap_lease_debt != null){
                 if(i == 0) columns.push('cap_lease_debt')
-                placeholders.push(`$${params.push(parseFloat(data[i].cap_lease_debt))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].cap_lease_debt) ? data[i].cap_lease_debt : 0.0))}`)
             }
             if(data[i].fror != null){
                 if(i == 0) columns.push('fror')
-                placeholders.push(`$${params.push(parseFloat(data[i].fror))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].fror) ? data[i].fror : 0.0))}`)
             }
             if(data[i].flow_ratio != null){
                 if(i == 0) columns.push('flow_ratio')
-                placeholders.push(`$${params.push(parseFloat(data[i].flow_ratio))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].flow_ratio) ? data[i].flow_ratio : 0.0))}`)
             }
             if(data[i].operating_cushion != null){
                 if(i == 0) columns.push('operating_cushion')
-                placeholders.push(`$${params.push(parseFloat(data[i].operating_cushion))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].operating_cushion) ? data[i].operating_cushion : 0.0))}`)
             }
             if(data[i].working_capital != null){
                 if(i == 0) columns.push('working_capital')
-                placeholders.push(`$${params.push(parseFloat(data[i].working_capital))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].working_capital) ? data[i].working_capital : 0.0))}`)
             }
             if(data[i].ebit != null){
                 if(i == 0) columns.push('ebit')
-                placeholders.push(`$${params.push(parseFloat(data[i].ebit))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].ebit) ? data[i].ebit : 0.0))}`)
             }
             if(data[i].capital_employed != null){
                 if(i == 0) columns.push('capital_employed')
-                placeholders.push(`$${params.push(parseFloat(data[i].capital_employed))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].capital_employed) ? data[i].capital_employed : 0.0))}`)
             }
             if(data[i].cashflow_reinvestment_rate != null){
                 if(i == 0) columns.push('cashflow_reinvestment_rate')
-                placeholders.push(`$${params.push(parseFloat(data[i].cashflow_reinvestment_rate))}`)
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].cashflow_reinvestment_rate) ? data[i].cashflow_reinvestment_rate : 0.0))}`)
             }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
