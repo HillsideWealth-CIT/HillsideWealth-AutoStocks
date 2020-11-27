@@ -222,10 +222,14 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     catch{ currentData.ebit = NaN; }
                     try { currentData.capital_employed = parseFloat(annuals.balance_sheet["Total Assets"][f]) - parseFloat(annuals.balance_sheet["Total Current Liabilities"][f])}
                     catch{ currentData.capital_employed = NaN; }
-                    try { 
-                        currentData.cashflow_reinvestment_rate = ((-parseFloat(annuals.cashflow_statement["Cash Flow from Investing"][f])) - parseFloat(annuals.cashflow_statement["Cash Flow from Financing"][f]) + parseFloat(annuals.cashflow_statement["Cash Flow for Dividends"][f]))/parseFloat(annuals.cashflow_statement["Cash Flow from Operations"][f])  
-                    }
+                    try { currentData.cashflow_reinvestment_rate = ((-parseFloat(annuals.cashflow_statement["Cash Flow from Investing"][f])) - parseFloat(annuals.cashflow_statement["Cash Flow from Financing"][f]) + parseFloat(annuals.cashflow_statement["Cash Flow for Dividends"][f]))/parseFloat(annuals.cashflow_statement["Cash Flow from Operations"][f])  }
                     catch{ currentData.cashflow_reinvestment_rate = NaN; }
+                    try { currentData.reinvested_cf_jdv = ((-parseFloat(annuals.cashflow_statement["Cash Flow from Investing"][f])) - parseFloat(annuals.cashflow_statement["Cash Flow from Financing"][f]) + parseFloat(annuals.cashflow_statement["Cash Flow for Dividends"][f]))  }
+                    catch{ currentData.reinvested_cf_jdv = NaN; }
+                    try { currentData.month_end_price = parseFloat(annuals.per_share_data_array["Month End Stock Price"][f])  }
+                    catch{ currentData.month_end_price = NaN; }
+                    try { currentData.cash_conversion_cycle = parseFloat(annuals.common_size_ratios["Cash Conversion Cycle"][f])  }
+                    catch{ currentData.cash_conversion_cycle = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {
