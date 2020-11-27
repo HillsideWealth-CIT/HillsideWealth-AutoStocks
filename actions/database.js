@@ -319,6 +319,18 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('cashflow_reinvestment_rate')
                 placeholders.push(`$${params.push(parseFloat(isFinite(data[i].cashflow_reinvestment_rate) ? data[i].cashflow_reinvestment_rate : 0.0))}`)
             }
+            if(data[i].reinvested_cf_jdv != null){
+                if(i == 0) columns.push('reinvested_cf_jdv')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].reinvested_cf_jdv) ? data[i].reinvested_cf_jdv : 0.0))}`)
+            }
+            if(data[i].month_end_price != null){
+                if(i == 0) columns.push('month_end_price')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].month_end_price) ? data[i].month_end_price : 0.0))}`)
+            }
+            if(data[i].cash_conversion_cycle != null){
+                if(i == 0) columns.push('cash_conversion_cycle')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].cash_conversion_cycle) ? data[i].cash_conversion_cycle : 0.0))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
