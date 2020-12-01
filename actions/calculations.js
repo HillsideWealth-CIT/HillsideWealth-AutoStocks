@@ -136,7 +136,7 @@ function calculate_average(data, column, years){
     try{
         let total = 0;
         for(let i = 0; i < years; i++){
-            total += parseFloat(data[i][column].replace(/[^0-9.]/g, ""));
+            total += parseFloat(data[i][column].replace(/[^0-9.-]/g, ""));
         }
         return Math.round((total/years)*1000)/1000;
         }
