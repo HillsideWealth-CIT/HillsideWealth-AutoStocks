@@ -212,20 +212,27 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     catch{ currentData.cap_lease_debt = NaN; }
                     try { currentData.fror = parseFloat(annuals.valuation_ratios['Forward Rate of Return (Yacktman) %'][f]); }
                     catch{ currentData.fror = NaN; }
-                    try { currentData.flow_ratio = (parseFloat(annuals.balance_sheet['Total Current Assets'][f]) - parseFloat(annuals.balance_sheet['Cash And Cash Equivalents'][f]) - parseFloat(annuals.balance_sheet['Marketable Securities'][f])) / (parseFloat(annuals.balance_sheet['Total Current Liabilities'][f]) - parseFloat(annuals.balance_sheet['Short-Term Capital Lease Obligation'][f])); }
+                    try { currentData.flow_ratio = (parseFloat(annuals.balance_sheet['Total Current Assets'][f]) - parseFloat(annuals.balance_sheet['Cash, Cash Equivalents, Marketable Securities'][f])) / (parseFloat(annuals.balance_sheet['Total Current Liabilities'][f]) - parseFloat(annuals.balance_sheet['Short-Term Debt & Capital Lease Obligation'][f])); }
                     catch{ currentData.flow_ratio = NaN; }
-                    try { currentData.operating_cushion = parseFloat(annuals.common_size_ratios["Gross Margin %"][f]) - (parseFloat(annuals.income_statement["Selling, General, & Admin. Expense"][f])/parseFloat(annuals.income_statement["Revenue"][f])) }
+                    try { currentData.operating_cushion = parseFloat(annuals.common_size_ratios["Gross Margin %"][f]) - ((parseFloat(annuals.income_statement["Selling, General, & Admin. Expense"][f])/parseFloat(annuals.income_statement["Revenue"][f]))* 100) }
                     catch{ currentData.operating_cushion = NaN; }
-                    try { currentData.working_capital = -(( parseFloat(annuals.balance_sheet["Accounts Receivable"][f]) + parseFloat(annuals.balance_sheet["Other Current Receivables"][f]) ) / parseFloat(annuals.income_statement["Revenue"][f])) - (parseFloat(annuals.balance_sheet["Total Inventories"][f]) / parseFloat(annuals.income_statement["Revenue"][f])) + (parseFloat(annuals.balance_sheet["Accounts Payable & Accrued Expense"][f])/parseFloat(annuals.income_statement["Revenue"][f]) + (parseFloat(annuals.balance_sheet["Current Deferred Revenue"][f])/parseFloat(annuals.income_statement["Revenue"][f])) + (parseFloat(annuals.balance_sheet["Other Current Assets"][f])/parseFloat(annuals.income_statement["Revenue"][f]))) }
+                    try { 
+                        let part1 = -(parseFloat(annuals.balance_sheet["Accounts Receivable"][f]) + parseFloat(annuals.balance_sheet["Other Current Receivables"][f]) ) / parseFloat(annuals.income_statement["Revenue"][f])
+                        let part2 = (parseFloat(annuals.balance_sheet["Total Inventories"][f]) / parseFloat(annuals.income_statement["Revenue"][f]))
+                        let part3 = (parseFloat(annuals.balance_sheet["Accounts Payable & Accrued Expense"][f])/parseFloat(annuals.income_statement["Revenue"][f]))
+                        let part4 = (parseFloat(annuals.balance_sheet["Current Deferred Revenue"][f])/parseFloat(annuals.income_statement["Revenue"][f]))
+                        let part5 = (parseFloat(annuals.balance_sheet["Other Current Assets"][f])/parseFloat(annuals.income_statement["Revenue"][f]))
+                        currentData.working_capital = (part1 - part2 + part3 + part4 + part5) * 100
+                    }
                     catch{ currentData.working_capital = NaN; }
                     try { currentData.ebit = parseFloat(annuals.income_statement["EBIT"][f])}
                     catch{ currentData.ebit = NaN; }
                     try { currentData.capital_employed = parseFloat(annuals.balance_sheet["Total Assets"][f]) - parseFloat(annuals.balance_sheet["Total Current Liabilities"][f])}
                     catch{ currentData.capital_employed = NaN; }
-                    try { currentData.cashflow_reinvestment_rate = ((-parseFloat(annuals.cashflow_statement["Cash Flow from Investing"][f])) - parseFloat(annuals.cashflow_statement["Cash Flow from Financing"][f]) + parseFloat(annuals.cashflow_statement["Cash Flow for Dividends"][f]))/parseFloat(annuals.cashflow_statement["Cash Flow from Operations"][f])  }
-                    catch{ currentData.cashflow_reinvestment_rate = NaN; }
-                    try { currentData.reinvested_cf_jdv = ((-parseFloat(annuals.cashflow_statement["Cash Flow from Investing"][f])) - parseFloat(annuals.cashflow_statement["Cash Flow from Financing"][f]) + parseFloat(annuals.cashflow_statement["Cash Flow for Dividends"][f]))  }
+                    try { currentData.reinvested_cf_jdv = ((-parseFloat(annuals.cashflow_statement["Cash Flow from Investing"][f])) - parseFloat(annuals.cashflow_statement["Cash Flow from Financing"][f]) + parseFloat(annuals.cashflow_statement["Cash Flow for Dividends"][f]))   }
                     catch{ currentData.reinvested_cf_jdv = NaN; }
+                    try { currentData.cashflow_reinvestment_rate = parseFloat(currentData.reinvested_cf_jdv)/parseFloat(annuals.cashflow_statement["Cash Flow from Operations"][f])  }
+                    catch{ currentData.cashflow_reinvestment_rate = NaN; }
                     try { currentData.month_end_price = parseFloat(annuals.per_share_data_array["Month End Stock Price"][f])  }
                     catch{ currentData.month_end_price = NaN; }
                     try { currentData.cash_conversion_cycle = parseFloat(annuals.common_size_ratios["Cash Conversion Cycle"][f])  }
