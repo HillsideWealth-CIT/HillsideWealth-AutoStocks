@@ -23,7 +23,7 @@ const xlsx_parse = require("./actions/xlsx_parse");
 const db = require("./actions/database");
 const calc = require('./actions/calculations');
 
-const {format_data, formatHistorical, tempFormat} = require('./actions/formatData');
+const { format_data, formatHistorical } = require('./actions/formatData');
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -122,12 +122,6 @@ app.get("/special", sessionCheck, statusCheck, (request, response) => {
             admin: (request.session.status == 'admin')
         });
     });
-})
-
-app.get("/temp", sessionCheck, statusCheck, (request, response) => {
-    response.render("temp.hbs", {
-        admin: (request.session.status == 'admin')
-    })
 })
 
 app.get("/documentation", sessionCheck, statusCheck, (request, response) => {
@@ -330,14 +324,6 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
         db.showSpecial(request.session.user).then(resolve => {
             resolve.forEach((stock) => {
                 format_data(stock);
-            });
-            response.send({ data: resolve });
-        });
-    }
-    else if (request.body.action == "init_temp"){
-        db.showSpecial(request.session.user).then(resolve => {
-            resolve.forEach((stock) => {
-                tempFormat(stock);
             });
             response.send({ data: resolve });
         });
