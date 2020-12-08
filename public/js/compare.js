@@ -77,7 +77,7 @@ async function add(){
 
             for(let i in to_add){
                 swal.update({ text: `Progress: ${Number(i)+1}/${to_add.length} - Current: ${to_add[i]}` });
-                await ajax_request(to_add[i], `/append?share=${share}&placeholder=${specialdb}`)
+                await ajax_request(to_add[i], `/append?share=${share}&special=${specialdb}`)
             }
             Swal.update({
                 type: 'success',

@@ -141,7 +141,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
 
                     try{currentData.price =  parseFloat(annuals.valuation_and_quality["Month End Stock Price"][f])}
                     catch{currentData.price =  null}
-                    try{ currentData.net_debt = parseFloat(annuals.balance_sheet["Short-Term Debt & Capital Lease Obligation"][f]) +  parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) - parseFloat(annuals.balance_sheet["Marketable Securities"][f])}
+                    try{ currentData.net_debt = parseFloat(annuals.balance_sheet["Short-Term Debt & Capital Lease Obligation"][f]) +  parseFloat(annuals.balance_sheet["Long-Term Debt"][f]) - parseFloat(annuals.balance_sheet["Cash, Cash Equivalents, Marketable Securities"][f])}
                     catch{currentData.net_debt = null}
                     try{currentData.market_cap =  parseFloat(annuals.valuation_and_quality["Market Cap"][f])}
                     catch{currentData.market_cap = null}

@@ -205,19 +205,41 @@ var to_update = [];
 /**
  * Opens a sweetalert and adds all stocks user inputs
  */
-function add(link){
+function add(){
     let stocks;
+    let SpecialDB;
+    let shared;
     Swal.fire({
         title: 'Add Stocks',
-        text: 'Formats: American Stocks: [SYMBOL], Canadian stocks: [EXCHANGE:SYMBOL]',
-        input: 'text',
+        html: `
+        <div>
+            <p>Formats: American Stocks: [SYMBOL], Canadian stocks: [EXCHANGE:SYMBOL]</p>
+            <div class="row">
+                <input id="symbolsInput" type="text" class="form-control">
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="specialdb">
+                <label class="form-check-label" for="checkbox1" style="width: 6em">
+                    SpecialDB
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="commondb">
+                <label class="form-check-label" for="checkbox2" style="width: 6em">
+                    CommonDB
+                </label>
+            </div>
+        </div>
+        `,
         showCancelButton: true,
         confirmButtonText: 'Add Stocks',
         preConfirm: (result) => {
-            let stockstring = result.replace(/\s/g, "");
+            let stockstring = document.getElementById('symbolsInput').value.replace(/\s/g, "");
             stocks = stockstring.split(',');
+            SpecialDB = document.getElementById('specialdb').checked;
+            shared = document.getElementById('commondb').checked;
         }
-    }).then(async (result) => {
+        }).then(async (result) => {
         if(!result.dismiss){
             Swal.fire({
             type: 'question',
@@ -230,7 +252,7 @@ function add(link){
             swal.update({
                 text: `Progress: ${Number(i)+1}/${stocks.length} - Current: ${stocks[i].toUpperCase()}`
             })
-            await ajax_request(stocks[i].toUpperCase())
+            await ajax_request(stocks[i].toUpperCase(), `/append?share=${shared}&special=${SpecialDB}`)
         }
         Swal.update({
             type: 'success',
@@ -243,7 +265,7 @@ function add(link){
         }
     });
 
-    function ajax_request(symbol){
+    function ajax_request(symbol, link){
         return $.ajax({
             type: 'POST',
             url: link,
@@ -292,9 +314,8 @@ function remove(link){
 
 /**
  * Updates All selected stocks
- * @param {String} link 
  */
-async function update(link){
+async function update(){
     to_update = [];
     let selected = $table.rows('.selected').data();
     for(let i in selected ){
