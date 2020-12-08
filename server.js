@@ -6,7 +6,6 @@ const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const session = require("client-sessions");
 const app = express();
-//var schedule = require('node-schedule');
 const multer = require('multer');
 const upload = multer({ dest: './uploads/' });
 const fs = require("fs");

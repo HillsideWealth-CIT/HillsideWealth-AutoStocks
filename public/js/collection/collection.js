@@ -53,7 +53,7 @@ function fill_table(data){
 function button_builder(){
     let buttons = [
         'selectAll', 'selectNone',
-        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add(addLink);}},
+        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
         {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove(removeLink);}},
         {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", action: function(){update(updateLink);}},
         {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
@@ -277,6 +277,13 @@ function column_builder(){
         { data : "setup.capex_sales.10stdev" },
 
         { data : "stockdata.0.capex_ownerEarnings" },
+        { data : "setup.capex_ownerEarnings.3yrAvg" },
+        { data : "setup.capex_ownerEarnings.5yrAvg" },
+        { data : "setup.capex_ownerEarnings.10yrAvg" },
+        { data : "setup.capex_ownerEarnings.ttm/5yr" },
+        { data : "setup.capex_ownerEarnings.ttm/10yr" },
+        { data : "setup.capex_ownerEarnings.5stdev" },
+        { data : "setup.capex_ownerEarnings.10stdev" },
         
         { data : "stockdata.0.capex_fcf" },
         { data : "setup.capex_fcf.3yrAvg" },
@@ -347,7 +354,7 @@ function column_builder(){
         { data : "setup.dividendShare.compGrowth5yr"},
         { data : "setup.dividendShare.compGrowth10yr"},
 
-        { data : "stockdata.0.price_format"},
+        { data : "setup.price.compGrowth1yr"},
         { data : "setup.price.compGrowth3yr"},
         { data : "setup.price.compGrowth5yr"},
         { data : "setup.price.compGrowth10yr"},
@@ -386,7 +393,7 @@ function column_builder(){
         { data : "setup.dividendPayoutRatio.5stdev" },
         { data : "setup.dividendPayoutRatio.10stdev" },
 
-        { data : "stockdata.0.cashflow_reinvestment_rate"},
+        { data : "setup.cashflow_reinvestment_rate.5yrAvg"},
 
         { data : "stockdata.0.evFcf"},
         { data : "setup.evFcf.3yrAvg" },
@@ -420,7 +427,7 @@ function column_builder(){
         { data : "stockdata.0.aebitda_spice" },
         { data : "stockdata.0.roe_spice" },
         
-        { data : "stockdata.0.fcfEmployee" },
+        { data : "stockdata.1.fcfEmployee" },
         { data : "fcfEmployee3" },
         { data : "fcfEmployee5" },
         { data : "fcfEmployee10" },
@@ -450,8 +457,9 @@ function ajax_Call(action, link) {
             data: JSON.stringify(data),
             contentType: 'application/json',
             url: link,
+            timeout: 300000,
         }).done(function (returned_data) {
             resolve(returned_data);
-        });
+        })
     });
 }

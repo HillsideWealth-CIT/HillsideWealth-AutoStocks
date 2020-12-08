@@ -74,13 +74,13 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
               </div>      
           </div>
 
-          <div class="row>
+          <div class="row">
               <div class="col">
                   <label for="Comment">Comment</label>
                   <textarea id="Comment" type="text" class="form-control">${comment}</textarea>
               </div>
           </div>
-          <div class="row>
+          <div class="row">
           <div class="col">
               <label for="Websites">Websites</label>
               <input id="Websites" placeholder="Format: [Link]|[Title],[Link]" type="text" class="form-control" value="${links === 'null' ? "" : links}">
