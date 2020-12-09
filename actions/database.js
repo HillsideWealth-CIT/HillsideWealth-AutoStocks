@@ -420,10 +420,7 @@ const dfc_edits = async(values, list) => {
 }
 
 const edits = async(edit) => {
-    if(edit.msse == 'null' || edit.msse.length < 1){
-        edit.msse = null
-    }
-    return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7, current_price = $8, ownership = $9,ms_stock_exchange = $10, links = $11 where stock_id = $12`, [edit.comment, edit.ms_moat, edit.ms_fair_value, edit.ms_5_star, edit.ms_1_star, edit.emoticon, edit.jdv, edit.price, edit.ownership, edit.msse, edit.links, edit.id])
+    return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7, current_price = $8, ownership = $9,ms_stock_exchange = $10, links = $11 where stock_id = $12`, [edit.comment, edit.ms_moat, 0, 0, 0, edit.emoticon, edit.jdv, edit.price, edit.ownership, 0, edit.links, edit.id])
 }
 
 const set_categories = async(category_string, conditions) => {

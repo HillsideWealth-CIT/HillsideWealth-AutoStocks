@@ -2,11 +2,7 @@ const perm = [0, 1, 2, 3, 4, 5, 6, 7];
 
 var column_list = ['check',
     'Symbol',
-    'Graph',
-    'Edit',
-    'Calc',
-    'Historic',
-    'links',
+    'Edit Buttons',
     'Stock Name',
     'Current Price',
 

@@ -315,7 +315,7 @@ function remove(link){
 /**
  * Updates All selected stocks
  */
-async function update(){
+async function update(link){
     to_update = [];
     let selected = $table.rows('.selected').data();
     for(let i in selected ){

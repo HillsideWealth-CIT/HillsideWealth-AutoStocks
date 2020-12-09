@@ -41,7 +41,10 @@ function fill_table(data){
         deferRender : true,
         scroller: true,
         order : [[shareConf ? 1 : 1, 'desc']],
-        colReorder:{realtime: false}
+        colReorder:{realtime: false},
+        columnDefs: {
+            type: 'natural', targets: '_all'
+        }
     });
     return datatable;
 }
@@ -95,7 +98,8 @@ function button_builder(){
                 { text:'Random', action: function(){random();}},
             ]
         },
-        'excel'
+        'colvis',
+        'excel',
     ];
     return buttons;
 }
@@ -113,42 +117,20 @@ function column_builder(){
             orderable : false,
             className: 'setting_cell',
             render: function( data, type, row, meta){
-                // button 1: takes user to gurufocus graph
-                return `<button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>`;
-            }    
-        },
-        {   data : null,
-            orderable : false,
-            className: 'setting_cell',
-            render: function( data, type, row, meta){
-                // button 2: Comments, emoticon, morning star, guru rating, JDV
-                if(row.note === null) row.note = '';
-                return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note.replaceAll('\n', '\\n')}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}", "${row.msse}", "${row.mCapAve_5}", "${row.mCapAve_10}", "${row.mCapAve_15}", "${row.links}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`.replace(/[\n\r]/g, "");
-            }    
-        },
-        {   data : null,
-            orderable : false,
-            className: 'setting_cell',
-            render: function( data, type, row, meta){
-                // button 3: DCF calculator
-                // return 'hi'
-                return `<button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>`;
-            }    
-        },
-        {   data : null,
-            orderable : false,
-            className: 'setting_cell',
-            render: function( data, type, row, meta){
-                // button 4: 15 Year historical Financial Data
-                return `<button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>`;
-            }    
-        },
-        {   data : null,
-            orderable : false,
-            className: 'setting_cell',
-            render: function( data, type, row, meta){
-                // button 4: 15 Year historical Financial Data
-                return `<button type="button" onclick='linksMenu("${row.links}", "${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-external-link-alt"></span></button>`;
+                // Edit Buttons: 
+                // 1: takes user to gurufocus graph
+                // 2: Comments, emoticon, morning star, guru rating, JDV
+                // 3: DCF calculator
+                // 4: 15 Year historical Financial Data
+                // 5: Links Button
+                return `
+                <div>
+                    <button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>
+                    <button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>
+                    <button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>
+                    <button type="button" onclick='linksMenu("${row.links}", "${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-external-link-alt"></span></button>
+                </div>
+                `;
             }    
         },
         { data : "stock_name"},
@@ -462,4 +444,8 @@ function ajax_Call(action, link) {
             resolve(returned_data);
         })
     });
+}
+
+function formatEdit(row){
+    // return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note.replaceAll('\n', '\\n')}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}", "${row.msse}", "${row.mCapAve_5}", "${row.mCapAve_10}", "${row.mCapAve_15}", "${row.links}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`.replace(/[\n\r]/g, "")
 }
