@@ -112,10 +112,6 @@ function edit_menu(symbol, id, comment, emote, ms_1_star, ms_5_star, ms_fv, moat
                 edits.id = id;
                 edits.ownership = $('#ownership').val().replace(/[^a-z0-9,. ]/gi, '');
                 edits.comment = $('#Comment').val()
-                edits.ms_moat = $('#ms_moat').val();
-                edits.ms_fair_value = $('#ms_fair_value').val().replace(/[^a-z0-9,. ]/gi, '');
-                edits.ms_5_star = $('#ms_5_star').val().replace(/[^a-z0-9,. ]/gi, '');
-                edits.ms_1_star = $('#ms_1_star').val().replace(/[^a-z0-9,. ]/gi, '');
                 edits.emoticon = $('#emote').val();
                 edits.jdv = $('#jdv').val();
                 edits.price = $('#cur_price').val().replace(/[^a-z0-9,. ]/gi, '');
