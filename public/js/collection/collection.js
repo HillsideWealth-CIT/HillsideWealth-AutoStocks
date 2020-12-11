@@ -246,7 +246,7 @@ function column_builder(){
         { data : "setup.nd_aebitda.5stdev" },
         { data : "setup.nd_aebitda.10stdev" },
 
-        { data : "stockdata.0.nd_aebitdaFcf"},
+        { data : "stockdata.0.ndFcf"},
         { data : "stockdata.0.cap_lease_debt"},
 
         { data : "stockdata.0.capex_sales" },

@@ -79,7 +79,7 @@ function format_data(stock) {
         data.fcfmargin = `${Number(data.fcfmargin)}%`;
 
         data.nd_aebitda = `${(Number(data.net_debt) / Number(data.aebitda)).toFixed(2)}%`;
-        data.nd_aebitdaFcf = `${(Number(data.nd_aebitda.replace('%','')) / Number(data.fcf) * 100).toFixed(2)}`;
+        data.ndFcf = `${(Number(data.net_debt.replace('%','')) / Number(data.fcf)).toFixed(2)}`;
         data.cap_lease_debt = `${(Number(data.cap_lease_debt) * 100).toFixed(2)}%`;
 
         data.capex_sales = `${((Number(data.capex) / Number(data.revenue)) * 100).toFixed(2)}%`;
