@@ -83,6 +83,7 @@ function button_builder(){
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all();}},
                 { text:'Key Stats', action: function(){keyStats();}},
+                { text:'Key Stats Rest', action: function(){keyStats_Rest();}},
                 { text:'Return on Capital', action: function(){returnOnCapital();}},
                 { text:'Incremental Return on Capital', action: function(){incrementalReturnOnCapital();}},
                 { text:'Margins', action: function(){margins();}},
@@ -123,6 +124,8 @@ function column_builder(){
                 // 3: DCF calculator
                 // 4: 15 Year historical Financial Data
                 // 5: Links Button
+                // Edit Commented out
+                //<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note.replaceAll('\n', '\\n')}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}", "${row.msse}", "${row.mCapAve_5}", "${row.mCapAve_10}", "${row.mCapAve_15}", "${row.links}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
                 return `
                 <div>
                     <button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>
