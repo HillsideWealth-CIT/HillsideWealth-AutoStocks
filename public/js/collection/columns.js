@@ -1,4 +1,4 @@
-const perm = [0, 1, 2, 3, 4, 5, 6, 7];
+const perm = [0, 1, 2, 3];
 
 var column_list = ['check',
     'Symbol',
@@ -321,6 +321,27 @@ function show_all() {
 }
 
 function keyStats() {
+    hide_loop(0,0);
+    $table.column(column_list.indexOf('Current Price')).visible(true, false);
+    $table.column(column_list.indexOf('Aggregated')).visible(true, false);
+    $table.column(column_list.indexOf('Categories')).visible(true, false);
+    $table.column(column_list.indexOf('Enterprise Value (M)')).visible(true, false);
+    $table.column(column_list.indexOf('Yield%')).visible(true, false);
+    $table.column(column_list.indexOf('FCF Spice')).visible(true, false);
+    $table.column(column_list.indexOf('FCF Yield')).visible(true, false);
+    $table.column(column_list.indexOf('FCFROIC% 3yr')).visible(true, false);
+    $table.column(column_list.indexOf('fcf Margin%')).visible(true, false);
+    $table.column(column_list.indexOf('FCF/Share 5yr G')).visible(true, false);
+    $table.column(column_list.indexOf('NetDebt/FCF')).visible(true, false);
+    $table.column(column_list.indexOf('CAPEX/Sales% 3yr')).visible(true, false);
+    $table.column(column_list.indexOf('FCF/Net Income% 3yr')).visible(true, false);
+    $table.column(column_list.indexOf('S/O Change (5Y)(%)')).visible(true, false);
+    $table.column(column_list.indexOf('Date')).visible(true, false);
+    $table.columns.adjust().draw(false);
+}
+
+
+function keyStats_Rest() {
     hide_loop(column_list.indexOf('Current Price'),
         column_list.indexOf('Aggregated'));
     $table.columns.adjust().draw(false);

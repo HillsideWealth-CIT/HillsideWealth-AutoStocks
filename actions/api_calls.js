@@ -198,7 +198,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     catch{ currentData.grossMargin = NaN; }
                     try { currentData.operatingMargin = parseFloat(annuals.income_statement["Operating Margin %"][f]); }
                     catch{ currentData.operatingMargin = NaN; }
-                    try { currentData.owner_earning = parseFloat(annuals.per_share_data_array["Owner Earnings per Share (TTM)"][f]) * parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f]); }
+                    try { currentData.owner_earning = parseFloat(annuals.per_share_data_array["Owner Earnings per Share (TTM)"][f]); }
                     catch{ currentData.owner_earning = NaN; }
                     try { currentData.book_value_per_share = parseFloat(annuals.per_share_data_array["Book Value per Share"][f]); }
                     catch{ currentData.dividend_payout_ratio = NaN; }
