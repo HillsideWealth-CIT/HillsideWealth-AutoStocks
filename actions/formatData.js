@@ -78,7 +78,7 @@ function format_data(stock) {
         data.operatingmargin = `${Number(data.operatingmargin)}%`;
         data.fcfmargin = `${Number(data.fcfmargin)}%`;
 
-        data.nd_aebitda = `${(Number(data.net_debt) / Number(data.aebitda)).toFixed(2)}%`;
+        data.nd_aebitda = `${(Number(data.net_debt) / Number(data.aebitda)).toFixed(2)}`;
         data.ndFcf = `${(Number(data.net_debt) / Number(data.fcf)).toFixed(2)}`;
         data.cap_lease_debt = `${(Number(data.cap_lease_debt) * 100).toFixed(2)}%`;
 
@@ -101,7 +101,7 @@ function format_data(stock) {
         data.expected_annual_total_return = `${(Number(data.fcfYield.replace(/[^0-9.-]/g, "")) + Number(data.sgr.replace(/[^0-9.-]/g, ""))).toFixed(2)}%`;
 
         data.dividendPayoutRatio = `${((Number(data.dividendspershare)/(Number(data.fcf)/Number(data.shares_outstanding))) * 100).toFixed(2)}%`;
-        data.cashflow_reinvestment_rate = `${(Number(data.cashflow_reinvestment_rate)*100).toFixed(2)}`;
+        data.cashflow_reinvestment_rate = `${(Number(data.cashflow_reinvestment_rate)*100).toFixed(2)}%`;
 
         data.evFcf = `${(Number(data.enterprise_value) / Number(data.fcf)).toFixed(2)}`;
         data.fcfYield = `${((Number(data.fcf) / Number(data.enterprise_value))* 100).toFixed(2)}%`;
@@ -160,6 +160,7 @@ function format_data(stock) {
     stock.setup.fcfmargin = setup('fcfmargin', '%');
 
     stock.setup.nd_aebitda = setup('nd_aebitda');
+    stock.setup.ndFcf = setup('ndFcf');
 
     stock.setup.capex_sales = setup('capex_sales', '%');
     stock.setup.capex_ownerEarnings = setup('capex_ownerEarnings', '%');
@@ -415,10 +416,10 @@ function format_data(stock) {
 
         stockinfo['5stdev'] = stockinfoNum['5stdev'] === ''
             ? '-'
-            : `+/- ${formatNumber(stockinfoNum['5stdev'])}${sign2}`
+            : `+/- ${formatNumber(stockinfoNum['5stdev'])}%`
         stockinfo['10stdev'] = stockinfoNum['10stdev'] === ''
             ? '-'
-            : `+/- ${formatNumber(stockinfoNum['10stdev'])}${sign2}`
+            : `+/- ${formatNumber(stockinfoNum['10stdev'])}%`
         stockinfo['compGrowth1yr'] = stockinfoNum['compGrowth1yr'] === ''
             ? '-'
             : `${formatNumber(stockinfoNum["compGrowth1yr"].toFixed(2))}%`

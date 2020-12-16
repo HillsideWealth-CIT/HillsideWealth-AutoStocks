@@ -212,6 +212,13 @@ function column_builder(){
         { data : "calculations.incrementalJDVROIC10yr"},
 
         { data : "stockdata.0.cashflow_reinvestment_rate"},
+        { data : "setup.cashflow_reinvestment_rate.3yrAvg" },
+        { data : "setup.cashflow_reinvestment_rate.5yrAvg" },
+        { data : "setup.cashflow_reinvestment_rate.10yrAvg" },
+        { data : "setup.cashflow_reinvestment_rate.ttm/5yr" },
+        { data : "setup.cashflow_reinvestment_rate.ttm/10yr" },
+        { data : "setup.cashflow_reinvestment_rate.5stdev" },
+        { data : "setup.cashflow_reinvestment_rate.10stdev" },
 
         { data : "stockdata.0.grossmargin" },
         { data : "setup.grossmargin.3yrAvg" },
@@ -250,6 +257,14 @@ function column_builder(){
         { data : "setup.nd_aebitda.10stdev" },
 
         { data : "stockdata.0.ndFcf"},
+        { data : "setup.ndFcf.3yrAvg" },
+        { data : "setup.ndFcf.5yrAvg" },
+        { data : "setup.ndFcf.10yrAvg" },
+        { data : "setup.ndFcf.ttm/5yr" },
+        { data : "setup.ndFcf.ttm/10yr" },
+        { data : "setup.ndFcf.5stdev" },
+        { data : "setup.ndFcf.10stdev" },
+
         { data : "stockdata.0.cap_lease_debt"},
 
         { data : "stockdata.0.capex_sales" },

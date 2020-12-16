@@ -66,19 +66,26 @@ var column_list = ['check',
     'FCFROCE% SD 5yr',
     'FCFROCE% SD 10yr',
 
-    'Incremental Roe 3yr',
-    'Incremental Roe 5yr',
-    'Incremental Roe 10yr',
+    'iROiE% 3yr',
+    'iROiE% 5yr',
+    'iROiE% 10yr',
 
-    'Incremental Roic 3yr',
-    'Incremental Roic 5yr',
-    'Incremental Roic 10yr',
+    'iFCFROiIC% 3yr',
+    'iFCFROiIC% 5yr',
+    'iFCFROiIC% 10yr',
 
-    'Incremental JDVROIC 3yr',
-    'Incremental JDVROIC 5yr',
-    'Incremental JDVROIC 10yr',
+    'JDViFCFROiIC% 3yr',
+    'JDViFCFROiIC% 5yr',
+    'JDViFCFROiIC% 10yr',
     
     'CF Re-investment Rate',
+    'CF Re-investment Rate 3yr',
+    'CF Re-investment Rate 5yr',
+    'CF Re-investment Rate 10yr',
+    'CF Re-investment Rate TTM/5yr',
+    'CF Re-investment Rate TTM/10yr',
+    'CF Re-investment Rate SD 5yr',
+    'CF Re-investment Rate SD 10yr',
 
     'Gross Margin%',
     'Gross Margin% 3yr',
@@ -117,6 +124,13 @@ var column_list = ['check',
     'NetDebt/aEBITDA SD 10yr',
 
     'NetDebt/FCF',
+    'NetDebt/FCF 3yr',
+    'NetDebt/FCF 5yr',
+    'NetDebt/FCF 10yr',
+    'NetDebt/FCF TTM/5yr',
+    'NetDebt/FCF TTM/10yr',
+    'NetDebt/FCF SD 5yr',
+    'NetDebt/FCF SD 10yr',
     'CapitalLeases/Debt',
 
     'CAPEX/Sales%',
@@ -354,8 +368,8 @@ function returnOnCapital() {
 }
 
 function incrementalReturnOnCapital() {
-    hide_loop(column_list.indexOf('Incremental Roe 3yr'),
-        column_list.indexOf('CF Re-investment Rate'));
+    hide_loop(column_list.indexOf('iROiE% 3yr'),
+        column_list.indexOf('CF Re-investment Rate SD 10yr'));
     $table.columns.adjust().draw(false);
 }
 
