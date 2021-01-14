@@ -20,19 +20,20 @@ async function show_financials(symbol, stock_id) {
     })
     let response = await fetch(`/historic?id=${stock_id}`);
     let json = await response.json();
-    if(json.error !== true){
+    console.log(json)
+    if (json.error !== true) {
         let historicData = json.data;
         let configString = json.test.split(',');
         let headers = "";
         let financials = "";
-        for(let i of configString) headers += `<th>${i.split('|')[0]}</th>`;
-        for(let i = 0; i <= historicData.length; i++){
+        for (let i of configString) headers += `<th>${i.split('|')[0]}</th>`;
+        for (let i = 0; i <= historicData.length; i++) {
             let rowString = '';
-            for(let y in historicData[i]){
-                try{
+            for (let y in historicData[i]) {
+                try {
                     rowString += `<td>${historicData[i][y]}</td>`
                 }
-                catch(e) {
+                catch (e) {
                     break;
                 }
             }
@@ -53,11 +54,12 @@ async function show_financials(symbol, stock_id) {
                     </thead>
                     ${financials}
                 </table>
-                <button class="btn btn-secondary" onClick="historicalCustomization('${json.test.replaceAll('\n', '')}')">Customize</button>
+                <button class="btn btn-secondary" onClick="historicalCustomization('${json.test.replaceAll('\n', '')}', '${json.id}', '${json.name}', ${json.fallback})">Customize</button>
+                <button class="btn btn-secondary" onClick="switch_config()">Switch</button>
                 `
         });
     }
-    else{
+    else {
         historicalCustomization('');
     }
 }
@@ -96,13 +98,13 @@ function share() {
     }
     fetch('/share', {
         method: 'POST',
-        headers: { "Content-Type" : "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(to_share)
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log("OK")
-    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("OK")
+        })
 }
 
 function setSpecial() {
@@ -118,13 +120,13 @@ function setSpecial() {
     }
     fetch('/setSpecial', {
         method: 'POST',
-        headers: { "Content-Type" : "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(to_set)
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log("OK")
-    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("OK")
+        })
 }
 
 /**
@@ -162,14 +164,14 @@ function set_categories() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ stocks_list: to_set, categories: user_input.toUpperCase(), symbols: symbols })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    for (let i in data) {
-                        $table.row(document.getElementById(`${data[i][0].symbol}`)).data(data[i][0]).invalidate();
-                    }
-                    $table.columns.adjust().draw(false);
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        for (let i in data) {
+                            $table.row(document.getElementById(`${data[i][0].symbol}`)).data(data[i][0]).invalidate();
+                        }
+                        $table.columns.adjust().draw(false);
+                    });
             }
         });
     }
@@ -205,7 +207,7 @@ var to_update = [];
 /**
  * Opens a sweetalert and adds all stocks user inputs
  */
-function add(){
+function add() {
     let stocks;
     let SpecialDB;
     let shared;
@@ -239,33 +241,33 @@ function add(){
             SpecialDB = document.getElementById('specialdb').checked;
             shared = document.getElementById('commondb').checked;
         }
-        }).then(async (result) => {
-        if(!result.dismiss){
+    }).then(async (result) => {
+        if (!result.dismiss) {
             Swal.fire({
-            type: 'question',
-            title: 'Currently Saving stocks to Database!',
-            text: `progress: 0/${stocks.length}`,
-            allowOutsideClick: false,
-            showConfirmButton: false
-        });
-        for(let i in stocks){
-            swal.update({
-                text: `Progress: ${Number(i)+1}/${stocks.length} - Current: ${stocks[i].toUpperCase()}`
-            })
-            await ajax_request(stocks[i].toUpperCase(), `/append?share=${shared}&special=${SpecialDB}`)
-        }
-        Swal.update({
-            type: 'success',
-            text: 'Update Complete'
-        });
-        setTimeout(function () {
-            Swal.close();
-        }, 3000);
-        return
+                type: 'question',
+                title: 'Currently Saving stocks to Database!',
+                text: `progress: 0/${stocks.length}`,
+                allowOutsideClick: false,
+                showConfirmButton: false
+            });
+            for (let i in stocks) {
+                swal.update({
+                    text: `Progress: ${Number(i) + 1}/${stocks.length} - Current: ${stocks[i].toUpperCase()}`
+                })
+                await ajax_request(stocks[i].toUpperCase(), `/append?share=${shared}&special=${SpecialDB}`)
+            }
+            Swal.update({
+                type: 'success',
+                text: 'Update Complete'
+            });
+            setTimeout(function () {
+                Swal.close();
+            }, 3000);
+            return
         }
     });
 
-    function ajax_request(symbol, link){
+    function ajax_request(symbol, link) {
         return $.ajax({
             type: 'POST',
             url: link,
@@ -286,13 +288,13 @@ function add(){
 /**
  * Selected stocks get removed from the database
  */
-function remove(link){
+function remove(link) {
     let to_remove = [];
     let ids = [];
     let selected = $table.rows('.selected').data();
-    for(let  i in selected ){
-        if(window.location.href.includes('shared') && selected[i].symbol){
-            if(selected[i].username == $('#username').attr('user')){
+    for (let i in selected) {
+        if (window.location.href.includes('shared') && selected[i].symbol) {
+            if (selected[i].username == $('#username').attr('user')) {
                 to_remove.push(selected[i].symbol);
                 ids.push(selected[i].stock_id);
             }
@@ -306,47 +308,47 @@ function remove(link){
         }
     }
     ajax_Call(to_remove, link).then((resolved) => {
-            for(let i in to_remove){
-                $table.row(document.getElementById(`${ids[i]}`)).remove().draw();
-            }
+        for (let i in to_remove) {
+            $table.row(document.getElementById(`${ids[i]}`)).remove().draw();
+        }
     });
 }
 
 /**
  * Updates All selected stocks
  */
-async function update(link){
+async function update(link) {
     to_update = [];
     let selected = $table.rows('.selected').data();
-    for(let i in selected ){
-        if(selected[i].symbol){
-        to_update.push({
-            stock_id: shareConf ? selected[i].username : selected[i].stock_id,
-            symbol: selected[i].symbol
-        })
-        }   
-        else{
+    for (let i in selected) {
+        if (selected[i].symbol) {
+            to_update.push({
+                stock_id: shareConf ? selected[i].username : selected[i].stock_id,
+                symbol: selected[i].symbol
+            })
+        }
+        else {
             break;
         }
     }
 
     Swal.fire({
-        position:'center',
+        position: 'center',
         type: 'question',
         title: 'The selected stocks are currently being updated!',
         text: `Progress: ${update_counter}/${to_update.length}`,
         footer: 'This might take a while, you might want to do something else',
         showConfirmButton: false,
     });
-    for(let i = 0; i < to_update.length; i++){
-        swal.update({ text: `Progress: ${i+1}/${to_update.length} - Current: ${to_update[i].symbol}` });
+    for (let i = 0; i < to_update.length; i++) {
+        swal.update({ text: `Progress: ${i + 1}/${to_update.length} - Current: ${to_update[i].symbol}` });
         await ajax_request(to_update[i], link)
     }
     Swal.update({
         type: 'success',
         text: 'Update Complete'
     });
-    if(to_update.length >= 50){
+    if (to_update.length >= 50) {
         $table.destroy();
         $('tbody').empty();
         Initialize_table();
@@ -356,7 +358,7 @@ async function update(link){
     }, 3000);
     return;
 
-    function ajax_request(updateDict, link){
+    function ajax_request(updateDict, link) {
         return $.ajax({
             type: 'POST',
             url: link,
@@ -373,16 +375,24 @@ async function update(link){
     }
 }
 
-function historicalCustomization(configString){
-    console.log(configString.replace(',', ',</br>'));
+/**
+ * Used to edit configurations or create new configurations
+ * @param {String} configString - Configuration String
+ * @param {String} action - Determines what happens on the backend
+ * @param {String} name - Name of the configuration
+ * @param {Boolean} fallback - Determines if the configuration is editable
+ */
+function historicalCustomization(configString, id = '', name = '', fallback = false) {
     let toSend = {};
     swal.fire({
-        title: 'Historical Edit',
+        title: `${(fallback) ? "This Is a Default Example And Cannot Be Edited" : "Historical Edit"}`,
         showConfirmButton: true,
         showCancelButton: true,
         width: '80vw',
-        html:`
+        html: `
         <div class="form-group">
+        <label for="configName">${(fallback) ? "Create a New Configuration From [Databases > CustomDB] or Switch to a different Configuration" : "Configuration Name"}</label>
+        <input ${(fallback) ? "ReadOnly" : ""} type="text" class="form-control" id="configName" value="${name}">
         <label for="historicalDataConfig">Format:Header|column, Header(Sign)|Column Column| A + B</label>
         <textarea
             style="height:25em;"
@@ -390,25 +400,82 @@ function historicalCustomization(configString){
             spellcheck="false" 
             type="text" 
             class="form-control"
+            ${(fallback) ? "ReadOnly" : ""}
             >${configString.replaceAll(',', ',\r\n')}</textarea>
         <div>
         `
     }).then((result) => {
-        console.log($('#historicalDataConfig').val().replaceAll(',\n',','))
+        console.log($('#historicalDataConfig').val().replaceAll(',\n', ','))
         console.log(result)
         if (result.value) {
+            if (fallback) {
+                swal.fire({
+                    type: "error",
+                    title: "Default Table Cannot be Edited",
+                    text: "Please Create a New Configuration In The Custom Table Or Switch To a different Configuration"
+                })
+                return
+            }
             fetch('/tableconfig', {
                 method: 'POST',
                 body: JSON.stringify({
-                    table: 'historic',
-                    queryString: $('#historicalDataConfig').val().replaceAll(',\n',',')
+                    action: "edit",
+                    table: "historic",
+                    configString: $('#historicalDataConfig').val().replaceAll(',\n', ','),
+                    configName: $("#configName").val(),
+                    id: id
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8'
                 }
             })
-            .then(response => response.json())
-            .then(Json => console.log(json))
+                .then(response => response.json())
+                .then(Json => console.log(json))
         }
     })
+}
+
+/**
+ * Used to switch configurations for the table
+ */
+const switch_config = async () => {
+    let configList = await fetchConfigs({ action: "getConfigs" });
+    const { value: config } = await Swal.fire({
+        title: "Config Selection",
+        input: "select",
+        inputOptions: configList,
+        showCancelButton: true,
+        inputPlaceholder: "Select a Configuration"
+    })
+    if (config) {
+        let returned = await fetchConfigs({
+            action: "switchHistoric",
+            id: config
+        })
+        if (returned.success === true) {
+            swal.fire({
+                type: 'success',
+                title: "Success",
+                text: "Config Has been changed",
+                showConfirmButton: false
+            });
+        }
+    }
+
+    /**
+     * Fetches Configs
+     * @param {Object} data - Object that gets sent to the backend
+     */
+    async function fetchConfigs(data) {
+        return new Promise(resolve => {
+            fetch("/tableconfig", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8"
+                }
+            }).then(response => response.json())
+                .then(data => { resolve(data) })
+        })
+    }
 }

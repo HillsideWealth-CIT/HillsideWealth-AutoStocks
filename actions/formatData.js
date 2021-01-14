@@ -1,4 +1,3 @@
-const { set, add } = require("lodash");
 const moment = require("moment");
 const { evalExpression } = require("./calculations");
 const calc = require('./calculations');
@@ -437,11 +436,11 @@ function format_data(stock) {
 
 }
 
-function formatHistorical(data, cs) {
+function formatHistorical(data, cs, years=20) {
     let customString = cs.split(',');
     let toSend = [];
     let sd = data[0].stockdata
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < years; i++) {
         try{
             let year = {date: i === 0 ? 'TTM' : moment(sd[i].date).format('MMM, YYYY'),}
             for(let j = 0; j < customString.length; j++){

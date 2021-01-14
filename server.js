@@ -94,6 +94,14 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
     });
 });
 
+app.get('/custom', sessionCheck, async (request, response) => {
+    response.render("collection2.hbs", {
+        cu: true,
+        admin: (request.session.status == 'admin')
+    });
+})
+
+
 app.get("/edit", (request, response) => {
     response.render("edit.hbs", {
         in: true,
@@ -154,13 +162,18 @@ app.get('/historic', sessionCheck, async (request, response) => {
         let stockdata = await db.get_by_id(request.query.id);
         let tableconfig = await db.getTableConfig(request.session.user, 'historic');
         let formattedData = await formatHistorical(stockdata, tableconfig.rows[0].config_string);
-        response.send({data: formattedData, test: tableconfig.rows[0].config_string})
+        response.send({
+            data: formattedData, 
+            test: tableconfig.rows[0].config_string, 
+            id: tableconfig.rows[0].id, 
+            name: tableconfig.rows[0].name, 
+            fallback: tableconfig.rows[0].fallback})
     }
     catch(e){
         response.send({error: true})
     }
 
-})
+});
 
 /** POST **/
 
@@ -301,7 +314,7 @@ app.post('/indicators/delete', sessionCheck, statusCheck, (request, response) =>
 });
 
 //Initializes Tables
-app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
+app.post('/init_table', sessionCheck, statusCheck, async (request, response) => {
     console.log(request.body.action)
     if (request.body.action == "init_user") {
         db.showstocks(request.session.user).then(resolve => {
@@ -327,10 +340,77 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
             response.send({ data: resolve });
         });
     }
+    else if (request.body.action == "init_custom"){
+        let toSend = [];
+        let stocks = await db.showstocks(request.session.user);
+        let tableconfig = await db.getTableConfig(request.session.user, 'custom');
+        if(tableconfig.rows.length !== 0){
+            stocks.forEach(stock => {
+                toSend.push({
+                    stock_id: stock.stock_id,
+                    stock_name: stock.stock_name,
+                    symbol: stock.symbol,
+                    stock_data: formatHistorical([stock],tableconfig.rows[0].config_string, 1)[0]
+                })
+            });
+            response.send({
+                data: toSend,
+                    config_string: tableconfig.rows[0].config_string,
+                    id : tableconfig.rows[0].id, 
+                    name: tableconfig.rows[0].name,
+                    fallback: tableconfig.rows[0].fallback
+                });
+        }
+        else {
+            response.send({error: "no config selected", data : []})
+        }
+    }
 });
 
-app.post('/tableconfig', sessionCheck, statusCheck, (request, response ) => {
-    db.addTableConfig(request.session.user, request.body.table, request.body.queryString.replace('\n', ''))
+app.post('/tableconfig', sessionCheck, statusCheck, async(request, response ) => {
+    switch (request.body.action) {
+        case "edit":
+            console.log(request.body)
+            db.customTableSettings({
+                configString : request.body.configString,
+                name: request.body.configName,
+                id: request.body.id
+            },"edit")
+            break;
+        case "add":
+            console.log(request.body)
+            db.customTableSettings({
+                username : request.session.user, 
+                table : request.body.table, 
+                configString : request.body.configString.replace('\n', ''), 
+                configName : request.body.configName
+                }, request.body.action)
+            break;
+        case "getConfigs":
+            let configList = await db.customTableSettings({username: request.session.user}, "getConfigs");
+            let formatted = {};
+            configList.rows.forEach(val =>formatted[val.id] = val.name === null || val.name === ""? "No Name" : val.name)
+            response.send(formatted)
+            break;
+        case "switchCustom":
+            console.log(request.body)
+            await db.customTableSettings({username: request.session.user, id: request.body.id}, "switchCustom");
+            response.send({success: true})
+            break;
+        case "switchHistoric":
+            console.log(request.body)
+            await db.customTableSettings({username: request.session.user, id: request.body.id}, "switchHistorical");
+            response.send({success: true})
+            break;
+        case "delete":
+            console.log(request.body)
+            await db.customTableSettings({id: request.body.id}, "delete");
+            response.send({success: true})
+            break;
+            
+        default:
+            break;
+    }
 })
 
 /* Edit Fields */
