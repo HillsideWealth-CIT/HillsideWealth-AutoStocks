@@ -526,7 +526,6 @@ module.exports = {
     getAggregateSingle,
     editAggregate,
     deleteAggregate,
-    addTableConfig,
     getTableConfig,
     customTableSettings,
 }
