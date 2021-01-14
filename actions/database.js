@@ -465,16 +465,30 @@ const deleteAggregate = async(id) => {
     return await runQuery(`DELETE FROM aggregation where aggregation_id = $1`, [id])
 }
 
-const addTableConfig = async(username, table_type, config_string) => {
-    let test = await runQuery(`select * from tableconfig where username = $1 and table_type = $2;`, [username, table_type]);
-    if(test.rows.length < 1){
-        return await runQuery(`INSERT INTO tableconfig (username, table_type, config_string) VALUES ($1, $2, $3);`, [username, table_type, config_string]);
-    }
-    return await runQuery(`UPDATE tableconfig set config_string = $1 where username = $2 and table_type = $3`, [config_string, username, table_type]);
+const getTableConfig = async(username, table_type) => {
+    let returnedData;
+    if(table_type === "historic") returnedData = await runQuery(`SELECT * from tableconfig where username = $1 and set_historical = true;`, [username]);
+    else if(table_type === "custom") returnedData = await runQuery(`SELECT * from tableconfig where username = $1 and set_custom = true;`, [username])
+    else returnedData = await runQuery(`SELECT * from tableconfig where username = $1 and set_custom = true;`, [username]);
+
+    if (returnedData.rows.length !== 0) return returnedData;
+    else return await runQuery(`Select * from tableconfig where fallback=true`);
 }
 
-const getTableConfig = async(username, table_type) => {
-    return await runQuery(`SELECT * from tableconfig where username = $1 and table_type = $2;`, [username, table_type]);
+const customTableSettings = async(data, action) => {
+    console.log(data)
+    if(action === "getConfigs") return await runQuery(`SELECT id, name FROM tableconfig where username = $1`, [data.username]);
+    else if (action === "edit") return await runQuery(`Update tableconfig set config_string = $1, name = $2 where id = $3;`, [data.configString, data.name, data.id]);
+    else if (action === "add") return await runQuery(`INSERT INTO tableconfig (username, table_type, config_string, name) VALUES ($1, $2, $3, $4);`, [data.username, data.table, data.configString, data.configName])
+    else if (action === "switchCustom"){ 
+        await runQuery(`UPDATE tableconfig SET set_custom = false where username = $1`, [data.username])
+        return await runQuery(`UPDATE tableconfig SET set_custom = true where id = $1`, [data.id])
+    }
+    else if (action === "switchHistorical"){ 
+        await runQuery(`UPDATE tableconfig SET set_historical = false where username = $1`, [data.username])
+        return await runQuery(`UPDATE tableconfig SET set_historical = true where id = $1`, [data.id])
+    }
+    else if (action === "delete") return await runQuery(`DELETE FROM tableconfig where id=$1`,[data.id])
 }
 
 module.exports = {
@@ -514,6 +528,7 @@ module.exports = {
     deleteAggregate,
     addTableConfig,
     getTableConfig,
+    customTableSettings,
 }
 
 function getdata(stocks, stockdata){
