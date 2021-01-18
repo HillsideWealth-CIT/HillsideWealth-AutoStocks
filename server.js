@@ -216,7 +216,6 @@ app.post("/entercode", sessionCheck, (request, response) => {
 /* Login */
 app.post("/login", (request, response) => {
     auth.login(request.body.username, request.body.password)
-
         .then((r) => {
             request.session.user = r.username;
             if (r.status) { request.session.status = r.status.trim(); }

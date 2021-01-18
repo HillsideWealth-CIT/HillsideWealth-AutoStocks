@@ -237,6 +237,15 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     catch{ currentData.month_end_price = NaN; }
                     try { currentData.cash_conversion_cycle = parseFloat(annuals.common_size_ratios["Cash Conversion Cycle"][f])  }
                     catch{ currentData.cash_conversion_cycle = NaN; }
+                    try { 
+                        currentData.invested_capital
+                            = parseFloat(annuals.balance_sheet["Total Stockholders Equity"][f])
+                            + parseFloat(annuals.balance_sheet["Short-Term Debt"][f])
+                            + parseFloat(annuals.balance_sheet["Long-Term Debt"][f])
+                            + parseFloat(annuals.balance_sheet["Cash, Cash Equivalents, Marketable Securities"][f])
+                            + parseFloat(annuals.balance_sheet["Other Long-Term Liabilities"][f])
+                        }
+                    catch{ currentData.invested_capital = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {
