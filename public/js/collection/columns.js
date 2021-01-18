@@ -293,6 +293,10 @@ var column_list = ['check',
     'aEBITDA Spice',
     'ROE Spice',
 
+    ,'URBEM VALUE',
+    ,'URBEM VALUE 3y',
+    ,'URBEM VALUE 5y',
+
     'FCF/Employees',
     'FCF/Employees 3yr',
     'FCF/Employees 5yr',
@@ -303,8 +307,6 @@ var column_list = ['check',
     'Purchase of Business 5yr',
     'Purchase of Business 10yr',
 ];
-
-console.log(column_list.length)
 
 if(shareConf) {
     column_list.splice(2, 0, 'Owner')
