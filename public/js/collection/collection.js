@@ -29,6 +29,7 @@ function Initialize_table(){
 function fill_table(data){
     var datatable = $('#datatable').DataTable({
         processing : true,
+        pageLength: 40,
         data : data,
         dom : 'Bfrtip',
         buttons : button_builder(),
@@ -37,9 +38,9 @@ function fill_table(data){
         columns : column_builder(),
         fixedColumns: { leftColumns: 2 },
         scrollX : true,
-        scrollY : '70vh',
+        scrollY : '65vh',
         deferRender : true,
-        scroller: true,
+        scroller: false,
         order : [[shareConf ? 1 : 1, 'desc']],
         colReorder:{realtime: false},
         columnDefs: {
@@ -426,8 +427,12 @@ function column_builder(){
 
         { data : "stockdata.0.aebitda_spice" },
         { data : "stockdata.0.roe_spice" },
+
+        { data : "stockdata.0.urbem_value" },
+        { data : "setup.urbem_value.3yrAvg" },
+        { data : "setup.urbem_value.5yrAvg" },
         
-        { data : "stockdata.1.fcfEmployee" },
+        { data : "stockdata.0.fcfEmployee" },
         { data : "fcfEmployee3" },
         { data : "fcfEmployee5" },
         { data : "fcfEmployee10" },

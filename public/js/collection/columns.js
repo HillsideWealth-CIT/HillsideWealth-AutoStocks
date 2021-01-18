@@ -304,6 +304,8 @@ var column_list = ['check',
     'Purchase of Business 10yr',
 ];
 
+console.log(column_list.length)
+
 if(shareConf) {
     column_list.splice(2, 0, 'Owner')
     perm.push(8)
@@ -315,6 +317,7 @@ if(shareConf) {
  * @param {Integer} count 
  */
 function hide_loop(start, end, count = 0) {
+    $table.colReorder.reset();
     start -= 1;
     end += 1;
     for (let i = count; i < total_columns; i++) {
@@ -351,6 +354,11 @@ function keyStats() {
     $table.column(column_list.indexOf('FCF/Net Income% 3yr')).visible(true, false);
     $table.column(column_list.indexOf('S/O Change (5Y)(%)')).visible(true, false);
     $table.column(column_list.indexOf('Date')).visible(true, false);
+    $table.column(column_list.indexOf('aEBITDA Spice')).visible(true, false);
+
+    $table.colReorder.move(column_list.indexOf('Categories'), column_list.indexOf('Stock Name')+1)
+    $table.colReorder.move(column_list.indexOf('Aggregated'), column_list.indexOf('Stock Name')+1)
+
     $table.columns.adjust().draw(false);
 }
 

@@ -64,11 +64,14 @@ function clearNAN(param, extraSymbol) {
  */
 function format_data(stock) {
     stock.stockdata.forEach((data, index) => {
+        if(index >= 10){
+            return
+        }
         data.fcfYield = `${((Number(data.fcf) / Number(data.enterprise_value))* 100).toFixed(2)}%`;
         data.fcfSpice = `${(((Number(data.fcfmargin.replace('%', '')) * Number(data.asset_turnover)) * (Number(data.fcfYield.replace('%', ''))))/100).toFixed(2)}`;
         data.yield_format = data.yield + '%';
 
-        data.fcfroic = `${((Number(data.fcf) / data.roic) * 100).toFixed(2)}%`;
+        data.fcfroic = `${((Number(data.fcf) / Number(data.invested_capital)) * 100).toFixed(2)}%`;
         data.fcfroa = `${(Number(data.fcfmargin.replace('%','')) * Number(data.asset_turnover)).toFixed(2)}%`;
         data.fcfroe = `${((Number(data.fcfmargin.replace('%','')) * Number(data.asset_turnover) * (Number(data.totalassets)/Number(data.total_stockholder_equity)))).toFixed(2)}%`
         data.fcfRoce = `${((Number(data.fcf)/Number(data.capital_employed)) * 100).toFixed(2)}%`
@@ -86,7 +89,7 @@ function format_data(stock) {
         data.capex_fcf = `${((Number(data.capex) / (Number(data.fcf) - Number(data.capex))) * 100).toFixed(2)}%`;
 
         data.fcfNetIncome = `${((Number(data.fcf) / Number(data.net_income)) * 100).toFixed(2)}%`;
-        data.fcfOwnerEarnings = `${((Number(data.fcf) / Number(data.owner_earning)) * 100).toFixed(2)}`;
+        data.fcfOwnerEarnings = `${((Number(data.fcf) / (Number(data.owner_earning) * Number(data.shares_outstanding))) * 100).toFixed(2)}`;
 
         data.salesshare = `$${(Number(data.revenue) / Number(data.shares_outstanding)).toFixed(2)}`;
         data.ownerEarningShare = `$${(Number(data.owner_earning)).toFixed(2)}`;
@@ -106,9 +109,10 @@ function format_data(stock) {
         data.fcfYield = `${((Number(data.fcf) / Number(data.enterprise_value))* 100).toFixed(2)}%`;
         data.fcfSpice = `${(((Number(data.fcfmargin.replace('%', '')) * Number(data.asset_turnover)) * (Number(data.fcfYield.replace('%', ''))))/100).toFixed(2)}`;
         data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) / 100;
-        data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;       
+        data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;   
+        data.urbem_value = `${(Number(data.evFcf)/Number(data.sgr.replace('%',''))).toFixed(1)}`    
 
-        data.fcfEmployee = (Number(data.employees) / Number(data.fcf)).toFixed(2) ;
+        data.fcfEmployee = ((Number(data.employees) * 1000000) / Number(data.fcf)).toFixed(2) ;
 
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
         data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10, '$');
@@ -143,6 +147,8 @@ function format_data(stock) {
             data.capeXae_format = null;
         }
     });
+
+    stock.stockdata[0].fcfEmployee = `$${((Number(stock.stockdata[0].fcf) * 1000000) / Number(stock.stockdata[1].employees)).toFixed(2)}`
 
     // Setup
     stock.setup = {};
@@ -186,17 +192,18 @@ function format_data(stock) {
     stock.setup.fcfYield = setup('fcfYield', '%');
     stock.setup.fcfSpice = setup('fcfSpice');
 
-    stock.setup.purchase_of_business = setup('purchase_of_business');
+    stock.setup.purchase_of_business = setup('purchase_of_business', '', 0);
     stock.setup.dividend = setup('dividend');
 
     stock.setup.dividendYield = setup('dividend_yield', '%');
+    stock.setup.urbem_value = setup('urbem_value', '%');
 
     //calculations
     stock.calculations = {};
     stock.calculations.rule_of_40 = `${(Number(stock.stockdata[0].fcfmargin.replace('%','')) + Number(stock.setup.sgr["3yrAvg"].replace('%',''))).toFixed(2)}%`;
     try{
         stock.calculations.incrementalRoe3yr = `${(((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[4].fcf))/(Number(stock.stockdata[1].total_stockholder_equity) - Number(stock.stockdata[4].total_stockholder_equity))) * 100).toFixed(2)}%`;
-        stock.calculations.incrementalRoic3yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[4].fcf))/(Number(stock.stockdata[1].roic) - Number(stock.stockdata[4].roic)) * 100).toFixed(2)}%`
+        stock.calculations.incrementalRoic3yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[4].fcf))/(Number(stock.stockdata[1].invested_capital) - Number(stock.stockdata[4].invested_capital)) * 100).toFixed(2)}%`
         stock.calculations.incrementalJDVROIC3yr = `${((Number(stock.stockdata[1].fcf)-Number(stock.stockdata[4].fcf))/addup('reinvested_cf_jdv', 1, 4)*100).toFixed(2)}%`
     }
     catch{
@@ -207,7 +214,7 @@ function format_data(stock) {
     try{
         stock.calculations.sgr5yr = `${(Number(stock.setup.sgr['5yrAvg'].replace('%','')) / 1 - Number(stock.setup.dividend['5yrAvg'].replace('%','')))}`;
         stock.calculations.incrementalRoe5yr = `${(((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[6].fcf))/(Number(stock.stockdata[1].total_stockholder_equity) - Number(stock.stockdata[6].total_stockholder_equity))) * 100).toFixed(2)}%`;
-        stock.calculations.incrementalRoic5yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[6].fcf))/(Number(stock.stockdata[1].roic) - Number(stock.stockdata[6].roic)) * 100).toFixed(2)}%`
+        stock.calculations.incrementalRoic5yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[6].fcf))/(Number(stock.stockdata[1].invested_capital) - Number(stock.stockdata[6].invested_capital)) * 100).toFixed(2)}%`
         stock.calculations.incrementalJDVROIC5yr = `${((Number(stock.stockdata[1].fcf)-Number(stock.stockdata[6].fcf))/addup('reinvested_cf_jdv', 1, 6)*100).toFixed(2)}%`
     }
     catch{
@@ -225,7 +232,7 @@ function format_data(stock) {
         stock.calculations.projected10ror = formatNumber(((Math.pow(Number(stock.calculations.stockPriceY10.replace("$", "")) / Number(stock.stockdata[0].month_end_price), 1/10) - 1) * 100).toFixed(2), '%');
         stock.calculations.projected10Total = formatNumber(Number(stock.calculations.projected10ror.replace('%', '')) + Number(stock.setup.dividendYield["10yrAvg"].replace('%','')), '%');
         stock.calculations.incrementalRoe10yr = `${(((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[11].fcf))/(Number(stock.stockdata[1].total_stockholder_equity) - Number(stock.stockdata[11].total_stockholder_equity))) * 100).toFixed(2)}%`;
-        stock.calculations.incrementalRoic10yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[11].fcf))/(Number(stock.stockdata[1].roic) - Number(stock.stockdata[11].roic)) * 100).toFixed(2)}%`
+        stock.calculations.incrementalRoic10yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[11].fcf))/(Number(stock.stockdata[1].invested_capital) - Number(stock.stockdata[11].invested_capital)) * 100).toFixed(2)}%`
         stock.calculations.incrementalJDVROIC10yr = `${((Number(stock.stockdata[1].fcf)-Number(stock.stockdata[11].fcf))/addup('reinvested_cf_jdv', 1, 11)*100).toFixed(2)}%`
 
     }
@@ -324,15 +331,15 @@ function format_data(stock) {
         stock.fcfEmployee15 = fcfEmployee15 === 'NaN' ? '---' : fcfEmployee15;
 
         
-        stock.mCapAve_5 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 5))
-        stock.mCapAve_10 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 10))
-        stock.mCapAve_15 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 15))
+        // stock.mCapAve_5 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 5))
+        // stock.mCapAve_10 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 10))
+        // stock.mCapAve_15 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 15))
 
-        stock.categories == "null" ? stock.categories = null : null;
-        !stock.ownership ? stock.ownership = '0%' : stock.ownership = `${stock.ownership}%`;
-        stock.fairvalue == "null" ? stock.fairvalue = null : stock.fairvalue = '$' + Math.round(stock.fairvalue * 100) / 100;
-        stock.onestar == "null" ? stock.onestar = null : stock.onestar = '$' + Math.round(stock.onestar * 100) / 100;
-        stock.fivestar == "null" ? stock.fivestar = null : stock.fivestar = '$' + Math.round(stock.fivestar * 100) / 100;
+        // stock.categories == "null" ? stock.categories = null : null;
+        // !stock.ownership ? stock.ownership = '0%' : stock.ownership = `${stock.ownership}%`;
+        // stock.fairvalue == "null" ? stock.fairvalue = null : stock.fairvalue = '$' + Math.round(stock.fairvalue * 100) / 100;
+        // stock.onestar == "null" ? stock.onestar = null : stock.onestar = '$' + Math.round(stock.onestar * 100) / 100;
+        // stock.fivestar == "null" ? stock.fivestar = null : stock.fivestar = '$' + Math.round(stock.fivestar * 100) / 100;
 
         stock.soChangePercent_10 = clearNAN(Math.round((formatNumber((Math.round(((so_10 - end_so) / so_10) * 100) / 100) * -1) * 100) * 100) / 100, '%');
         stock.soChangePercent_5 = clearNAN(Math.round((formatNumber((Math.round(((so_5 - end_so) / so_5) * 100) / 100) * -1) * 100) * 100) / 100, '%');
@@ -351,7 +358,7 @@ function format_data(stock) {
         return sum
     }
 
-    function setup(column, sign='', sign2='', fixed=2){
+    function setup(column, sign='', fixed=2){
         let stockinfoNum = {}
         let stockinfo = {}
         try{
@@ -456,7 +463,9 @@ function formatHistorical(data, cs, years=20) {
                     for(let p of rowData[1].split(" ")){
                         if(p.length > 0) variables.push(Number(sToSD(p, i)));
                     }
-                    year[rowData[0]] = `${evalExpression(variables, rowData[2]).toFixed(2)}${headerSign}`;
+                    year[rowData[0]] = (headerSign === "$") 
+                        ?`${headerSign}${evalExpression(variables, rowData[2]).toFixed(2)}`
+                        : `${evalExpression(variables, rowData[2]).toFixed(2)}${headerSign}`;
                 }
             }
             toSend.push(year)
