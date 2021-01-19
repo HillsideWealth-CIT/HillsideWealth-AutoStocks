@@ -618,6 +618,10 @@ app.post('/aggregation', sessionCheck, statusCheck, (request, response) => {
     }
 })
 
+app.post('/comments', sessionCheck, statusCheck, (request, response) => {
+    
+})
+
 /* Logout */
 app.post("/logout", (request, response) => {
     request.session.reset();
