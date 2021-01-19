@@ -64,7 +64,7 @@ function clearNAN(param, extraSymbol) {
  */
 function format_data(stock) {
     stock.stockdata.forEach((data, index) => {
-        if(index >= 10){
+        if(index >= 11){
             return
         }
         data.fcfYield = `${((Number(data.fcf) / Number(data.enterprise_value))* 100).toFixed(2)}%`;
@@ -98,7 +98,7 @@ function format_data(stock) {
         data.dividendShare = `${Number(data.dividendspershare).toFixed(2)}$`;
         data.price_format = formatNumber(data.price, '$');
 
-        data.sgr = `${(Number(data.fcfroic.replace('%','')) * ((Number(data.dividend)/Number(data.shares_outstanding))/(Number(data.fcf)/Number(data.shares_outstanding)))).toFixed(2)}%`;
+        data.sgr = `${(( Number(data.fcfroic.replace('%','')) * (1-Number(data.dividend))).toFixed(2))}%`;
         data.fror = `${data.fror}%`;
         data.expected_annual_total_return = `${(Number(data.fcfYield.replace(/[^0-9.-]/g, "")) + Number(data.sgr.replace(/[^0-9.-]/g, ""))).toFixed(2)}%`;
 
@@ -393,7 +393,7 @@ function format_data(stock) {
             stockinfoNum['10stdev'] = `${((Number(calc.calculate_stDev(stock.stockdata, column, 10)) / Number(stockinfoNum['10yrAvg'])) * 100).toFixed(1)}`.replace(/[^0-9.]/g, "");
             stockinfoNum["compGrowth10yr"] = (Math.pow(Number(stock.stockdata[0][column].replace(/[^0-9.-]/g, "")) / Number(stock.stockdata[10][column].replace(/[^0-9.-]/g, "")), 1/10) - 1) * 100;
         }
-        catch{
+        catch(e){
             stockinfoNum['10yrAvg'] = NaN;
             stockinfoNum['ttm/10yr'] = NaN;
             stockinfoNum['10stdev'] = NaN;

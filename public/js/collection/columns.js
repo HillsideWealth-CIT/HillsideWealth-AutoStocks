@@ -4,6 +4,8 @@ var column_list = ['check',
     'Symbol',
     'Edit Buttons',
     'Stock Name',
+    'Date',
+    'Aggregated',
     'Current Price',
 
     'FCF Spice',
@@ -27,8 +29,6 @@ var column_list = ['check',
     'Yield%',
     'Enterprise Value (M)',
     'Categories',
-    'Date',
-    'Aggregated',
 
     'FCFROIC%',
     'FCFROIC% 3yr',
@@ -360,6 +360,7 @@ function keyStats() {
 
     $table.colReorder.move(column_list.indexOf('Categories'), column_list.indexOf('Stock Name')+1)
     $table.colReorder.move(column_list.indexOf('Aggregated'), column_list.indexOf('Stock Name')+1)
+    $table.colReorder.move(column_list.indexOf('aEBITDA Spice'), column_list.indexOf('FCF Spice')+2)
 
     $table.columns.adjust().draw(false);
 }

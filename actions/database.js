@@ -495,6 +495,13 @@ const customTableSettings = async(data, action) => {
     else if (action === "delete") return await runQuery(`DELETE FROM tableconfig where id=$1`,[data.id])
 }
 
+const comments = async(data, action) => {
+    //get
+    return await runQuery(`SELECT * FROM comments;`)
+    //set
+    //delete
+}
+
 module.exports = {
     addUser,
     usernameAvailable,
