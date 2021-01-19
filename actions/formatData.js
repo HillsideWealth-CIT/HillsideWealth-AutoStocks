@@ -98,7 +98,7 @@ function format_data(stock) {
         data.dividendShare = `${Number(data.dividendspershare).toFixed(2)}$`;
         data.price_format = formatNumber(data.price, '$');
 
-        data.sgr = `${(Number(data.fcfroic.replace('%','')) * (1 - data.dividend)).toFixed(2)}%`;
+        data.sgr = `${(Number(data.fcfroic.replace('%','')) * ((Number(data.dividend)/Number(data.shares_outstanding))/(Number(data.fcf)/Number(data.shares_outstanding)))).toFixed(2)}%`;
         data.fror = `${data.fror}%`;
         data.expected_annual_total_return = `${(Number(data.fcfYield.replace(/[^0-9.-]/g, "")) + Number(data.sgr.replace(/[^0-9.-]/g, ""))).toFixed(2)}%`;
 

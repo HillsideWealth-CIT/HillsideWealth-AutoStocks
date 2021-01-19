@@ -29,7 +29,6 @@ function Initialize_table(){
 function fill_table(data){
     var datatable = $('#datatable').DataTable({
         processing : true,
-        pageLength: 40,
         data : data,
         dom : 'Bfrtip',
         buttons : button_builder(),
@@ -38,9 +37,9 @@ function fill_table(data){
         columns : column_builder(),
         fixedColumns: { leftColumns: 2 },
         scrollX : true,
-        scrollY : '65vh',
+        scrollY : '69vh',
         deferRender : true,
-        scroller: false,
+        scroller: true,
         order : [[shareConf ? 1 : 1, 'desc']],
         colReorder:{realtime: false},
         columnDefs: {
