@@ -495,11 +495,45 @@ const customTableSettings = async(data, action) => {
     else if (action === "delete") return await runQuery(`DELETE FROM tableconfig where id=$1`,[data.id])
 }
 
-const comments = async(data, action) => {
-    //get
-    return await runQuery(`SELECT * FROM comments;`)
-    //set
-    //delete
+const comments = async(data) => {
+    if(data.action === "get"){
+        return await runQuery(`
+            SELECT 
+            inside_ownership,
+            institutional_ownership,
+            link,
+            founder_run_board,
+            competitors,
+            competative_position,
+            source_of_moats,
+            insider_activity,
+            mgmt_comp,
+            funds,
+            articles
+            from stocks where stock_id = $1;`
+            , [data.id])
+    }
+    else if(data.action === "set"){
+        let format = [];
+        for(let key in data.data){
+            format.push(JSON.stringify(data.data[key]))
+        }
+        return await runQuery(`
+            UPDATE stocks SET
+                inside_ownership = $1,
+                institutional_ownership = $2,
+                link = $3,
+                founder_run_board = $4,
+                competitors = $5,
+                competative_position = $6,
+                source_of_moats = $7,
+                insider_activity = $8,
+                mgmt_comp = $9,
+                funds = $10,
+                articles = $11
+                WHERE stock_id = $12;
+        `, [...format, data.id])
+    }
 }
 
 module.exports = {
@@ -539,6 +573,7 @@ module.exports = {
     deleteAggregate,
     getTableConfig,
     customTableSettings,
+    comments,
 }
 
 function getdata(stocks, stockdata){
