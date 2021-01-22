@@ -175,6 +175,15 @@ app.get('/historic', sessionCheck, async (request, response) => {
 
 });
 
+app.get('/comments', sessionCheck, async (request, response) => {
+    let formattedData = {};
+    let comments = (await db.comments({action: "get", id: request.query.id})).rows[0];
+    for(let key in comments){
+        formattedData[key] = JSON.parse(comments[key])
+    }
+    response.send(formattedData)
+})
+
 /** POST **/
 
 app.post('/editNote', sessionCheck, (request, response) => {
@@ -618,8 +627,9 @@ app.post('/aggregation', sessionCheck, statusCheck, (request, response) => {
     }
 })
 
-app.post('/comments', sessionCheck, statusCheck, (request, response) => {
-    
+app.post('/comments', sessionCheck, statusCheck, async (request, response) => {
+    await db.comments(request.body)
+    response.send({status: "ok"})
 })
 
 /* Logout */

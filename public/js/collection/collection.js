@@ -129,6 +129,7 @@ function column_builder(){
                 //todo                     <button type="button" onclick='openNotes()' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
                 return `
                 <div>
+                    <button type="button" onclick='openNotes("${row.stock_id}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
                     <button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>
                     <button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>
                     <button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>
