@@ -1,12 +1,9 @@
-const openNotes = async (id) => {
-  console.log(id)
+const openNotes = async (id, symbol) => {
   let initData = await (await fetch(`/comments/?id=${id}`)).json();
-  console.log(initData)
-
   let cDate = new Date();
   let CurrentDate = `${cDate.getDate()}/${cDate.getMonth() + 1}/${cDate.getFullYear()}`
   swal.fire({
-    title: 'comments',
+    title: `${symbol} Comments`,
     showConfirmButton: true,
     confirmButtonText: 'Save Changes',
     showCancelButton: true,

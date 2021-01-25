@@ -86,6 +86,11 @@ function show_selected() {
  * Enables selected stocks to be accessed on the shared database
  */
 function share() {
+    swal.fire({
+        title: 'Saving to CommonDB',
+        type: 'question',
+        showConfirmButton:false,
+    })
     to_share = [];
     let selected = $table.rows('.selected').data();
     for (let i in selected) {
@@ -103,11 +108,20 @@ function share() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log("OK")
+            swal.update({
+                title: 'Saving Complete',
+                type:'success',
+                showConfirmButton:true,
+            })
         })
 }
 
-function setSpecial() {
+async function setSpecial() {
+    swal.fire({
+        title: 'Saving to SharedDB',
+        type: 'question',
+        showConfirmButton:false,
+    })
     to_set = [];
     let selected = $table.rows('.selected').data();
     for (let i in selected) {
@@ -125,7 +139,11 @@ function setSpecial() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log("OK")
+            swal.update({
+                title: 'Saving Complete',
+                type:'success',
+                showConfirmButton:true,
+            })
         })
 }
 
