@@ -66,14 +66,26 @@ var column_list = ['check',
     'FCFROCE% SD 5yr',
     'FCFROCE% SD 10yr',
 
+    'FCFROJDVIC%',
+    'FCFROJDVIC% 3yr',
+    'FCFROJDVIC% 5yr',
+    'FCFROJDVIC% 10yr',
+    'FCFROJDVIC% TTM/5yr',
+    'FCFROJDVIC% TTM/10yr',
+    'FCFROJDVIC% SD 5yr',
+    'FCFROJDVIC% SD 10yr',
+
+    'iROiE% 1yr',
     'iROiE% 3yr',
     'iROiE% 5yr',
     'iROiE% 10yr',
 
+    'iFCFROiIC% 1yr',
     'iFCFROiIC% 3yr',
     'iFCFROiIC% 5yr',
     'iFCFROiIC% 10yr',
 
+    'JDViFCFROiIC% 1yr',
     'JDViFCFROiIC% 3yr',
     'JDViFCFROiIC% 5yr',
     'JDViFCFROiIC% 10yr',
@@ -365,7 +377,6 @@ function keyStats() {
     $table.columns.adjust().draw(false);
 }
 
-
 function keyStats_Rest() {
     hide_loop(column_list.indexOf('Current Price'),
         column_list.indexOf('Aggregated'));
@@ -374,7 +385,7 @@ function keyStats_Rest() {
 
 function returnOnCapital() {
     hide_loop(column_list.indexOf('FCFROIC%'),
-        column_list.indexOf('FCFROCE% SD 10yr'));
+        column_list.indexOf('FCFROJDVIC% SD 10yr'));
     $table.columns.adjust().draw(false);
 }
 

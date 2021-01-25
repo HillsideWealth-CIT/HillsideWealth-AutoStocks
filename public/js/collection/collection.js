@@ -119,21 +119,44 @@ function column_builder(){
             className: 'setting_cell',
             render: function( data, type, row, meta){
                 // Edit Buttons: 
-                // 1: takes user to gurufocus graph
-                // 2: Comments, emoticon, morning star, guru rating, JDV
-                // 3: DCF calculator
-                // 4: 15 Year historical Financial Data
-                // 5: Links Button
-                // Edit Commented out
-                //<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note.replaceAll('\n', '\\n')}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}", "${row.msse}", "${row.mCapAve_5}", "${row.mCapAve_10}", "${row.mCapAve_15}", "${row.links}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
-                //todo                     <button type="button" onclick='openNotes()' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
+                // 1: Saves comments and links
+                // 2: View Key Stats
+                // 3: Open Gurufocus Chart
+                // 4: Opens DFC calculator
+                // 5: 15 Year historical Financial Data
+                let keystats = {
+                    stockName: row.stock_name,
+                    symbol: row.symbol,
+                    current_price: row.stock_current_price,
+                    entVal: row.stockdata[0].enterprise_value_format,
+                    fcfSpice: row.stockdata[0].fcfSpice,
+                    aebitdaSpice: row.stockdata[0].aebitda_spice,
+                    evFcf: row.stockdata[0].evFcf,
+                    fcfYield: row.stockdata[0].fcfYield,
+                    dividendYield: row.stockdata[0].dividend_yield,
+                    fcfRoic: row.stockdata[0].fcfroic,
+                    fcfRoa: row.stockdata[0].fcfroa,
+                    jdv: row.calculations.incrementalJDVROIC3yr,
+                    cfRe: row.setup.cashflow_reinvestment_rate["3yrAvg"],
+                    grossMargin: row.setup.grossmargin["3yrAvg"],
+                    fcfMargin: row.setup.fcfmargin["3yrAvg"],
+                    ndFcf: row.setup.ndFcf["3yrAvg"],
+                    capexSales: row.setup.capex_sales["3yrAvg"],
+                    capexFcf: row.setup.capex_fcf["3yrAvg"],
+                    fcfNI: row.setup.fcfNetIncome["3yrAvg"],
+                    fcfShare: row.setup.fcfShare["3yrAvg"],
+                    yackt: row.stockdata[0].fror,
+                    proj: row.calculations.projected10ror,
+                    
+                }
+                
                 return `
                 <div>
-                    <button type="button" onclick='openNotes("${row.stock_id}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
+                    <button type="button" onclick='openNotes("${row.stock_id}", "${row.symbol}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
+                    <button type="button" onclick='open_stats(${JSON.stringify(keystats)})' class="btn btn-link btn-sm"><span class="fas fa-external-link-alt"></span></button>
                     <button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>
                     <button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>
                     <button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>
-                    <button type="button" onclick='linksMenu("${row.links}", "${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-external-link-alt"></span></button>
                 </div>
                 `;
             }    
@@ -201,14 +224,26 @@ function column_builder(){
         { data : "setup.fcfRoce.5stdev" },
         { data : "setup.fcfRoce.10stdev" },
 
+        { data : "stockdata.0.fcfroijdvic" },
+        { data : "setup.fcfroijdvic.3yrAvg" },
+        { data : "setup.fcfroijdvic.5yrAvg" },
+        { data : "setup.fcfroijdvic.10yrAvg" },
+        { data : "setup.fcfroijdvic.ttm/5yr" },
+        { data : "setup.fcfroijdvic.ttm/10yr" },
+        { data : "setup.fcfroijdvic.5stdev" },
+        { data : "setup.fcfroijdvic.10stdev" },
+
+        { data : "calculations.incrementalRoe1yr"},
         { data : "calculations.incrementalRoe3yr"},
         { data : "calculations.incrementalRoe5yr"},
         { data : "calculations.incrementalRoe10yr"},
 
+        { data : "calculations.incrementalRoic1yr"},
         { data : "calculations.incrementalRoic3yr"},
         { data : "calculations.incrementalRoic5yr"},
         { data : "calculations.incrementalRoic10yr"},
 
+        { data : "calculations.incrementalJDVROIC1yr"},
         { data : "calculations.incrementalJDVROIC3yr"},
         { data : "calculations.incrementalJDVROIC5yr"},
         { data : "calculations.incrementalJDVROIC10yr"},
@@ -430,13 +465,13 @@ function column_builder(){
         { data : "stockdata.0.roe_spice" },
 
         { data : "stockdata.0.urbem_value" },
-        { data : "setup.urbem_value.3yrAvg" },
-        { data : "setup.urbem_value.5yrAvg" },
+        { data : "stockdata.3.urbem_value" },
+        { data : "stockdata.5.urbem_value" },
         
         { data : "stockdata.0.fcfEmployee" },
-        { data : "fcfEmployee3" },
-        { data : "fcfEmployee5" },
-        { data : "fcfEmployee10" },
+        { data : "setup.fcfEmployee.3yrAvg" },
+        { data : "setup.fcfEmployee.5yrAvg" },
+        { data : "setup.fcfEmployee.10yrAvg" },
 
         { data : "stockdata.0.purchase_of_business" },
         { data : "setup.purchase_of_business.3yrAvg" },
@@ -468,8 +503,4 @@ function ajax_Call(action, link) {
             resolve(returned_data);
         })
     });
-}
-
-function formatEdit(row){
-    // return `<button type="button" id="edit${row.stock_id}" onclick='open_edit("${row.symbol}", "${row.stock_id}", "${row.note.replaceAll('\n', '\\n')}", "${row.emoticon}", "${row.onestar}" , "${row.fivestar}", "${row.fairvalue}","${row.moat}", "${row.jdv}", "${row.stock_current_price}", "${row.gfrating}", "${row.ownership}", "${row.msse}", "${row.mCapAve_5}", "${row.mCapAve_10}", "${row.mCapAve_15}", "${row.links}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>`.replace(/[\n\r]/g, "")
 }

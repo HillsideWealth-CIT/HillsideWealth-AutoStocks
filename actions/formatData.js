@@ -75,6 +75,7 @@ function format_data(stock) {
         data.fcfroa = `${(Number(data.fcfmargin.replace('%','')) * Number(data.asset_turnover)).toFixed(2)}%`;
         data.fcfroe = `${((Number(data.fcfmargin.replace('%','')) * Number(data.asset_turnover) * (Number(data.totalassets)/Number(data.total_stockholder_equity)))).toFixed(2)}%`
         data.fcfRoce = `${((Number(data.fcf)/Number(data.capital_employed)) * 100).toFixed(2)}%`
+        data.fcfroijdvic = `${((Number(data.fcf)/Number(data.reinvested_cf_jdv)) * 100).toFixed(2)}%`
 
         data.grossmargin = `${Number(data.grossmargin)}%`;
         data.operatingmargin = `${Number(data.operatingmargin)}%`;
@@ -88,8 +89,8 @@ function format_data(stock) {
         data.capex_ownerEarnings = `${((Number(data.capex) / (Number(data.owner_earning) * Number(data.shares_outstanding))) * 100).toFixed(2)}%`;
         data.capex_fcf = `${((Number(data.capex) / (Number(data.fcf) - Number(data.capex))) * 100).toFixed(2)}%`;
 
-        data.fcfNetIncome = `${((Number(data.fcf) / Number(data.net_income)) * 100).toFixed(2)}%`;
-        data.fcfOwnerEarnings = `${((Number(data.fcf) / (Number(data.owner_earning) * Number(data.shares_outstanding))) * 100).toFixed(2)}`;
+        data.fcfNetIncome = `${((Number(data.fcf) / Number(data.net_income)) * 100).toFixed(0)}%`;
+        data.fcfOwnerEarnings = `${((Number(data.fcf) / (Number(data.owner_earning) * Number(data.shares_outstanding))) * 100).toFixed(0)}%`;
 
         data.salesshare = `$${(Number(data.revenue) / Number(data.shares_outstanding)).toFixed(2)}`;
         data.ownerEarningShare = `$${(Number(data.owner_earning)).toFixed(2)}`;
@@ -103,7 +104,7 @@ function format_data(stock) {
         data.expected_annual_total_return = `${(Number(data.fcfYield.replace(/[^0-9.-]/g, "")) + Number(data.sgr.replace(/[^0-9.-]/g, ""))).toFixed(2)}%`;
 
         data.dividendPayoutRatio = `${((Number(data.dividendspershare)/(Number(data.fcf)/Number(data.shares_outstanding))) * 100).toFixed(2)}%`;
-        data.cashflow_reinvestment_rate = `${(Number(data.cashflow_reinvestment_rate)*100).toFixed(2)}%`;
+        data.cashflow_reinvestment_rate = `${(Number(data.cashflow_reinvestment_rate)*100).toFixed(0)}%`;
 
         data.evFcf = `${(Number(data.enterprise_value) / Number(data.fcf)).toFixed(2)}`;
         data.fcfYield = `${((Number(data.fcf) / Number(data.enterprise_value))* 100).toFixed(2)}%`;
@@ -112,10 +113,10 @@ function format_data(stock) {
         data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;   
         data.urbem_value = `${(Number(data.evFcf)/Number(data.sgr.replace('%',''))).toFixed(1)}`    
 
-        data.fcfEmployee = ((Number(data.employees) * 1000000) / Number(data.fcf)).toFixed(2) ;
+        data.fcfEmployee = `$${(Number(data.employees) * 1000000) / Number(data.fcf)}`;
 
         data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
-        data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10, '$');
+        data.enterprise_value_format = formatNumber(Number(data.enterprise_value).toFixed(0) ,'$');
 
         data.eps_without_nri_format = Math.round((data.eps_without_nri) * 100) / 100;
         data.eps_without_nri_string_format = '$' + Math.round((data.eps_without_nri) * 100) / 100;
@@ -159,6 +160,7 @@ function format_data(stock) {
     stock.setup.fcfroa = setup('fcfroa', '%');
     stock.setup.fcfroe = setup('fcfroe', '%');
     stock.setup.fcfRoce = setup('fcfRoce', '%');
+    stock.setup.fcfroijdvic = setup('fcfroijdvic');
 
     stock.setup.grossmargin = setup('grossmargin', '%');
     stock.setup.operatingmargin = setup('operatingmargin', '%');
@@ -198,9 +200,21 @@ function format_data(stock) {
     stock.setup.dividendYield = setup('dividend_yield', '%');
     stock.setup.urbem_value = setup('urbem_value', '%');
 
+    stock.setup.fcfEmployee = setup('fcfEmployee','$',0);
+
     //calculations
     stock.calculations = {};
-    stock.calculations.rule_of_40 = `${(Number(stock.stockdata[0].fcfmargin.replace('%','')) + Number(stock.setup.sgr["3yrAvg"].replace('%',''))).toFixed(2)}%`;
+    stock.calculations.rule_of_40 = `${(Number(stock.stockdata[3].fcfmargin.replace('%','')) + Number(stock.setup.sgr["3yrAvg"].replace('%',''))).toFixed(2)}%`;
+    try{
+        stock.calculations.incrementalRoe1yr = `${(((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[2].fcf))/(Number(stock.stockdata[1].total_stockholder_equity) - Number(stock.stockdata[2].total_stockholder_equity))) * 100).toFixed(2)}%`;
+        stock.calculations.incrementalRoic1yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[2].fcf))/(Number(stock.stockdata[1].invested_capital) - Number(stock.stockdata[2].invested_capital)) * 100).toFixed(2)}%`
+        stock.calculations.incrementalJDVROIC1yr = `${((Number(stock.stockdata[1].fcf)-Number(stock.stockdata[2].fcf))/addup('reinvested_cf_jdv', 1, 2)*100).toFixed(2)}%`
+    }
+    catch{
+        stock.calculations.incrementalRoe1yr = '---';
+        stock.calculations.incrementalRoic1yr = '---';
+        stock.calculations.incrementalJDVROIC1yr = '---'
+    }
     try{
         stock.calculations.incrementalRoe3yr = `${(((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[4].fcf))/(Number(stock.stockdata[1].total_stockholder_equity) - Number(stock.stockdata[4].total_stockholder_equity))) * 100).toFixed(2)}%`;
         stock.calculations.incrementalRoic3yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[4].fcf))/(Number(stock.stockdata[1].invested_capital) - Number(stock.stockdata[4].invested_capital)) * 100).toFixed(2)}%`
@@ -229,8 +243,8 @@ function format_data(stock) {
         stock.calculations.bvpsY10 = formatNumber(((Math.pow( 1 + (Number(stock.setup.sgr['10yrAvg'].replace('%',''))/ 100), 10)) * Number(stock.stockdata[0].book_value_per_share)).toFixed(2), '$');
         stock.calculations.fcfShareY10 = formatNumber(((Math.pow( 1 + (Number(stock.setup.sgr['10yrAvg'].replace('%',''))/ 100), 10)) * Number(stock.stockdata[0].fcfShare)).toFixed(2), '$');
         stock.calculations.stockPriceY10 = formatNumber((Number(stock.calculations.fcfShareY10.replace('$', '')) * Number(stock.setup.evFcf['10yrAvg'])).toFixed(2), '$');
-        stock.calculations.projected10ror = formatNumber(((Math.pow(Number(stock.calculations.stockPriceY10.replace("$", "")) / Number(stock.stockdata[0].month_end_price), 1/10) - 1) * 100).toFixed(2), '%');
-        stock.calculations.projected10Total = formatNumber(Number(stock.calculations.projected10ror.replace('%', '')) + Number(stock.setup.dividendYield["10yrAvg"].replace('%','')), '%');
+        stock.calculations.projected10ror = formatNumber((Number(stock.calculations.stockPriceY10.replace(/[^0-9.-]/g, "")) / Math.pow(Number(stock.stockdata[0].month_end_price),1/10)-1).toFixed(2), '%')
+        stock.calculations.projected10Total = formatNumber((Number(stock.calculations.projected10ror.replace('%', '')) + Number(stock.setup.dividendYield["10yrAvg"].replace('%',''))).toFixed(2), '%');
         stock.calculations.incrementalRoe10yr = `${(((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[11].fcf))/(Number(stock.stockdata[1].total_stockholder_equity) - Number(stock.stockdata[11].total_stockholder_equity))) * 100).toFixed(2)}%`;
         stock.calculations.incrementalRoic10yr = `${((Number(stock.stockdata[1].fcf) - Number(stock.stockdata[11].fcf))/(Number(stock.stockdata[1].invested_capital) - Number(stock.stockdata[11].invested_capital)) * 100).toFixed(2)}%`
         stock.calculations.incrementalJDVROIC10yr = `${((Number(stock.stockdata[1].fcf)-Number(stock.stockdata[11].fcf))/addup('reinvested_cf_jdv', 1, 11)*100).toFixed(2)}%`
@@ -304,42 +318,10 @@ function format_data(stock) {
     try {
         const end_date = stock.stockdata[0].date.getFullYear(),
             end_so = stock.stockdata[0].shares_outstanding;
-        var so_10 = null,
-            so_5 = null,
-            so_3 = null,
-            so_1 = null;
-        for (var i = 1; i < stock.stockdata.length; i++) {
-            if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
-                so_10 = stock.stockdata[i].shares_outstanding;
-            } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
-                so_5 = stock.stockdata[i].shares_outstanding;
-            } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
-                so_3 = stock.stockdata[i].shares_outstanding;
-            } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
-                so_1 = stock.stockdata[i].shares_outstanding;
-            }
-        }
-
-        fcfEmployee3 = (calc.calculate_average(stock.stockdata, 'employees', 3) / calc.calculate_average(stock.stockdata, 'fcf', 3)).toFixed(2);
-        fcfEmployee5 = (calc.calculate_average(stock.stockdata, 'employees', 5) / calc.calculate_average(stock.stockdata, 'fcf', 5)).toFixed(2);
-        fcfEmployee10 = (calc.calculate_average(stock.stockdata, 'employees', 10) / calc.calculate_average(stock.stockdata, 'fcf', 10)).toFixed(2);
-        fcfEmployee15 = (calc.calculate_average(stock.stockdata, 'employees', 15) / calc.calculate_average(stock.stockdata, 'fcf', 15)).toFixed(2);
-
-        stock.fcfEmployee3 = fcfEmployee3 === 'NaN' ? '---' : fcfEmployee3;
-        stock.fcfEmployee5 = fcfEmployee5 === 'NaN' ? '---' : fcfEmployee5;
-        stock.fcfEmployee10 = fcfEmployee10 === 'NaN' ? '---' : fcfEmployee10;
-        stock.fcfEmployee15 = fcfEmployee15 === 'NaN' ? '---' : fcfEmployee15;
-
-        
-        // stock.mCapAve_5 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 5))
-        // stock.mCapAve_10 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 10))
-        // stock.mCapAve_15 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 15))
-
-        // stock.categories == "null" ? stock.categories = null : null;
-        // !stock.ownership ? stock.ownership = '0%' : stock.ownership = `${stock.ownership}%`;
-        // stock.fairvalue == "null" ? stock.fairvalue = null : stock.fairvalue = '$' + Math.round(stock.fairvalue * 100) / 100;
-        // stock.onestar == "null" ? stock.onestar = null : stock.onestar = '$' + Math.round(stock.onestar * 100) / 100;
-        // stock.fivestar == "null" ? stock.fivestar = null : stock.fivestar = '$' + Math.round(stock.fivestar * 100) / 100;
+        var so_10 = stock.stockdata[9].shares_outstanding,
+            so_5 = stock.stockdata[4].shares_outstanding,
+            so_3 = stock.stockdata[2].shares_outstanding,
+            so_1 = stock.stockdata[1].shares_outstanding;
 
         stock.soChangePercent_10 = clearNAN(Math.round((formatNumber((Math.round(((so_10 - end_so) / so_10) * 100) / 100) * -1) * 100) * 100) / 100, '%');
         stock.soChangePercent_5 = clearNAN(Math.round((formatNumber((Math.round(((so_5 - end_so) / so_5) * 100) / 100) * -1) * 100) * 100) / 100, '%');
