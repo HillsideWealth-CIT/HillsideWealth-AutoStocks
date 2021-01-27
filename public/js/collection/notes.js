@@ -179,6 +179,9 @@ const openNotes = async (id, symbol) => {
         <td>
           <select id="founderRunBoard" type="text" class="form-control" value="tradition">
           <option selected hidden>${data[i]}</option>
+          <option value="Stable">Stable</option>
+          <option value="Increasing">Increasing</option>
+          <option value="Decreasing">Decreasing</option>
           <option value="Network effect – marketplace">Network effect – marketplace</option>
           <option value="Network effect – data">Network effect – data</option>
           <option value="Network effect - platform">Network effect - platform</option>
@@ -350,6 +353,9 @@ function createMoat(id) {
   <tr>
     <td>
       <select id="founderRunBoard" type="text" class="form-control">
+      <option value="Stable">Stable</option>
+      <option value="Increasing">Increasing</option>
+      <option value="Decreasing">Decreasing</option>
       <option value="Network effect – marketplace">Network effect – marketplace</option>
       <option value="Network effect – data">Network effect – data</option>
       <option value="Network effect - platform">Network effect - platform</option>

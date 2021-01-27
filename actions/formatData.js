@@ -461,29 +461,46 @@ function format_data(stock) {
     };
 }
 
+/**
+ * Formats data for the historical table
+ * @param {Object} data - data from the data base 
+ * @param {String} cs - CustomString from the database
+ * @param {Int} years - The number of times the function loops
+ */
 function formatHistorical(data, cs, years=20) {
     let customString = cs.split(',');
+    // console.log(customString)
     let toSend = [];
     let sd = data[0].stockdata
     for (let i = 0; i < years; i++) {
         try{
+            let decimal = 2;
             let year = {date: i === 0 ? 'TTM' : moment(sd[i].date).format('MMM, YYYY'),}
             for(let j = 0; j < customString.length; j++){
                 let rowData = customString[j].split('|');
+                // Sets headerSign
                 let headerSign = (rowData[0].indexOf('(') !== -1)
                     ? rowData[0].slice(rowData[0].indexOf('(')+1, rowData[0].indexOf(')'))
-                    : ''
-                if(rowData.length == 2){
-                    year[rowData[0]] = sToSD(rowData[1].trim(), i, headerSign);
+                    : ''    
+                // Sets Decimal Place         
+                if(rowData[0].indexOf(':') !== -1){
+                    decimal = rowData[0].split(':')[1];
                 }
+                // If column is only single column from data
+                if(rowData.length == 2){
+                    year[rowData[0]] = (headerSign === "$") 
+                    ? `${headerSign}${Number(sToSD(rowData[1].trim(), i)).toFixed(decimal)}`
+                    : `${Number(sToSD(rowData[1].trim(), i)).toFixed(decimal)}${headerSign}`
+                }
+                // If equation exists
                 else{
                     let variables =[];
                     for(let p of rowData[1].split(" ")){
                         if(p.length > 0) variables.push(Number(sToSD(p, i)));
                     }
                     year[rowData[0]] = (headerSign === "$") 
-                        ?`${headerSign}${evalExpression(variables, rowData[2]).toFixed(2)}`
-                        : `${evalExpression(variables, rowData[2]).toFixed(2)}${headerSign}`;
+                        ?`${headerSign}${evalExpression(variables, rowData[2]).toFixed(decimal)}`
+                        : `${evalExpression(variables, rowData[2]).toFixed(decimal)}${headerSign}`;
                 }
             }
             toSend.push(year)
@@ -491,11 +508,16 @@ function formatHistorical(data, cs, years=20) {
         catch(e){
             break;
         }
-
     }
     return toSend
 
-    function sToSD(columnString, row, headerSign = ''){
+    /**
+     * Retreives values from stocks object
+     * @param {String} columnString - The Name of the column 
+     * @param {Int} row - The number of the row
+     * @returns {String} - Returns the value from the database on the specified row
+     */
+    function sToSD(columnString, row){
         let value;
         switch(columnString) {
             case 'aebitda':
@@ -568,6 +590,9 @@ function formatHistorical(data, cs, years=20) {
                 break;
             case 'growthYears':
                 value = sd[row].growth_years;
+                break;
+            case 'investedCapital':
+                value = sd[row].invested_capital;
                 break;
             case 'longTermDebt':
                 value = sd[row].lt_debt_lease_obligations;
@@ -650,7 +675,7 @@ function formatHistorical(data, cs, years=20) {
             default:
                 value = 'N/A'
         }
-        return `${value}${headerSign}`;
+        return value;
     }
 }
 module.exports = {
