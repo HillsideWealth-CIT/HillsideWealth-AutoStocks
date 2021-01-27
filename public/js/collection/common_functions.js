@@ -6,7 +6,6 @@ function open_chart(symbol) {
     window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`);
     return;
 }
-
 /**
  * displays historical data in a sweet alert
  * @param {String} symbol 
@@ -342,7 +341,9 @@ async function update(link) {
         if (selected[i].symbol) {
             to_update.push({
                 stock_id: shareConf ? selected[i].username : selected[i].stock_id,
-                symbol: selected[i].symbol
+                symbol: selected[i].symbol,
+                shared: selected[i].shared,
+                special: selected[i].special
             })
         }
         else {
@@ -496,4 +497,8 @@ const switch_config = async () => {
                 .then(data => { resolve(data) })
         })
     }
+}
+
+function goToCustom(){
+    window.open(customLink, '_self')
 }

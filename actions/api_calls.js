@@ -2,7 +2,7 @@ const request = require('request');
 require('dotenv').config
 
 const db = require("../actions/database");
-const timeout_ms = 30000;
+const timeout_ms = 50000;
 /**
  * Gets the summary of a stock using the gurufocus api
  * @param {String} symbol The stock symbol
@@ -70,7 +70,7 @@ const update_prices = async (list, username) => {
         catch (err) {
             console.log(err)
         }
-        await db.updatePrices(list[i].symbol, username, currentStock.sector, currentStock.current_price, currentStock.gfrating, currentStock.predictability, currentStock.financialStrength);
+        await db.updatePrices(list[i].symbol, currentStock.company, username, currentStock.sector, currentStock.current_price, currentStock.gfrating, currentStock.predictability, currentStock.financialStrength);
         clearTimeout(timer);
     }
     return;
@@ -83,7 +83,6 @@ const update_prices = async (list, username) => {
  */
 const gurufocusAdd = async (list, username, summaryCall = true, shared = false, special = false) => {
     await update_prices(list, username);
-    console.log(1)
     for (i in list) {
         let timer;
         let currentStock = {
