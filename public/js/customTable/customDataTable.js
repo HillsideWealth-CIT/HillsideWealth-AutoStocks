@@ -5,6 +5,8 @@ let id;
 let configName;
 let fallback;
 
+console.log(window.location.href)
+
 /**
  * Initializes table
  * Defaults to a premade table if user does not have one
@@ -29,7 +31,7 @@ const Initialize_table = async () => {
  */
 const fetchData = () => {
   return new Promise((resolve, reject) => {
-    fetch("/init_table", {
+    fetch(initLink, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "init_custom" })
@@ -46,7 +48,8 @@ const fetchData = () => {
  */
 const setTableHeader = (obj) => {
   $(`<th>Symbol</th>`).appendTo("#headerRow");
-  $(`<th>${configName}</th>`).appendTo("#headerRow");
+  $(`<th>${configName} - (${tableType})</th>`).appendTo("#headerRow");
+  $(`<th>Buttons</th>`).appendTo("#headerRow");
   for (let [key] of Object.entries(obj)) {
     // console.log(key)
     headerInfo.push(key);
@@ -90,7 +93,27 @@ const column_builder = () => {
   //check
   let columns = [
     { data: "symbol" },
-    { data: "stock_name" }
+    { data: "stock_name" },
+    { data : null,
+      orderable : false,
+      className: 'setting_cell',
+      render: function( data, type, row, meta){
+          // Edit Buttons: 
+          // 1: Saves comments and links
+          // 2: View Key Stats
+          // 3: Open Gurufocus Chart
+          // 4: Opens DFC calculator
+          // 5: 15 Year historical Financial Data
+          
+          return `
+          <div>
+              <button type="button" onclick='openNotes("${row.stock_id}", "${row.symbol}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
+              <button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>
+              <button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>
+          </div>
+          `;
+      }    
+    },
   ]
   headerInfo.forEach(value => {
     columns.push({ data: `stock_data.${value}` })

@@ -360,14 +360,15 @@ const arrayAddStockData = async (data) => {
 /* runQuery('update stockdata set date = $1 WHERE date= $2', [new Date(new Date().setDate(new Date().getDate()-1)), new Date()])
  */
 
-const updatePrices = async(stock, username, sector, current_price, gfrating, predictability, financialStrength) => {
-    return await runQuery(`UPDATE stocks SET sector = $1, current_price = $2, gfrating = $3, predictability = $4, financialstrength = $5 where username = $6 and symbol = $7`,
+const updatePrices = async(stock, stockName, username, sector, current_price, gfrating, predictability, financialStrength) => {
+    return await runQuery(`UPDATE stocks SET sector = $1, current_price = $2, gfrating = $3, predictability = $4, financialstrength = $5, stock_name = $6 where username = $7 and symbol = $8`,
         [
             sector,
             current_price,
             gfrating,
             predictability,
             financialStrength,
+            stockName,
             username,
             stock,
 
@@ -602,6 +603,8 @@ function getdata(stocks, stockdata){
             links: stocks.rows[i].links,
             predictability: stocks.rows[i].predictability,
             financialStrength: stocks.rows[i].financialstrength,
+            special: stocks.rows[i].special,
+            shared: stocks.rows[i].shared
         })
     }
     return stockAndData

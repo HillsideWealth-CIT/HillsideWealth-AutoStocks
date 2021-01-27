@@ -129,3 +129,69 @@ async function fetchConfigs(data) {
       .then(data => { resolve(data) })
   })
 }
+
+/**
+ * Opens a page that navigates to the gurufocus graph
+ * @param {String} symbol - The Stock Symbol
+ */
+function open_chart(symbol) {
+  window.open(`https://www.gurufocus.com/chart/${symbol}`, `_blank`);
+  return;
+}
+
+/**
+ * displays historical data in a sweet alert
+ * @param {String} symbol 
+ * @param {JSON} stockdata 
+ * @param {Integer} years 
+ */
+async function show_financials(symbol, stock_id) {
+  swal.fire({
+      type: 'question',
+      title: 'Loading Data...',
+  })
+  let response = await fetch(`/historic?id=${stock_id}`);
+  let json = await response.json();
+  console.log(json)
+  if (json.error !== true) {
+      let historicData = json.data;
+      let configString = json.test.split(',');
+      let headers = "";
+      let financials = "";
+      for (let i of configString) headers += `<th>${i.split('|')[0]}</th>`;
+      for (let i = 0; i <= historicData.length; i++) {
+          let rowString = '';
+          for (let y in historicData[i]) {
+              try {
+                  rowString += `<td>${historicData[i][y]}</td>`
+              }
+              catch (e) {
+                  break;
+              }
+          }
+          financials += `<tr>${rowString}</tr>`
+      }
+      swal.fire({
+          title: `${symbol} Historical Data`,
+          showConfirmButton: true,
+          width: '90vw',
+          html:
+              `
+              <table class="table table-sm table-bordered table-light table-responsive">
+                  <thead class="thead-dark">
+                      <tr>
+                          <th>Date</th>
+                          ${headers}
+                      </tr>
+                  </thead>
+                  ${financials}
+              </table>
+              <button class="btn btn-secondary" onClick="historicalCustomization('${json.test.replaceAll('\n', '')}', '${json.id}', '${json.name}', ${json.fallback})">Customize</button>
+              <button class="btn btn-secondary" onClick="switch_config()">Switch</button>
+              `
+      });
+  }
+  else {
+      historicalCustomization('');
+  }
+}

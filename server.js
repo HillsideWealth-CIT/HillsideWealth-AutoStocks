@@ -95,10 +95,13 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
 });
 
 app.get('/custom', sessionCheck, async (request, response) => {
-    response.render("collection2.hbs", {
+    console.log(request.query)
+    let test = {
         cu: true,
         admin: (request.session.status == 'admin')
-    });
+    }
+    test[`${request.query.table}`] = true;
+    response.render("collection2.hbs", test);
 })
 
 
@@ -323,7 +326,6 @@ app.post('/indicators/delete', sessionCheck, statusCheck, (request, response) =>
 
 //Initializes Tables
 app.post('/init_table', sessionCheck, statusCheck, async (request, response) => {
-    console.log(request.body.action)
     if (request.body.action == "init_user") {
         db.showstocks(request.session.user).then(resolve => {
             resolve.forEach((stock) => {
@@ -350,7 +352,10 @@ app.post('/init_table', sessionCheck, statusCheck, async (request, response) => 
     }
     else if (request.body.action == "init_custom"){
         let toSend = [];
-        let stocks = await db.showstocks(request.session.user);
+        let stocks;
+        if(request.query.table === "all") stocks = await db.showstocks(request.session.user);
+        if(request.query.table === "shared") stocks = await db.showshared(request.session.user);
+        if(request.query.table === "special") stocks = await db.showSpecial(request.session.user);
         let tableconfig = await db.getTableConfig(request.session.user, 'custom');
         if(tableconfig.rows.length !== 0){
             stocks.forEach(stock => {
@@ -515,7 +520,7 @@ app.post('/update_financials', sessionCheck, statusCheck, (request, response) =>
     console.log(request.session.user)
     switch(request.query.table) {
         case 'all':
-        api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)
+        api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = true, request.session.shared, request.session.special)
         .then((r) => {
             db.get_added(request.body.action[0].symbol, request.session.user)
                 .then((res) => {
@@ -525,7 +530,7 @@ app.post('/update_financials', sessionCheck, statusCheck, (request, response) =>
         });
         break;
         case 'shared':
-            api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = false)
+            api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = true, request.session.shared, request.session.special)
             .then((r) => {
                 db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
                     .then((res) => {

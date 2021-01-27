@@ -342,8 +342,9 @@
                 removeLink: '/remove?table=shared',
                 updateLink: 'update_financials?table=shared',
                 shareConf: true,
+                customLink: '/custom?table=shared'
             }
-            const { action, addLink, removeLink, updateLink, shareConf } = config
+            const { action, addLink, removeLink, updateLink, shareConf, customLink } = config
 
         </script>
 
@@ -356,8 +357,9 @@
                 removeLink: '/remove?table=special',
                 updateLink: 'update_financials?table=all',
                 shareConf: false,
+                customLink: '/custom?table=special'
             }
-            const { action, addLink, removeLink, updateLink, shareConf } = config
+            const { action, addLink, removeLink, updateLink, shareConf, customLink } = config
         </script>
         {{else}}
         <script type="text/JavaScript">
@@ -367,8 +369,9 @@
                 removeLink: '/remove?table=all',
                 updateLink: 'update_financials?table=all',
                 shareConf: false,
+                customLink: '/custom?table=all'
             }
-            const { action, addLink, removeLink, updateLink, shareConf  } = config
+            const { action, addLink, removeLink, updateLink, shareConf, customLink  } = config
         </script>
         {{/if}}
 {{/if}}
