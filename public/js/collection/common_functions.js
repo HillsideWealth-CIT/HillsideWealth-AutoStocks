@@ -412,7 +412,7 @@ function historicalCustomization(configString, id = '', name = '', fallback = fa
         <div class="form-group">
         <label for="configName">${(fallback) ? "Create a New Configuration From [Databases > CustomDB] or Switch to a different Configuration" : "Configuration Name"}</label>
         <input ${(fallback) ? "ReadOnly" : ""} type="text" class="form-control" id="configName" value="${name}">
-        <label for="historicalDataConfig">Format:Header|column, Header(Sign)|Column Column| A + B</label>
+        <label for="historicalDataConfig"><a href="https://docs.google.com/document/d/1hUCcQ-ukB-1T10g2-iqrcvEhW97S6JUV7f8ubryG84w/edit?usp=sharing">Click Here For Instructions</a></label>
         <textarea
             style="height:25em;"
             id="historicalDataConfig"

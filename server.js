@@ -389,6 +389,7 @@ app.post('/tableconfig', sessionCheck, statusCheck, async(request, response ) =>
                 name: request.body.configName,
                 id: request.body.id
             },"edit")
+            response.send({status: "ok"})
             break;
         case "add":
             console.log(request.body)
@@ -398,6 +399,7 @@ app.post('/tableconfig', sessionCheck, statusCheck, async(request, response ) =>
                 configString : request.body.configString.replace('\n', ''), 
                 configName : request.body.configName
                 }, request.body.action)
+            response.send({status: "ok"})
             break;
         case "getConfigs":
             let configList = await db.customTableSettings({username: request.session.user}, "getConfigs");

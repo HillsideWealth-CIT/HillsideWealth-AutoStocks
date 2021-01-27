@@ -193,6 +193,12 @@ function initial_values_calc(years, ttm, prev_eps, terminal_growth, discount, gr
     return calculated;
 }
 
+/**
+ * Evaluates expressions with variables
+ * @param {Array<Number>} variables - Variables in the equation
+ * @param {String} equation - Equation
+ * @returns {Number} The answer for the expression with the variables
+ */
 function evalExpression(variables, equation){
     const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
     let scope = {};
