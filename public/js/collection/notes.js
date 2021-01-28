@@ -1,5 +1,6 @@
 const openNotes = async (id, symbol) => {
   let initData = await (await fetch(`/comments/?id=${id}`)).json();
+  console.log(initData)
   let cDate = new Date();
   let CurrentDate = `${cDate.getDate()}/${cDate.getMonth() + 1}/${cDate.getFullYear()}`
   swal.fire({
@@ -99,7 +100,7 @@ const openNotes = async (id, symbol) => {
       `})
     .then((result) => {
       if (!result.dismiss) {
-        let data = formatData()
+        let data = formatData();
         fetch('/comments', {
           method: 'POST',
           headers: {"Content-Type": "application/json"},
@@ -174,14 +175,12 @@ const openNotes = async (id, symbol) => {
     let formatString = '';
     if(data !== null){
       for(let i in data){
+        console.log(data[i])
         formatString += `
       <tr>
         <td>
-          <select id="founderRunBoard" type="text" class="form-control" value="tradition">
-          <option selected hidden>${data[i]}</option>
-          <option value="Stable">Stable</option>
-          <option value="Increasing">Increasing</option>
-          <option value="Decreasing">Decreasing</option>
+          <select id="moat" type="text" class="form-control">
+          <option selected hidden>${data[i].source}</option>
           <option value="Network effect – marketplace">Network effect – marketplace</option>
           <option value="Network effect – data">Network effect – data</option>
           <option value="Network effect - platform">Network effect - platform</option>
@@ -196,12 +195,22 @@ const openNotes = async (id, symbol) => {
           <option value="remove">remove</option>
           </select>
         </td>
+        <td>
+          <select id="moat" type="text" class="form-control">
+          <option selected hidden>${data[i].status}</option>
+          <option value="Stable">Stable</option>
+          <option value="Increasing">Increasing</option>
+          <option value="Decreasing">Decreasing</option>
+        </select>
+        </td>
       </tr>
         `
       }
     }
     return (`
     <table style="width:100%">
+    <col style="width:70%" />
+    <col style="width:30%" />
     <thead>
       <tr>
         <th></th>
@@ -277,8 +286,15 @@ const openNotes = async (id, symbol) => {
     });
     //get Moat
     $('#sourceOfMoats tr').each((i, row) => {
-      let value = $(row).find("select").val();
-      if (value !== "remove") toSave.source_of_moats.push(value);
+      // console.log($(row).find('select')[0].value)
+      // console.log($(row).find('select')[1].value)
+      // let value = $(row).find("select").val();
+      if ($(row).find('select')[0].value !== "remove"){
+        toSave.source_of_moats.push({
+          source: $(row).find('select')[0].value,
+          status: $(row).find('select')[1].value
+        })
+      }
     });
     //gets insider activity
     $("#insiderActivity tr").each((i, row) => {
@@ -352,10 +368,7 @@ function createMoat(id) {
   $(id).append(`
   <tr>
     <td>
-      <select id="founderRunBoard" type="text" class="form-control">
-      <option value="Stable">Stable</option>
-      <option value="Increasing">Increasing</option>
-      <option value="Decreasing">Decreasing</option>
+      <select id="moat" type="text" class="form-control">
       <option value="Network effect – marketplace">Network effect – marketplace</option>
       <option value="Network effect – data">Network effect – data</option>
       <option value="Network effect - platform">Network effect - platform</option>
@@ -368,6 +381,13 @@ function createMoat(id) {
       <option value="Resource – knowledge">Resource – knowledge</option>
       <option value="Resource – regulatory">Resource – regulatory</option>
       <option value="remove">remove</option>
+      </select>
+    </td>
+    <td>
+      <select id="moat" type="text" class="form-control">
+        <option value="Stable">Stable</option>
+        <option value="Increasing">Increasing</option>
+        <option value="Decreasing">Decreasing</option>
       </select>
     </td>
   </tr>
