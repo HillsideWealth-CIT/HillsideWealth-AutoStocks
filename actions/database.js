@@ -497,6 +497,7 @@ const customTableSettings = async(data, action) => {
 }
 
 const comments = async(data) => {
+    console.log(data)
     if(data.action === "get"){
         return await runQuery(`
             SELECT 
