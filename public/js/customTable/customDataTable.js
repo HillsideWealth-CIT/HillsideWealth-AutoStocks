@@ -5,8 +5,6 @@ let id;
 let configName;
 let fallback;
 
-console.log(window.location.href)
-
 /**
  * Initializes table
  * Defaults to a premade table if user does not have one
@@ -15,7 +13,8 @@ const Initialize_table = async () => {
   let stockdb = await fetchData();
   console.log(stockdb);
   if (!stockdb.error) {
-    config_string = stockdb.config_string;
+    config_string = JSON.parse(stockdb.config_string);
+    console.log(config_string)
     id = stockdb.id;
     configName = stockdb.name;
     fallback = stockdb.fallback;

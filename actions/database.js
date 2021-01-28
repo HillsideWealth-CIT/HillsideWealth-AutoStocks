@@ -335,6 +335,10 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('invested_capital')
                 placeholders.push(`$${params.push(parseFloat(isFinite(data[i].invested_capital) ? data[i].invested_capital : 0.0))}`)
             }
+            if(data[i].intangible_assets != null){
+                if(i == 0) columns.push('intangible_assets')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].intangible_assets) ? data[i].intangible_assets : 0.0))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }

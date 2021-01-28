@@ -173,6 +173,7 @@ app.get('/historic', sessionCheck, async (request, response) => {
             fallback: tableconfig.rows[0].fallback})
     }
     catch(e){
+        console.log(e)
         response.send({error: true})
     }
 

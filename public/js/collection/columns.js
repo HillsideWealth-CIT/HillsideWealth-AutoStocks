@@ -66,14 +66,14 @@ var column_list = ['check',
     'FCFROCE% SD 5yr',
     'FCFROCE% SD 10yr',
 
-    'FCFROJDVIC%',
-    'FCFROJDVIC% 3yr',
-    'FCFROJDVIC% 5yr',
-    'FCFROJDVIC% 10yr',
-    'FCFROJDVIC% TTM/5yr',
-    'FCFROJDVIC% TTM/10yr',
-    'FCFROJDVIC% SD 5yr',
-    'FCFROJDVIC% SD 10yr',
+    'FCFROTA%',
+    'FCFROTA% 3yr',
+    'FCFROTA% 5yr',
+    'FCFROTA% 10yr',
+    'FCFROTA% TTM/5yr',
+    'FCFROTA% TTM/10yr',
+    'FCFROTA% SD 5yr',
+    'FCFROTA% SD 10yr',
 
     'iROiE% 1yr',
     'iROiE% 3yr',
@@ -385,7 +385,7 @@ function keyStats_Rest() {
 
 function returnOnCapital() {
     hide_loop(column_list.indexOf('FCFROIC%'),
-        column_list.indexOf('FCFROJDVIC% SD 10yr'));
+        column_list.indexOf('FCFROTA% SD 10yr'));
     $table.columns.adjust().draw(false);
 }
 

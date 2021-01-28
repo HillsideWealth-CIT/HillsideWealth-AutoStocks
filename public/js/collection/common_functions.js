@@ -19,25 +19,28 @@ async function show_financials(symbol, stock_id) {
     })
     let response = await fetch(`/historic?id=${stock_id}`);
     let json = await response.json();
-    console.log(json)
     if (json.error !== true) {
+        let configString = JSON.parse(json.test);
         let historicData = json.data;
-        let configString = json.test.split(',');
         let headers = "";
         let financials = "";
-        for (let i of configString) headers += `<th>${i.split('|')[0]}</th>`;
-        for (let i = 0; i <= historicData.length; i++) {
+        for(let i of configString){
+            headers += `<th>${i.rowName}</th>`
+        }
+        for(let i = 0; i <= historicData.length; i++){
             let rowString = '';
-            for (let y in historicData[i]) {
-                try {
+            for(let y in historicData[i]){
+                try{
                     rowString += `<td>${historicData[i][y]}</td>`
                 }
-                catch (e) {
+                catch{
                     break;
                 }
+               
             }
             financials += `<tr>${rowString}</tr>`
         }
+        console.log(configString)
         swal.fire({
             title: `${symbol} Historical Data`,
             showConfirmButton: true,
@@ -53,7 +56,6 @@ async function show_financials(symbol, stock_id) {
                     </thead>
                     ${financials}
                 </table>
-                <button class="btn btn-secondary" onClick="historicalCustomization('${json.test.replaceAll('\n', '')}', '${json.id}', '${json.name}', ${json.fallback})">Customize</button>
                 <button class="btn btn-secondary" onClick="switch_config()">Switch</button>
                 `
         });
@@ -395,66 +397,6 @@ async function update(link) {
 }
 
 /**
- * Used to edit configurations or create new configurations
- * @param {String} configString - Configuration String
- * @param {String} action - Determines what happens on the backend
- * @param {String} name - Name of the configuration
- * @param {Boolean} fallback - Determines if the configuration is editable
- */
-function historicalCustomization(configString, id = '', name = '', fallback = false) {
-    let toSend = {};
-    swal.fire({
-        title: `${(fallback) ? "This Is a Default Example And Cannot Be Edited" : "Historical Edit"}`,
-        showConfirmButton: true,
-        showCancelButton: true,
-        width: '80vw',
-        html: `
-        <div class="form-group">
-        <label for="configName">${(fallback) ? "Create a New Configuration From [Databases > CustomDB] or Switch to a different Configuration" : "Configuration Name"}</label>
-        <input ${(fallback) ? "ReadOnly" : ""} type="text" class="form-control" id="configName" value="${name}">
-        <label for="historicalDataConfig"><a href="https://docs.google.com/document/d/1hUCcQ-ukB-1T10g2-iqrcvEhW97S6JUV7f8ubryG84w/edit?usp=sharing">Click Here For Instructions</a></label>
-        <textarea
-            style="height:25em;"
-            id="historicalDataConfig"
-            spellcheck="false" 
-            type="text" 
-            class="form-control"
-            ${(fallback) ? "ReadOnly" : ""}
-            >${configString.replaceAll(',', ',\r\n')}</textarea>
-        <div>
-        `
-    }).then((result) => {
-        console.log($('#historicalDataConfig').val().replaceAll(',\n', ','))
-        console.log(result)
-        if (result.value) {
-            if (fallback) {
-                swal.fire({
-                    type: "error",
-                    title: "Default Table Cannot be Edited",
-                    text: "Please Create a New Configuration In The Custom Table Or Switch To a different Configuration"
-                })
-                return
-            }
-            fetch('/tableconfig', {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: "edit",
-                    table: "historic",
-                    configString: $('#historicalDataConfig').val().replaceAll(',\n', ','),
-                    configName: $("#configName").val(),
-                    id: id
-                }),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8'
-                }
-            })
-                .then(response => response.json())
-                .then(Json => console.log(json))
-        }
-    })
-}
-
-/**
  * Used to switch configurations for the table
  */
 const switch_config = async () => {
@@ -502,3 +444,62 @@ const switch_config = async () => {
 function goToCustom(){
     window.open(customLink, '_self')
 }
+
+function endlessRows(id, data, fallback = false){
+    let formatString = '';
+    if(data !== ""){
+      for(let i in data){
+        formatString += `
+        <tr>
+          <td><input class="form-control" disabled="${fallback}" placeholder="HeaderName" type="text" value="${data[i].rowName}"></td>
+          <td><input class="form-control" disabled="${fallback}" placeholder="Decimal" type="text" value="${data[i].decimal}"></td>
+          <td><input class="form-control" disabled="${fallback}" placeholder="Sign" type="text" value="${data[i].sign}"></td>
+          <td><input class="form-control" disabled="${fallback}" placeholder="Columns" type="text" value="${data[i].columns}"></td>
+          <td><input class="form-control" disabled="${fallback}" placeholder="Equation" type="text" value="${data[i].equation}"></td>
+        </tr>
+        `
+      }
+    }
+    return(`
+      <table>
+      <col style="width:10%" />
+      <col style="width:8%" />
+      <col style="width:8%" />
+      <col style="width:37%" />
+      <col style="width:37%" />
+      <thead>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </thead>
+      <tbody id="${id}">
+        ${formatString}
+      </tbody>
+      </table>
+    `)
+  }
+
+  function formatConfigData(){
+    let toSave = {
+      configName: $("#configName").val(),
+      configRows: []
+    };
+  
+    $("#historicalDataConfigTable tr").each((i, row) => {
+      let rowData = $(row).find('input');
+      if(rowData[0].value.length > 0){
+        toSave.configRows.push({
+          rowName: rowData[0].value,
+          decimal: rowData[1].value,
+          sign: rowData[2].value,
+          columns: rowData[3].value,
+          equation: rowData[4].value
+        })
+      }
+    })
+  
+    return toSave
+  }
+  
