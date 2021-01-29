@@ -159,7 +159,7 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     try{currentData.shares_outstanding =  parseFloat(annuals.valuation_and_quality["Shares Outstanding (EOP)"][f])}
                     catch{currentData.shares_outstanding = null}
                     try{currentData.aebitda =  Math.round(parseFloat(annuals.income_statement.EBITDA[f]))}
-                    catch{currentData.aebitda = Math.round( 0 + parseFloat(annuals.income_statement.EBITDA[f]))}
+                    catch{currentData.aebitda = null}
                     try{ currentData.wacc =  parseFloat(annuals.common_size_ratios["WACC %"][f])}
                     catch{ currentData.wacc = null}
                     try{currentData.capex =  parseFloat(annuals.cashflow_statement["Capital Expenditure"][f])}
@@ -235,6 +235,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     catch{ currentData.month_end_price = NaN; }
                     try { currentData.cash_conversion_cycle = parseFloat(annuals.common_size_ratios["Cash Conversion Cycle"][f])  }
                     catch{ currentData.cash_conversion_cycle = NaN; }
+                    try { currentData.intangible_assets = parseFloat(annuals.balance_sheet["Intangible Assets"][f])  }
+                    catch{ currentData.intangible_assets = NaN; }
                     try { 
                         currentData.invested_capital
                             = parseFloat(annuals.balance_sheet["Total Stockholders Equity"][f])

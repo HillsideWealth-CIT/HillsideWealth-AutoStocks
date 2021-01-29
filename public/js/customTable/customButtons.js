@@ -10,20 +10,20 @@ const edit_button = (configString, action, name = "", fallback = false) => {
     title: `${(fallback) ? "This Is a Default Example And Cannot Be Edited" : "Historical Edit"}`,
     showConfirmButton: true,
     showCancelButton: true,
-    width: '80vw',
+    width: '90vw',
     html: `
         <div class="form-group">
         <label for="configName">${(fallback) ? "Create a New Configuration From [Add] or [Switch] to a different Configuration" : "Configuration Name"}</label>
         <input ${(fallback) ? "ReadOnly" : ""} type="text" class="form-control" id="configName" value="${name}">
-        <label for="historicalDataConfig"><a href="https://docs.google.com/document/d/1hUCcQ-ukB-1T10g2-iqrcvEhW97S6JUV7f8ubryG84w/edit?usp=sharing">Click Here For Instructions</a></label>
-        <textarea
-            style="height:25em;"
-            id="historicalDataConfig"
-            spellcheck="false" 
-            type="text" 
-            class="form-control"
-            ${(fallback) ? "ReadOnly" : ""}
-            >${configString.replaceAll(',', ',\r\n')}</textarea>
+        <label for="historicalDataConfig"><a href="https://docs.google.com/document/d/1hUCcQ-ukB-1T10g2-iqrcvEhW97S6JUV7f8ubryG84w/edit?usp=sharing">Click Here For Instructions</a>
+        ${ (fallback)
+          ? ''
+          : '<button onClick="createRow()" type="button" style="padding:0px;"  class="btn btn-link btn-sm"><span class="fas fa-plus"></span></button>'
+        }
+        </label>
+        <div id="historicalDataConfig" class="form-control" style="height:300px; overflow:auto;">
+        ${endlessRows("historicalDataConfigTable", configString, fallback)}
+        </div>
         <div>
         `
   }).then((result) => {
@@ -36,13 +36,14 @@ const edit_button = (configString, action, name = "", fallback = false) => {
         })
         return
       }
+      let data = formatConfigData();
       fetch(`/tableconfig`, {
         method: "POST",
         body: JSON.stringify({
           action: action,
           table: 'custom',
-          configString: $("#historicalDataConfig").val().replaceAll(",\n", ","),
-          configName: $("#configName").val(),
+          configString: JSON.stringify(data.configRows),
+          configName: data.configName,
           id: id
         }),
         headers: {
@@ -56,6 +57,77 @@ const edit_button = (configString, action, name = "", fallback = false) => {
         })
     }
   })
+}
+
+  function endlessRows(id, data, fallback = false){
+    console.log(fallback)
+    let formatString = '';
+    if(data !== ""){
+      for(let i in data){
+        formatString += `
+        <tr>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="HeaderName" type="text" value="${data[i].rowName}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="Decimal" type="text" value="${data[i].decimal}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="Sign" type="text" value="${data[i].sign}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="Columns" type="text" value="${data[i].columns}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="Equation" type="text" value="${data[i].equation}"></td>
+        </tr>
+        `
+      }
+    }
+    return(`
+      <table>
+      <col style="width:10%" />
+      <col style="width:8%" />
+      <col style="width:8%" />
+      <col style="width:37%" />
+      <col style="width:37%" />
+      <thead>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </thead>
+      <tbody id="${id}">
+        ${formatString}
+      </tbody>
+      </table>
+    `)
+  }
+
+function formatConfigData(){
+  let toSave = {
+    configName: $("#configName").val(),
+    configRows: []
+  };
+
+  $("#historicalDataConfigTable tr").each((i, row) => {
+    let rowData = $(row).find('input');
+    if(rowData[0].value.length > 0){
+      toSave.configRows.push({
+        rowName: rowData[0].value,
+        decimal: rowData[1].value,
+        sign: rowData[2].value,
+        columns: rowData[3].value,
+        equation: rowData[4].value
+      })
+    }
+  })
+
+  return toSave
+}
+
+function createRow(){
+  $('#historicalDataConfigTable').append(`
+    <tr>
+      <td><input class="form-control" placeholder="HeaderName" type="text"></td>>
+      <td><input class="form-control" placeholder="Decimal" type="text"></td>
+      <td><input class="form-control" placeholder="Sign" type="text"></td>
+      <td><input class="form-control" placeholder="Columns" type="text"></td>
+      <td><input class="form-control" placeholder="Equation" type="text"></td>
+    </tr>
+  `)
 }
 
 /**
@@ -152,25 +224,28 @@ async function show_financials(symbol, stock_id) {
   })
   let response = await fetch(`/historic?id=${stock_id}`);
   let json = await response.json();
-  console.log(json)
   if (json.error !== true) {
+      let configString = JSON.parse(json.test);
       let historicData = json.data;
-      let configString = json.test.split(',');
       let headers = "";
       let financials = "";
-      for (let i of configString) headers += `<th>${i.split('|')[0]}</th>`;
-      for (let i = 0; i <= historicData.length; i++) {
+      for(let i of configString){
+          headers += `<th>${i.rowName}</th>`
+      }
+      for(let i = 0; i <= historicData.length; i++){
           let rowString = '';
-          for (let y in historicData[i]) {
-              try {
+          for(let y in historicData[i]){
+              try{
                   rowString += `<td>${historicData[i][y]}</td>`
               }
-              catch (e) {
+              catch{
                   break;
               }
+             
           }
           financials += `<tr>${rowString}</tr>`
       }
+      console.log(configString)
       swal.fire({
           title: `${symbol} Historical Data`,
           showConfirmButton: true,
@@ -186,7 +261,6 @@ async function show_financials(symbol, stock_id) {
                   </thead>
                   ${financials}
               </table>
-              <button class="btn btn-secondary" onClick="historicalCustomization('${json.test.replaceAll('\n', '')}', '${json.id}', '${json.name}', ${json.fallback})">Customize</button>
               <button class="btn btn-secondary" onClick="switch_config()">Switch</button>
               `
       });
