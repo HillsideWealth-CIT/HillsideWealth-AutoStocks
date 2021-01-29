@@ -382,6 +382,7 @@ app.post('/init_table', sessionCheck, statusCheck, async (request, response) => 
 });
 
 app.post('/tableconfig', sessionCheck, statusCheck, async(request, response ) => {
+    console.log(request.body)
     switch (request.body.action) {
         case "edit":
             console.log(request.body)

@@ -491,9 +491,9 @@ function column_builder(){
             }
         },
         { data : "stockdata.0.fcfEmployee" },
-        { data : "setup.fcfEmployee.3yrAvg" },
-        { data : "setup.fcfEmployee.5yrAvg" },
-        { data : "setup.fcfEmployee.10yrAvg" },
+        { data : "setup.fcfEmployee.3yr" },
+        { data : "setup.fcfEmployee.5yr" },
+        { data : "setup.fcfEmployee.10yr" },
 
         { data : "stockdata.0.purchase_of_business" },
         { data : "setup.purchase_of_business.3yrAvg" },

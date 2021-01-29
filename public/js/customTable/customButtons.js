@@ -15,15 +15,15 @@ const edit_button = (configString, action, name = "", fallback = false) => {
         <div class="form-group">
         <label for="configName">${(fallback) ? "Create a New Configuration From [Add] or [Switch] to a different Configuration" : "Configuration Name"}</label>
         <input ${(fallback) ? "ReadOnly" : ""} type="text" class="form-control" id="configName" value="${name}">
-        <label for="historicalDataConfig"><a href="https://docs.google.com/document/d/1hUCcQ-ukB-1T10g2-iqrcvEhW97S6JUV7f8ubryG84w/edit?usp=sharing">Click Here For Instructions</a>
-        ${ (fallback)
-          ? ''
-          : '<button onClick="createRow()" type="button" style="padding:0px;"  class="btn btn-link btn-sm"><span class="fas fa-plus"></span></button>'
-        }
-        </label>
+        <label for="historicalDataConfig"><a href="https://docs.google.com/document/d/1hUCcQ-ukB-1T10g2-iqrcvEhW97S6JUV7f8ubryG84w/edit?usp=sharing">Click Here For Instructions</a></label>
         <div id="historicalDataConfig" class="form-control" style="height:300px; overflow:auto;">
         ${endlessRows("historicalDataConfigTable", configString, fallback)}
         </div>
+        ${ (fallback)
+          ? ''
+          : '<button onClick="createRow()" type="button" style="margin-top: 5px;"  class="btn btn-info">Add Row</button>'
+        }
+        
         <div>
         `
   }).then((result) => {
@@ -134,7 +134,7 @@ function createRow(){
  * Used to switch configurations for the table
  * Refreshes the page when finished
  */
-const switch_config = async () => {
+const switch_config = async (action = "switchCustom") => {
   let configList = await fetchConfigs({ action: "getConfigs" });
   const { value: config } = await Swal.fire({
     title: "Config Selection",
@@ -145,7 +145,7 @@ const switch_config = async () => {
   })
   if (config) {
     let returned = await fetchConfigs({
-      action: "switchCustom",
+      action: action,
       id: config
     })
     if (returned.success === true) {
@@ -261,7 +261,7 @@ async function show_financials(symbol, stock_id) {
                   </thead>
                   ${financials}
               </table>
-              <button class="btn btn-secondary" onClick="switch_config()">Switch</button>
+              <button class="btn btn-secondary" onClick="switch_config('switchHistoric')">Switch</button>
               `
       });
   }
