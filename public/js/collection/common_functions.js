@@ -24,6 +24,7 @@ async function show_financials(symbol, stock_id) {
         let historicData = json.data;
         let headers = "";
         let financials = "";
+        console.log(historicData)
         for(let i of configString){
             headers += `<th>${i.rowName}</th>`
         }
@@ -40,7 +41,6 @@ async function show_financials(symbol, stock_id) {
             }
             financials += `<tr>${rowString}</tr>`
         }
-        console.log(configString)
         swal.fire({
             title: `${symbol} Historical Data`,
             showConfirmButton: true,

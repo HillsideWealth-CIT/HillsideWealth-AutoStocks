@@ -130,7 +130,7 @@ function format_data(stock) {
 
         data.purchase_of_business = formatNumber(Number(data.purchase_of_business).toFixed(0), '$')
 
-        data.datestring = moment(data.date).format('MMM DD, YYYY');
+        data.datestring = moment(data.date).format('YYYY-MM-DD');
 
         try {
             data.growth_capex = calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index + 1].revenue);
@@ -151,7 +151,7 @@ function format_data(stock) {
         }
     });
 
-    stock.stockdata[0].fcfEmployee = `$${((Number(stock.stockdata[0].fcf) * 1000000) / Number(stock.stockdata[1].employees)).toFixed(0)}`
+    stock.stockdata[0].fcfEmployee = `$${formatNumber(cNaI(((Number(stock.stockdata[0].fcf) * 1000000) / Number(stock.stockdata[1].employees)).toFixed(0)))}`
 
     // Setup
     stock.setup = {};
@@ -190,7 +190,7 @@ function format_data(stock) {
     stock.setup.sgr = setup('sgr', '%');
 
     stock.setup.dividendPayoutRatio = setup('dividendPayoutRatio', '%');
-    stock.setup.cashflow_reinvestment_rate = setup('cashflow_reinvestment_rate', '%',);
+    stock.setup.cashflow_reinvestment_rate = setup('cashflow_reinvestment_rate', '%', 0);
 
     stock.setup.evFcf = setup('evFcf');
     stock.setup.fcfYield = setup('fcfYield', '%');
@@ -473,7 +473,7 @@ function formatHistorical(data, cs, years=20) {
     let sd = data[0].stockdata
     for(let yr = 0; yr < years; yr++){
         try{
-        let year = { date : moment(sd[i].date).format('MMM, YYYY') };
+        let year = { date : moment(sd[yr].date).format('YYYY, MMM') };
         for(let i = 0; i < custom.length; i++){
             let decimal = Number(custom[i].decimal);
             //equation empty
@@ -485,7 +485,7 @@ function formatHistorical(data, cs, years=20) {
             else{
                 let variables = [];
                 for(let p of custom[i].columns.split(" ")){
-                    if(p.length > 0) variables.push(Number(sToSD(p, i)))
+                    if(p.length > 0) variables.push(Number(sToSD(p, yr)))
                 }
                 year[custom[i].rowName] = (custom[i].sign === '$')
                 ?   `$${Number(evalExpression(variables, custom[i].equation)).toFixed(decimal)}`
@@ -507,6 +507,8 @@ function formatHistorical(data, cs, years=20) {
      * @returns {String} - Returns the value from the database on the specified row
      */
     function sToSD(columnString, row){
+        // console.log(columnString)
+        // console.log(row)
         let value;
         switch(columnString) {
             case 'aebitda':

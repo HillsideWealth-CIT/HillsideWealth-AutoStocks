@@ -60,16 +60,17 @@ const edit_button = (configString, action, name = "", fallback = false) => {
 }
 
   function endlessRows(id, data, fallback = false){
+    console.log(fallback)
     let formatString = '';
     if(data !== ""){
       for(let i in data){
         formatString += `
         <tr>
-          <td><input class="form-control" disabled="${fallback}" placeholder="HeaderName" type="text" value="${data[i].rowName}"></td>
-          <td><input class="form-control" disabled="${fallback}" placeholder="Decimal" type="text" value="${data[i].decimal}"></td>
-          <td><input class="form-control" disabled="${fallback}" placeholder="Sign" type="text" value="${data[i].sign}"></td>
-          <td><input class="form-control" disabled="${fallback}" placeholder="Columns" type="text" value="${data[i].columns}"></td>
-          <td><input class="form-control" disabled="${fallback}" placeholder="Equation" type="text" value="${data[i].equation}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="HeaderName" type="text" value="${data[i].rowName}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="Decimal" type="text" value="${data[i].decimal}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="Sign" type="text" value="${data[i].sign}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="Columns" type="text" value="${data[i].columns}"></td>
+          <td><input class="form-control" ${(fallback === true) ? 'disabled' : ""} placeholder="Equation" type="text" value="${data[i].equation}"></td>
         </tr>
         `
       }
