@@ -34,3 +34,8 @@ td{
     white-space: nowrap;
     border-color:rgb(204, 197, 197) !important;
 }
+
+div.dt-button-collection.dropdown-menu {
+    max-height: 40rem;
+    overflow-y: auto;
+}

@@ -7,109 +7,323 @@
                 {{#if sc}}
                 <th>Owner</th>
                 {{/if}}
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>Aggregated</th>
+                <th>Edit Buttons</th>
                 <th>Stock Name</th>
-                <th>Market Cap (M)</th>
-                <th>Sector</th>
-                <th>aEBITDA Spice</th>
-                <th>Current Price</th>
-                <th>Value Conditions</th>
-                <th>Yield</th>
-                
-                <th>Comment</th>
-                <th>Ownership</th>
-                <th>Emoticon</th>
-                <th>Categories</th>
-                
                 <th>Date</th>
-                <th>Shares Outstanding(M)</th>
-                <th>Enterprise Value(M)</th>
-                <th>Revenue(M)</th>
-                <th>aEBITDA(M)</th>
-                <th>aEBITDA/Share</th>
-                <th>aEBITDA%</th>
-                <th>Asset Turn</th>
-                <th>aEBITDA AT</th>
-                <th>EV/aEBITDA</th>
-                <th>Net Debt(M)</th>
-                <th>ND/aEBITDA</th>
-                <th>ROE</th>
-                <th>ROE Spice</th>
-                <th>Effective Tax Rate</th>
+                <th>Aggregated</th>
+                <th>Current Price</th>
 
-                <th>Guru Rating</th>
-                <th>JDV Rating</th>
-                <th>MS Exchange</th>
-                <th>MS Moat Rating</th>
-                <th>MS FV Est</th>
-                <th>MS 5* Price</th>
-                <th>MS 1* Price</th>
+                <th>FCF Spice</th>
+                <th>FCF Spice 3yr</th>
+                <th>FCF Spice 5yr</th>
+                <th>FCF Spice 10yr</th>
+                <th>FCF Spice TTM/5yr</th>
+                <th>FCF Spice TTM/10yr</th>
+                <th>FCF Spice SD 5yr</th>
+                <th>FCF Spice SD 10yr</th>
 
-                <th>EPS</th>
-                <th>Growth Years</th>
-                <th>Growth % 5Y</th>
-                <th>Growth % 10Y</th>
-                <th>Growth % 15Y</th>
-                <th>Terminal Years</th>
-                <th>Terminal Growth %</th>
-                <th>Discount Rate</th>
-                <th>Growth Value 5Y</th>
-                <th>Terminal Value 5Y</th>
-                <th>DCF Fair Value 5Y</th>
-                <th>Growth Value 10Y</th>
-                <th>Terminal Value 10Y</th>
-                <th>DCF Fair Value 10Y</th>
-                <th>Growth Value 15Y</th>
-                <th>Terminal Value 15Y</th>
-                <th>DCF Fair Value 15Y</th>
-
-                <th>FCF (M)</th>
                 <th>FCF Yield</th>
-                <th>FCF Growth (1Y)</th>
-                <th>FCF Growth (3Y)</th>
-                <th>FCF Growth (5Y)</th>
-                <th>FCF Growth(10Y)</th>
+                <th>FCF Yield 3yr</th>
+                <th>FCF Yield 5yr</th>
+                <th>FCF Yield 10yr</th>
+                <th>FCF Yield TTM/5yr</th>
+                <th>FCF Yield TTM/10yr</th>
+                <th>FCF Yield SD 5yr</th>
+                <th>FCF Yield SD 10yr</th>
 
-                <th>Capex (M)</th>
-                <th>Purchase Of Business</th>
-                <th>Growth Capex</th>
-                <th>Capex/FCF 5Y</th>
-                <th>Capex/FCF 10Y</th>
-                <th>Maintenance Capex/aEBITDA</th>
-                <th>Maintenance Capex/aEBITDA 5Y</th>
-                <th>Maintenance Capex/aEBITDA 10Y</th>
+                <th>Yield%</th>
+                <th>Enterprise Value (M)</th>
+                <th>Categories</th>
 
-                <th>FCF/aEBITDA</th>
-                <th>Price Growth (1Y)</th>
-                <th>Price Growth (3Y)</th>
-                <th>Price Growth (5Y)</th>
-                <th>Price Growth (10Y)</th>
-                <th>S/O Change (1Y)(M)</th>
-                <th>S/O Change (3Y)(M)</th>
-                <th>S/O Change (5Y)(M)</th>
-                <th>S/O Change (10Y)(M)</th>
+                <th>FCFROIC%</th>
+                <th>FCFROIC% 3yr</th>
+                <th>FCFROIC% 5yr</th>
+                <th>FCFROIC% 10yr</th>
+                <th>FCFROIC% TTM/5yr</th>
+                <th>FCFROIC% TTM/10yr</th>
+                <th>FCFROIC% SD 5yr</th>
+                <th>FCFROIC% SD 10yr</th>
 
+                <th>FCFROA%</th>
+                <th>FCFROA% 3yr</th>
+                <th>FCFROA% 5yr</th>
+                <th>FCFROA% 10yr</th>
+                <th>FCFROA% TTM/5yr</th>
+                <th>FCFROA% TTM/10yr</th>
+                <th>FCFROA% SD 5yr</th>
+                <th>FCFROA% SD 10yr</th>
+                
+                <th>FCFROE%</th>
+                <th>FCFROE% 3yr</th>
+                <th>FCFROE% 5yr</th>
+                <th>FCFROE% 10yr</th>
+                <th>FCFROE% TTM/5yr</th>
+                <th>FCFROE% TTM/10yr</th>
+                <th>FCFROE% SD 5yr</th>
+                <th>FCFROE% SD 10yr</th>
+                
+                <th>FCFROCE%</th>
+                <th>FCFROCE% 3yr</th>
+                <th>FCFROCE% 5yr</th>
+                <th>FCFROCE% 10yr</th>
+                <th>FCFROCE% TTM/5yr</th>
+                <th>FCFROCE% TTM/10yr</th>
+                <th>FCFROCE% SD 5yr</th>
+                <th>FCFROCE% SD 10yr</th>
+
+                <th>FCFROTA%</th>
+                <th>FCFROTA% 3yr</th>
+                <th>FCFROTA% 5yr</th>
+                <th>FCFROTA% 10yr</th>
+                <th>FCFROTA% TTM/5yr</th>
+                <th>FCFROTA% TTM/10yr</th>
+                <th>FCFROTA% SD 5yr</th>
+                <th>FCFROTA% SD 10yr</th>
+
+                <th>iROiE% 1yr</th>
+                <th>iROiE% 3yr</th>
+                <th>iROiE% 5yr</th>
+                <th>iROiE% 10yr</th>
+
+                <th>iFCFROiIC% 1yr</th>
+                <th>iFCFROiIC% 3yr</th>
+                <th>iFCFROiIC% 5yr</th>
+                <th>iFCFROiIC% 10yr</th>
+
+                <th>JDViFCFROiIC% 1yr</th>
+                <th>JDViFCFROiIC% 3yr</th>
+                <th>JDViFCFROiIC% 5yr</th>
+                <th>JDViFCFROiIC% 10yr</th>
+
+                <th>CF Re-investment Rate</th>
+                <th>CF Re-investment Rate 3yr</th>
+                <th>CF Re-investment Rate 5yr</th>
+                <th>CF Re-investment Rate 10yr</th>
+                <th>CF Re-investment Rate TTM/5yr</th>
+                <th>CF Re-investment Rate TTM/10yr</th>
+                <th>CF Re-investment Rate SD 5yr</th>
+                <th>CF Re-investment Rate SD 10yr</th>
+
+                <th>Gross Margin%</th>
+                <th>Gross Margin% 3yr</th>
+                <th>Gross Margin% 5yr</th>
+                <th>Gross Margin% 10yr</th>
+                <th>Gross Margin% TTM/5yr</th>
+                <th>Gross Margin% TTM/10yr</th>
+                <th>Gross Margin% SD 5yr</th>
+                <th>Gross Margin% SD 10yr</th>
+
+                <th>Operating Margin%</th>
+                <th>Operating Margin% 3yr</th>
+                <th>Operating Margin% 5yr</th>
+                <th>Operating Margin% 10yr</th>
+                <th>Operating Margin% TTM/5yr</th>
+                <th>Operating Margin% TTM/10yr</th>
+                <th>Operating Margin% SD 5yr</th>
+                <th>Operating Margin% SD 10yr</th>
+
+                <th>FCF Margin%</th>
+                <th>FCF Margin% 3yr</th>
+                <th>FCF Margin% 5yr</th>
+                <th>FCF Margin% 10yr</th>
+                <th>FCF Margin% TTM/5yr</th>
+                <th>FCF Margin% TTM/10yr</th>
+                <th>FCF Margin% SD 5yr</th>
+                <th>FCF Margin% SD 10yr</th>
+
+                <th>NetDebt/aEBITDA</th>
+                <th>NetDebt/aEBITDA 3yr</th>
+                <th>NetDebt/aEBITDA 5yr</th>
+                <th>NetDebt/aEBITDA 10yr</th>
+                <th>NetDebt/aEBITDA TTM/5yr</th>
+                <th>NetDebt/aEBITDA TTM/10yr</th>
+                <th>NetDebt/aEBITDA SD 5yr</th>
+                <th>NetDebt/aEBITDA SD 10yr</th>
+
+                <th>NetDebt/FCF</th>
+                <th>NetDebt/FCF 3yr</th>
+                <th>NetDebt/FCF 5yr</th>
+                <th>NetDebt/FCF 10yr</th>
+                <th>NetDebt/FCF TTM/5yr</th>
+                <th>NetDebt/FCF TTM/10yr</th>
+                <th>NetDebt/FCF SD 5yr</th>
+                <th>NetDebt/FCF SD 10yr</th>
+                
+                <th>CapitalLeases/Debt</th>
+
+                <th>CAPEX/Sales%</th>
+                <th>CAPEX/Sales% 3yr</th>
+                <th>CAPEX/Sales% 5yr</th>
+                <th>CAPEX/Sales% 10yr</th>
+                <th>CAPEX/Sales% TTM/5yr</th>
+                <th>CAPEX/Sales% TTM/10yr</th>
+                <th>CAPEX/Sales% SD 5yr</th>
+                <th>CAPEX/Sales% SD 10yr</th>
+
+                <th>CAPEX/OwnerEarnings%</th>
+                <th>CAPEX/OwnerEarnings% 3yr</th>
+                <th>CAPEX/OwnerEarnings% 5yr</th>
+                <th>CAPEX/OwnerEarnings% 10yr</th>
+                <th>CAPEX/OwnerEarnings% TTM/5yr</th>
+                <th>CAPEX/OwnerEarnings% TTM/10yr</th>
+                <th>CAPEX/OwnerEarnings% SD 5yr</th>
+                <th>CAPEX/OwnerEarnings% SD 10yr</th>
+
+                <th>CAPEX/FCF%</th>
+                <th>CAPEX/FCF% 3yr</th>
+                <th>CAPEX/FCF% 5yr</th>
+                <th>CAPEX/FCF% 10yr</th>
+                <th>CAPEX/FCF% TTM/5yr</th>
+                <th>CAPEX/FCF% TTM/10yr</th>
+                <th>CAPEX/FCF% SD 5yr</th>
+                <th>CAPEX/FCF% SD 10yr</th>
+
+                <th>FCF/Net Income%</th>
+                <th>FCF/Net Income% 3yr</th>
+                <th>FCF/Net Income% 5yr</th>
+                <th>FCF/Net Income% 10yr</th>
+                <th>FCF/Net Income% TTM/5yr</th>
+                <th>FCF/Net Income% TTM/10yr</th>
+                <th>FCF/Net Income% SD 5yr</th>
+                <th>FCF/Net Income% SD 10yr</th>
+
+                <th>FCF/OwnerEarning%</th>
+                <th>FCF/OwnerEarning% 3yr</th>
+                <th>FCF/OwnerEarning% 5yr</th>
+                <th>FCF/OwnerEarning% 10yr</th>
+                <th>FCF/OwnerEarning% TTM/5yr</th>
+                <th>FCF/OwnerEarning% TTM/10yr</th>
+                <th>FCF/OwnerEarning% SD 5yr</th>
+                <th>FCF/OwnerEarning% SD 10yr</th>
+
+                <th>Cash Conversion Cycle</th>
+                <th>Cash Conversion Cycle 3yr</th>
+                <th>Cash Conversion Cycle 5yr</th>
+                <th>Cash Conversion Cycle 10yr</th>
+                <th>Cash Conversion Cycle TTM/5yr</th>
+                <th>Cash Conversion Cycle TTM/10yr</th>
+                <th>Cash Conversion Cycle SD 5yr</th>
+                <th>Cash Conversion Cycle SD 10yr</th>
+                
+                <th>Predictability Ranking</th>
+                <th>Financial Strength</th>
+
+                <th>Sales 1yr G</th>
+                <th>Sales 3yr G</th>
+                <th>Sales 5yr G</th>
+                <th>Sales 10yr G</th>
+
+                <th>Sales/Share G</th>
+                <th>Sales/Share 3yr G</th>
+                <th>Sales/Share 5yr G</th>
+                <th>Sales/Share 10yr G</th>
+
+                <th>OwnerEarnings/Share G</th>
+                <th>OwnerEarnings/Share 3yr G</th>
+                <th>OwnerEarnings/Share 5yr G</th>
+                <th>OwnerEarnings/Share 10yr G</th>
+
+                <th>FCF/Share G</th>
+                <th>FCF/Share 3yr G</th>
+                <th>FCF/Share 5yr G</th>
+                <th>FCF/Share 10yr G</th>
+
+                <th>aEBITDA/Share G</th>
+                <th>aEBITDA/Share 3yr G</th>
+                <th>aEBITDA/Share 5yr G</th>
+                <th>aEBITDA/Share 10yr G</th>
+
+                <th>Dividend/Share G</th>
+                <th>Dividend/Share 3yr G</th>
+                <th>Dividend/Share 5yr G</th>
+                <th>Dividend/Share 10yr G</th>
+
+                <th>Price 1yr G</th>
+                <th>Price 3yr G</th>
+                <th>Price 5yr G</th>
+                <th>Price 10yr G</th>
+
+                <th>SGR</th>
+                <th>SGR 3yr</th>
+                <th>SGR 5yr</th>
+                <th>SGR 10yr</th>
+                <th>SGR TTM/5yr</th>
+                <th>SGR TTM/10yr</th>
+                <th>SGR SD 5yr</th>
+                <th>SGR SD 10yr</th>
+
+                <th>Forward ROR(Yacktman)%</th>
+                <th>Expected Annual TR</th>
+
+                <th>BVPS in yr 10</th>
+                <th>FCF/Share in yr 10</th>
+                <th>Stock Price yr 10</th>
+                <th>Avg Div Yield 10yr</th>
+                <th>Projected 10 yr ROR</th>
+                <th>Total Projected 10 yr ROR</th>
+
+                <th>Shares Outstanding</th>
                 <th>S/O Change (1Y)(%)</th>
                 <th>S/O Change (3Y)(%)</th>
                 <th>S/O Change (5Y)(%)</th>
                 <th>S/O Change (10Y)(%)</th>
+                
+                <th>Dividend Payout Ratio%</th>
+                <th>Dividend Payout Ratio% 3yr</th>
+                <th>Dividend Payout Ratio% 5yr</th>
+                <th>Dividend Payout Ratio% 10yr</th>
+                <th>Dividend Payout Ratio% TTM/5yr</th>
+                <th>Dividend Payout Ratio% TTM/10yr</th>
+                <th>Dividend Payout Ratio% SD 5yr</th>
+                <th>Dividend Payout Ratio% SD 10yr</th>
 
-                <th>Revenue Growth (1Y)</th>
-                <th>Revenue Growth (3Y)</th>
-                <th>Revenue Growth (5Y)</th>
-                <th>Revenue Growth (10Y)</th>
-                <th>aEBITDA Growth(1y)</th>
-                <th>aEBITDA Growth(3y)</th>
-                <th>aEBITDA Growth(5y)</th>
-                <th>aEBITDA Growth(10y)</th>
-                <th>ROIC %</th>
-                <th>WACC %</th>
-                <th>ROIC-WACC</th>
+                <th>CF Re-Investment Rate 5yr</th>
 
+                <th>EV/FCF</th>
+                <th>EV/FCF 3yr</th>
+                <th>EV/FCF 5yr</th>
+                <th>EV/FCF 10yr</th>
+                <th>EV/FCF TTM/5yr</th>
+                <th>EV/FCF TTM/10yr</th>
+                <th>EV/FCF SD 5yr</th>
+                <th>EV/FCF SD 10yr</th>
+
+                <th>FCF Yield</th>
+                <th>FCF Yield 3yr</th>
+                <th>FCF Yield 5yr</th>
+                <th>FCF Yield 10yr</th>
+                <th>FCF Yield TTM/5yr</th>
+                <th>FCF Yield TTM/10yr</th>
+                <th>FCF Yield SD 5yr</th>
+                <th>FCF Yield SD 10yr</th>
+
+                <th>Rule of 40</th>
+
+                <th>FCF Spice</th>
+                <th>FCF Spice 3yr</th>
+                <th>FCF Spice 5yr</th>
+                <th>FCF Spice 10yr</th>
+                <th>FCF Spice TTM/5yr</th>
+                <th>FCF Spice TTM/10yr</th>
+                <th>FCF Spice SD 5yr</th>
+                <th>FCF Spice SD 10yr</th>
+
+                <th>aEBITDA Spice</th>
+                <th>ROE Spice</th>
+
+                <th>URBEM VALUE</th>
+                <th>URBEM VALUE 3y</th>
+                <th>URBEM VALUE 5y</th>
+            
+                <th>FCF/Employees</th>
+                <th>FCF/Employees 3yr</th>
+                <th>FCF/Employees 5yr</th>
+                <th>FCF/Employees 10yr</th>
+
+                <th>Purchase of Business</th>
+                <th>Purchase of Business 3yr</th>
+                <th>Purchase of Business 5yr</th>
+                <th>Purchase of Business 10yr</th>
             </tr>
         </thead>
         <tbody>
@@ -121,12 +335,52 @@
 
 
 {{#if sc}}
-    <script src="/js/collection/sharedDataTable.js"></script>
-    <script src="/js/collection/sharedButtons.js"></script>
-    <script src="/js/collection/sharedColumns.js"></script>
+        <script type="text/JavaScript">
+            const config = {
+                action: 'init_shared',
+                addLink: '/append?share=true',
+                removeLink: '/remove?table=shared',
+                updateLink: 'update_financials?table=shared',
+                shareConf: true,
+                customLink: '/custom?table=shared'
+            }
+            const { action, addLink, removeLink, updateLink, shareConf, customLink } = config
+
+        </script>
+
     {{else}}
-    <script src="/js/collection/privateDataTable.js"></script>
-    <script src="/js/collection/privateButtons.js"></script>
-    <script src="/js/collection/privateColumns.js"></script>
+        {{#if sd}}
+        <script type="text/JavaScript">
+            const config = {
+                action:'init_special',
+                addLink: '/append?special=true',
+                removeLink: '/remove?table=special',
+                updateLink: 'update_financials?table=all',
+                shareConf: false,
+                customLink: '/custom?table=special'
+            }
+            const { action, addLink, removeLink, updateLink, shareConf, customLink } = config
+        </script>
+        {{else}}
+        <script type="text/JavaScript">
+            let config = {
+                action: 'init_user',
+                addLink: '/append',
+                removeLink: '/remove?table=all',
+                updateLink: 'update_financials?table=all',
+                shareConf: false,
+                customLink: '/custom?table=all'
+            }
+            const { action, addLink, removeLink, updateLink, shareConf, customLink  } = config
+        </script>
+        {{/if}}
 {{/if}}
+<script src="/js/collection/collection.js"></script>
+<script src="/js/collection/columns.js"></script>
+
+<script src="/js/collection/keyStats.js"></script>
+<script src="/js/collection/notes.js"></script>
+<script src="/js/collection/links.js"></script>
+<script src="/js/collection/dcfCalculations.js"></script>
+<script src="/js/collection/aggregations.js"></script>
 <script src="/js/collection/common_functions.js"></script>

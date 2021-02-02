@@ -1,3 +1,6 @@
+const stDev = require('node-stdev');
+const math = require('mathjs');
+
 /**Calculates the dcf using the following parameters
  * @param {String} eps - earnings per share
  * @param {String} growth_rate
@@ -79,6 +82,7 @@ function multi_dfc_string(list) {
         }
         
     }
+    console.log(conditions)
     return conditions;
 }
 
@@ -132,13 +136,26 @@ function calculate_average(data, column, years){
     try{
         let total = 0;
         for(let i = 0; i < years; i++){
-            total += parseFloat(data[i][`${column}`]);
+            total += parseFloat(data[i][column].replace(/[^0-9.-]/g, ""));
         }
-        return Math.round((total/years)*1000)/1000;
+        return (total/years);
         }
         catch(e){
-            return null;
+            return 0;
         }
+}
+
+function calculate_stDev(data, column, years){
+    try{
+        let numList = [];
+        for(let i = 0 ; i < years; i++){
+            numList.push(Number(data[i][column].replace('%','')));
+        }
+        return stDev.population(numList)
+    }
+    catch(e){
+        return 0;
+    }
 }
 
 /**
@@ -176,6 +193,21 @@ function initial_values_calc(years, ttm, prev_eps, terminal_growth, discount, gr
     return calculated;
 }
 
+/**
+ * Evaluates expressions with variables
+ * @param {Array<Number>} variables - Variables in the equation
+ * @param {String} equation - Equation
+ * @returns {Number} The answer for the expression with the variables
+ */
+function evalExpression(variables, equation){
+    const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    let scope = {};
+    for(let i = 0; i < variables.length; i ++){
+        scope[alphabet[i]] = variables[i];
+    }
+    return math.evaluate(equation, scope);
+}
+
 
 module.exports={
     dcf,
@@ -183,6 +215,8 @@ module.exports={
     createAggregationString,
     value_calculator,
     calculate_average,
+    calculate_stDev,
     calculate_default_growth_func,
-    initial_values_calc
+    initial_values_calc,
+    evalExpression,
 };

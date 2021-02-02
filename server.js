@@ -6,12 +6,10 @@ const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const session = require("client-sessions");
 const app = express();
-//var schedule = require('node-schedule');
 const multer = require('multer');
 const upload = multer({ dest: './uploads/' });
 const fs = require("fs");
 const _ = require("lodash");
-const moment = require("moment");
 
 hbs.registerHelper('json', function (context) {
     return JSON.stringify(context);
@@ -22,8 +20,9 @@ const api_calls = require("./actions/api_calls");
 const auth = require("./actions/auth");
 const xlsx_parse = require("./actions/xlsx_parse");
 const db = require("./actions/database");
-const email = require('./actions/node_mailer');
 const calc = require('./actions/calculations');
+
+const { format_data, formatHistorical } = require('./actions/formatData');
 
 /*** Constants ***/
 const port = process.env.PORT || 8080;
@@ -89,33 +88,51 @@ app.get("/indicators", (request, response) => {
 });
 
 app.get("/collection", sessionCheck, statusCheck, (request, response) => {
-    db.showstocks(request.session.user)
-        .then(res => {
-            // Calculates data before rendering
-            res.forEach((stock) => {
-                format_data(stock);
-            });
-            response.render("collection.hbs", {
-                c: true,
-                admin: (request.session.status == 'admin')
-            });
-        });
+    response.render("collection.hbs", {
+        c: true,
+        admin: (request.session.status == 'admin')
+    });
+});
+
+app.get('/custom', sessionCheck, async (request, response) => {
+    console.log(request.query)
+    let test = {
+        cu: true,
+        admin: (request.session.status == 'admin')
+    }
+    test[`${request.query.table}`] = true;
+    response.render("collection2.hbs", test);
+})
+
+
+app.get("/edit", (request, response) => {
+    response.render("edit.hbs", {
+        in: true,
+        admin: (request.session.status == 'admin')
+    });
 });
 
 app.get("/shared", sessionCheck, statusCheck, (request, response) => {
-    db.showshared(request.session.user)
-        .then(res => {
-            // Calculates data before rendering
-            res.forEach((stock) => {
-                format_data(stock);
-            });
             response.render("collection.hbs", {
-                user: request.session.user,
-                sc: true,
-                admin: (request.session.status == 'admin')
-            });
-        });
+            user: request.session.user,
+            sc: true,
+            admin: (request.session.status == 'admin')
+        })
 });
+
+app.get("/special", sessionCheck, statusCheck, (request, response) => {
+    db.showSpecial(request.session.user)
+    .then(res => {
+        // Calculates data before rendering
+        res.forEach((stock) => {
+            format_data(stock);
+        });
+        response.render("collection.hbs", {
+            sd: true,
+            admin: (request.session.status == 'admin')
+        });
+    });
+})
 
 app.get("/documentation", sessionCheck, statusCheck, (request, response) => {
     response.render("documentation.hbs", { d: true, admin: (request.session.status == 'admin') });
@@ -142,6 +159,34 @@ app.get('/admin', sessionCheck, (request, response) => {
         });
     }
 });
+
+app.get('/historic', sessionCheck, async (request, response) => {
+    try{
+        let stockdata = await db.get_by_id(request.query.id);
+        let tableconfig = await db.getTableConfig(request.session.user, 'historic');
+        let formattedData = await formatHistorical(stockdata, tableconfig.rows[0].config_string);
+        response.send({
+            data: formattedData, 
+            test: tableconfig.rows[0].config_string, 
+            id: tableconfig.rows[0].id, 
+            name: tableconfig.rows[0].name, 
+            fallback: tableconfig.rows[0].fallback})
+    }
+    catch(e){
+        console.log(e)
+        response.send({error: true})
+    }
+
+});
+
+app.get('/comments', sessionCheck, async (request, response) => {
+    let formattedData = {};
+    let comments = (await db.comments({action: "get", id: request.query.id})).rows[0];
+    for(let key in comments){
+        formattedData[key] = JSON.parse(comments[key])
+    }
+    response.send(formattedData)
+})
 
 /** POST **/
 
@@ -184,7 +229,6 @@ app.post("/entercode", sessionCheck, (request, response) => {
 /* Login */
 app.post("/login", (request, response) => {
     auth.login(request.body.username, request.body.password)
-
         .then((r) => {
             request.session.user = r.username;
             if (r.status) { request.session.status = r.status.trim(); }
@@ -282,8 +326,7 @@ app.post('/indicators/delete', sessionCheck, statusCheck, (request, response) =>
 });
 
 //Initializes Tables
-app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
-    //console.log(request.body.action)
+app.post('/init_table', sessionCheck, statusCheck, async (request, response) => {
     if (request.body.action == "init_user") {
         db.showstocks(request.session.user).then(resolve => {
             resolve.forEach((stock) => {
@@ -300,11 +343,96 @@ app.post('/init_table', sessionCheck, statusCheck, (request, response) => {
             response.send({ data: resolve });
         });
     }
+    else if (request.body.action == "init_special"){
+        db.showSpecial(request.session.user).then(resolve => {
+            resolve.forEach((stock) => {
+                format_data(stock);
+            });
+            response.send({ data: resolve });
+        });
+    }
+    else if (request.body.action == "init_custom"){
+        let toSend = [];
+        let stocks;
+        if(request.query.table === "all") stocks = await db.showstocks(request.session.user);
+        if(request.query.table === "shared") stocks = await db.showshared(request.session.user);
+        if(request.query.table === "special") stocks = await db.showSpecial(request.session.user);
+        let tableconfig = await db.getTableConfig(request.session.user, 'custom');
+        if(tableconfig.rows.length !== 0){
+            stocks.forEach(stock => {
+                toSend.push({
+                    stock_id: stock.stock_id,
+                    stock_name: stock.stock_name,
+                    symbol: stock.symbol,
+                    stock_data: formatHistorical([stock],tableconfig.rows[0].config_string, 1)[0]
+                })
+            });
+            response.send({
+                data: toSend,
+                    config_string: tableconfig.rows[0].config_string,
+                    id : tableconfig.rows[0].id, 
+                    name: tableconfig.rows[0].name,
+                    fallback: tableconfig.rows[0].fallback
+                });
+        }
+        else {
+            response.send({error: "no config selected", data : []})
+        }
+    }
 });
+
+app.post('/tableconfig', sessionCheck, statusCheck, async(request, response ) => {
+    console.log(request.body)
+    switch (request.body.action) {
+        case "edit":
+            console.log(request.body)
+            db.customTableSettings({
+                configString : request.body.configString,
+                name: request.body.configName,
+                id: request.body.id
+            },"edit")
+            response.send({status: "ok"})
+            break;
+        case "add":
+            console.log(request.body)
+            db.customTableSettings({
+                username : request.session.user, 
+                table : request.body.table, 
+                configString : request.body.configString.replace('\n', ''), 
+                configName : request.body.configName
+                }, request.body.action)
+            response.send({status: "ok"})
+            break;
+        case "getConfigs":
+            let configList = await db.customTableSettings({username: request.session.user}, "getConfigs");
+            let formatted = {};
+            configList.rows.forEach(val =>formatted[val.id] = val.name === null || val.name === ""? "No Name" : val.name)
+            response.send(formatted)
+            break;
+        case "switchCustom":
+            console.log(request.body)
+            await db.customTableSettings({username: request.session.user, id: request.body.id}, "switchCustom");
+            response.send({success: true})
+            break;
+        case "switchHistoric":
+            console.log(request.body)
+            await db.customTableSettings({username: request.session.user, id: request.body.id}, "switchHistorical");
+            response.send({success: true})
+            break;
+        case "delete":
+            console.log(request.body)
+            await db.customTableSettings({id: request.body.id}, "delete");
+            response.send({success: true})
+            break;
+            
+        default:
+            break;
+    }
+})
 
 /* Edit Fields */
 app.post('/edits', sessionCheck, statusCheck, (request, response) => {
-    // console.log(request.body)
+    console.log(request.body)
     db.edits(request.body).then(() => {
         db.get_by_id(request.body.id).then((res) => {
             res.forEach((stock) => {
@@ -325,7 +453,18 @@ app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
 
 /* Adds Stock to Personal Database */
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
-    api_calls.gurufocusAdd(request.body.action, request.session.user)
+    console.log(request.query)
+    let shared = false;
+    let special = false;
+    if(request.query.share === 'true') shared = true;
+    if(request.query.special === 'true') special = true;
+    api_calls.gurufocusAdd(
+        request.body.action,
+        request.session.user,
+        true,
+        shared,
+        special
+        )
     .then((resolve) => {
         db.get_added(request.body.action[0].symbol, request.session.user)
         .then((res) => {
@@ -336,41 +475,27 @@ app.post('/append', sessionCheck, statusCheck, (request, response) => {
             response.send({ data: res });
         });
     })
-    .catch((reason) => console.log(reason));
-});
-
-/* Adds Stock to Shared Database */
-app.post('/append/shared', sessionCheck, statusCheck, (request, response) => {
-    api_calls.gurufocusAdd(request.body.action, request.session.user, true, true)
-    .then((resolve) => {
-        db.get_added(request.body.action[0].symbol, request.session.user)
-        .then((res) => {
-            res.forEach((stock) => { 
-                db.sharestock(calc.multi_dfc_string([stock.stock_id]), request.session.user)
-                format_data(stock); 
-            });
-            response.send({ data: res });
-        });
+    .catch((reason) => {
+        response.send({error: reason})
+        console.log(reason)
     });
 });
 
 /* removes stocks from the database */
 app.post('/remove', sessionCheck, statusCheck, (request, response) => {
+    let query = request.query.table
     let promises = [];
     for (let i = 0; i < request.body.action.length; i++) {
-        promises.push(db.removeStocks(request.body.action[i], request.session.user));
-    }
-    Promise.all(promises)
-    .then((returned) => {
-        response.send({ status: 'OK' });
-    });
-});
-
-/* Hides stocks from the shared database */
-app.post('/remove/shared', sessionCheck, statusCheck, (request, response) => {
-    let promises = [];
-    for (let i = 0; i < request.body.action.length; i++) {
-        promises.push(db.unsharestock(request.body.action[i], request.session.user));
+        if(query === 'all'){
+            promises.push(db.removeStocks(request.body.action[i], request.session.user));
+        }
+        // sets shared stock to unshared
+        else if(query === 'shared'){
+            promises.push(db.unsharestock(request.body.action[i], request.session.user));
+        }
+        else if(query === 'special'){
+            promises.push(db.unsetSpecial(request.body.action[i], request.session.user))
+        }
     }
     Promise.all(promises)
     .then((returned) => {
@@ -380,8 +505,14 @@ app.post('/remove/shared', sessionCheck, statusCheck, (request, response) => {
 
 /* Enables stocks to be displayed in the shared database */
 app.post('/share', sessionCheck, statusCheck, (request, response) => {
-    console.log(request.body);
     db.sharestock(calc.multi_dfc_string(request.body), request.session.user)
+    .then((resolve) => {
+        response.send({ status: 'OK' });
+    });
+});
+
+app.post('/setSpecial', sessionCheck, statusCheck, (request, response) => {
+    db.setSpecial(calc.multi_dfc_string(request.body), request.session.user)
     .then((resolve) => {
         response.send({ status: 'OK' });
     });
@@ -389,56 +520,33 @@ app.post('/share', sessionCheck, statusCheck, (request, response) => {
 
 /* Updates Historical Financial Data */
 app.post('/update_financials', sessionCheck, statusCheck, (request, response) => {
-    api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = false)
-    .then((r) => {
-        db.get_added(request.body.action[0].symbol, request.session.user)
-            .then((res) => {
-                res.forEach((stock) => { format_data(stock); });
-                response.send({ data: res });
+    console.log(request.body)
+    console.log(request.session.user)
+    switch(request.query.table) {
+        case 'all':
+        api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = true, request.session.shared, request.session.special)
+        .then((r) => {
+            db.get_added(request.body.action[0].symbol, request.session.user)
+                .then((res) => {
+                    res.forEach((stock) => { format_data(stock); });
+                    response.send({ data: res });
+                });
+        });
+        break;
+        case 'shared':
+            api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = true, request.session.shared, request.session.special)
+            .then((r) => {
+                db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
+                    .then((res) => {
+                        res.forEach((stock) => { format_data(stock); });
+                        response.send({ data: res });
+                    });
             });
-    });
-});
+        break;
 
-/* Updates Current Price Data  */
-app.post('/update_prices', sessionCheck, statusCheck, (request, response) => {
-    api_calls.update_prices(request.body.action, request.session.user)
-    .then((resolve) => {
-        db.get_added(request.body.action[0].symbol, request.session.user)
-            .then((res) => {
-                res.forEach((stock) => { format_data(stock); });
-                response.send({ data: res });
-            });
-    }).catch(function (err) {
-        console.log(err);
-        response.send(JSON.stringify({ 'Error': `${request.body.action[0].symbol}` }));
-    });
-});
-
-/* Updates Historical Financial Data on shared */
-app.post('/update_financials/shared', sessionCheck, statusCheck, (request, response) => {
-    api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = false)
-    .then((r) => {
-        db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
-            .then((res) => {
-                res.forEach((stock) => { format_data(stock); });
-                response.send({ data: res });
-            });
-    });
-});
-
-/* Updates Current Price Data on shared */
-app.post('/update_prices/shared', sessionCheck, statusCheck, (request, response) => {
-    api_calls.update_prices(request.body.action, request.body.action[0].stock_id)
-    .then((resolve) => {
-        db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
-            .then((res) => {
-                res.forEach((stock) => {format_data(stock);});
-                response.send({ data: res });
-            });
-    }).catch(function (err) {
-        console.log(err);
-        response.send(JSON.stringify({ 'Error': `${request.body.action[0].symbol}` }));
-    });
+        default:
+            console.log("error")
+    }
 });
 
 /* Sets Catagorie Strings for stocks */
@@ -460,70 +568,78 @@ app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
     });
 });
 
-app.post('/aggregation/create', sessionCheck, statusCheck, (request, response) => {
-    db.createAggregation(request.session.user, calc.createAggregationString(request.body.columns), request.body.name).then(resolve => {
-        response.send({ hello: 'hello' });
-    });
-});
-
-app.post('/aggregation/get', sessionCheck, statusCheck, (request, response) => {
-    db.retrieveAggregates(request.session.user).then(resolve => {
-        response.send(resolve.rows);
-    });
-});
-
-app.post('/aggregation/aggregate', sessionCheck, statusCheck, (request, response) => {
-    let track = [];
-    let symbols = [];
-    for (let i in request.body) {
-        if (request.body[i].row.split(' !').length != 1) {
-            trackPositions(track, symbols, sorter(request.body[i].values).reverse());
-        }
-        else {
-            trackPositions(track, symbols, sorter(request.body[i].values));
-
-        }
-
-    }
-    response.send(JSON.stringify({ symbols: symbols, score: track }));
-
-    function sorter(arrayList) {
-        arrayList.sort(function (a, b) { return a.value - b.value; });
-        return arrayList;
-    }
-
-    function trackPositions(tracker, symbolList, arrayList) {
-        for (let i in arrayList) {
-            // console.log(arrayList[i])
-            if (symbolList.indexOf(arrayList[i].symbol) == -1) {
-                symbolList.push(arrayList[i].symbol);
-                tracker.push(parseInt(i) + 1);
+app.post('/aggregation', sessionCheck, statusCheck, (request, response) => {
+    console.log(request.query.action);
+    switch(request.query.action){
+        case "create":
+            db.createAggregation(request.session.user, calc.createAggregationString(request.body.columns), request.body.name).then(resolve => {
+                response.send({ hello: 'hello' });
+            });
+            break;
+        case "get":
+            db.retrieveAggregates(request.session.user).then(resolve => {
+                response.send(resolve.rows);
+            });
+            break;
+        case "aggregate":
+            let track = [];
+            let symbols = [];
+            for (let i in request.body) {
+                if (request.body[i].row.split(' !').length != 1) {
+                    trackPositions(track, symbols, sorter(request.body[i].values).reverse());
+                }
+                else {
+                    trackPositions(track, symbols, sorter(request.body[i].values));
+        
+                }
+        
             }
-            else {
-                let pos = symbolList.indexOf(arrayList[i].symbol);
-                tracker[pos] += parseInt(i) + 1;
+            response.send(JSON.stringify({ symbols: symbols, score: track }));
+        
+            function sorter(arrayList) {
+                arrayList.sort(function (a, b) { return a.value - b.value; });
+                return arrayList;
             }
-        }
+        
+            function trackPositions(tracker, symbolList, arrayList) {
+                for (let i in arrayList) {
+                    // console.log(arrayList[i])
+                    if (symbolList.indexOf(arrayList[i].symbol) == -1) {
+                        symbolList.push(arrayList[i].symbol);
+                        tracker.push(parseInt(i) + 1);
+                    }
+                    else {
+                        let pos = symbolList.indexOf(arrayList[i].symbol);
+                        tracker[pos] += parseInt(i) + 1;
+                    }
+                }
+            }
+            break;
+        case "get_single":
+            db.getAggregateSingle(request.body.aggregationString, request.session.user).then(resolve => {
+                response.send(resolve.rows);
+            });
+            break;
+        case "edit":
+            db.editAggregate(request.session.user, calc.createAggregationString(request.body.columns), request.body.name).then(resolve => {
+                response.send(resolve.rows);
+            });
+            break;
+        case "delete":
+            db.deleteAggregate(request.body.delete).then(resolve => {
+                response.send({ success: resolve });
+            });
+            break;
+        default:
+            console.log("error")
+            break;
     }
-});
+})
 
-app.post('/aggregation/get_single', sessionCheck, statusCheck, (request, response) => {
-    db.getAggregateSingle(request.body.aggregationString, request.session.user).then(resolve => {
-        response.send(resolve.rows);
-    });
-});
-
-app.post('/aggregation/edit', sessionCheck, statusCheck, (request, response) => {
-    db.editAggregate(request.session.user, calc.createAggregationString(request.body.columns), request.body.name).then(resolve => {
-        response.send(resolve.rows);
-    });
-});
-
-app.post('/aggregation/delete', sessionCheck, statusCheck, (request, response) => {
-    db.deleteAggregate(request.body.delete).then(resolve => {
-        response.send({ success: resolve });
-    });
-});
+app.post('/comments', sessionCheck, statusCheck, async (request, response) => {
+    await db.comments(request.body)
+    response.send({status: "ok"})
+})
 
 /* Logout */
 app.post("/logout", (request, response) => {
@@ -535,312 +651,3 @@ app.post("/logout", (request, response) => {
 app.listen(port, () => {
     console.log(`Server is up on port: ${port}, with PID: ${process.pid}`);
 });
-
-/*** Sends an email update on the 15th of everymonth ***/
-/* var quarter_updates = schedule.scheduleJob('* * * 15 * *', () => {
-    email.send_email();
-})
-quarter_updates;
- */
-
-/*** Functions ***/
-
-/**
- * Adds a comma sparator to numbers in thousads
- * Clears NaNs
- * Adds symbols at the end of strings
- * @param {Float} num 
- * @param {String} extraSymbol 
- */
-function formatNumber(num, extraSymbol) {
-    try {
-        num = clearNAN(num);
-        if(!isFinite(num)){
-            return null;
-        }
-        else if(num != null){
-            if(extraSymbol == '%' ){
-                return `${num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}%`;
-            }
-            else if(extraSymbol == '$' && num < 0){
-                return `-$${(num*-1).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
-            }
-            else if(extraSymbol == '$'){
-                return `$${num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
-            }
-            else{
-                return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-            }
-        }
-        else{
-            return null;
-        }
-    }
-    catch(e) {
-        return null;
-    }
-}
-
-/**
- * returns null if param is NaN
- * @param {*} param
- * @param {*} extraSymbol
- * @returns {string} 
- */
-function clearNAN(param, extraSymbol) {
-    if (isNaN(param)){
-        return null;
-    }
-    if( !isFinite(param)){
-        return 88888888 + extraSymbol;
-    }
-    else if (extraSymbol) {
-        return param + extraSymbol;
-    }
-    else {
-        return param;
-    }
-}
-
-/**
- * Formats a JSON object
- * @param {JSON} stock 
- */
-function format_data(stock) {
-    stock.stockdata.forEach((data, index) => {
-        data.yield_format = data.yield + '%';
-        data.price_format = formatNumber(data.price, '$');
-        data.shares_outstanding_format = formatNumber(Math.round(data.shares_outstanding * 100) / 100);
-        data.shares_outstanding_quarterly = formatNumber(Math.round(data.shares_outstanding_quarterly * 100) / 100);
-        data.market_cap_format = formatNumber(Math.round(data.market_cap), '$');
-        data.net_debt_format = formatNumber(Math.round(data.net_debt) * 1, '$');
-        data.enterprise_value_format = formatNumber(Math.round(data.enterprise_value * 10) / 10, '$');
-        data.revenue_format = formatNumber(Math.round(data.revenue), '$');
-        data.aebitda_format = formatNumber(data.aebitda, '$');
-        data.roe_format = formatNumber(Math.round(data.roe * 10) / 10, '%');
-        data.effective_tax_format = formatNumber(Math.round(data.effective_tax * 10) / 10,'%');
-        data.fcf_format = formatNumber(Math.round(data.fcf), '$');
-        data.purchase_of_business_format = data.purchase_of_business;
-
-        data.roic_format = formatNumber(data.roic, '%');
-        data.wacc_format = formatNumber(data.wacc, '%');
-        data.roicwacc_format = formatNumber(Math.round((data.roic - data.wacc) * 100) / 100);
-        data.capex_format = formatNumber(Math.round((data.capex * -1)), '$');
-        data.aeXsho_format = formatNumber(Math.round((data.aebitda / data.shares_outstanding) * 100) / 100, '$');
-        data.capeXfcf_format = formatNumber(Math.round((data.capex / data.fcf) * 100) / 100);
-        data.fcfXae_format = formatNumber(Math.round((data.fcf / data.aebitda) * 100), '%');
-
-        data.eps_without_nri_format =  Math.round((data.eps_without_nri) * 100) / 100;
-        data.eps_without_nri_string_format = '$' +  Math.round((data.eps_without_nri) * 100) / 100;
-        data.eps_growth_rate = Math.round((data.eps_basic) * 100) / 100;
-        data.growth_years_format = data.growth_years;
-        data.terminal_years_format = data.terminal_years;
-        data.terminal_growth_rate_format = (data.terminal_growth_rate) * 100;
-        data.terminal_growth_rate_string_format = (data.terminal_growth_rate) * 100 + '%'; 
-        data.discount_rate_format = (data.discount_rate) * 100;
-        data.discount_rate_string_format = (data.discount_rate) * 100 + '%';
-
-        data.aebitda_at = Math.round(data.aebitda / data.revenue * data.asset_turnover * 1000) / 10 + '%';
-        data.nd_aebitda = formatNumber(Math.round(data.net_debt / data.aebitda * 100) / 100);
-        data.aebitda_percent = Math.round(data.aebitda / data.revenue * 1000) / 10 + '%';
-        data.ev_aebitda = Math.round(data.enterprise_value / data.aebitda * 100) / 100;
-        data.aebitda_spice = Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) / 100;
-        data.roe_spice = Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100;
-        data.datestring = moment(data.date).format('MMM DD, YYYY');
-        data.fcf_yield = formatNumber(Math.round(data.fcf / data.market_cap * 10000)/100, '%');
-        
-        
-
-        try{
-            data.growth_capex = calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index+1].revenue);
-            data.growth_capex_format = formatNumber(calculate_growth_capex(data.ppe, data.revenue, stock.stockdata[index+1].revenue)*-1, '$');
-        }
-        catch(e){
-            data.growth_capex = null;
-        }
-        
-        if(data.growth_capex != null){
-            data.maintenance_capex = data.capex - data.growth_capex;
-            data.maintenance_capex_format = formatNumber(Math.round(data.maintenance_capex*-1), '$')
-            data.capeXae_format = formatNumber(Math.round(((data.maintenance_capex / data.aebitda)* 100)), '%');
-        }
-        else{
-            data.maintenance_capex = null;
-            data.capeXae_format = null;
-        }
-
-
-
-
-        // console.log(stock.stockdata[0].revenue)
-    });
-
-    stock.valueConditions = calc.value_calculator(stock.fairvalue, stock.stock_current_price.replace(/[^a-z0-9,. ]/gi, ''));
-
-    try {
-        stock.growth_rate_5y = formatNumber(calc.calculate_default_growth_func(5, stock.stockdata[0].eps_without_nri_format, stock.stockdata[4].eps_without_nri_format), '%');
-        stock.dcf_values_5y = calc.initial_values_calc(5,
-            stock.stockdata[0].eps_without_nri_format,
-            stock.stockdata[4].eps_without_nri,
-            stock.stockdata[0].terminal_growth_rate,
-            stock.stockdata[0].discount_rate,
-            stock.stockdata[0].growth_years,
-            stock.stockdata[0].terminal_years
-        );
-    }
-    catch(e){
-        stock.growth_rate_5y = null;
-        stock.dcf_values_5y = { fair_value: null, growth_value: null, terminal_value: null };
-    }
-
-    try {
-        stock.growth_rate_10y = formatNumber(calc.calculate_default_growth_func(10, stock.stockdata[0].eps_without_nri_format, stock.stockdata[9].eps_without_nri_format), '%');
-        stock.dcf_values_10y = calc.initial_values_calc(10,
-            stock.stockdata[0].eps_without_nri_format,
-            stock.stockdata[9].eps_without_nri,
-            stock.stockdata[0].terminal_growth_rate,
-            stock.stockdata[0].discount_rate,
-            stock.stockdata[0].growth_years,
-            stock.stockdata[0].terminal_years
-        );
-    }
-    catch (err) {
-        //console.log(err)
-        stock.growth_rate_10y = null;
-        stock.dcf_values_10y = { fair_value: null, growth_value: null, terminal_value: null };
-    }
-
-    try {
-        stock.growth_rate_15y = formatNumber(calc.calculate_default_growth_func(15, stock.stockdata[0].eps_without_nri_format, stock.stockdata[14].eps_without_nri_format), '%');
-        stock.dcf_values_15y = calc.initial_values_calc(15,
-            stock.stockdata[0].eps_without_nri_format,
-            stock.stockdata[14].eps_without_nri,
-            stock.stockdata[0].terminal_growth_rate,
-            stock.stockdata[0].discount_rate,
-            stock.stockdata[0].growth_years,
-            stock.stockdata[0].terminal_years
-        );
-    }
-    catch (err) {
-        //console.log(err)
-        stock.growth_rate_15y = null;
-        stock.dcf_values_15y = { fair_value: null, growth_value: null, terminal_value: null };
-    }
-
-    // Calculates metric growth rates
-    try {
-        const end_date = stock.stockdata[0].date.getFullYear(),
-            end_price = stock.stockdata[0].price,
-            end_revenue = stock.stockdata[0].revenue,
-            end_aebitda = stock.stockdata[0].aebitda,
-            end_fcf = stock.stockdata[0].fcf,
-            end_so = stock.stockdata[0].shares_outstanding;
-        var price_10 = null,
-            price_5 = null,
-            price_3 = null,
-            price_1 = null,
-            revenue_10 = null,
-            revenue_5 = null,
-            revenue_3 = null,
-            revenue_1 = null,
-            aebitda_10 = null,
-            aebitda_5 = null,
-            aebitda_3 = null,
-            aebitda_1 = null;
-            fcf_10 = null,
-            fcf_5 = null,
-            fcf_3 = null,
-            fcf_1 = null,
-            so_10 = null,
-            so_5 = null,
-            so_3 = null,
-            so_1 = null;
-        for (var i = 1; i < stock.stockdata.length; i++) {
-            if (end_date - stock.stockdata[i].date.getFullYear() == 10) {
-                price_10 = stock.stockdata[i].price;
-                revenue_10 = stock.stockdata[i].revenue;
-                aebitda_10 = stock.stockdata[i].aebitda;
-                fcf_10 = stock.stockdata[i].fcf;
-                so_10 = stock.stockdata[i].shares_outstanding;
-            } if (end_date - stock.stockdata[i].date.getFullYear() == 5) {
-                price_5 = stock.stockdata[i].price;
-                revenue_5 = stock.stockdata[i].revenue;
-                aebitda_5 = stock.stockdata[i].aebitda;
-                fcf_5 = stock.stockdata[i].fcf;
-                so_5 = stock.stockdata[i].shares_outstanding;
-            } if (end_date - stock.stockdata[i].date.getFullYear() == 3) {
-                price_3 = stock.stockdata[i].price;
-                revenue_3 = stock.stockdata[i].revenue;
-                aebitda_3 = stock.stockdata[i].aebitda;
-                fcf_3 = stock.stockdata[i].fcf;
-                so_3 = stock.stockdata[i].shares_outstanding;
-            } if (end_date - stock.stockdata[i].date.getFullYear() == 1) {
-                price_1 = stock.stockdata[i].price;
-                revenue_1 = stock.stockdata[i].revenue;
-                aebitda_1 = stock.stockdata[i].aebitda;
-                fcf_1 = stock.stockdata[i].fcf;
-                so_1 = stock.stockdata[i].shares_outstanding;
-            }
-        }
-        stock.mCapAve_5 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 5))
-        stock.mCapAve_10 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 10))
-        stock.mCapAve_15 = Math.round(calc.calculate_average(stock.stockdata, 'maintenance_capex', 15))
-
-        stock.capeXfcfAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 5) * 100), '%');
-        stock.capeXfcfAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXfcf_format', 10) * 100), '%');
-
-        stock.capeXaeAverage5 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXae_format', 5)), '%');
-        stock.capeXaeAverage10 = formatNumber(Math.round(calc.calculate_average(stock.stockdata, 'capeXae_format', 10)), '%');
-        stock.categories == "null" ? stock.categories = null :null;
-        !stock.ownership ? stock.ownership = '0%' : stock.ownership = `${stock.ownership}%`;
-        stock.fairvalue == "null" ? stock.fairvalue = null : stock.fairvalue = '$' + Math.round(stock.fairvalue * 100) / 100;
-        stock.onestar == "null" ? stock.onestar = null : stock.onestar = '$' + Math.round(stock.onestar * 100) / 100;
-        stock.fivestar == "null" ? stock.fivestar = null : stock.fivestar = '$' + Math.round(stock.fivestar * 100) / 100;
-
-        stock.price_growth_10 = formatNumber(Math.round((Math.pow(end_price / price_10, 1 / 10) - 1) * 100), '%');
-        stock.price_growth_5 = formatNumber(Math.round((Math.pow(end_price / price_5, 1 / 5) - 1) * 100), '%');
-        stock.price_growth_3 = formatNumber(Math.round((Math.pow(end_price / price_3, 1 / 3) - 1) * 100), '%');
-        stock.price_growth_1 = formatNumber(Math.round((Math.pow(end_price / price_1, 1 / 1) - 1) * 100), '%');
-
-        stock.revenue_growth_10 = clearNAN(Math.round((Math.pow(end_revenue / revenue_10, 1 / 10) - 1) * 100), '%');
-        stock.revenue_growth_5 = clearNAN(Math.round((Math.pow(end_revenue / revenue_5, 1 / 5) - 1) * 100), '%');
-        stock.revenue_growth_3 = clearNAN(Math.round((Math.pow(end_revenue / revenue_3, 1 / 3) - 1) * 100), '%');
-        stock.revenue_growth_1 = clearNAN(Math.round((Math.pow(end_revenue / revenue_1, 1 / 1) - 1) * 100), '%');
-
-        stock.aebitda_growth_10 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_10, 1 / 10) - 1) * 100), '%');
-        stock.aebitda_growth_5 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_5, 1 / 5) - 1) * 100), '%');
-        stock.aebitda_growth_3 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_3, 1 / 3) - 1) * 100), '%');
-        stock.aebitda_growth_1 = formatNumber(Math.round((Math.pow(end_aebitda / aebitda_1, 1 / 1) - 1) * 100), '%');
-
-        stock.fcf_growth_10 = clearNAN(Math.round((Math.pow(end_fcf / fcf_10, 1 / 10) - 1) * 100), '%');
-        stock.fcf_growth_5 = clearNAN(Math.round((Math.pow(end_fcf / fcf_5, 1 / 5) - 1) * 100), '%');
-        stock.fcf_growth_3 = clearNAN(Math.round((Math.pow(end_fcf / fcf_3, 1 / 3) - 1) * 100), '%');
-        stock.fcf_growth_1 = clearNAN(Math.round((Math.pow(end_fcf / fcf_1, 1 / 1) - 1) * 100), '%');
-
-        stock.so_change_10 = formatNumber(Math.round((end_so - so_10) * 10) / 10);
-        stock.so_change_5 = formatNumber(Math.round((end_so - so_5) * 10) / 10);
-        stock.so_change_3 = formatNumber(Math.round((end_so - so_3) * 10) / 10);
-        stock.so_change_1 = formatNumber(Math.round((end_so - so_1) * 10) / 10);
-
-        stock.soChangePercent_10 = clearNAN(Math.round((formatNumber((Math.round(((so_10 - end_so) / so_10) * 100) / 100) * -1) * 100) * 100) / 100, '%');
-        stock.soChangePercent_5 = clearNAN(Math.round((formatNumber((Math.round(((so_5 - end_so) / so_5) * 100) / 100) * -1) * 100) * 100) / 100, '%');
-        stock.soChangePercent_3 = clearNAN(Math.round((formatNumber((Math.round(((so_3 - end_so) / so_3) * 100) / 100) * -1) * 100) * 100) / 100, '%');
-        stock.soChangePercent_1 = clearNAN(Math.round((formatNumber((Math.round(((so_1 - end_so) / so_1) * 100) / 100) * -1) * 100) * 100) / 100, '%');
-
-    }
-    catch (err) {
-        ///
-    }
-
-    function calculate_growth_capex(ppe, cur_revenue, prev_revenue){
-        // console.log(`${ppe} ${cur_revenue} ${prev_revenue}`)
-        if(ppe && prev_revenue){
-            growthCapex = Math.round((ppe/cur_revenue)*(prev_revenue - cur_revenue))*100/100 
-            return growthCapex;
-        }
-        else{
-            return null;
-        }
-    }
-
-}

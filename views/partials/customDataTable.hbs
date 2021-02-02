@@ -1,0 +1,34 @@
+<div id="table_main" class="dataTables_wrapper">
+    <table id="datatable" class="table table-light table-striped">
+        <thead class="thead-dark">
+            <tr id = "headerRow">
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+
+        </tbody>
+    </table>
+</div>
+
+{{#if all}}
+     <script type="text/JavaScript">
+        const initLink = "/init_table?table=all"
+        const tableType="All"
+    </script>
+{{else}}
+    {{#if shared}}
+    <script type="text/JavaScript">
+        const initLink = "/init_table?table=shared"
+        const tableType="Shared"
+    </script>
+    {{else}}
+    <script type="text/JavaScript">
+        const initLink = "/init_table?table=special"
+        const tableType="Special"
+    </script>
+    {{/if}}
+{{/if}}
+
+<script src="/js/customTable/customDataTable.js"></script>
+<script src="/js/customTable/customButtons.js"></script>
+<script src="/js/collection/notes.js"></script>
