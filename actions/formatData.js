@@ -510,7 +510,7 @@ function formatHistorical(data, cs, years=20) {
     let sd = data[0].stockdata
     for(let yr = 0; yr < years; yr++){
         try{
-        let year = { date : moment(sd[yr].date).format('YYYY, MMM') };
+        let year = { date : moment(sd[yr].date).format('YYYY-MM-DD') };
         for(let i = 0; i < custom.length; i++){
             let decimal = Number(custom[i].decimal);
             //equation empty
