@@ -21,14 +21,20 @@ const openNotes = async (id, symbol) => {
           <input id="institutionalOwnership" type="text" class="form-control" value="${initData.institutional_ownership !== null ? initData.institutional_ownership : "0"}%">
         </div>
         <div class="col">
-          <label for="link">Link to IR Page</label>
+          <label for="link">
+          ${initData.link !== null 
+            ? `<a href="${initData.link}">Link to IR Page</a>` 
+            : 'Link to IR Page'}
+            
+          </label>
           <input id="link" type="text" class="form-control" value="${initData.link !== null ? initData.link : ''}">
         </div>
         <div class="col">
           <label for="founderRunBoard">Founder run/Board</label>
           <select id="founderRunBoard" type="text" class="form-control">
-            <option value="true">Yes</option>
-            <option value="false">No</option>
+            <option selected hidden>${initData.founder_run_board}</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
         </div>
       </div>
@@ -108,7 +114,7 @@ const openNotes = async (id, symbol) => {
         })
         .then(response => response.json())
         .then(returnedData => {
-          console.log(returnedData)
+          openNotes(id,symbol)
         })
       }
     })
@@ -337,24 +343,29 @@ const openNotes = async (id, symbol) => {
 }
 
 function createCompetitors() {
-  $('#competitors').append(`
-  <tr>
-    <td><input class="form-control" placeholder="Symbol" type="text"></td>
-    <td>GuruFocus Chart</td>
-  </tr>
-  `)
+  if($('#competitors > tr').length < 5){
+    $('#competitors').append(`
+    <tr>
+      <td><input class="form-control" placeholder="Symbol" type="text"></td>
+      <td>GuruFocus Chart</td>
+    </tr>
+    `)
+  }
 }
 
 function createNoteWithDate(currentDate, id) {
-  $(id).append(`
-  <tr>
-    <td><input class="form-control" type="text"></td>
-    <td><input class="form-control" type="text" value="${currentDate}"></td>
-  </tr>
-  `)
+  if($(`${id} > tr`).length < 10){
+    $(id).append(`
+    <tr>
+      <td><input class="form-control" type="text"></td>
+      <td><input class="form-control" type="text" value="${currentDate}"></td>
+    </tr>
+    `)
+  }
 }
 
 function createNoteWithLink(id) {
+  if($(`${id} > tr`).length < 10){
   $(id).append(`
   <tr>
     <td><input class="form-control" placeholder="Comment" type="text"></td>
@@ -362,6 +373,7 @@ function createNoteWithLink(id) {
     <td>Go</td>
   </tr>
   `)
+  }
 }
 
 function createMoat(id) {

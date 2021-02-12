@@ -75,7 +75,7 @@ function format_data(stock) {
         data.fcfroa = `${cNaI(Number(data.fcfmargin.replace('%','')) * Number(data.asset_turnover)).toFixed(2)}%`;
         data.fcfroe = `${cNaI((Number(data.fcfmargin.replace('%','')) * Number(data.asset_turnover) * (Number(data.totalassets)/Number(data.total_stockholder_equity)))).toFixed(2)}%`
         data.fcfRoce = `${cNaI(((Number(data.fcf)/Number(data.capital_employed)) * 100).toFixed(2))}%`
-        data.fcfRota = `${cNaI(Number(data.fcf)/(Number(data.totalassets) - Number(data.intangible_assets))).toFixed(2)}%`
+        data.fcfRota = `${cNaI((Number(data.fcf)/(Number(data.totalassets) - Number(data.intangible_assets)))*100).toFixed(2)}%`
 
         data.grossmargin = `${cNaI(Number(data.grossmargin))}%`;
         data.operatingmargin = `${cNaI(Number(data.operatingmargin))}%`;
@@ -99,7 +99,7 @@ function format_data(stock) {
         data.dividendShare = `${Number(data.dividendspershare).toFixed(2)}$`;
         data.price_format = formatNumber(data.price, '$');
 
-        data.sgr = `${cNaI((( Number(data.fcfroic.replace('%','')) * (1-Number(data.dividend))) * 100).toFixed(2))}%`;
+        data.sgr = `${cNaI((( Number(data.fcfroic.replace('%','')) * (1-Number(data.dividend)))).toFixed(2))}%`;
         data.fror = `${cNaI(data.fror)}%`;
         data.expected_annual_total_return = `${cNaI(Number(data.fcfYield.replace(/[^0-9.-]/g, "")) + Number(data.sgr.replace(/[^0-9.-]/g, ""))).toFixed(2)}%`;
 
