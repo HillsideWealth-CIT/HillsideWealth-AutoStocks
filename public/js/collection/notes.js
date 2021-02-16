@@ -355,7 +355,7 @@ function createCompetitors() {
 
 function createNoteWithDate(currentDate, id) {
   if($(`${id} > tr`).length < 10){
-    $(id).append(`
+    $(id).prepend(`
     <tr>
       <td><input class="form-control" type="text"></td>
       <td><input class="form-control" type="text" value="${currentDate}"></td>
@@ -366,7 +366,7 @@ function createNoteWithDate(currentDate, id) {
 
 function createNoteWithLink(id) {
   if($(`${id} > tr`).length < 10){
-  $(id).append(`
+  $(id).prepend(`
   <tr>
     <td><input class="form-control" placeholder="Comment" type="text"></td>
     <td><input class="form-control" placeholder="Link" type="text"></td>
@@ -377,7 +377,7 @@ function createNoteWithLink(id) {
 }
 
 function createMoat(id) {
-  $(id).append(`
+  $(id).prepend(`
   <tr>
     <td>
       <select id="moat" type="text" class="form-control">
