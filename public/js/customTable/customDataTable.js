@@ -18,7 +18,7 @@ const Initialize_table = async () => {
     id = stockdb.id;
     configName = stockdb.name;
     fallback = stockdb.fallback;
-    console.log(fallback)
+    console.log(stockdb)
     setTableHeader(stockdb.data[0].stock_data)
     $table = fill_table(stockdb.data);
   }
@@ -49,10 +49,16 @@ const setTableHeader = (obj) => {
   $(`<th>Symbol</th>`).appendTo("#headerRow");
   $(`<th>${configName} - (${tableType})</th>`).appendTo("#headerRow");
   $(`<th>Buttons</th>`).appendTo("#headerRow");
-  for (let [key] of Object.entries(obj)) {
-    // console.log(key)
-    headerInfo.push(key);
-    $(`<th>${key}</th>`).appendTo("#headerRow")
+  console.log(obj)
+  try{
+    for (let [key] of Object.entries(obj)) {
+      // console.log(key)
+      headerInfo.push(key);
+      $(`<th>${key}</th>`).appendTo("#headerRow")
+    }
+  }
+  catch{
+    console.log('error')
   }
 }
 
