@@ -545,7 +545,7 @@ function formatHistorical(data, cs, years=20) {
      */
     function sToSD(columnString, row){
         // console.log(columnString)
-        // console.log(row)
+        console.log(sd)
         let value;
         switch(columnString) {
             case 'aebitda':
@@ -614,7 +614,7 @@ function formatHistorical(data, cs, years=20) {
                 value = sd[row].fror;
                 break;
             case 'grossMargin':
-                value = sd[row].grossMargin;
+                value = sd[row].grossmargin;
                 break;
             case 'growthYears':
                 value = sd[row].growth_years;
