@@ -183,7 +183,7 @@ app.get('/comments', sessionCheck, async (request, response) => {
     let formattedData = {};
     let comments = (await db.comments({action: "get", id: request.query.id})).rows[0];
     for(let key in comments){
-        formattedData[key] = JSON.parse(comments[key])
+        formattedData[key] = JSON.parse(comments[key] === '' ? null : comments[key])
     }
     response.send(formattedData)
 })

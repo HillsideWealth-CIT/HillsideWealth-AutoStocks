@@ -103,10 +103,23 @@ const openNotes = async (id, symbol) => {
           </div>
         </div>  
       </div>
+      
+      <div class="row">
+        <div class="col">
+        <label for="notes">
+          Notes
+          <button type="button" onClick="createNoteWithDate('${CurrentDate}', '#notesTable')" style="padding:0px;"  class="btn btn-link btn-sm"><span class="fas fa-plus"></span></button>
+        </label>
+          <div id="notes" class="form-control" style="height:100px; overflow:auto;">
+            ${endlessNotes("notesTable", initData.note)}
+          </div>
+        </div>
+      </div>
       `})
     .then((result) => {
       if (!result.dismiss) {
         let data = formatData();
+        console.log(data)
         fetch('/comments', {
           method: 'POST',
           headers: {"Content-Type": "application/json"},
@@ -275,6 +288,7 @@ const openNotes = async (id, symbol) => {
       mgmt_comp: [],
       funds: [],
       articles: [],
+      notes: [],
     };
     //get Competitors
     $("#competitors tr").each((i, row) => {
@@ -335,6 +349,15 @@ const openNotes = async (id, symbol) => {
         toSave.articles.push({
           note: $(row).find('input')["0"].value,
           link: $(row).find('input')["1"].value
+        })
+      }
+    });
+    //gets Notes
+    $("#notesTable tr").each((i, row) => {
+      if ($(row).find('input')["0"].value.length > 0) {
+        toSave.notes.push({
+          note: $(row).find('input')["0"].value,
+          date: $(row).find('input')["1"].value
         })
       }
     });
