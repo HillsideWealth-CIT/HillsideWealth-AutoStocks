@@ -326,11 +326,20 @@ function remove(link) {
             break;
         }
     }
-    ajax_Call(to_remove, link).then((resolved) => {
-        for (let i in to_remove) {
-            $table.row(document.getElementById(`${ids[i]}`)).remove().draw();
+    Swal.fire({
+        title: 'Are You Sure?',
+        text: 'Remember to unselect everything before deleting',
+        showConfirmButton: true,
+        showCancelButton: true
+    }).then((result) => {
+        if(!result.dismiss){
+            ajax_Call(to_remove, link).then((resolved) => {
+                for (let i in to_remove) {
+                    $table.row(document.getElementById(`${ids[i]}`)).remove().draw();
+                }
+            });
         }
-    });
+    })
 }
 
 /**

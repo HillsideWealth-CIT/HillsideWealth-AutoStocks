@@ -515,7 +515,8 @@ const comments = async(data) => {
             insider_activity,
             mgmt_comp,
             funds,
-            articles
+            articles,
+            note
             from stocks where stock_id = $1;`
             , [data.id])
     }
@@ -536,8 +537,9 @@ const comments = async(data) => {
                 insider_activity = $8,
                 mgmt_comp = $9,
                 funds = $10,
-                articles = $11
-                WHERE stock_id = $12;
+                articles = $11,
+                note = $12
+                WHERE stock_id = $13;
         `, [...format, data.id])
     }
 }
