@@ -273,14 +273,14 @@ var column_list = ['check',
 
     'CF Re-Investment Rate 5yr',
 
-    'EV/FCF',
-    'EV/FCF 3yr',
-    'EV/FCF 5yr',
-    'EV/FCF 10yr',
-    'EV/FCF TTM/5yr',
-    'EV/FCF TTM/10yr',
-    'EV/FCF SD 5yr',
-    'EV/FCF SD 10yr',
+    'Cap/FCF',
+    'Cap/FCF 3yr',
+    'Cap/FCF 5yr',
+    'Cap/FCF 10yr',
+    'Cap/FCF TTM/5yr',
+    'Cap/FCF TTM/10yr',
+    'Cap/FCF SD 5yr',
+    'Cap/FCF SD 10yr',
 
     'FCF Yield',
     'FCF Yield 3yr',
@@ -450,7 +450,7 @@ function capitalAllocation() {
 }
 
 function valuation() {
-    hide_loop(column_list.indexOf('EV/FCF'),
+    hide_loop(column_list.indexOf('Cap/FCF'),
         column_list.indexOf('ROE Spice'));
     $table.columns.adjust().draw(false);
 }

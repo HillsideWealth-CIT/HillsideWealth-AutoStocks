@@ -423,10 +423,15 @@ const retrieveAllUsers = async () => {
 }
 
 const dfc_edits = async(values, list) => {
-    // console.log(values)
-    // console.log(list)
-    return await runQuery(`Update stockdata set terminal_growth_rate = $1, discount_rate = $2, growth_years = $3, terminal_years = $4 where ${list};`, [values.tgr/100, values.dr/100, values.gy, values.ty])
-}
+    return await runQuery(`Update stocks set 
+        growth_years = $1,
+        growth_rate_start = $2,
+        growth_rate_end = $3,
+        discount_rate = $4,
+        terminal_multiple = $5,
+        npvfcf = $6
+        where ${list};`, [values.growthYears, values.growthRateStart, values.growthRateEnd, values.discountRate, values.terminalMultiple, values.FCF])
+    }
 
 const edits = async(edit) => {
     return await runQuery(`UPDATE stocks SET NOTE = $1, moat = $2, fairvalue = $3, fivestar = $4, onestar = $5, emoticons = $6, jdv = $7, current_price = $8, ownership = $9,ms_stock_exchange = $10, links = $11 where stock_id = $12`, [edit.comment, edit.ms_moat, 0, 0, 0, edit.emoticon, edit.jdv, edit.price, edit.ownership, 0, edit.links, edit.id])
@@ -611,7 +616,15 @@ function getdata(stocks, stockdata){
             predictability: stocks.rows[i].predictability,
             financialStrength: stocks.rows[i].financialstrength,
             special: stocks.rows[i].special,
-            shared: stocks.rows[i].shared
+            shared: stocks.rows[i].shared,
+            npv:{
+                growthYears: stocks.rows[i].growth_years,
+                growthRateStart: stocks.rows[i].growth_rate_start,
+                growthRateEnd: stocks.rows[i].growth_rate_end,
+                discountRate: stocks.rows[i].discount_rate,
+                terminalMultiple: stocks.rows[i].terminal_multiple,
+                fcf: stocks.rows[i].npvfcf
+            }
         })
     }
     return stockAndData

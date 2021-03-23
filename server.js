@@ -69,7 +69,7 @@ const statusCheck = (req, res, next) => {
 /** GET **/
 
 app.get("/", sessionCheck, statusCheck, (request, response) => {
-    response.render("index.hbs", { i: true, admin: (request.session.status == 'admin') });
+    response.render("index.hbs", { i: true, admin: (request.session.status == 'admin'), user : request.session.user });
 });
 
 app.get("/register", (request, response) => {
@@ -83,14 +83,16 @@ app.get("/login", (request, response) => {
 app.get("/indicators", (request, response) => {
     response.render("indicators.hbs", {
         in: true,
-        admin: (request.session.status == 'admin')
+        admin: (request.session.status == 'admin'),
+        user : request.session.user
     });
 });
 
 app.get("/collection", sessionCheck, statusCheck, (request, response) => {
     response.render("collection.hbs", {
         c: true,
-        admin: (request.session.status == 'admin')
+        admin: (request.session.status == 'admin'),
+        user : request.session.user
     });
 });
 
@@ -98,7 +100,8 @@ app.get('/custom', sessionCheck, async (request, response) => {
     console.log(request.query)
     let test = {
         cu: true,
-        admin: (request.session.status == 'admin')
+        admin: (request.session.status == 'admin'),
+        user : request.session.user
     }
     test[`${request.query.table}`] = true;
     response.render("collection2.hbs", test);
@@ -108,7 +111,8 @@ app.get('/custom', sessionCheck, async (request, response) => {
 app.get("/edit", (request, response) => {
     response.render("edit.hbs", {
         in: true,
-        admin: (request.session.status == 'admin')
+        admin: (request.session.status == 'admin'),
+        user : request.session.user
     });
 });
 
@@ -116,7 +120,8 @@ app.get("/shared", sessionCheck, statusCheck, (request, response) => {
             response.render("collection.hbs", {
             user: request.session.user,
             sc: true,
-            admin: (request.session.status == 'admin')
+            admin: (request.session.status == 'admin'),
+            user : request.session.user
         })
 });
 
@@ -129,17 +134,18 @@ app.get("/special", sessionCheck, statusCheck, (request, response) => {
         });
         response.render("collection.hbs", {
             sd: true,
-            admin: (request.session.status == 'admin')
+            admin: (request.session.status == 'admin'),
+            user : request.session.user
         });
     });
 })
 
 app.get("/documentation", sessionCheck, statusCheck, (request, response) => {
-    response.render("documentation.hbs", { d: true, admin: (request.session.status == 'admin') });
+    response.render("documentation.hbs", { d: true, admin: (request.session.status == 'admin'), user : request.session.user });
 });
 
 app.get("/settings", sessionCheck, statusCheck, (request, response) => {
-    response.render("settings.hbs", { s: true, admin: (request.session.status == 'admin') });
+    response.render("settings.hbs", { s: true, admin: (request.session.status == 'admin'), user : request.session.user });
 });
 
 /* Account validation page */
@@ -186,6 +192,12 @@ app.get('/comments', sessionCheck, async (request, response) => {
         formattedData[key] = JSON.parse(comments[key] === '' ? null : comments[key])
     }
     response.send(formattedData)
+})
+
+app.get('/dcf', sessionCheck, async (request, response) => {
+    let stock = await db.get_by_id(request.query.id);
+    format_data(stock[0])
+    response.send(stock[0])
 })
 
 /** POST **/
@@ -445,7 +457,6 @@ app.post('/edits', sessionCheck, statusCheck, (request, response) => {
 
 /* DFC Values Edit */
 app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
-    // console.log(request.body);
     db.dfc_edits(request.body.values, calc.multi_dfc_string(request.body.stock_id_list)).then((resolve) => {
         response.send("OK");
     });

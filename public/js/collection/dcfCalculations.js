@@ -10,71 +10,66 @@
  * @param {Float} ty 
  * @param {Float} fv 
  */
-function calc_menu(eps, gr5, gr10, gr15, tgr, dr, gy, ty, fv) {
+function calc_menu(input, output) {
   return new Promise((resolve, reject) => {
       let user_input = {};
       swal.fire({
           title: 'DCF INPUTS',
           showConfirmButton: true,
           html:
-              `<div class="row">
-                  <div class="col">
-                      <label for="eps_form">EPS ($)</label>
-                      <input id="eps_form" type="text" class="form-control" value="${eps}" oninput="eps_onchange()">
-                  </div>
-                  <div class="col">
-                      <label for="gr_form">Growth Rate (%)</label>
-                      <input id="gr_form" list="gr_list" type="text" class="form-control" placeholder="press y for years" oninput="eps_onchange(${gr5}, ${gr10}, ${gr15})">
-                      <datalist id="gr_list">
-                          <option value="years 5">
-                          <option value="years 10">
-                          <option value="years 15">
-                      </datalist>
-                      
-                  </div>        
+              `
+              <h5>*Change Values With The DCF Button In The Toolbar</h5>
+              <div class="row">
+                <div class="col">
+                    <label for="growthYears">Growth Years</label>
+                    <input disabled id="growthYears" type="text" class="form-control" value="${input.growthYears}">
+                </div>
+                <div class="col">
+                    <label for="terminalMultiple">Terminal Multiple</label>
+                    <input disabled id="terminalMultiple" type="text" class="form-control" value="${input.terminalMultiple}">
+                </div>
               </div>
               <div class="row">
-                  <div class="col">
-                      <label for="tgr_form">Terminal Growth Rate (%)</label>
-                      <input id="tgr_form" type="text" class="form-control" value="${tgr * 100}" oninput="eps_onchange()">
-                  </div>
-                  <div class="col">
-                      <label for="dr_form">Discount Rate(%)</label>
-                      <input id="dr_form" type="text" class="form-control" value="${dr * 100}" oninput="eps_onchange()">
-                  </div>        
+                <div class="col">
+                    <label for="growthRateStart">Growth Rate Start</label>
+                    <input disabled id="growthRateStart" type="text" class="form-control" value="${input.growthRateStart}">
+                </div>
+                <div class="col">
+                    <label for="growthRateEnd">Growth Rate End</label>
+                    <input disabled id="growthRateEnd" type="text" class="form-control" value="${input.growthRateEnd}">
+                </div>
               </div>
               <div class="row">
-                  <div class="col">
-                      <label for="gy_form">Growth Years</label>
-                      <input id="gy_form" id="eps_form" type="text" class="form-control" value="${gy}" oninput="eps_onchange()">
-                  </div>
-                  <div class="col">
-                      <label for="ty_form">Terminal Years</label>
-                      <input id="ty_form" type="text" class="form-control" value="${ty}" oninput="eps_onchange()">
-                  </div>        
+                <div class="col">
+                    <label for="Discount Rate">Discount Rate</label>
+                    <input disabled id="Discount Rate" type="text" class="form-control" value="${input.discountRate}">
+                </div>
+                <div class="col">
+                    <label for="fcf">FCF</label>
+                    <input disabled id="fcf" type="text" class="form-control" value="${input.fcf}">
+                </div>
               </div>
 
               <div class="row">
-                  <div class="col">
-                      <label for="gv_form">Growth Value</label>
-                      <input id="gv_form" type="text" class="form-control" value="${fv.growth_value}" readonly>
-                  </div>
-                  <div class="col">
-                      <label for="tv_form">Terminal Value</label>
-                      <input id="tv_form" type="text" class="form-control" value="${fv.terminal_value}" readonly>
-                  </div>
-                  <div class="col">
-                      <label for="fv_form">Fair Value</label>
-                      <input id="fv_form" type="text" class="form-control" value="${fv.fair_value}" readonly>
-                  </div>           
+                <div class="col">
+                    <label for="fv">FV</label>
+                    <input disabled id="fv" type="text" class="form-control" value="${output.fv}">
+                </div>
+                <div class="col">
+                    <label for="fvMultiple">FV Multiple</label>
+                    <input disabled id="fvMultiple" type="text" class="form-control" value="${output.fvMultiple}">
+                </div>
               </div>
-
               <div class="row">
-                  <div class="col">
-                      <label for="gv_form">Average</label>
-                      <input id="gv_form" type="text" class="form-control" value="${dfcAverage([gr5, gr10, gr15])}" readonly>
-                  </div>
-          </div>
+                <div class="col">
+                    <label for="currentMultiple">Current Multiple</label>
+                    <input disabled id="currentMultiple" type="text" class="form-control" value="${output.currentMultiple}">
+                </div>
+                <div class="col">
+                    <label for="premiumDiscount">Premium/Discount</label>
+                    <input disabled id="premiumDiscount" type="text" class="form-control" value="${output.premiumDiscount}">
+                </div>
+              </div>
               `,
       });
   });
@@ -105,11 +100,10 @@ function dfcAverage(arrList) {
 * @param {String} gy 
 * @param {String} ty 
 */
-function open_calc(eps, gr5, gr10, gr15, tgr, dr, gy, ty) {
-  // console.log(`${eps} ${gr5} ${gr10} ${gr15} ${tgr} ${dr} ${gy} ${ty} `)
-  let fv = dcf(eps, Math.round((gr5.replace(/[^a-z0-9,. ]/gi, '') / 100) * 100000) / 100000, tgr, dr, gy, ty);
-  // console.log(fv)
-  calc_menu(eps, gr5.replace(/[^a-z0-9,. ]/gi, ''), gr10.replace(/[^a-z0-9,. ]/gi, ''), gr15.replace(/[^a-z0-9,. ]/gi, ''), tgr, dr, gy, ty, fv);
+async function open_calc(npv) {
+  let response = await fetch(`/dcf?id=${npv}`);
+  let json = await response.json();
+  calc_menu(json.npv, json.npvoutput);
 }
 
 /**
@@ -182,7 +176,7 @@ function calc_edit() {
 */
 function calc_edit_menu() {
   let values = {};
-  let arr = ['tgr', 'dr', 'gy', 'ty'];
+  let arr = ['growthYears', 'terminalMultiple', 'growthRateStart', 'growthRateEnd', 'discountRate', 'FCF'];
   return new Promise((resolve) => {
       swal.fire({
           title: 'DCF INPUTS',
@@ -191,38 +185,44 @@ function calc_edit_menu() {
           html:
               `
           <div class="row">
-              <p class="col">*EMPTY FIELDS WILL BE TREATED AS 5</p>
+              <p class="col">*Set FCF to 0 for current FCF</p>
           </div>
           <div class="row">
               <div class="col">
-                  <label for="tgr_form">Terminal Growth Rate (%)</label>
-                  <input id="tgr_form" type="text" class="form-control" value="4">
+                  <label for="growthYears_form">Growth Years</label>
+                  <input id="growthYears_form" type="text" class="form-control" value="10">
               </div>
               <div class="col">
-                  <label for="dr_form">Discount Rate(%)</label>
-                  <input id="dr_form" type="text" class="form-control" value="12">
+                  <label for="terminalMultiple_form">Terminal Multiple</label>
+                  <input id="terminalMultiple_form" type="text" class="form-control" value="20">
               </div>        
           </div>
           <div class="row">
               <div class="col">
-                  <label for="gy_form">Growth Years</label>
-                  <input id="gy_form" id="eps_form" type="text" class="form-control" value="10">
+                  <label for="growthRateStart_form">Growth Rate Start</label>
+                  <input id="growthRateStart_form" type="text" class="form-control" value="0.15">
               </div>
               <div class="col">
-                  <label for="ty_form">Terminal Years</label>
-                  <input id="ty_form" type="text" class="form-control" value="10">
+                  <label for="growthRateEnd_form">Growth Rate End</label>
+                  <input id="growthRateEnd_form" type="text" class="form-control" value="0.1">
               </div>        
+          </div>
+          <div class="row">
+              <div class="col">
+                  <label for="discountRate_form">Discount Rate</label>
+                  <input id="discountRate_form"  type="text" class="form-control" value="0.15">
+              </div>
+              <div class="col">
+                  <label for="FCF_form">FCF</label>
+                  <input id="FCF_form"  type="text" class="form-control" value="0">
+              </div>
           </div>
           `,
       }).then((result) => {
           if (!result.dismiss) {
-              // values.tgr = document.getElementById('tgr_form').value / 100;
-              // values.dr = document.getElementById('dr_form').value / 100;
-              // values.gy = document.getElementById('gy_form').value;
-              // values.ty = document.getElementById('ty_form').value;
               for (let i in arr) {
-                  if (document.getElementById(`${arr[i]}_form`).value.length != 0) {
-                      values[arr[i]] = document.getElementById(`${arr[i]}_form`).value;
+                  if ($(`#${arr[i]}_form`).val().length != 0) {
+                      values[arr[i]] = $(`#${arr[i]}_form`).val();
                   }
                   else {
                       values[arr[i]] = 5;

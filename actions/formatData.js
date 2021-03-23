@@ -67,7 +67,7 @@ function format_data(stock) {
         if(index >= 11){
             return
         }
-        data.fcfYield = `${cNaI((Number(data.fcf) / Number(data.enterprise_value))* 100).toFixed(2)}%`;
+        data.fcfYield = `${cNaI((Number(data.fcf) / Number(data.market_cap))* 100).toFixed(2)}%`;
         data.fcfSpice = `${cNaI(((Number(data.fcfmargin.replace('%', '')) * Number(data.asset_turnover)) * (Number(data.fcfYield.replace('%', ''))))/100).toFixed(2)}`;
         data.yield_format = data.yield + '%';
 
@@ -106,12 +106,12 @@ function format_data(stock) {
         data.dividendPayoutRatio = `${cNaI((Number(data.dividendspershare)/(Number(data.fcf)/Number(data.shares_outstanding))) * 100).toFixed(2)}%`;
         data.cashflow_reinvestment_rate = `${cNaI(Number(data.cashflow_reinvestment_rate)*100).toFixed(0)}%`;
 
-        data.evFcf = `${cNaI(Number(data.enterprise_value) / Number(data.fcf)).toFixed(2)}`;
+        data.capFcf = `${cNaI(Number(data.market_cap) / Number(data.fcf)).toFixed(2)}`;
         data.fcfYield = `${cNaI((Number(data.fcf) / Number(data.enterprise_value))* 100).toFixed(2)}%`;
         data.fcfSpice = `${cNaI(((Number(data.fcfmargin.replace('%', '')) * Number(data.asset_turnover)) * (Number(data.fcfYield.replace('%', ''))))/100).toFixed(2)}`;
         data.aebitda_spice = cNaI(Math.round(data.aebitda / data.revenue * data.asset_turnover * 100 / (data.enterprise_value / data.aebitda) * 100) / 100);
         data.roe_spice = cNaI(Math.round(data.roe / (data.enterprise_value / data.aebitda) * 100) / 100);   
-        data.urbem_value = `${cNaI(Number(data.evFcf)/Number(data.sgr.replace('%',''))).toFixed(1)}`    
+        data.urbem_value = `${cNaI(Number(data.capFcf)/Number(data.sgr.replace('%',''))).toFixed(1)}`    
 
         data.fcfEmployee = `$${cNaI((Number(data.employees) * 1000000) / Number(data.fcf)).toFixed(0)}`;
 
@@ -192,7 +192,7 @@ function format_data(stock) {
     stock.setup.dividendPayoutRatio = setup('dividendPayoutRatio', '%');
     stock.setup.cashflow_reinvestment_rate = setup('cashflow_reinvestment_rate', '%', 0);
 
-    stock.setup.evFcf = setup('evFcf');
+    stock.setup.capFcf = setup('capFcf');
     stock.setup.fcfYield = setup('fcfYield', '%');
     stock.setup.fcfSpice = setup('fcfSpice');
 
@@ -281,7 +281,7 @@ function format_data(stock) {
         stock.calculations.sgr10yr = `${cNaI(Number(stock.setup.sgr['10yrAvg'].replace('%','')) / 1 - Number(stock.setup.dividend['10yrAvg'].replace('%',''))).toFixed(2)}`;
         stock.calculations.bvpsY10 = `$${formatNumber(cNaI(((Math.pow( 1 + (Number(stock.setup.sgr['10yrAvg'].replace('%',''))/ 100), 10)) * Number(stock.stockdata[0].book_value_per_share)).toFixed(2)))}`;
         stock.calculations.fcfShareY10 = `$${formatNumber(cNaI(((Math.pow( 1 + (Number(stock.setup.sgr['10yrAvg'].replace('%',''))/ 100), 10)) * Number(stock.stockdata[0].fcfShare)).toFixed(2)))}`;
-        stock.calculations.stockPriceY10 = `$${formatNumber(cNaI((Number(stock.calculations.fcfShareY10.replace('$', '')) * Number(stock.setup.evFcf['10yrAvg'])).toFixed(2)))}`;
+        stock.calculations.stockPriceY10 = `$${formatNumber(cNaI((Number(stock.calculations.fcfShareY10.replace('$', '')) * Number(stock.setup.capFcf['10yrAvg'])).toFixed(2)))}`;
         stock.calculations.projected10ror = `${formatNumber(cNaI(((Math.pow(Number(stock.calculations.stockPriceY10.replace(/[^0-9.-]/g, "")) / Number(stock.stockdata[0].price),0.1)-1) * 100).toFixed(2)))}%`
         stock.calculations.projected10Total = `${cNaI((Number(stock.calculations.projected10ror.replace(/[^0-9.-]/g, "")) + Number(stock.setup.dividendYield["10yrAvg"].replace(/[^0-9.-]/g, ""))).toFixed(2))}%`;
         
@@ -378,6 +378,66 @@ function format_data(stock) {
         stock.soChangePercent_5 = clearNAN(Math.round((formatNumber((Math.round(((so_5 - end_so) / so_5) * 100) / 100) * -1) * 100) * 100) / 100, '%');
         stock.soChangePercent_3 = clearNAN(Math.round((formatNumber((Math.round(((so_3 - end_so) / so_3) * 100) / 100) * -1) * 100) * 100) / 100, '%');
         stock.soChangePercent_1 = clearNAN(Math.round((formatNumber((Math.round(((so_1 - end_so) / so_1) * 100) / 100) * -1) * 100) * 100) / 100, '%');
+
+        //npv?
+        let {
+            growthYears,
+            growthRateStart, 
+            growthRateEnd,
+            discountRate,
+            terminalMultiple,
+            fcf
+        } = stock.npv;
+        stock.npv.fcf = (fcf == '0') ? stock.stockdata[0].fcf : fcf
+
+        let calculatedNPV = [];
+        for(let i = 0; i <= Number(growthYears); i++){
+            if(i < 1){
+                calculatedNPV.push({
+                    growth: Number(growthRateStart) - (Number(growthRateStart) - Number(growthRateEnd))/10,
+                    fcf: Number(stock.stockdata[0].fcf),
+                    npvAccFcf: Number(stock.stockdata[0].fcf),
+                    npvTerminal: null,
+                    npvTotal: null,
+                });
+            }
+            else{
+                let {
+                    growth,
+                    fcf,
+                    npvAccFcf,
+                } = calculatedNPV[i-1]
+                let 
+                    cGrowth = (growth - (Number(growthRateStart) - Number(growthRateEnd))/10);
+                    cFcf = fcf * (1 + calculatedNPV[i-1].growth),
+                    cnpvAccFcF = (i == 1) 
+                        ? cFcf / Math.pow(1 + Number(discountRate), i)
+                        : npvAccFcf + cFcf / Math.pow(1 + Number(discountRate), i)
+                    cnpvTerminal = (i !== Number(growthYears)) ? null : (cFcf * Number(terminalMultiple)) / Math.pow(1 + Number(discountRate), i + 1)
+                    cnpvTotal = (i !== Number(growthYears)) ? null : (cnpvTerminal + cnpvAccFcF)
+                    cfvMultiple = (i !== Number(growthYears)) ? null : (cnpvTotal/stock.stockdata[0].fcf)
+                calculatedNPV.push({
+                    growth: cGrowth,
+                    fcf: cFcf,
+                    npvAccFcf: cnpvAccFcF,
+                    npvTerminal: cnpvTerminal,
+                    npvTotal: cnpvTotal,
+                    fvMultiple: cfvMultiple,
+                });
+            }
+        }
+        let {
+            fvMultiple,
+            npvTotal,
+        } = calculatedNPV[calculatedNPV.length-1]
+        let currentMultiple = 1/(Number(stock.stockdata[0].fcf)/Number(stock.stockdata[0].market_cap));
+        let premiumDiscount = (((currentMultiple / fvMultiple)/fvMultiple) * 100)
+        stock.npvoutput = {
+            fv: npvTotal.toFixed(2),
+            fvMultiple: fvMultiple.toFixed(2),
+            currentMultiple: currentMultiple.toFixed(2),
+            premiumDiscount: `${premiumDiscount.toFixed(0)}%`,
+        }
     }
     catch (err) {
         ///
@@ -513,20 +573,33 @@ function formatHistorical(data, cs, years=20) {
         let year = { date : moment(sd[yr].date).format('YYYY-MM-DD') };
         for(let i = 0; i < custom.length; i++){
             let decimal = Number(custom[i].decimal);
-            //equation empty
+            //equation empty + single column
             if(custom[i].equation.length === 0){
-                year[custom[i].rowName] = (custom[i].sign === '$')
-                ?   `$${Number(sToSD(custom[i].columns, yr)).toFixed(decimal)}`
-                :   `${Number(sToSD(custom[i].columns, yr)).toFixed(decimal)}${custom[i].sign}`
+                let average = custom[i].columns.split('|');
+                if(average.length === 2){
+                    let num = calc.calculate_average(data[0].stockdata, sToSD(average[0],0,true), average[1])
+                    year[custom[i].rowName] = (custom[i].sign === '$')
+                    ?   `$${formatNumber(Number(num).toFixed(decimal))}`
+                    :   `${formatNumber(Number(num).toFixed(decimal))}${custom[i].sign}`
+                }
+                else{
+                    year[custom[i].rowName] = (custom[i].sign === '$')
+                    ?   `$${formatNumber(Number(sToSD(custom[i].columns, yr)).toFixed(decimal))}`
+                    :   `${formatNumber(Number(sToSD(custom[i].columns, yr)).toFixed(decimal))}${custom[i].sign}`
+                }
             }
             else{
                 let variables = [];
                 for(let p of custom[i].columns.split(" ")){
-                    if(p.length > 0) variables.push(Number(sToSD(p, yr)))
+                    if (p.split('|').length === 2){
+                        let average = p.split('|')
+                        variables.push(calc.calculate_average(data[0].stockdata, sToSD(average[0],0,true), average[1]))
+                    }
+                    else if(p.length > 0) variables.push(Number(sToSD(p, yr)))
                 }
                 year[custom[i].rowName] = (custom[i].sign === '$')
-                ?   `$${Number(evalExpression(variables, custom[i].equation)).toFixed(decimal)}`
-                :   `${Number(evalExpression(variables, custom[i].equation)).toFixed(decimal)}${custom[i].sign}`
+                ?   `$${formatNumber(Number(evalExpression(variables, custom[i].equation)).toFixed(decimal))}`
+                :   `${formatNumber(Number(evalExpression(variables, custom[i].equation)).toFixed(decimal))}${custom[i].sign}`
             }
         }
         toSend.push(year)
@@ -543,165 +616,269 @@ function formatHistorical(data, cs, years=20) {
      * @param {Int} row - The number of the row
      * @returns {String} - Returns the value from the database on the specified row
      */
-    function sToSD(columnString, row){
+    function sToSD(columnString, row = 0, avg=false){
         // console.log(columnString)
         // console.log(sd)
         let value;
         switch(columnString) {
             case 'aebitda':
-                value = sd[row].aebitda;
+                value = (avg === false) 
+                    ? sd[row].aebitda
+                    : 'aebitda';
                 break;
             case 'assetTurn':
-                value = sd[row].asset_turnover;
+                value = (avg === false) 
+                    ? sd[row].asset_turnover
+                    : 'asset_turnover';
                 break;
             case 'bvps':
-                value = sd[row].book_value_per_share;
+                value = (avg === false) 
+                ? sd[row].book_value_per_share
+                : 'book_value_per_share';
                 break;
             case 'capLeaseDebt':
-                value = sd[row].cap_lease_debt;
+                value = (avg === false)
+                    ? sd[row].cap_lease_debt
+                    : 'cap_lease_debt';
             case 'capex':
-                value = sd[row].capex;
+                value = (avg === false)
+                    ? sd[row].capex
+                    : 'capex';
                 break;
             case 'capitalEmployed':
-                value = sd[row].capital_employed;
+                value = (avg === false)
+                    ? sd[row].capital_employed
+                    : 'capital_employed';
                 break;
             case 'cashConversionCycle':
-                value = sd[row].cash_conversion_cycle;
+                value = (avg === false) 
+                    ? sd[row].cash_conversion_cycle
+                    : 'cash_conversion_cycle';
                 break;
             case 'cashflowReinvestmentRate':
-                value = sd[row].cashflow_reinvestment_rate;
+                value = (avg === false) 
+                    ? sd[row].cashflow_reinvestment_rate
+                    : 'cashflow_reinvestment_rate';
                 break;
             case 'discountRate':
-                value = sd[row].discount_rate;
+                value = (avg === false) 
+                    ? sd[row].discount_rate
+                    : 'discount_rate';
                 break;
             case 'dividend':
-                value = sd[row].dividend;
+                value = (avg === false) 
+                    ? sd[row].dividend
+                    : 'dividend';
                 break;
             case 'dividendYield':
-                value = sd[row].dividendYield;
+                 value = (avg === false) 
+                    ? sd[row].dividendYield
+                    : 'dividendYield';
                 break;
             case 'dividendPerShare':
-                value = sd[row].dividendShare;
+                value = (avg === false) 
+                    ? sd[row].dividendShare
+                    : 'dividendShare';
                 break;
             case 'ebit':
-                value = sd[row].ebit;
+                value = (avg === false) 
+                    ? sd[row].ebit
+                    : 'ebit';
                 break;
             case 'effectiveTax':
-                value = sd[row].effective_tax;
+                value = (avg === false) 
+                    ?  sd[row].effective_tax
+                    : 'effective_tax';
                 break;
             case 'employees':
-                value = sd[row].employees;
+                value = (avg === false) 
+                    ?  sd[row].employees
+                    : 'employees';
                 break;
             case 'enterpriseValue':
-                value = sd[row].enterprise_value;
+                value = (avg === false) 
+                    ?  sd[row].enterprise_value
+                    : 'enterprise_value';
                 break;
             case 'epsBasic':
-                value = sd[row].eps_basic;
+                value = (avg === false) 
+                    ?  sd[row].eps_basic
+                    : 'eps_basic';
                 break;
             case 'epsWithoutNri':
-                value = sd[row].eps_without_nri;
+                value = (avg === false) 
+                    ?  sd[row].eps_without_nri
+                    : 'eps_without_nri';
                 break;
             case 'fcf':
-                value = sd[row].fcf;
+                value = (avg === false) 
+                    ?  sd[row].fcf
+                    : 'fcf';
                 break;
             case 'fcfMargin':
-                value = sd[row].fcfmargin;
+                value = (avg === false) 
+                    ?  sd[row].fcfmargin
+                    : 'fcfmargin';
                 break;
             case 'flowRatio':
-                value = sd[row].flow_ratio;
+                value = (avg === false) 
+                    ?  sd[row].flow_ratio
+                    : 'flow_ratio';
                 break;
             case 'fror':
-                value = sd[row].fror;
+                value = (avg === false) 
+                    ?  sd[row].fror
+                    : 'fror';
                 break;
             case 'grossMargin':
-                value = sd[row].grossmargin;
+                value = (avg === false) 
+                    ?  sd[row].grossmargin
+                    : 'grossmargin';
                 break;
             case 'growthYears':
-                value = sd[row].growth_years;
+                value = (avg === false) 
+                    ?  sd[row].growth_years
+                    : 'growth_years';
                 break;
             case 'investedCapital':
-                value = sd[row].invested_capital;
+                value = (avg === false) 
+                    ?  sd[row].invested_capital
+                    : 'invested_capital';
                 break;
             case 'intangibleAssets':
-                value = sd[row].intangible_assets;
+                value = (avg === false) 
+                    ?  sd[row].intangible_assets
+                    : 'intangible_assets';
                 break;
             case 'longTermDebt':
-                value = sd[row].lt_debt_lease_obligations;
+                value = (avg === false) 
+                    ?  sd[row].lt_debt_lease_obligations
+                    : 'lt_debt_lease_obligations'
                 break;
             case 'marketCap':
-                value = sd[row].market_cap;
+                value = (avg === false) 
+                    ?  sd[row].market_cap
+                    : 'market_cap'
                 break;
             case 'monthEndPrice':
-                value = sd[row].month_end_price;
+                value = (avg === false) 
+                    ?  sd[row].month_end_price
+                    : 'month_end_price'
                 break;
             case 'netDebt':
-                value = sd[row].net_debt;
+                value = (avg === false) 
+                    ?  sd[row].net_debt
+                    : 'net_debt'
                 break;
             case 'netIncome':
-                value = sd[row].net_income;
+                value = (avg === false) 
+                    ?  sd[row].net_income
+                    : 'net_income'
                 break;
             case 'netMargin':
-                value = sd[row].netmargin;
+                value = (avg === false) 
+                    ?  sd[row].netmargin
+                    : 'netmargin'
                 break;
             case 'operatingCushion':
-                value = sd[row].operating_cushion;
+                value = (avg === false) 
+                    ?  sd[row].operating_cushion
+                    : 'operating_cushion'
                 break;
             case 'operatingMargin':
-                value = sd[row].operatingmargin;
+                value = (avg === false) 
+                    ?  sd[row].operatingmargin
+                    : 'operatingmargin'
                 break;
             case 'ownerEarning':
-                value = sd[row].ownerEarningShare
+                value = (avg === false) 
+                    ?  sd[row].ownerEarningShar
+                    : 'ownerEarningShar';
                 break;
             case 'ppe':
-                value = sd[row].ppe;
+                value = (avg === false) 
+                    ?  sd[row].ppe
+                    : 'ppe';
                 break;
             case 'price':
-                value = sd[row].price;
+                value = (avg === false) 
+                    ?  sd[row].price
+                    : 'price';
                 break;
             case 'purchaseOfBusiness':
-                value = sd[row].purchase_of_business;
+                value = (avg === false) 
+                    ?  sd[row].purchase_of_business
+                    : 'purchase_of_business';
                 break;
             case 'reinvestedCfJdv':
-                value = sd[row].reinvested_cf_jdv;
+                value = (avg === false) 
+                    ?  sd[row].reinvested_cf_jdv
+                    : 'reinvested_cf_jdv';
                 break;
             case 'revenue':
-                value = sd[row].revenue;
+                value = (avg === false) 
+                    ?  sd[row].revenue
+                    : 'revenue';
                 break;
             case 'roe':
-                value = sd[row].roe;
+                value = (avg === false) 
+                    ?  sd[row].roe
+                    : 'roe';
                 break;
             case 'roic':
-                value = sd[row].roic;
+                value = (avg === false) 
+                    ?  sd[row].roic
+                    : 'roic';
                 break;
             case 'sharesOutstanding':
-                value = sd[row].shares_outstanding;
+                value = (avg === false) 
+                    ?  sd[row].shares_outstanding
+                    : 'shares_outstanding';
                 break;
             case 'sharesOutstandingQuarterly':
-                value = sd[row].shares_outstanding_quarterly;
+                value = (avg === false) 
+                    ?  sd[row].shares_outstanding_quarterly
+                    : 'shares_outstanding_quarterly';
                 break;
             case 'shortTermDebt':
-                value = sd[row].st_debt_lease_obligations;
+                value = (avg === false) 
+                    ?  sd[row].st_debt_lease_obligations
+                    : 'st_debt_lease_obligations';
                 break;
             case 'terminalGrowthRate':
-                value = sd[row].terminal_growth_rate;
+                value = (avg === false) 
+                    ?  sd[row].terminal_growth_rate
+                    : 'terminal_growth_rate';
                 break;
             case 'TerminalYears':
-                value = sd[row].terminal_years;
+                value = (avg === false) 
+                    ?  sd[row].terminal_years
+                    : 'terminal_years';
                 break;
             case 'totalStockholderEquity':
-                value = sd[row].total_stockholder_equity;
+                value = (avg === false) 
+                    ?  sd[row].total_stockholder_equity
+                    : 'total_stockholder_equity';
                 break;
             case 'totalAssets':
-                value = sd[row].totalassets;
+                value = (avg === false) 
+                    ?  sd[row].totalassets
+                    : 'totalassets';
                 break;
             case 'ttm':
-                value = sd[row].ttm;
+                value = (avg === false) 
+                    ?  sd[row].ttm
+                    : 'ttm';
                 break;
             case 'wacc':
-                value = sd[row].wacc;
+                value = (avg === false) 
+                    ?  sd[row].wacc
+                    : 'wacc';
                 break;
             case 'yield':
-                value = sd[row].yield;
+                value = (avg === false) 
+                    ?  sd[row].yield
+                    : 'yield';
                 break;
             default:
                 value = 'N/A'

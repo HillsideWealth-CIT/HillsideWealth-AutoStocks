@@ -240,9 +240,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     try { 
                         currentData.invested_capital
                             = parseFloat(annuals.balance_sheet["Total Stockholders Equity"][f])
-                            + parseFloat(annuals.balance_sheet["Short-Term Debt & Capital Lease Obligation"][f])
-                            + parseFloat(annuals.balance_sheet["Long-Term Debt & Capital Lease Obligation"][f])
-                            + parseFloat(annuals.balance_sheet["Other Long-Term Liabilities"][f])
+                            + parseFloat(annuals.balance_sheet["Short-Term Debt"][f])
+                            + parseFloat(annuals.balance_sheet["Long-Term Debt"][f])
                         }
                     catch{ currentData.invested_capital = NaN; }
                 currentStock.data.push(currentData)
