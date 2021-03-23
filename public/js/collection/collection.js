@@ -132,7 +132,7 @@ function column_builder(){
                     entVal: row.stockdata[0].enterprise_value_format,
                     fcfSpice: row.stockdata[0].fcfSpice,
                     aebitdaSpice: row.stockdata[0].aebitda_spice,
-                    evFcf: row.stockdata[0].evFcf,
+                    capFcf: row.stockdata[0].capFcf,
                     fcfYield: row.stockdata[0].fcfYield,
                     dividendYield: row.stockdata[0].dividend_yield,
                     fcfRoic: row.stockdata[0].fcfroic,
@@ -156,7 +156,7 @@ function column_builder(){
                     <button type="button" onclick='openNotes("${row.stock_id}", "${row.symbol}")' class="btn btn-link btn-sm"><span class="far fa-edit"></span></button>
                     <button type="button" onclick='open_stats(${JSON.stringify(keystats)})' class="btn btn-link btn-sm"><span class="fas fa-external-link-alt"></span></button>
                     <button type="button" onclick='open_chart("${row.symbol}")' class="btn btn-link btn-sm"><span class="fas fa-chart-line"></span></button>
-                    <button type="button" onclick='open_calc("${row.stockdata[0].eps_without_nri}", "${row.growth_rate_5y}", "${row.growth_rate_10y}", "${row.growth_rate_15y}", "${row.stockdata[0].terminal_growth_rate}","${row.stockdata[0].discount_rate}","${row.stockdata[0].growth_years}","${row.stockdata[0].terminal_years}", )' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>
+                    <button type="button" onclick='open_calc(("${row.stock_id}"))' class="btn btn-link btn-sm"><span class="fas fa-calculator"></span></button>
                     <button type="button" onclick='show_financials("${row.symbol}", "${row.stock_id}")' class="btn btn-link btn-sm"><span class="fas fa-history"></span></button>
                 </div>
                 `;
@@ -434,14 +434,14 @@ function column_builder(){
 
         { data : "setup.cashflow_reinvestment_rate.5yrAvg"},
 
-        { data : "stockdata.0.evFcf", type : "any-number" },
-        { data : "setup.evFcf.3yrAvg", type : "any-number" },
-        { data : "setup.evFcf.5yrAvg", type : "any-number" },
-        { data : "setup.evFcf.10yrAvg", type : "any-number" },
-        { data : "setup.evFcf.ttm/5yr", type : "any-number" },
-        { data : "setup.evFcf.ttm/10yr", type : "any-number" },
-        { data : "setup.evFcf.5stdev", type : "any-number" },
-        { data : "setup.evFcf.10stdev", type : "any-number" },
+        { data : "stockdata.0.capFcf", type : "any-number" },
+        { data : "setup.capFcf.3yrAvg", type : "any-number" },
+        { data : "setup.capFcf.5yrAvg", type : "any-number" },
+        { data : "setup.capFcf.10yrAvg", type : "any-number" },
+        { data : "setup.capFcf.ttm/5yr", type : "any-number" },
+        { data : "setup.capFcf.ttm/10yr", type : "any-number" },
+        { data : "setup.capFcf.5stdev", type : "any-number" },
+        { data : "setup.capFcf.10stdev", type : "any-number" },
 
         { data : "stockdata.0.fcfYield", type : "any-number" },
         { data : "setup.fcfYield.3yrAvg", type : "any-number" },
