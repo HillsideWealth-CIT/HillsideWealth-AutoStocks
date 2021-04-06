@@ -339,6 +339,10 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('intangible_assets')
                 placeholders.push(`$${params.push(parseFloat(isFinite(data[i].intangible_assets) ? data[i].intangible_assets : 0.0))}`)
             }
+            if(data[i].goodwill != null){
+                if(i == 0) columns.push('goodwill')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].goodwill) ? data[i].goodwill : 0.0))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
