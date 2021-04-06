@@ -6,6 +6,8 @@ $(document).ready(function(){
 Initialize_table();
 });
 
+let date = new Date();
+
 /**
  * Initializes table
  */
@@ -14,10 +16,10 @@ function Initialize_table(){
         stockdb = resolve.data;
         console.log(stockdb);
         $table = fill_table(resolve.data);
-
         total_columns = $table.columns().header().length;
         $table.scroller.toPosition(stockdb.length,false);
         $table.scroller.toPosition(0);
+        renameIroe();
     });
 }
 /**
@@ -55,13 +57,19 @@ function fill_table(data){
  */
 function button_builder(){
     let buttons = [
-        'selectAll', 'selectNone',
-        {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
-        {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove(removeLink);}},
-        {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", action: function(){update(updateLink);}},
-        {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
-       
-        {text: '<span class="fas fa-eye"></span> Show Selected', className:"btn-sm", action: function(){show_selected();}},
+        {text: 'Selection', className:"btn-sm", extend: 'collection',
+        buttons: [
+            {text: '<span class="fas fa-eye"></span> Show Selected', className:"", action: function(){show_selected();}},
+            'selectAll',
+            'selectNone',
+        ]},
+        {text: 'Edit Table', className:"btn-sm", extend: 'collection',
+        buttons: [
+            {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
+            {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove(removeLink);}},
+            {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", action: function(){update(updateLink);}},
+            {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
+        ]},
         {text: '<span class="fas fa-share"></span> Save', className:"btn-sm", extend: 'collection',
         buttons: [
             {text: 'Set Special', className:"btn-sm", action: function(){setSpecial();}},
@@ -82,21 +90,13 @@ function button_builder(){
         {text: '<span class="fas fa-columns"></span> Table Config', className:"btn-sm", extend: 'collection',
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all();}},
-                { text:'Key Stats', action: function(){keyStats();}},
-                { text:'Key Stats Rest', action: function(){keyStats_Rest();}},
-                { text:'Return on Capital', action: function(){returnOnCapital();}},
-                { text:'Incremental Return on Capital', action: function(){incrementalReturnOnCapital();}},
+                { text:'Returns', action: function(){returns();}},
+                { text:'Capital Allocation', action: function(){capitalAllocation();}},
                 { text:'Margins', action: function(){margins();}},
                 { text:'Financial Health', action: function(){financialHealth();}},
-                { text:'Capital Intensity', action: function(){capitalIntensity();}},
-                { text:'Cash Generation/Conversion', action: function(){cashGeneration();}},
-                { text:'Guru', action: function(){guru();}},
-                { text:'Growth', action: function(){growth();}},
-                { text:'Future Growth Estimates', action: function(){futureGrowth();}},
-                { text:'Projected ROR & Price Target', action: function(){projectedRor();}},
-                { text:'Capital Allocation', action: function(){capitalAllocation();}},
+                { text:'Cash Generation', action: function(){cashGeneration();}},
                 { text:'Valuation', action: function(){valuation();}},
-                { text:'Random', action: function(){random();}},
+                { text:'Growth', action: function(){growth();}},
             ]
         },
         {text: 'Go To Custom', className:"btn-sm", action: function(){goToCustom();}},
@@ -167,338 +167,65 @@ function column_builder(){
         { defaultContent: 0 },
         { data : "stock_current_price" },
 
-        { data : "stockdata.0.fcfSpice", type : "any-number" },
-        { data : "setup.fcfSpice.3yrAvg", type : "any-number" },
-        { data : "setup.fcfSpice.5yrAvg", type : "any-number" },
-        { data : "setup.fcfSpice.10yrAvg", type : "any-number" },
-        { data : "setup.fcfSpice.ttm/5yr", type : "any-number"
-        },
-        { data : "setup.fcfSpice.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfSpice.5stdev", type : "any-number"},
-        { data : "setup.fcfSpice.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.fcfYield", type : "any-number" },
-        { data : "setup.fcfYield.3yrAvg", type : "any-number" },
-        { data : "setup.fcfYield.5yrAvg", type : "any-number" },
-        { data : "setup.fcfYield.10yrAvg", type : "any-number" },
-        { data : "setup.fcfYield.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfYield.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfYield.5stdev", type : "any-number" },
-        { data : "setup.fcfYield.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.yield_format", type : "any-number" },
-        { data : "stockdata.0.enterprise_value_format"},
-        { data : "categories" },
-
-        { data : "stockdata.0.fcfroic", type : "any-number" },
-        { data : "setup.fcfroic.3yrAvg", type : "any-number" },
         { data : "setup.fcfroic.5yrAvg", type : "any-number" },
-        { data : "setup.fcfroic.10yrAvg", type : "any-number" },
-        { data : "setup.fcfroic.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfroic.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfroic.5stdev", type : "any-number" },
-        { data : "setup.fcfroic.10stdev", type : "any-number" },
 
-        { data : "stockdata.0.fcfroa", type : "any-number" },
-        { data : "setup.fcfroa.3yrAvg", type : "any-number" },
-        { data : "setup.fcfroa.5yrAvg", type : "any-number" },
-        { data : "setup.fcfroa.10yrAvg", type : "any-number" },
-        { data : "setup.fcfroa.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfroa.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfroa.5stdev", type : "any-number" },
-        { data : "setup.fcfroa.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.fcfroe", type : "any-number" },
-        { data : "setup.fcfroe.3yrAvg", type : "any-number" },
-        { data : "setup.fcfroe.5yrAvg", type : "any-number" },
-        { data : "setup.fcfroe.10yrAvg", type : "any-number" },
-        { data : "setup.fcfroe.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfroe.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfroe.5stdev", type : "any-number" },
-        { data : "setup.fcfroe.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.fcfRoce", type : "any-number" },
-        { data : "setup.fcfRoce.3yrAvg", type : "any-number" },
-        { data : "setup.fcfRoce.5yrAvg", type : "any-number" },
-        { data : "setup.fcfRoce.10yrAvg", type : "any-number" },
-        { data : "setup.fcfRoce.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfRoce.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfRoce.5stdev", type : "any-number" },
-        { data : "setup.fcfRoce.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.fcfRota", type : "any-number" },
-        { data : "setup.fcfRota.3yrAvg", type : "any-number" },
         { data : "setup.fcfRota.5yrAvg", type : "any-number" },
-        { data : "setup.fcfRota.10yrAvg", type : "any-number" },
-        { data : "setup.fcfRota.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfRota.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfRota.5stdev", type : "any-number" },
-        { data : "setup.fcfRota.10stdev", type : "any-number" },
 
         { data : "calculations.incrementalRoe1yr", type : "any-number"},
         { data : "calculations.incrementalRoe3yr", type : "any-number"},
         { data : "calculations.incrementalRoe5yr", type : "any-number"},
         { data : "calculations.incrementalRoe10yr", type : "any-number"},
 
-        { data : "calculations.incrementalRoic1yr", type : "any-number"},
-        { data : "calculations.incrementalRoic3yr", type : "any-number"},
-        { data : "calculations.incrementalRoic5yr", type : "any-number"},
-        { data : "calculations.incrementalRoic10yr", type : "any-number"},
+        { data : "calculations.iroe3yr1", type : "any-number" },
+        { data : "calculations.iroe3yr2", type : "any-number" },
+        { data : "calculations.iroe3yr3", type : "any-number" },
+        { data : "calculations.iroe3yr4", type : "any-number" },
+        { data : "calculations.iroe3yr5", type : "any-number" },
 
-        { data : "calculations.incrementalJDVROIC1yr", type : "any-number"},
-        { data : "calculations.incrementalJDVROIC3yr", type : "any-number"},
-        { data : "calculations.incrementalJDVROIC5yr", type : "any-number"},
-        { data : "calculations.incrementalJDVROIC10yr", type : "any-number"},
+        { data : "calculations.iroe5yr1", type : "any-number" },
+        { data : "calculations.iroe5yr2", type : "any-number" },
+        { data : "calculations.iroe5yr3", type : "any-number" },
 
-        { data : "stockdata.0.cashflow_reinvestment_rate", type : "any-number"},
         { data : "setup.cashflow_reinvestment_rate.3yrAvg", type : "any-number"},
         { data : "setup.cashflow_reinvestment_rate.5yrAvg", type : "any-number"},
-        { data : "setup.cashflow_reinvestment_rate.10yrAvg", type : "any-number"},
-        { data : "setup.cashflow_reinvestment_rate.ttm/5yr", type : "any-number"},
-        { data : "setup.cashflow_reinvestment_rate.ttm/10yr", type : "any-number"},
-        { data : "setup.cashflow_reinvestment_rate.5stdev", type : "any-number"},
-        { data : "setup.cashflow_reinvestment_rate.10stdev", type : "any-number"},
-
-        { data : "stockdata.0.grossmargin", type : "any-number" },
-        { data : "setup.grossmargin.3yrAvg", type : "any-number" },
-        { data : "setup.grossmargin.5yrAvg", type : "any-number" },
-        { data : "setup.grossmargin.10yrAvg", type : "any-number" },
-        { data : "setup.grossmargin.ttm/5yr", type : "any-number" },
-        { data : "setup.grossmargin.ttm/10yr", type : "any-number" },
-        { data : "setup.grossmargin.5stdev", type : "any-number" },
-        { data : "setup.grossmargin.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.operatingmargin", type : "any-number" },
-        { data : "setup.operatingmargin.3yrAvg", type : "any-number" },
-        { data : "setup.operatingmargin.5yrAvg", type : "any-number" },
-        { data : "setup.operatingmargin.10yrAvg", type : "any-number" },
-        { data : "setup.operatingmargin.ttm/5yr", type : "any-number" },
-        { data : "setup.operatingmargin.ttm/10yr", type : "any-number" },
-        { data : "setup.operatingmargin.5stdev", type : "any-number" },
-        { data : "setup.operatingmargin.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.fcfmargin", type : "any-number" },
-        { data : "setup.fcfmargin.3yrAvg", type : "any-number" },
-        { data : "setup.fcfmargin.5yrAvg", type : "any-number" },
-        { data : "setup.fcfmargin.10yrAvg", type : "any-number" },
-        { data : "setup.fcfmargin.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfmargin.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfmargin.5stdev", type : "any-number" },
-        { data : "setup.fcfmargin.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.nd_aebitda", type : "any-number" },
-        { data : "setup.nd_aebitda.3yrAvg", type : "any-number" },
-        { data : "setup.nd_aebitda.5yrAvg", type : "any-number" },
-        { data : "setup.nd_aebitda.10yrAvg", type : "any-number" },
-        { data : "setup.nd_aebitda.ttm/5yr", type : "any-number" },
-        { data : "setup.nd_aebitda.ttm/10yr", type : "any-number" },
-        { data : "setup.nd_aebitda.5stdev", type : "any-number" },
-        { data : "setup.nd_aebitda.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.ndFcf", type : "any-number"},
-        { data : "setup.ndFcf.3yrAvg" , type : "any-number"},
-        { data : "setup.ndFcf.5yrAvg" , type : "any-number"},
-        { data : "setup.ndFcf.10yrAvg" , type : "any-number"},
-        { data : "setup.ndFcf.ttm/5yr" , type : "any-number"},
-        { data : "setup.ndFcf.ttm/10yr" , type : "any-number"},
-        { data : "setup.ndFcf.5stdev" , type : "any-number"},
-        { data : "setup.ndFcf.10stdev" , type : "any-number"},
-
-        { data : "stockdata.0.cap_lease_debt"},
-
-        { data : "stockdata.0.capex_sales", type : "any-number" },
-        { data : "setup.capex_sales.3yrAvg", type : "any-number" },
-        { data : "setup.capex_sales.5yrAvg", type : "any-number" },
-        { data : "setup.capex_sales.10yrAvg", type : "any-number" },
-        { data : "setup.capex_sales.ttm/5yr", type : "any-number" },
-        { data : "setup.capex_sales.ttm/10yr", type : "any-number" },
-        { data : "setup.capex_sales.5stdev", type : "any-number" },
-        { data : "setup.capex_sales.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.capex_ownerEarnings", type : "any-number" },
-        { data : "setup.capex_ownerEarnings.3yrAvg", type : "any-number" },
-        { data : "setup.capex_ownerEarnings.5yrAvg", type : "any-number" },
-        { data : "setup.capex_ownerEarnings.10yrAvg", type : "any-number" },
-        { data : "setup.capex_ownerEarnings.ttm/5yr", type : "any-number" },
-        { data : "setup.capex_ownerEarnings.ttm/10yr", type : "any-number" },
-        { data : "setup.capex_ownerEarnings.5stdev", type : "any-number" },
-        { data : "setup.capex_ownerEarnings.10stdev", type : "any-number" },
         
-        { data : "stockdata.0.capex_fcf", type : "any-number" },
-        { data : "setup.capex_fcf.3yrAvg", type : "any-number" },
-        { data : "setup.capex_fcf.5yrAvg", type : "any-number" },
-        { data : "setup.capex_fcf.10yrAvg", type : "any-number" },
-        { data : "setup.capex_fcf.ttm/5yr", type : "any-number" },
-        { data : "setup.capex_fcf.ttm/10yr", type : "any-number" },
-        { data : "setup.capex_fcf.5stdev", type : "any-number" },
-        { data : "setup.capex_fcf.10stdev", type : "any-number" },
-        
-        { data : "stockdata.0.fcfNetIncome", type : "any-number" },
-        { data : "setup.fcfNetIncome.3yrAvg", type : "any-number" },
-        { data : "setup.fcfNetIncome.5yrAvg", type : "any-number" },
-        { data : "setup.fcfNetIncome.10yrAvg", type : "any-number" },
-        { data : "setup.fcfNetIncome.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfNetIncome.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfNetIncome.5stdev", type : "any-number" },
-        { data : "setup.fcfNetIncome.10stdev", type : "any-number" },
-        
-        { data : "stockdata.0.fcfOwnerEarnings", type : "any-number" },
-        { data : "setup.fcfOwnerEarnings.3yrAvg", type : "any-number" },
-        { data : "setup.fcfOwnerEarnings.5yrAvg", type : "any-number" },
-        { data : "setup.fcfOwnerEarnings.10yrAvg", type : "any-number" },
-        { data : "setup.fcfOwnerEarnings.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfOwnerEarnings.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfOwnerEarnings.5stdev", type : "any-number" },
-        { data : "setup.fcfOwnerEarnings.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.cash_conversion_cycle", type : "any-number" },
-        { data : "setup.cash_conversion_cycle.3yrAvg", type : "any-number" },
-        { data : "setup.cash_conversion_cycle.5yrAvg", type : "any-number" },
-        { data : "setup.cash_conversion_cycle.10yrAvg", type : "any-number" },
-        { data : "setup.cash_conversion_cycle.ttm/5yr", type : "any-number" },
-        { data : "setup.cash_conversion_cycle.ttm/10yr", type : "any-number" },
-        { data : "setup.cash_conversion_cycle.5stdev", type : "any-number" },
-        { data : "setup.cash_conversion_cycle.10stdev", type : "any-number" },
-
-        { data : "predictability" },
-        { data : "financialStrength" },
-
-        { data : "setup.sales.compGrowth1yr", type : "any-number" },
-        { data : "setup.sales.compGrowth3yr", type : "any-number" },
-        { data : "setup.sales.compGrowth5yr", type : "any-number" },
-        { data : "setup.sales.compGrowth10yr", type : "any-number" },
-
-        { data : "setup.salesshare.compGrowth1yr", type : "any-number" },
-        { data : "setup.salesshare.compGrowth3yr", type : "any-number" },
-        { data : "setup.salesshare.compGrowth5yr", type : "any-number" },
-        { data : "setup.salesshare.compGrowth10yr", type : "any-number" },
-
-        { data : "setup.ownerEarningShare.compGrowth1yr", type : "any-number"},
-        { data : "setup.ownerEarningShare.compGrowth3yr", type : "any-number"},
-        { data : "setup.ownerEarningShare.compGrowth5yr", type : "any-number"},
-        { data : "setup.ownerEarningShare.compGrowth10yr", type : "any-number"},
-
-        { data : "setup.fcfShare.compGrowth1yr", type : "any-number"}, 
-        { data : "setup.fcfShare.compGrowth3yr", type : "any-number"}, 
-        { data : "setup.fcfShare.compGrowth5yr", type : "any-number"}, 
-        { data : "setup.fcfShare.compGrowth10yr", type : "any-number"}, 
-
-        { data : "setup.aebitdaShare.compGrowth1yr", type : "any-number"},
-        { data : "setup.aebitdaShare.compGrowth3yr", type : "any-number"},
-        { data : "setup.aebitdaShare.compGrowth5yr", type : "any-number"},
-        { data : "setup.aebitdaShare.compGrowth10yr", type : "any-number"},
-
-        { data : "setup.dividendShare.compGrowth1yr", type : "any-number"},
-        { data : "setup.dividendShare.compGrowth3yr", type : "any-number"},
-        { data : "setup.dividendShare.compGrowth5yr", type : "any-number"},
-        { data : "setup.dividendShare.compGrowth10yr", type : "any-number"},
-
-        { data : "setup.price.compGrowth1yr", type : "any-number"},
-        { data : "setup.price.compGrowth3yr", type : "any-number"},
-        { data : "setup.price.compGrowth5yr", type : "any-number"},
-        { data : "setup.price.compGrowth10yr", type : "any-number"},
-
-        { data : "stockdata.0.sgr", type : "any-number" },
-        { data : "setup.sgr.3yrAvg", type : "any-number" },
-        { data : "setup.sgr.5yrAvg", type : "any-number" },
-        { data : "setup.sgr.10yrAvg", type : "any-number" },
-        { data : "setup.sgr.ttm/5yr", type : "any-number" },
-        { data : "setup.sgr.ttm/10yr", type : "any-number" },
-        { data : "setup.sgr.5stdev", type : "any-number" },
-        { data : "setup.sgr.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.fror", type : "any-number" },
-        { data : "stockdata.0.expected_annual_total_return", type : "any-number" },
-
-        { data : "calculations.bvpsY10", type : "any-number" },
-        { data : "calculations.fcfShareY10", type : "any-number" },
-        { data : "calculations.stockPriceY10", type : "any-number" },
-        { data : "setup.dividendYield.10yrAvg", type : "any-number" },
-        { data : "calculations.projected10ror", type : "any-number" },
-        { data : "calculations.projected10Total", type : "any-number" },
-
-        { data : "stockdata.0.shares_outstanding_format", type : "any-number" },
-        { data : "soChangePercent_1", type : "any-number" },
-        { data : "soChangePercent_3", type : "any-number" },
         { data : "soChangePercent_5", type : "any-number" },
-        { data : "soChangePercent_10", type : "any-number" },
 
-        { data : "stockdata.0.dividendPayoutRatio", type : "any-number" },
-        { data : "setup.dividendPayoutRatio.3yrAvg", type : "any-number" },
         { data : "setup.dividendPayoutRatio.5yrAvg", type : "any-number" },
-        { data : "setup.dividendPayoutRatio.10yrAvg", type : "any-number" },
-        { data : "setup.dividendPayoutRatio.ttm/5yr", type : "any-number" },
-        { data : "setup.dividendPayoutRatio.ttm/10yr", type : "any-number" },
-        { data : "setup.dividendPayoutRatio.5stdev", type : "any-number" },
-        { data : "setup.dividendPayoutRatio.10stdev", type : "any-number" },
 
-        { data : "setup.cashflow_reinvestment_rate.5yrAvg"},
+        { data : "setup.grossmargin.5yrAvg", type : "any-number" },
 
-        { data : "stockdata.0.capFcf", type : "any-number" },
-        { data : "setup.capFcf.3yrAvg", type : "any-number" },
-        { data : "setup.capFcf.5yrAvg", type : "any-number" },
-        { data : "setup.capFcf.10yrAvg", type : "any-number" },
-        { data : "setup.capFcf.ttm/5yr", type : "any-number" },
-        { data : "setup.capFcf.ttm/10yr", type : "any-number" },
-        { data : "setup.capFcf.5stdev", type : "any-number" },
-        { data : "setup.capFcf.10stdev", type : "any-number" },
+        { data : "setup.operatingmargin.5yrAvg", type : "any-number" },
+        
+        { data : "setup.fcfmargin.5yrAvg", type : "any-number" },
+
+        { data : "setup.capex_sales.5yrAvg", type : "any-number" },
+
+        { data : "stockdata.0.cap_lease_debt" },
+
+        { data : "stockdata.0.goodwill" },
+
+        { data : "stockdata.0.flow_ratio" },
+        { data : "setup.flow_ratio.5yrAvg" },
+
+        { data : "setup.fcfNetIncome.5yrAvg", type : "any-number" },
+
+        { data : "setup.cash_conversion_cycle.5yrAvg", type : "any-number" },
 
         { data : "stockdata.0.fcfYield", type : "any-number" },
-        { data : "setup.fcfYield.3yrAvg", type : "any-number" },
-        { data : "setup.fcfYield.5yrAvg", type : "any-number" },
+        { data : "stockdata.0.fcfMultiple", type : "any-number" },
+        { data : "npvoutput.fvMultiple", type : "any-number" },
+        { data : "npvoutput.PdFvCur", type : "any-number" },
+
+        { data : "fcfYield.min", type : "any-number" },
+        { data : "fcfYield.max", type : "any-number" },
         { data : "setup.fcfYield.10yrAvg", type : "any-number" },
-        { data : "setup.fcfYield.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfYield.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfYield.5stdev", type : "any-number" },
-        { data : "setup.fcfYield.10stdev", type : "any-number" },
 
-        { data : "calculations.rule_of_40"},
+        { data : "setup.salesshare.compGrowth3yr", type : "any-number" },
+        { data : "setup.salesshare.compGrowth5yr", type : "any-number" },
 
-        { data : "stockdata.0.fcfSpice", type : "any-number" },
-        { data : "setup.fcfSpice.3yrAvg", type : "any-number" },
-        { data : "setup.fcfSpice.5yrAvg", type : "any-number" },
-        { data : "setup.fcfSpice.10yrAvg", type : "any-number" },
-        { data : "setup.fcfSpice.ttm/5yr", type : "any-number" },
-        { data : "setup.fcfSpice.ttm/10yr", type : "any-number" },
-        { data : "setup.fcfSpice.5stdev", type : "any-number" },
-        { data : "setup.fcfSpice.10stdev", type : "any-number" },
-
-        { data : "stockdata.0.aebitda_spice", type : "any-number" },
-        { data : "stockdata.0.roe_spice", type : "any-number" },
-
-        { data : "stockdata.0.urbem_value", type : "any-number" },
-
-        { 
-            data : null,
-            render: (data, type, row, meta) => {
-                try{
-                    return row.stockdata[3].urbem_value
-                }
-                catch{
-                    return '0.0'
-                }
-            }
-        },
-        { 
-            data : null,
-            render: (data, type, row, meta) => {
-                try{
-                    return row.stockdata[5].urbem_value
-                }
-                catch{
-                    return '0.0'
-                }
-            }
-        },
-        { data : "stockdata.0.fcfEmployee" },
-        { data : "setup.fcfEmployee.3yr" },
-        { data : "setup.fcfEmployee.5yr" },
-        { data : "setup.fcfEmployee.10yr" },
-
-        { data : "stockdata.0.purchase_of_business" },
-        { data : "setup.purchase_of_business.3yrAvg" },
-        { data : "setup.purchase_of_business.5yrAvg" },
-        { data : "setup.purchase_of_business.10yrAvg" },
+        { data : "setup.fcfShare.compGrowth3yr", type : "any-number"}, 
+        { data : "setup.fcfShare.compGrowth5yr", type : "any-number"}, 
     ];
     if(shareConf) columns.splice(2, 0, { data : "username"})
     return columns;

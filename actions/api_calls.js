@@ -244,6 +244,8 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                             + parseFloat(annuals.balance_sheet["Long-Term Debt"][f])
                         }
                     catch{ currentData.invested_capital = NaN; }
+                    try { currentData.goodwill = parseFloat(annuals.balance_sheet["Goodwill"][f])  }
+                    catch{ currentData.goodwill = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {
