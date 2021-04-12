@@ -12,7 +12,7 @@ let date = new Date();
  * Initializes table
  */
 function Initialize_table(){
-    ajax_Call(action, "/init_table").then((resolve) => {
+    ajax_Call(action, initTable).then((resolve) => {
         stockdb = resolve.data;
         console.log(stockdb);
         $table = fill_table(resolve.data);
@@ -72,8 +72,11 @@ function button_builder(){
         ]},
         {text: '<span class="fas fa-share"></span> Save', className:"btn-sm", extend: 'collection',
         buttons: [
-            {text: 'Set Special', className:"btn-sm", action: function(){setSpecial();}},
-            {text: 'Share', className:"btn-sm", action: function(){share();}},
+            {text: 'Set Special', className:"btn-sm", action: function(){save("special");}},
+            {text: 'Set Common', className:"btn-sm", action: function(){save("shared");}},
+            {text: 'Set Med-High Conviction', className:"btn-sm", action: function(){save("high_conviction");}},
+            {text: 'Set Low-Med Conviction', className:"btn-sm", action: function(){save("low_conviction");}},
+            {text: 'Set Owned', className:"btn-sm", action: function(){save("owned");}},
         ]},
         {text: '<span class="fas fa-users-cog"></span> Catagorize', className:"btn-sm", extend: 'collection',
         buttons: [
@@ -113,8 +116,17 @@ function button_builder(){
 function column_builder(){
     let columns = [
         { data : null , defaultContent: '', checkboxes : { selectRow : true } ,orderable: false, targets:0, className: 'select-checkbox'},
-        { data : "symbol" },
-        // { data : "username"},
+        {   data : null, 
+            render: function(data, type, row, meta){
+                let {symbol, npvoutput} = row;
+                return(`
+                    <div style="color: ${textColor(npvoutput.premiumDiscount)}">
+                        ${symbol}
+                    </div>`
+                    )
+            } 
+        },
+        { data: 'username'},
         {   data : null,
             orderable : false,
             className: 'setting_cell',

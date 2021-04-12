@@ -10,24 +10,17 @@
     </table>
 </div>
 
-{{#if all}}
-     <script type="text/JavaScript">
-        const initLink = "/init_table?table=all"
-        const tableType="All"
-    </script>
-{{else}}
-    {{#if shared}}
-    <script type="text/JavaScript">
-        const initLink = "/init_table?table=shared"
-        const tableType="Shared"
-    </script>
-    {{else}}
-    <script type="text/JavaScript">
-        const initLink = "/init_table?table=special"
-        const tableType="Special"
-    </script>
-    {{/if}}
-{{/if}}
+{{#with config}}
+<div style="display: none;">
+    <div id="initLink">/init_table?table={{link}}</div>
+    <div id="tableType">{{tableType}}</div>
+</div>
+{{/with}}
+
+<script type="text/JavaScript">
+    const initLink = $('#initLink').text();
+    const tableType = $('#tableType').text();
+</script>
 
 <script src="/js/customTable/customDataTable.js"></script>
 <script src="/js/customTable/customButtons.js"></script>

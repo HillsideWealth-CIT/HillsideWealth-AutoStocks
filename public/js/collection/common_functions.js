@@ -84,9 +84,9 @@ function show_selected() {
 }
 
 /**
- * Enables selected stocks to be accessed on the shared database
+ * Enables selected stocks to be accessed on the other tables
  */
-function share() {
+function save(dest) {
     swal.fire({
         title: 'Saving to CommonDB',
         type: 'question',
@@ -102,41 +102,10 @@ function share() {
             break;
         }
     }
-    fetch('/share', {
+    fetch(`/save?dest=${dest}`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(to_share)
-    })
-        .then(response => response.json())
-        .then(data => {
-            swal.update({
-                title: 'Saving Complete',
-                type:'success',
-                showConfirmButton:true,
-            })
-        })
-}
-
-async function setSpecial() {
-    swal.fire({
-        title: 'Saving to SharedDB',
-        type: 'question',
-        showConfirmButton:false,
-    })
-    to_set = [];
-    let selected = $table.rows('.selected').data();
-    for (let i in selected) {
-        if (selected[i].symbol) {
-            to_set.push(selected[i].stock_id);
-        }
-        else {
-            break;
-        }
-    }
-    fetch('/setSpecial', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(to_set)
     })
         .then(response => response.json())
         .then(data => {
@@ -250,6 +219,24 @@ function add() {
                     CommonDB
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="high">
+                <label class="form-check-label" for="checkbox1" style="width: 6em">
+                    Med-High
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="low">
+                <label class="form-check-label" for="checkbox2" style="width: 6em">
+                    Low-Med
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="owned">
+                <label class="form-check-label" for="checkbox2" style="width: 6em">
+                    Owned
+                </label>
+            </div>
         </div>
         `,
         showCancelButton: true,
@@ -259,6 +246,9 @@ function add() {
             stocks = stockstring.split(',');
             SpecialDB = document.getElementById('specialdb').checked;
             shared = document.getElementById('commondb').checked;
+            high = document.getElementById('high').checked;
+            low = document.getElementById('low').checked;
+            owned = document.getElementById('owned').checked;
         }
     }).then(async (result) => {
         if (!result.dismiss) {
@@ -273,7 +263,7 @@ function add() {
                 swal.update({
                     text: `Progress: ${Number(i) + 1}/${stocks.length} - Current: ${stocks[i].toUpperCase()}`
                 })
-                await ajax_request(stocks[i].toUpperCase(), `/append?share=${shared}&special=${SpecialDB}`)
+                await ajax_request(stocks[i].toUpperCase(), `/append?share=${shared}&special=${SpecialDB}&high=${high}&low=${low}&owned=${owned}`)
             }
             Swal.update({
                 type: 'success',

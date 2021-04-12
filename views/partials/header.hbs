@@ -103,14 +103,22 @@
 				{{else}}
 			<li class="nav-item">
 				{{/if}}
-				<a class="nav-link" href="special">SpecialDB</a>
+				<a class="nav-link" href="special">Special</a>
 			</li>
 			{{#if sc}}
 			<li class="nav-item active">
 				{{else}}
 			<li class="nav-item">
 				{{/if}}
-				<a class="nav-link" href="shared">CommonDB</a>
+				<a class="nav-link" href="shared">Common</a>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Other</a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<a id="test" class="dropdown-item" style="width:auto" href="other?table=high">Med-High Conviction</a>
+					<a id="test" class="dropdown-item" style="width:auto" href="other?table=low">Low-Mid Conviction</a>
+					<a id="test" class="dropdown-item" style="width:auto" href="other?table=owned">Owned</a>
+				</div>
 			</li>
 			{{#if d}}
 			<li class="nav-item active">

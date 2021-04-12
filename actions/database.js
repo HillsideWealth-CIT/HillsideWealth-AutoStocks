@@ -89,6 +89,12 @@ const showSpecial = async (username) => {
     return getdata(stocks, stockdata);
 }
 
+const showOther = async (username, option) => {
+    let stocks = await runQuery(`select * from stocks where username = $1 and ${option} = true`, [username]);
+    let stockdata = await runQuery('SELECT * FROM stockdata ORDER BY date DESC');
+    return getdata(stocks, stockdata);
+}
+
 const get_added = async (symbol, username) => {
     let stocks = await runQuery('SELECT * from stocks WHERE symbol = $1 AND username = $2', [symbol, username])
     let stockdata = await runQuery(`SELECT * FROM stockdata ORDER BY date DESC`)
@@ -101,28 +107,15 @@ const get_by_id = async (id) => {
     return getdata(stocks, stockdata)
 }
 
-const sharestock = async(id_string) => {
-    // console.log(id_string)
-    await runQuery(`UPDATE stocks SET shared='True' where ${id_string};`);
+const saveStock = async(id_string, config) => {
+    await runQuery(`UPDATE stocks SET ${config}='True' where ${id_string};`);
     return
 }
 
-const unsharestock = async(symbol, user) => {
-    await runQuery(`UPDATE stocks SET shared='False' where symbol='${symbol}' and username='${user}';`);
+const unSaveStock = async(config, symbol, user) => {
+    await runQuery(`UPDATE stocks SET ${config}='False' where symbol= $1 and username=$2;`, [symbol, user]);
     return symbol
 }
-
-const setSpecial = async(id_string) => {
-    console.log(id_string)
-    await runQuery(`UPDATE stocks SET special=true WHERE ${id_string};`);
-    return
-}
-
-const unsetSpecial = async(symbol, user) => {
-    await runQuery(`UPDATE stocks SET special=false WHERE symbol='${symbol}'`);
-    return symbol
-}
-
 
 /* Parses an array of JSON stockdata and adds it to the database.
 Use this when there's more than one set of data and they all have the same fields.*/
@@ -383,8 +376,22 @@ const updatePrices = async(stock, stockName, username, sector, current_price, gf
         ])
 }
 
-const addStocks = async (symbol, stock_name, stock_sector, current_price,username, note, gfrating, predictability, financialStrength, shared, special) => {
-    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, gfrating, predictability, financialStrength, shared, special) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING stock_id`, 
+const addStocks = async (
+    symbol, 
+    stock_name, 
+    stock_sector, 
+    current_price,
+    username, note, 
+    gfrating, 
+    predictability, 
+    financialStrength, 
+    shared, 
+    special,
+    high,
+    low,
+    owned
+    ) => {
+    return await runQuery(`INSERT INTO stocks (symbol, stock_name, sector, current_price, username, note, gfrating, predictability, financialStrength, shared, special, high_conviction, low_conviction, owned) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING stock_id`, 
     [
         symbol,
         stock_name,
@@ -396,7 +403,10 @@ const addStocks = async (symbol, stock_name, stock_sector, current_price,usernam
         predictability,
         financialStrength,
         shared, 
-        special
+        special,
+        high,
+        low,
+        owned
     ])
 }
 
@@ -554,12 +564,16 @@ const comments = async(data) => {
 }
 
 module.exports = {
+    saveStock,
+    unSaveStock,
+
     addUser,
     usernameAvailable,
     retrieveUser,
     showstocks,
     showshared,
     showSpecial,
+    showOther,
     addStocks,
     removeStocks,
     runQuery,
@@ -569,10 +583,7 @@ module.exports = {
     retrieveAllUsers,
     changeCode,
     toggleStock,
-    sharestock,
-    unsharestock,
-    setSpecial,
-    unsetSpecial,
+
     updatePrices,
     get_added,
     get_by_id,

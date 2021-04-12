@@ -63,13 +63,19 @@ const statusCheck = (req, res, next) => {
     }
 };
 
+const tableDict = {
+    high: 'high_conviction',
+    low: 'low_conviction',
+    owned: 'owned'
+}
+
 
 /*** HTTP Requests ***/
 
 /** GET **/
 
 app.get("/", sessionCheck, statusCheck, (request, response) => {
-    response.render("index.hbs", { i: true, admin: (request.session.status == 'admin'), user : request.session.user });
+    response.render("index.hbs", { i: true, admin: (request.session.status == 'admin'), user: request.session.user });
 });
 
 app.get("/register", (request, response) => {
@@ -84,7 +90,7 @@ app.get("/indicators", (request, response) => {
     response.render("indicators.hbs", {
         in: true,
         admin: (request.session.status == 'admin'),
-        user : request.session.user
+        user: request.session.user
     });
 });
 
@@ -92,60 +98,106 @@ app.get("/collection", sessionCheck, statusCheck, (request, response) => {
     response.render("collection.hbs", {
         c: true,
         admin: (request.session.status == 'admin'),
-        user : request.session.user
+        user: request.session.user,
+        config: {
+            action: 'init_user',
+            addLink: '/append',
+            removeLink: '/remove?table=all',
+            updateLink: 'update_financials?table=all',
+            shareConf: false,
+            customLink: '/custom?table=all',
+            initTable: '/init_table'
+        }
+    });
+});
+
+app.get("/shared", sessionCheck, statusCheck, (request, response) => {
+    response.render("collection.hbs", {
+        user: request.session.user,
+        sc: true,
+        admin: (request.session.status == 'admin'),
+        user: request.session.user,
+        config: {
+            action: 'init_shared',
+            addLink: '/append?share=true',
+            removeLink: '/remove?table=shared',
+            updateLink: 'update_financials?table=shared',
+            shareConf: true,
+            customLink: '/custom?table=shared',
+            initTable: '/init_table'
+        }
+    })
+});
+
+app.get("/special", sessionCheck, statusCheck, (request, response) => {
+    db.showSpecial(request.session.user)
+        .then(res => {
+            // Calculates data before rendering
+            res.forEach((stock) => {
+                format_data(stock);
+            });
+            response.render("collection.hbs", {
+                sd: true,
+                admin: (request.session.status == 'admin'),
+                user: request.session.user,
+                config: {
+                    action: 'init_special',
+                    addLink: '/append?special=true',
+                    removeLink: '/remove?table=special',
+                    updateLink: 'update_financials?table=all',
+                    shareConf: false,
+                    customLink: '/custom?table=special',
+                    initTable: '/init_table'
+                }
+            });
+        });
+});
+
+app.get("/other", sessionCheck, statusCheck, (request, response) => {
+    response.render("collection.hbs", {
+        o: true,
+        admin: (request.session.status == 'admin'),
+        user: request.session.user,
+        config:{
+            action: 'init_other',
+            addLink: '/append',
+            removeLink: `/remove?table=${tableDict[request.query.table]}`,
+            updateLink: `update_financials?table=all`,
+            shareConf: false,
+            customLink: `/custom?table=${request.query.table}`,
+            initTable: `/init_other?table=${request.query.table}`
+        }
     });
 });
 
 app.get('/custom', sessionCheck, async (request, response) => {
-    console.log(request.query)
     let test = {
         cu: true,
         admin: (request.session.status == 'admin'),
-        user : request.session.user
+        user: request.session.user,
+        config: {
+            link: request.query.table,
+            tableType: request.query.table.toUpperCase()
+        }
     }
     test[`${request.query.table}`] = true;
     response.render("collection2.hbs", test);
 })
 
-
 app.get("/edit", (request, response) => {
     response.render("edit.hbs", {
         in: true,
         admin: (request.session.status == 'admin'),
-        user : request.session.user
+        user: request.session.user
     });
 });
-
-app.get("/shared", sessionCheck, statusCheck, (request, response) => {
-            response.render("collection.hbs", {
-            user: request.session.user,
-            sc: true,
-            admin: (request.session.status == 'admin'),
-            user : request.session.user
-        })
-});
-
-app.get("/special", sessionCheck, statusCheck, (request, response) => {
-    db.showSpecial(request.session.user)
-    .then(res => {
-        // Calculates data before rendering
-        res.forEach((stock) => {
-            format_data(stock);
-        });
-        response.render("collection.hbs", {
-            sd: true,
-            admin: (request.session.status == 'admin'),
-            user : request.session.user
-        });
-    });
-})
 
 app.get("/documentation", sessionCheck, statusCheck, (request, response) => {
-    response.render("documentation.hbs", { d: true, admin: (request.session.status == 'admin'), user : request.session.user });
+    response.render("documentation.hbs", { d: true, admin: (request.session.status == 'admin'), user: request.session.user });
 });
 
 app.get("/settings", sessionCheck, statusCheck, (request, response) => {
-    response.render("settings.hbs", { s: true, admin: (request.session.status == 'admin'), user : request.session.user });
+    response.render("settings.hbs", { s: true, admin: (request.session.status == 'admin'), user: request.session.user });
 });
 
 /* Account validation page */
@@ -167,28 +219,29 @@ app.get('/admin', sessionCheck, (request, response) => {
 });
 
 app.get('/historic', sessionCheck, async (request, response) => {
-    try{
+    try {
         let stockdata = await db.get_by_id(request.query.id);
         let tableconfig = await db.getTableConfig(request.session.user, 'historic');
         let formattedData = await formatHistorical(stockdata, tableconfig.rows[0].config_string);
         response.send({
-            data: formattedData, 
-            test: tableconfig.rows[0].config_string, 
-            id: tableconfig.rows[0].id, 
-            name: tableconfig.rows[0].name, 
-            fallback: tableconfig.rows[0].fallback})
+            data: formattedData,
+            test: tableconfig.rows[0].config_string,
+            id: tableconfig.rows[0].id,
+            name: tableconfig.rows[0].name,
+            fallback: tableconfig.rows[0].fallback
+        })
     }
-    catch(e){
+    catch (e) {
         console.log(e)
-        response.send({error: true})
+        response.send({ error: true })
     }
 
 });
 
 app.get('/comments', sessionCheck, async (request, response) => {
     let formattedData = {};
-    let comments = (await db.comments({action: "get", id: request.query.id})).rows[0];
-    for(let key in comments){
+    let comments = (await db.comments({ action: "get", id: request.query.id })).rows[0];
+    for (let key in comments) {
         formattedData[key] = JSON.parse(comments[key] === '' ? null : comments[key])
     }
     response.send(formattedData)
@@ -355,7 +408,7 @@ app.post('/init_table', sessionCheck, statusCheck, async (request, response) => 
             response.send({ data: resolve });
         });
     }
-    else if (request.body.action == "init_special"){
+    else if (request.body.action == "init_special") {
         db.showSpecial(request.session.user).then(resolve => {
             resolve.forEach((stock) => {
                 format_data(stock);
@@ -363,80 +416,101 @@ app.post('/init_table', sessionCheck, statusCheck, async (request, response) => 
             response.send({ data: resolve });
         });
     }
-    else if (request.body.action == "init_custom"){
+    else if (request.body.action == "init_custom") {
         let toSend = [];
         let stocks;
-        if(request.query.table === "all") stocks = await db.showstocks(request.session.user);
-        if(request.query.table === "shared") stocks = await db.showshared(request.session.user);
-        if(request.query.table === "special") stocks = await db.showSpecial(request.session.user);
+        console.log(request.query)
+        if (request.query.table === "all") {
+            stocks = await db.showstocks(request.session.user);
+        }
+        else if (request.query.table === "shared") {
+                stocks = await db.showshared(request.session.user);
+            }
+        else if (request.query.table === "special") {
+            stocks = await db.showSpecial(request.session.user);
+        }
+        else {
+            stocks = await db.showOther(request.session.user, tableDict[request.query.table])
+        }
         let tableconfig = await db.getTableConfig(request.session.user, 'custom');
-        if(tableconfig.rows.length !== 0){
+        if (tableconfig.rows.length !== 0) {
             stocks.forEach(stock => {
                 toSend.push({
                     stock_id: stock.stock_id,
                     stock_name: stock.stock_name,
                     symbol: stock.symbol,
-                    stock_data: formatHistorical([stock],tableconfig.rows[0].config_string, 1)[0]
+                    stock_data: formatHistorical([stock], tableconfig.rows[0].config_string, 1)[0]
                 })
             });
             response.send({
                 data: toSend,
-                    config_string: tableconfig.rows[0].config_string,
-                    id : tableconfig.rows[0].id, 
-                    name: tableconfig.rows[0].name,
-                    fallback: tableconfig.rows[0].fallback
-                });
+                config_string: tableconfig.rows[0].config_string,
+                id: tableconfig.rows[0].id,
+                name: tableconfig.rows[0].name,
+                fallback: tableconfig.rows[0].fallback
+            });
         }
         else {
-            response.send({error: "no config selected", data : []})
+            response.send({ error: "no config selected", data: [] })
         }
     }
 });
 
-app.post('/tableconfig', sessionCheck, statusCheck, async(request, response ) => {
+app.post('/init_other', sessionCheck, statusCheck, async(request, response) => {
+    console.log(request.query.table);
+    let option = tableDict[request.query.table];
+    db.showOther(request.session.user, option).then((resolve) => {
+        resolve.forEach((stock) => {
+            format_data(stock)
+        });
+        response.send({data: resolve})
+    })
+})
+
+app.post('/tableconfig', sessionCheck, statusCheck, async (request, response) => {
     console.log(request.body)
     switch (request.body.action) {
         case "edit":
             console.log(request.body)
             db.customTableSettings({
-                configString : request.body.configString,
+                configString: request.body.configString,
                 name: request.body.configName,
                 id: request.body.id
-            },"edit")
-            response.send({status: "ok"})
+            }, "edit")
+            response.send({ status: "ok" })
             break;
         case "add":
             console.log(request.body)
             db.customTableSettings({
-                username : request.session.user, 
-                table : request.body.table, 
-                configString : request.body.configString.replace('\n', ''), 
-                configName : request.body.configName
-                }, request.body.action)
-            response.send({status: "ok"})
+                username: request.session.user,
+                table: request.body.table,
+                configString: request.body.configString.replace('\n', ''),
+                configName: request.body.configName
+            }, request.body.action)
+            response.send({ status: "ok" })
             break;
         case "getConfigs":
-            let configList = await db.customTableSettings({username: request.session.user}, "getConfigs");
+            let configList = await db.customTableSettings({ username: request.session.user }, "getConfigs");
             let formatted = {};
-            configList.rows.forEach(val =>formatted[val.id] = val.name === null || val.name === ""? "No Name" : val.name)
+            configList.rows.forEach(val => formatted[val.id] = val.name === null || val.name === "" ? "No Name" : val.name)
             response.send(formatted)
             break;
         case "switchCustom":
             console.log(request.body)
-            await db.customTableSettings({username: request.session.user, id: request.body.id}, "switchCustom");
-            response.send({success: true})
+            await db.customTableSettings({ username: request.session.user, id: request.body.id }, "switchCustom");
+            response.send({ success: true })
             break;
         case "switchHistoric":
             console.log(request.body)
-            await db.customTableSettings({username: request.session.user, id: request.body.id}, "switchHistorical");
-            response.send({success: true})
+            await db.customTableSettings({ username: request.session.user, id: request.body.id }, "switchHistorical");
+            response.send({ success: true })
             break;
         case "delete":
             console.log(request.body)
-            await db.customTableSettings({id: request.body.id}, "delete");
-            response.send({success: true})
+            await db.customTableSettings({ id: request.body.id }, "delete");
+            response.send({ success: true })
             break;
-            
+
         default:
             break;
     }
@@ -465,31 +539,31 @@ app.post('/calc_edit', sessionCheck, statusCheck, (request, response) => {
 /* Adds Stock to Personal Database */
 app.post('/append', sessionCheck, statusCheck, (request, response) => {
     console.log(request.query)
-    let shared = false;
-    let special = false;
-    if(request.query.share === 'true') shared = true;
-    if(request.query.special === 'true') special = true;
+    let { shared, special, high, low, owned } = request.query;
     api_calls.gurufocusAdd(
         request.body.action,
         request.session.user,
         true,
         shared,
-        special
-        )
-    .then((resolve) => {
-        db.get_added(request.body.action[0].symbol, request.session.user)
-        .then((res) => {
-            res.forEach((stock) => {
-                format_data(stock);
-            });
-            //fs.writeFileSync('test.json', JSON.stringify(res))
-            response.send({ data: res });
+        special,
+        high,
+        low,
+        owned
+    )
+        .then((resolve) => {
+            db.get_added(request.body.action[0].symbol, request.session.user)
+                .then((res) => {
+                    res.forEach((stock) => {
+                        format_data(stock);
+                    });
+                    //fs.writeFileSync('test.json', JSON.stringify(res))
+                    response.send({ data: res });
+                });
+        })
+        .catch((reason) => {
+            response.send({ error: reason })
+            console.log(reason)
         });
-    })
-    .catch((reason) => {
-        response.send({error: reason})
-        console.log(reason)
-    });
 });
 
 /* removes stocks from the database */
@@ -497,63 +571,51 @@ app.post('/remove', sessionCheck, statusCheck, (request, response) => {
     let query = request.query.table
     let promises = [];
     for (let i = 0; i < request.body.action.length; i++) {
-        if(query === 'all'){
+        if (query === 'all') {
             promises.push(db.removeStocks(request.body.action[i], request.session.user));
         }
-        // sets shared stock to unshared
-        else if(query === 'shared'){
-            promises.push(db.unsharestock(request.body.action[i], request.session.user));
-        }
-        else if(query === 'special'){
-            promises.push(db.unsetSpecial(request.body.action[i], request.session.user))
+        else {
+            promises.push(db.unSaveStock(query, request.body.action[i], request.session.user))
         }
     }
     Promise.all(promises)
-    .then((returned) => {
-        response.send({ status: 'OK' });
-    });
+        .then((returned) => {
+            response.send({ status: 'OK' });
+        });
 });
 
-/* Enables stocks to be displayed in the shared database */
-app.post('/share', sessionCheck, statusCheck, (request, response) => {
-    db.sharestock(calc.multi_dfc_string(request.body), request.session.user)
+app.post('/save', sessionCheck, statusCheck, (request, response ) => {
+    db.saveStock(calc.multi_dfc_string(request.body), request.query.dest)
     .then((resolve) => {
-        response.send({ status: 'OK' });
-    });
-});
-
-app.post('/setSpecial', sessionCheck, statusCheck, (request, response) => {
-    db.setSpecial(calc.multi_dfc_string(request.body), request.session.user)
-    .then((resolve) => {
-        response.send({ status: 'OK' });
-    });
-});
+        response.send({test: 'hi there'})
+    })
+})
 
 /* Updates Historical Financial Data */
 app.post('/update_financials', sessionCheck, statusCheck, (request, response) => {
     console.log(request.body)
     console.log(request.session.user)
-    switch(request.query.table) {
+    switch (request.query.table) {
         case 'all':
-        api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = true, request.session.shared, request.session.special)
-        .then((r) => {
-            db.get_added(request.body.action[0].symbol, request.session.user)
-                .then((res) => {
-                    res.forEach((stock) => { format_data(stock); });
-                    response.send({ data: res });
+            api_calls.gurufocusAdd(request.body.action, request.session.user, summaryCall = true, request.session.shared, request.session.special)
+                .then((r) => {
+                    db.get_added(request.body.action[0].symbol, request.session.user)
+                        .then((res) => {
+                            res.forEach((stock) => { format_data(stock); });
+                            response.send({ data: res });
+                        });
                 });
-        });
-        break;
+            break;
         case 'shared':
             api_calls.gurufocusAdd(request.body.action, request.body.action[0].stock_id, summaryCall = true, request.session.shared, request.session.special)
-            .then((r) => {
-                db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
-                    .then((res) => {
-                        res.forEach((stock) => { format_data(stock); });
-                        response.send({ data: res });
-                    });
-            });
-        break;
+                .then((r) => {
+                    db.get_added(request.body.action[0].symbol, request.body.action[0].stock_id)
+                        .then((res) => {
+                            res.forEach((stock) => { format_data(stock); });
+                            response.send({ data: res });
+                        });
+                });
+            break;
 
         default:
             console.log("error")
@@ -565,23 +627,23 @@ app.post('/categories/set', sessionCheck, statusCheck, (request, response) => {
     let combined_string = calc.multi_dfc_string(request.body.stocks_list);
     let retrieve_info = [];
     db.set_categories(request.body.categories, combined_string)
-    .then((resolve) => {
-        // console.log(resolve);
-        for (let i in request.body.stocks_list) {
-            retrieve_info.push(db.get_added(request.body.symbols[i], request.session.user));
-        }
-        Promise.all(retrieve_info).then((resolved) => {
-            for (let i in resolved) {
-                resolved[i].forEach((stock) => {format_data(stock);});
+        .then((resolve) => {
+            // console.log(resolve);
+            for (let i in request.body.stocks_list) {
+                retrieve_info.push(db.get_added(request.body.symbols[i], request.session.user));
             }
-            response.send(JSON.stringify(resolved));
+            Promise.all(retrieve_info).then((resolved) => {
+                for (let i in resolved) {
+                    resolved[i].forEach((stock) => { format_data(stock); });
+                }
+                response.send(JSON.stringify(resolved));
+            });
         });
-    });
 });
 
 app.post('/aggregation', sessionCheck, statusCheck, (request, response) => {
     console.log(request.query.action);
-    switch(request.query.action){
+    switch (request.query.action) {
         case "create":
             db.createAggregation(request.session.user, calc.createAggregationString(request.body.columns), request.body.name).then(resolve => {
                 response.send({ hello: 'hello' });
@@ -601,17 +663,17 @@ app.post('/aggregation', sessionCheck, statusCheck, (request, response) => {
                 }
                 else {
                     trackPositions(track, symbols, sorter(request.body[i].values));
-        
+
                 }
-        
+
             }
             response.send(JSON.stringify({ symbols: symbols, score: track }));
-        
+
             function sorter(arrayList) {
                 arrayList.sort(function (a, b) { return a.value - b.value; });
                 return arrayList;
             }
-        
+
             function trackPositions(tracker, symbolList, arrayList) {
                 for (let i in arrayList) {
                     // console.log(arrayList[i])
@@ -649,7 +711,7 @@ app.post('/aggregation', sessionCheck, statusCheck, (request, response) => {
 
 app.post('/comments', sessionCheck, statusCheck, async (request, response) => {
     await db.comments(request.body)
-    response.send({status: "ok"})
+    response.send({ status: "ok" })
 })
 
 /* Logout */

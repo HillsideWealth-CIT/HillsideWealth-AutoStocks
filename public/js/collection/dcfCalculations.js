@@ -67,12 +67,25 @@ function calc_menu(input, output) {
                 </div>
                 <div class="col">
                     <label for="premiumDiscount">Premium/Discount</label>
-                    <input disabled id="premiumDiscount" type="text" class="form-control" value="${output.premiumDiscount}">
+                    <input disabled style="color:${textColor(output.premiumDiscount)}" id="premiumDiscount" type="text" class="form-control" value="${output.premiumDiscount}">
                 </div>
               </div>
               `,
       });
   });
+}
+
+function textColor(amount){
+    amount = Number(amount)
+    if(amount < 1){
+        return 'red'
+    }
+    else if (amount > 1.2){
+        return 'black'
+    }
+    else {
+        return 'blue'
+    }
 }
 
 function dfcAverage(arrList) {
@@ -210,7 +223,7 @@ function calc_edit_menu() {
           <div class="row">
               <div class="col">
                   <label for="discountRate_form">Discount Rate</label>
-                  <input id="discountRate_form"  type="text" class="form-control" value="0.15">
+                  <input id="discountRate_form"  type="text" class="form-control" value="0.2">
               </div>
               <div class="col">
                   <label for="FCF_form">FCF</label>
