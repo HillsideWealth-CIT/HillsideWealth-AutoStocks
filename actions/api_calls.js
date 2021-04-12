@@ -81,7 +81,16 @@ const update_prices = async (list, username) => {
  * @param {Array} list List of stock symbols
  * @param {Boolean} summary_call Whether summary call should be used.
  */
-const gurufocusAdd = async (list, username, summaryCall = true, shared = false, special = false) => {
+const gurufocusAdd = async (
+    list, 
+    username, 
+    summaryCall = true, 
+    shared = false, 
+    special = false,
+    high = false,
+    low = false,
+    owned = false,
+    ) => {
     await update_prices(list, username);
     for (i in list) {
         let timer;
@@ -267,7 +276,11 @@ const gurufocusAdd = async (list, username, summaryCall = true, shared = false, 
                     currentStock.predictability,
                     currentStock.financialStrength,
                     shared, 
-                    special)
+                    special,
+                    high,
+                    low,
+                    owned
+                    )
             }
         }
         catch (err) { var stocks = await db.runQuery('SELECT stock_id FROM stocks WHERE symbol = $1 AND username = $2', [currentStock.symbol, username]) }

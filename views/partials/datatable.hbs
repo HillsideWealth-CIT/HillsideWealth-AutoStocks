@@ -4,9 +4,7 @@
             <tr id = "headerRow">
                 <th></th>
                 <th>Symbol</th>
-                {{#if sc}}
                 <th>Owner</th>
-                {{/if}}
                 <th>Edit Buttons</th>
                 <th>Stock Name</th>
                 <th>Date</th>
@@ -65,49 +63,31 @@
         </tbody>
     </table>
 </div>
+{{#with config}}
+<div style="display:none;">
+    <div id="action">{{action}}</div>
+    <div id="addLink">{{addLink}}</div>
+    <div id="removeLink">{{removeLink}}</div>
+    <div id="updateLink">{{updateLink}}</div>
+    <div id="shareConf">{{shareConf}}</div>
+    <div id="customLink">{{customLink}}</div>
+    <div id="initTable">{{initTable}}</div>
+</div>
+{{/with}}
 
+<script type="text/JavaScript">
+    let config = {
+        action: $('#action').text(),
+        addLink: $('#addLink').text(),
+        removeLink: $('#removeLink').text(),
+        updateLink: $('#updateLink').text(),
+        shareConf: ($('#shareConf').text() == "True"),
+        customLink: $('#customLink').text(),
+        initTable: $('#initTable').text(),
+    }
+    const { action, addLink, removeLink, updateLink, shareConf, customLink, initTable } = config
+</script>
 
-{{#if sc}}
-        <script type="text/JavaScript">
-            const config = {
-                action: 'init_shared',
-                addLink: '/append?share=true',
-                removeLink: '/remove?table=shared',
-                updateLink: 'update_financials?table=shared',
-                shareConf: true,
-                customLink: '/custom?table=shared'
-            }
-            const { action, addLink, removeLink, updateLink, shareConf, customLink } = config
-
-        </script>
-
-    {{else}}
-        {{#if sd}}
-        <script type="text/JavaScript">
-            const config = {
-                action:'init_special',
-                addLink: '/append?special=true',
-                removeLink: '/remove?table=special',
-                updateLink: 'update_financials?table=all',
-                shareConf: false,
-                customLink: '/custom?table=special'
-            }
-            const { action, addLink, removeLink, updateLink, shareConf, customLink } = config
-        </script>
-        {{else}}
-        <script type="text/JavaScript">
-            let config = {
-                action: 'init_user',
-                addLink: '/append',
-                removeLink: '/remove?table=all',
-                updateLink: 'update_financials?table=all',
-                shareConf: false,
-                customLink: '/custom?table=all'
-            }
-            const { action, addLink, removeLink, updateLink, shareConf, customLink  } = config
-        </script>
-        {{/if}}
-{{/if}}
 <script src="/js/collection/collection.js"></script>
 <script src="/js/collection/columns.js"></script>
 

@@ -160,51 +160,27 @@ function format_data(stock) {
 
     // Setup
     stock.setup = {};
-    // stock.setup.fcfSpice = setup('fcfSpice');
     stock.setup.fcfYield = setup('fcfYield', '%');
 
     stock.setup.fcfroic = setup('fcfroic', '%');
-    // stock.setup.fcfroa = setup('fcfroa', '%');
-    // stock.setup.fcfroe = setup('fcfroe', '%');
-    // stock.setup.fcfRoce = setup('fcfRoce', '%');
     stock.setup.fcfRota = setup('fcfRota', '%');
 
     stock.setup.grossmargin = setup('grossmargin', '%');
     stock.setup.operatingmargin = setup('operatingmargin', '%');
     stock.setup.fcfmargin = setup('fcfmargin', '%');
 
-    // stock.setup.nd_aebitda = setup('nd_aebitda');
     stock.setup.ndFcf = setup('ndFcf');
 
     stock.setup.capex_sales = setup('capex_sales', '%');
-    // stock.setup.capex_ownerEarnings = setup('capex_ownerEarnings', '%');
     stock.setup.capex_fcf = setup('capex_fcf', '%');
 
     stock.setup.fcfNetIncome = setup('fcfNetIncome', '%', '%');
-    // stock.setup.fcfOwnerEarnings = setup('fcfOwnerEarnings', '%', '%');
     stock.setup.cash_conversion_cycle = setup('cash_conversion_cycle', '','',0);
-
-    // stock.setup.sales = setup('revenue', '$');
     stock.setup.salesshare = setup('salesshare', '$');
-    // stock.setup.ownerEarningShare = setup('ownerEarningShare');
     stock.setup.fcfShare = setup('fcfShare');
-    // stock.setup.aebitdaShare = setup('aebitdaShare');
-    // stock.setup.dividendShare = setup('dividendShare', '$');
-    // stock.setup.price = setup('price', '$');
-
-    // stock.setup.sgr = setup('sgr', '%');
 
     stock.setup.dividendPayoutRatio = setup('dividendPayoutRatio', '%');
     stock.setup.cashflow_reinvestment_rate = setup('cashflow_reinvestment_rate', '%', 0);
-
-    // stock.setup.capFcf = setup('capFcf');
-    // stock.setup.fcfSpice = setup('fcfSpice');
-
-    // stock.setup.purchase_of_business = setup('purchase_of_business', '$', 0);
-    // stock.setup.dividend = setup('dividend');
-
-    // stock.setup.dividendYield = setup('dividend_yield', '%');
-    // stock.setup.urbem_value = setup('urbem_value', '%');
 
     stock.setup.flow_ratio = setup('flow_ratio', '%');
 
@@ -251,7 +227,8 @@ function format_data(stock) {
     stock.calculations = {};
     for(let i = 1; i <= 5; i++){
         try{
-            stock.calculations[`iroe3yr${i}`] = `${cNaI(((Number(stock.stockdata[i].fcf) - Number(stock.stockdata[i + 3].fcf))/(Number(stock.stockdata[i].total_stockholder_equity) - Number(stock.stockdata[i+3].total_stockholder_equity))) * 100).toFixed(2)}%`;
+            let num = cNaI(((Number(stock.stockdata[i].fcf) - Number(stock.stockdata[i + 3].fcf))/(Number(stock.stockdata[i].total_stockholder_equity) - Number(stock.stockdata[i+3].total_stockholder_equity))) * 100).toFixed(2);
+            stock.calculations[`iroe3yr${i}`] = `${(num > 0) ? num: 0}%`;
         }
         catch(e){
             stock.calculations[`iroe3yr${i}`] = `0.00%`
@@ -259,7 +236,8 @@ function format_data(stock) {
     }
     for(let i = 1; i <= 3; i++){
         try{
-            stock.calculations[`iroe5yr${i}`] = `${cNaI(((Number(stock.stockdata[i].fcf) - Number(stock.stockdata[i + 5].fcf))/(Number(stock.stockdata[i].total_stockholder_equity) - Number(stock.stockdata[i+5].total_stockholder_equity))) * 100).toFixed(2)}%`;
+            let num = cNaI(((Number(stock.stockdata[i].fcf) - Number(stock.stockdata[i + 3].fcf))/(Number(stock.stockdata[i].total_stockholder_equity) - Number(stock.stockdata[i+3].total_stockholder_equity))) * 100).toFixed(2)
+            stock.calculations[`iroe5yr${i}`] = `${(num) > 0 ? num : 0}%`;
         }
         catch(e){
             stock.calculations[`iroe5yr${i}`] = `0.00%`
@@ -437,7 +415,9 @@ function format_data(stock) {
             terminalMultiple,
             fcf
         } = stock.npv;
-        stock.npv.fcf = (fcf == '0') ? stock.stockdata[0].fcf : fcf
+        stock.npv.fcf = (fcf == '0') ? 
+            (stock.stockdata[0].fcf + stock.stockdata[0].net_income) / 2
+            : fcf
 
         let calculatedNPV = [];
         for(let i = 0; i <= Number(growthYears); i++){
@@ -480,12 +460,12 @@ function format_data(stock) {
             npvTotal,
         } = calculatedNPV[calculatedNPV.length-1]
         let currentMultiple = 1/(Number(stock.stockdata[0].fcf)/Number(stock.stockdata[0].market_cap));
-        let premiumDiscount = (((currentMultiple / fvMultiple)/fvMultiple) * 100)
+        let premiumDiscount = (Number(stock.stockdata[0].market_cap)/npvTotal);
         stock.npvoutput = {
             fv: npvTotal.toFixed(2),
             fvMultiple: fvMultiple.toFixed(2),
             currentMultiple: currentMultiple.toFixed(2),
-            premiumDiscount: `${premiumDiscount.toFixed(0)}%`,
+            premiumDiscount: `${premiumDiscount.toFixed(2)}`,
             PdFvCur: `${(currentMultiple/fvMultiple).toFixed(2)}`,
         }
     }

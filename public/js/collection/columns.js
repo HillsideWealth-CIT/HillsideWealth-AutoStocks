@@ -1,6 +1,7 @@
 const perm = [0, 1, 2, 3];
 
 var column_list = ['check',
+    'owner',
     'Symbol',
     'Edit Buttons',
     'Stock Name',
@@ -54,11 +55,6 @@ var column_list = ['check',
     'FCF/Share 3yr G',
     'FCF/Share 5yr G',
 ];
-
-if(shareConf) {
-    column_list.splice(2, 0, 'Owner')
-    perm.push(8)
-}
 /**
  * Loops through columns and hides the undesired columns
  * @param {Integer} start 
