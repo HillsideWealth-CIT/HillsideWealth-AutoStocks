@@ -416,7 +416,7 @@ function format_data(stock) {
             fcf
         } = stock.npv;
         stock.npv.fcf = (fcf == '0') ? 
-            (stock.stockdata[0].fcf + stock.stockdata[0].net_income) / 2
+            (Number(stock.stockdata[0].fcf) + Number(stock.stockdata[0].net_income)) / 2
             : fcf
 
         let calculatedNPV = [];
