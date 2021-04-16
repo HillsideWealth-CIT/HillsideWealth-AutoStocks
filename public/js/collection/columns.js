@@ -1,4 +1,4 @@
-const perm = [0, 1, 2, 3];
+const perm = [0, 1, 2, 3, 4, 5];
 
 var column_list = ['check',
     'owner',

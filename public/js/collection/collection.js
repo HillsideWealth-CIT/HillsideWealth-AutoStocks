@@ -65,7 +65,7 @@ function button_builder(){
         ]},
         {text: 'Edit Table', className:"btn-sm", extend: 'collection',
         buttons: [
-            {text: '<span class="fas fa-plus"></span> Add', className:"btn-sm", action: function(){add();}},
+            {text: '<span class="fas fa-plus"></span> Add New Stocks', className:"btn-sm", action: function(){add();}},
             {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove(removeLink);}},
             {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", action: function(){update(updateLink);}},
             {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
@@ -159,8 +159,7 @@ function column_builder(){
                     fcfNI: row.setup.fcfNetIncome["3yrAvg"],
                     fcfShare: row.setup.fcfShare["3yrAvg"],
                     yackt: row.stockdata[0].fror,
-                    proj: row.calculations.projected10ror,
-                    
+                    proj: row.calculations.projected10ror,                    
                 }
                 
                 return `
@@ -227,8 +226,15 @@ function column_builder(){
         { data : "stockdata.0.fcfYield", type : "any-number" },
         { data : "stockdata.0.fcfMultiple", type : "any-number" },
         { data : "npvoutput.fvMultiple", type : "any-number" },
-        { data : "npvoutput.PdFvCur", type : "any-number" },
-
+        {   data : null,
+            type : "any-number",
+            render: function(data, type, row, meta){
+                return(`
+                <div style="color: ${textColor(row.npvoutput.premiumDiscount)}">
+                    ${row.npvoutput.premiumDiscount}
+                </div>`)
+            }
+        },
         { data : "fcfYield.min", type : "any-number" },
         { data : "fcfYield.max", type : "any-number" },
         { data : "setup.fcfYield.10yrAvg", type : "any-number" },
@@ -239,7 +245,6 @@ function column_builder(){
         { data : "setup.fcfShare.compGrowth3yr", type : "any-number"}, 
         { data : "setup.fcfShare.compGrowth5yr", type : "any-number"}, 
     ];
-    if(shareConf) columns.splice(2, 0, { data : "username"})
     return columns;
 }
 
