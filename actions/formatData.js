@@ -568,6 +568,7 @@ function format_data(stock) {
  */
 function formatHistorical(data, cs, years=20) {
     let custom = JSON.parse(cs)
+    console.log(custom)
     let toSend = [];
     let sd = data[0].stockdata
     for(let yr = 0; yr < years; yr++){
@@ -577,9 +578,13 @@ function formatHistorical(data, cs, years=20) {
             let decimal = Number(custom[i].decimal);
             //equation empty + single column
             if(custom[i].equation.length === 0){
-                let average = custom[i].columns.split('|');
-                if(average.length === 2){
-                    let num = calc.calculate_average(data[0].stockdata, sToSD(average[0],0,true), average[1])
+                //average = [columnName, years]
+                let splitCol = custom[i].columns.split('|');
+                //calculates average
+                if(splitCol.length === 2){
+                    let columnName = splitCol[0];
+                    let aveYears = Number(splitCol[1]);
+                    let num = calc.calculate_average(data[0].stockdata, sToSD(columnName,0,true), aveYears, yr)
                     year[custom[i].rowName] = (custom[i].sign === '$')
                     ?   `$${formatNumber(Number(num).toFixed(decimal))}`
                     :   `${formatNumber(Number(num).toFixed(decimal))}${custom[i].sign}`

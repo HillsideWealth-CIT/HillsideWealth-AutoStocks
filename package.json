@@ -1,7 +1,7 @@
 {
   "name": "hillsidewealth-autostocks",
   "version": "1.0.0",
-  "engines" : {
+  "engines": {
     "node": "12.x"
   },
   "description": "",

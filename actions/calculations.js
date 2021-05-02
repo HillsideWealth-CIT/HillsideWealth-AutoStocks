@@ -132,15 +132,16 @@ function value_calculator(val, price){
  * @param {String} column 
  * @param {Integer} years 
  */
-function calculate_average(data, column, years){
+function calculate_average(data, column, years, start=0){
     try{
         let total = 0;
-        for(let i = 0; i < years; i++){
+        for(let i = start; i < start + years; i++){
             total += parseFloat(data[i][column].replace(/[^0-9.-]/g, ""));
         }
         return (total/years);
         }
         catch(e){
+            // console.log(e)
             return 0;
         }
 }
