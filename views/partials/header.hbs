@@ -55,6 +55,9 @@
 	body {
 		background-color: #F0F0F0;
 	}
+	div.dts div.dataTables_scrollBody {
+  background: #F0F0F0; /* or whatever */
+}
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark justify-content-between" style="background-color:#255A85; color:white;">
 	<a class="navbar-brand" href="/"><img src="/imgs/hillside_logo.png"
@@ -125,13 +128,13 @@
 				{{else}}
 			<li class="nav-item">
 				{{/if}}
-				<a class="nav-link" href="documentation">Documentation</a>
+				{{!-- <a class="nav-link" href="documentation">Documentation</a>
 				<!-- Dropdown -->
 				{{#if s}}
 			<li class="nav-item dropdown nav-item active">
 				{{else}}
 			<li class="nav-item dropdown">
-				{{/if}}
+				{{/if}} --}}
 				<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
 					<i id="username" user="{{user}}" class="fas fa-user"></i> {{user}}
 				</a>

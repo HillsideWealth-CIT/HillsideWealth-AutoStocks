@@ -57,40 +57,40 @@ function fill_table(data){
  */
 function button_builder(){
     let buttons = [
-        {text: 'Selection', className:"btn-sm", extend: 'collection',
+        {text: 'Selection', className:"", extend: 'collection',
         buttons: [
-            {text: '<span class="fas fa-eye"></span> Show Selected', className:"", action: function(){show_selected();}},
+            // {text: '<span class="fas fa-eye"></span> Show Selected', className:"", action: function(){show_selected();}},
             'selectAll',
             'selectNone',
         ]},
-        {text: 'Edit Table', className:"btn-sm", extend: 'collection',
+        {text: 'Edit Table', className:"", extend: 'collection',
         buttons: [
-            {text: '<span class="fas fa-plus"></span> Add New Stocks', className:"btn-sm", action: function(){add();}},
-            {text: '<span class="fas fa-trash-alt"></span> Delete', className:"btn-sm", action: function(){remove(removeLink);}},
-            {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "btn-sm", action: function(){update(updateLink);}},
-            {text: `<span class="fas fa-calculator"></span> DCF`, className: "btn-sm", action: function(){calc_edit();}},
+            {text: '<span class="fas fa-plus"></span> Add New Stocks', className:"", action: function(){add();}},
+            {text: '<span class="fas fa-trash-alt"></span> Delete', className:"", action: function(){remove(removeLink);}},
+            {text: '<span class="fas fa-sync-alt"></span> Refresh', className: "", action: function(){update(updateLink);}},
+            {text: `<span class="fas fa-calculator"></span> DCF`, className: "", action: function(){calc_edit();}},
         ]},
-        {text: '<span class="fas fa-share"></span> Save', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-share"></span> Save', className:"", extend: 'collection',
         buttons: [
-            {text: 'Set Special', className:"btn-sm", action: function(){save("special");}},
-            {text: 'Set Common', className:"btn-sm", action: function(){save("shared");}},
-            {text: 'Set Med-High Conviction', className:"btn-sm", action: function(){save("high_conviction");}},
-            {text: 'Set Low-Med Conviction', className:"btn-sm", action: function(){save("low_conviction");}},
-            {text: 'Set Owned', className:"btn-sm", action: function(){save("owned");}},
+            {text: 'Set Special', className:"", action: function(){save("special");}},
+            {text: 'Set Common', className:"", action: function(){save("shared");}},
+            {text: 'Set Med-High Conviction', className:"", action: function(){save("high_conviction");}},
+            {text: 'Set Low-Med Conviction', className:"", action: function(){save("low_conviction");}},
+            {text: 'Set Owned', className:"", action: function(){save("owned");}},
         ]},
-        {text: '<span class="fas fa-users-cog"></span> Catagorize', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-users-cog"></span> Catagorize', className:"", extend: 'collection',
         buttons: [
-            {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"btn-sm", action: function(){set_categories();}},
-            {text: '<span class="fas fa-plus"></span> Select Filtered', className:"btn-sm", action: function(){$table.rows({search: 'applied'}).select();}},
+            {text: '<span class="fas fa-users-cog"></span> Set Categories', className:"", action: function(){set_categories();}},
+            {text: '<span class="fas fa-plus"></span> Select Filtered', className:"", action: function(){$table.rows({search: 'applied'}).select();}},
         ]},
-        {text: '<span class="fas fa-layer-group"></span> Aggregate', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-layer-group"></span> Aggregate', className:"", extend: 'collection',
         buttons: [
             { text:'<b>Set</b>', action: function(){settingAggregation(7, 'set');} },
             { text:'Create', action: function(){createAggregation();} },
             { text:'Edit', action: function(){settingAggregation(0,'edit');} },
             { text:'Delete', action: function(){settingAggregation(0, 'delete');} },
         ]},
-        {text: '<span class="fas fa-columns"></span> Table Config', className:"btn-sm", extend: 'collection',
+        {text: '<span class="fas fa-columns"></span> Table Config', className:"", extend: 'collection',
             buttons: [
                 { text:'<b>Show All</b>', action: function(){show_all();}},
                 { text:'Returns', action: function(){returns();}},
@@ -102,7 +102,7 @@ function button_builder(){
                 { text:'Growth', action: function(){growth();}},
             ]
         },
-        {text: 'Go To Custom', className:"btn-sm", action: function(){goToCustom();}},
+        {text: 'Go To Custom', className:"", action: function(){goToCustom();}},
         'colvis',
         'excel',
     ];
