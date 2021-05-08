@@ -236,7 +236,7 @@ function format_data(stock) {
     }
     for(let i = 1; i <= 3; i++){
         try{
-            let num = cNaI(((Number(stock.stockdata[i].fcf) - Number(stock.stockdata[i + 3].fcf))/(Number(stock.stockdata[i].total_stockholder_equity) - Number(stock.stockdata[i+3].total_stockholder_equity))) * 100).toFixed(2)
+            let num = cNaI(((Number(stock.stockdata[i].fcf) - Number(stock.stockdata[i + 5].fcf))/(Number(stock.stockdata[i].total_stockholder_equity) - Number(stock.stockdata[i+5].total_stockholder_equity))) * 100).toFixed(2)
             stock.calculations[`iroe5yr${i}`] = `${(num > 0) ? num : 0}%`;
         }
         catch(e){
@@ -568,7 +568,7 @@ function format_data(stock) {
  */
 function formatHistorical(data, cs, years=20) {
     let custom = JSON.parse(cs)
-    console.log(custom)
+    // console.log(custom)
     let toSend = [];
     let sd = data[0].stockdata
     for(let yr = 0; yr < years; yr++){
@@ -579,15 +579,24 @@ function formatHistorical(data, cs, years=20) {
             //equation empty + single column
             if(custom[i].equation.length === 0){
                 //average = [columnName, years]
-                let splitCol = custom[i].columns.split('|');
+                let splitColAve = custom[i].columns.split('|');
+                let splitColDel = custom[i].columns.split(':');
                 //calculates average
-                if(splitCol.length === 2){
-                    let columnName = splitCol[0];
-                    let aveYears = Number(splitCol[1]);
+                if(splitColAve.length === 2){
+                    let columnName = splitColAve[0];
+                    let aveYears = Number(splitColAve[1]);
                     let num = calc.calculate_average(data[0].stockdata, sToSD(columnName,0,true), aveYears, yr)
                     year[custom[i].rowName] = (custom[i].sign === '$')
                     ?   `$${formatNumber(Number(num).toFixed(decimal))}`
                     :   `${formatNumber(Number(num).toFixed(decimal))}${custom[i].sign}`
+                }
+                else if(splitColDel.length === 2){
+                    let columnName = splitColDel[0]
+                    let cYrs = Number(splitColDel[1])
+                    year[custom[i].rowName] = (custom[i].sign === '$')
+                    ? `$${formatNumber(Number(sToSD(columnName, yr + cYrs)).toFixed(decimal))}`
+                    : `${formatNumber(Number(sToSD(columnName, yr + cYrs)).toFixed(decimal))}${custom[i].sign}`
+
                 }
                 else{
                     year[custom[i].rowName] = (custom[i].sign === '$')
@@ -601,6 +610,10 @@ function formatHistorical(data, cs, years=20) {
                     if (p.split('|').length === 2){
                         let average = p.split('|')
                         variables.push(calc.calculate_average(data[0].stockdata, sToSD(average[0],0,true), average[1]))
+                    }
+                    else if(p.split(':').length === 2){
+                        let delay = p.split(':')
+                        variables.push(Number(sToSD(delay[0], yr + Number(delay[1]))))
                     }
                     else if(p.length > 0) variables.push(Number(sToSD(p, yr)))
                 }
@@ -624,7 +637,8 @@ function formatHistorical(data, cs, years=20) {
      * @returns {String} - Returns the value from the database on the specified row
      */
     function sToSD(columnString, row = 0, avg=false){
-        // console.log(columnString)
+        console.log(columnString)
+        console.log(row)
         // console.log(sd)
         let value;
         switch(columnString) {
