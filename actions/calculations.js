@@ -141,7 +141,6 @@ function calculate_average(data, column, years, start=0){
         return (total/years);
         }
         catch(e){
-            // console.log(e)
             return 0;
         }
 }
