@@ -609,7 +609,7 @@ function formatHistorical(data, cs, years=20) {
                 for(let p of custom[i].columns.split(" ")){
                     if (p.split('|').length === 2){
                         let average = p.split('|')
-                        variables.push(calc.calculate_average(data[0].stockdata, sToSD(average[0],0,true), average[1]))
+                        variables.push(calc.calculate_average(data[0].stockdata, sToSD(average[0],0,true), Number(average[1]), yr))
                     }
                     else if(p.split(':').length === 2){
                         let delay = p.split(':')
@@ -637,8 +637,8 @@ function formatHistorical(data, cs, years=20) {
      * @returns {String} - Returns the value from the database on the specified row
      */
     function sToSD(columnString, row = 0, avg=false){
-        console.log(columnString)
-        console.log(row)
+        // console.log(columnString)
+        // console.log(row)
         // console.log(sd)
         let value;
         switch(columnString) {
