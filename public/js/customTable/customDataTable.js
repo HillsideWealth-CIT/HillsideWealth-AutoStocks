@@ -121,7 +121,8 @@ const column_builder = () => {
     },
   ]
   headerInfo.forEach(value => {
-    columns.push({ data: `stock_data.${value}` })
+    if(value === "date") columns.push({ data: `stock_data.${value}` })
+    else columns.push({ data: `stock_data.${value}`, type: "any-number" })
   })
   return columns;
 }
