@@ -568,7 +568,6 @@ function format_data(stock) {
  */
 function formatHistorical(data, cs, years=20) {
     let custom = JSON.parse(cs)
-    // console.log(custom)
     let toSend = [];
     let sd = data[0].stockdata
     for(let yr = 0; yr < years; yr++){
@@ -613,7 +612,10 @@ function formatHistorical(data, cs, years=20) {
                     }
                     else if(p.split(':').length === 2){
                         let delay = p.split(':')
-                        variables.push(Number(sToSD(delay[0], yr + Number(delay[1]))))
+                        let num = sToSD(delay[0], yr + Number(delay[1]))
+                        if(num !== false) variables.push(Number(num))
+                        else variables = false;
+
                     }
                     else if(p.length > 0) variables.push(Number(sToSD(p, yr)))
                 }
@@ -624,7 +626,8 @@ function formatHistorical(data, cs, years=20) {
         }
         toSend.push(year)
         }
-        catch{
+        catch(e){
+            console.log(e)
             break;
         }
     }
@@ -640,271 +643,277 @@ function formatHistorical(data, cs, years=20) {
         // console.log(columnString)
         // console.log(row)
         // console.log(sd)
-        let value;
-        switch(columnString) {
-            case 'aebitda':
-                value = (avg === false) 
-                    ? sd[row].aebitda
-                    : 'aebitda';
-                break;
-            case 'assetTurn':
-                value = (avg === false) 
-                    ? sd[row].asset_turnover
-                    : 'asset_turnover';
-                break;
-            case 'bvps':
-                value = (avg === false) 
-                ? sd[row].book_value_per_share
-                : 'book_value_per_share';
-                break;
-            case 'capLeaseDebt':
-                value = (avg === false)
-                    ? sd[row].cap_lease_debt
-                    : 'cap_lease_debt';
-            case 'capex':
-                value = (avg === false)
-                    ? sd[row].capex
-                    : 'capex';
-                break;
-            case 'capitalEmployed':
-                value = (avg === false)
-                    ? sd[row].capital_employed
-                    : 'capital_employed';
-                break;
-            case 'cashConversionCycle':
-                value = (avg === false) 
-                    ? sd[row].cash_conversion_cycle
-                    : 'cash_conversion_cycle';
-                break;
-            case 'cashflowReinvestmentRate':
-                value = (avg === false) 
-                    ? sd[row].cashflow_reinvestment_rate
-                    : 'cashflow_reinvestment_rate';
-                break;
-            case 'discountRate':
-                value = (avg === false) 
-                    ? sd[row].discount_rate
-                    : 'discount_rate';
-                break;
-            case 'dividend':
-                value = (avg === false) 
-                    ? sd[row].dividend
-                    : 'dividend';
-                break;
-            case 'dividendYield':
-                 value = (avg === false) 
-                    ? sd[row].dividendYield
-                    : 'dividendYield';
-                break;
-            case 'dividendPerShare':
-                value = (avg === false) 
-                    ? sd[row].dividendShare
-                    : 'dividendShare';
-                break;
-            case 'ebit':
-                value = (avg === false) 
-                    ? sd[row].ebit
-                    : 'ebit';
-                break;
-            case 'effectiveTax':
-                value = (avg === false) 
-                    ?  sd[row].effective_tax
-                    : 'effective_tax';
-                break;
-            case 'employees':
-                value = (avg === false) 
-                    ?  sd[row].employees
-                    : 'employees';
-                break;
-            case 'enterpriseValue':
-                value = (avg === false) 
-                    ?  sd[row].enterprise_value
-                    : 'enterprise_value';
-                break;
-            case 'epsBasic':
-                value = (avg === false) 
-                    ?  sd[row].eps_basic
-                    : 'eps_basic';
-                break;
-            case 'epsWithoutNri':
-                value = (avg === false) 
-                    ?  sd[row].eps_without_nri
-                    : 'eps_without_nri';
-                break;
-            case 'fcf':
-                value = (avg === false) 
-                    ?  sd[row].fcf
-                    : 'fcf';
-                break;
-            case 'fcfMargin':
-                value = (avg === false) 
-                    ?  sd[row].fcfmargin
-                    : 'fcfmargin';
-                break;
-            case 'flowRatio':
-                value = (avg === false) 
-                    ?  sd[row].flow_ratio
-                    : 'flow_ratio';
-                break;
-            case 'fror':
-                value = (avg === false) 
-                    ?  sd[row].fror
-                    : 'fror';
-                break;
-            case 'grossMargin':
-                value = (avg === false) 
-                    ?  sd[row].grossmargin
-                    : 'grossmargin';
-                break;
-            case 'growthYears':
-                value = (avg === false) 
-                    ?  sd[row].growth_years
-                    : 'growth_years';
-                break;
-            case 'investedCapital':
-                value = (avg === false) 
-                    ?  sd[row].invested_capital
-                    : 'invested_capital';
-                break;
-            case 'intangibleAssets':
-                value = (avg === false) 
-                    ?  sd[row].intangible_assets
-                    : 'intangible_assets';
-                break;
-            case 'longTermDebt':
-                value = (avg === false) 
-                    ?  sd[row].lt_debt_lease_obligations
-                    : 'lt_debt_lease_obligations'
-                break;
-            case 'marketCap':
-                value = (avg === false) 
-                    ?  sd[row].market_cap
-                    : 'market_cap'
-                break;
-            case 'monthEndPrice':
-                value = (avg === false) 
-                    ?  sd[row].month_end_price
-                    : 'month_end_price'
-                break;
-            case 'netDebt':
-                value = (avg === false) 
-                    ?  sd[row].net_debt
-                    : 'net_debt'
-                break;
-            case 'netIncome':
-                value = (avg === false) 
-                    ?  sd[row].net_income
-                    : 'net_income'
-                break;
-            case 'netMargin':
-                value = (avg === false) 
-                    ?  sd[row].netmargin
-                    : 'netmargin'
-                break;
-            case 'operatingCushion':
-                value = (avg === false) 
-                    ?  sd[row].operating_cushion
-                    : 'operating_cushion'
-                break;
-            case 'operatingMargin':
-                value = (avg === false) 
-                    ?  sd[row].operatingmargin
-                    : 'operatingmargin'
-                break;
-            case 'ownerEarning':
-                value = (avg === false) 
-                    ?  sd[row].ownerEarningShar
-                    : 'ownerEarningShar';
-                break;
-            case 'ppe':
-                value = (avg === false) 
-                    ?  sd[row].ppe
-                    : 'ppe';
-                break;
-            case 'price':
-                value = (avg === false) 
-                    ?  sd[row].price
-                    : 'price';
-                break;
-            case 'purchaseOfBusiness':
-                value = (avg === false) 
-                    ?  sd[row].purchase_of_business
-                    : 'purchase_of_business';
-                break;
-            case 'reinvestedCfJdv':
-                value = (avg === false) 
-                    ?  sd[row].reinvested_cf_jdv
-                    : 'reinvested_cf_jdv';
-                break;
-            case 'revenue':
-                value = (avg === false) 
-                    ?  sd[row].revenue
-                    : 'revenue';
-                break;
-            case 'roe':
-                value = (avg === false) 
-                    ?  sd[row].roe
-                    : 'roe';
-                break;
-            case 'roic':
-                value = (avg === false) 
-                    ?  sd[row].roic
-                    : 'roic';
-                break;
-            case 'sharesOutstanding':
-                value = (avg === false) 
-                    ?  sd[row].shares_outstanding
-                    : 'shares_outstanding';
-                break;
-            case 'sharesOutstandingQuarterly':
-                value = (avg === false) 
-                    ?  sd[row].shares_outstanding_quarterly
-                    : 'shares_outstanding_quarterly';
-                break;
-            case 'shortTermDebt':
-                value = (avg === false) 
-                    ?  sd[row].st_debt_lease_obligations
-                    : 'st_debt_lease_obligations';
-                break;
-            case 'terminalGrowthRate':
-                value = (avg === false) 
-                    ?  sd[row].terminal_growth_rate
-                    : 'terminal_growth_rate';
-                break;
-            case 'TerminalYears':
-                value = (avg === false) 
-                    ?  sd[row].terminal_years
-                    : 'terminal_years';
-                break;
-            case 'totalStockholderEquity':
-                value = (avg === false) 
-                    ?  sd[row].total_stockholder_equity
-                    : 'total_stockholder_equity';
-                break;
-            case 'totalAssets':
-                value = (avg === false) 
-                    ?  sd[row].totalassets
-                    : 'totalassets';
-                break;
-            case 'ttm':
-                value = (avg === false) 
-                    ?  sd[row].ttm
-                    : 'ttm';
-                break;
-            case 'wacc':
-                value = (avg === false) 
-                    ?  sd[row].wacc
-                    : 'wacc';
-                break;
-            case 'yield':
-                value = (avg === false) 
-                    ?  sd[row].yield
-                    : 'yield';
-                break;
-            default:
-                value = 'N/A'
+        try{
+            let value;
+            switch(columnString) {
+                case 'aebitda':
+                    value = (avg === false) 
+                        ? sd[row].aebitda
+                        : 'aebitda';
+                    break;
+                case 'assetTurn':
+                    value = (avg === false) 
+                        ? sd[row].asset_turnover
+                        : 'asset_turnover';
+                    break;
+                case 'bvps':
+                    value = (avg === false) 
+                    ? sd[row].book_value_per_share
+                    : 'book_value_per_share';
+                    break;
+                case 'capLeaseDebt':
+                    value = (avg === false)
+                        ? sd[row].cap_lease_debt
+                        : 'cap_lease_debt';
+                case 'capex':
+                    value = (avg === false)
+                        ? sd[row].capex
+                        : 'capex';
+                    break;
+                case 'capitalEmployed':
+                    value = (avg === false)
+                        ? sd[row].capital_employed
+                        : 'capital_employed';
+                    break;
+                case 'cashConversionCycle':
+                    value = (avg === false) 
+                        ? sd[row].cash_conversion_cycle
+                        : 'cash_conversion_cycle';
+                    break;
+                case 'cashflowReinvestmentRate':
+                    value = (avg === false) 
+                        ? sd[row].cashflow_reinvestment_rate
+                        : 'cashflow_reinvestment_rate';
+                    break;
+                case 'discountRate':
+                    value = (avg === false) 
+                        ? sd[row].discount_rate
+                        : 'discount_rate';
+                    break;
+                case 'dividend':
+                    value = (avg === false) 
+                        ? sd[row].dividend
+                        : 'dividend';
+                    break;
+                case 'dividendYield':
+                    value = (avg === false) 
+                        ? sd[row].dividendYield
+                        : 'dividendYield';
+                    break;
+                case 'dividendPerShare':
+                    value = (avg === false) 
+                        ? sd[row].dividendShare
+                        : 'dividendShare';
+                    break;
+                case 'ebit':
+                    value = (avg === false) 
+                        ? sd[row].ebit
+                        : 'ebit';
+                    break;
+                case 'effectiveTax':
+                    value = (avg === false) 
+                        ?  sd[row].effective_tax
+                        : 'effective_tax';
+                    break;
+                case 'employees':
+                    value = (avg === false) 
+                        ?  sd[row].employees
+                        : 'employees';
+                    break;
+                case 'enterpriseValue':
+                    value = (avg === false) 
+                        ?  sd[row].enterprise_value
+                        : 'enterprise_value';
+                    break;
+                case 'epsBasic':
+                    value = (avg === false) 
+                        ?  sd[row].eps_basic
+                        : 'eps_basic';
+                    break;
+                case 'epsWithoutNri':
+                    value = (avg === false) 
+                        ?  sd[row].eps_without_nri
+                        : 'eps_without_nri';
+                    break;
+                case 'fcf':
+                    value = (avg === false) 
+                        ?  sd[row].fcf
+                        : 'fcf';
+                    break;
+                case 'fcfMargin':
+                    value = (avg === false) 
+                        ?  sd[row].fcfmargin
+                        : 'fcfmargin';
+                    break;
+                case 'flowRatio':
+                    value = (avg === false) 
+                        ?  sd[row].flow_ratio
+                        : 'flow_ratio';
+                    break;
+                case 'fror':
+                    value = (avg === false) 
+                        ?  sd[row].fror
+                        : 'fror';
+                    break;
+                case 'grossMargin':
+                    value = (avg === false) 
+                        ?  sd[row].grossmargin
+                        : 'grossmargin';
+                    break;
+                case 'growthYears':
+                    value = (avg === false) 
+                        ?  sd[row].growth_years
+                        : 'growth_years';
+                    break;
+                case 'investedCapital':
+                    value = (avg === false) 
+                        ?  sd[row].invested_capital
+                        : 'invested_capital';
+                    break;
+                case 'intangibleAssets':
+                    value = (avg === false) 
+                        ?  sd[row].intangible_assets
+                        : 'intangible_assets';
+                    break;
+                case 'longTermDebt':
+                    value = (avg === false) 
+                        ?  sd[row].lt_debt_lease_obligations
+                        : 'lt_debt_lease_obligations'
+                    break;
+                case 'marketCap':
+                    value = (avg === false) 
+                        ?  sd[row].market_cap
+                        : 'market_cap'
+                    break;
+                case 'monthEndPrice':
+                    value = (avg === false) 
+                        ?  sd[row].month_end_price
+                        : 'month_end_price'
+                    break;
+                case 'netDebt':
+                    value = (avg === false) 
+                        ?  sd[row].net_debt
+                        : 'net_debt'
+                    break;
+                case 'netIncome':
+                    value = (avg === false) 
+                        ?  sd[row].net_income
+                        : 'net_income'
+                    break;
+                case 'netMargin':
+                    value = (avg === false) 
+                        ?  sd[row].netmargin
+                        : 'netmargin'
+                    break;
+                case 'operatingCushion':
+                    value = (avg === false) 
+                        ?  sd[row].operating_cushion
+                        : 'operating_cushion'
+                    break;
+                case 'operatingMargin':
+                    value = (avg === false) 
+                        ?  sd[row].operatingmargin
+                        : 'operatingmargin'
+                    break;
+                case 'ownerEarning':
+                    value = (avg === false) 
+                        ?  sd[row].ownerEarningShar
+                        : 'ownerEarningShar';
+                    break;
+                case 'ppe':
+                    value = (avg === false) 
+                        ?  sd[row].ppe
+                        : 'ppe';
+                    break;
+                case 'price':
+                    value = (avg === false) 
+                        ?  sd[row].price
+                        : 'price';
+                    break;
+                case 'purchaseOfBusiness':
+                    value = (avg === false) 
+                        ?  sd[row].purchase_of_business
+                        : 'purchase_of_business';
+                    break;
+                case 'reinvestedCfJdv':
+                    value = (avg === false) 
+                        ?  sd[row].reinvested_cf_jdv
+                        : 'reinvested_cf_jdv';
+                    break;
+                case 'revenue':
+                    value = (avg === false) 
+                        ?  sd[row].revenue
+                        : 'revenue';
+                    break;
+                case 'roe':
+                    value = (avg === false) 
+                        ?  sd[row].roe
+                        : 'roe';
+                    break;
+                case 'roic':
+                    value = (avg === false) 
+                        ?  sd[row].roic
+                        : 'roic';
+                    break;
+                case 'sharesOutstanding':
+                    value = (avg === false) 
+                        ?  sd[row].shares_outstanding
+                        : 'shares_outstanding';
+                    break;
+                case 'sharesOutstandingQuarterly':
+                    value = (avg === false) 
+                        ?  sd[row].shares_outstanding_quarterly
+                        : 'shares_outstanding_quarterly';
+                    break;
+                case 'shortTermDebt':
+                    value = (avg === false) 
+                        ?  sd[row].st_debt_lease_obligations
+                        : 'st_debt_lease_obligations';
+                    break;
+                case 'terminalGrowthRate':
+                    value = (avg === false) 
+                        ?  sd[row].terminal_growth_rate
+                        : 'terminal_growth_rate';
+                    break;
+                case 'TerminalYears':
+                    value = (avg === false) 
+                        ?  sd[row].terminal_years
+                        : 'terminal_years';
+                    break;
+                case 'totalStockholderEquity':
+                    value = (avg === false) 
+                        ?  sd[row].total_stockholder_equity
+                        : 'total_stockholder_equity';
+                    break;
+                case 'totalAssets':
+                    value = (avg === false) 
+                        ?  sd[row].totalassets
+                        : 'totalassets';
+                    break;
+                case 'ttm':
+                    value = (avg === false) 
+                        ?  sd[row].ttm
+                        : 'ttm';
+                    break;
+                case 'wacc':
+                    value = (avg === false) 
+                        ?  sd[row].wacc
+                        : 'wacc';
+                    break;
+                case 'yield':
+                    value = (avg === false) 
+                        ?  sd[row].yield
+                        : 'yield';
+                    break;
+                default:
+                    value = 'N/A'
+            }
+            return value;
         }
-        return value;
+        catch(e){
+            console.log("out of bounds");
+            return false;
+        }
     }
 }
 module.exports = {
