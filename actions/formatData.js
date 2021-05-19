@@ -607,17 +607,16 @@ function formatHistorical(data, cs, years=20) {
                 let variables = [];
                 for(let p of custom[i].columns.split(" ")){
                     if (p.split('|').length === 2){
-                        let average = p.split('|')
-                        variables.push(calc.calculate_average(data[0].stockdata, sToSD(average[0],0,true), Number(average[1]), yr))
+                        let average = p.split('|');
+                        variables.push(calc.calculate_average(data[0].stockdata, sToSD(average[0],0,true), Number(average[1]), yr));
                     }
                     else if(p.split(':').length === 2){
-                        let delay = p.split(':')
-                        let num = sToSD(delay[0], yr + Number(delay[1]))
-                        if(num !== false) variables.push(Number(num))
-                        else variables = false;
-
+                        let delay = p.split(':');
+                        let num = sToSD(delay[0], yr + Number(delay[1]));
+                        if(num !== false) variables.push(Number(num));
+                        else variables.push(num);
                     }
-                    else if(p.length > 0) variables.push(Number(sToSD(p, yr)))
+                    else if(p.length > 0) variables.push(Number(sToSD(p, yr)));
                 }
                 year[custom[i].rowName] = (custom[i].sign === '$')
                 ?   `$${formatNumber(Number(evalExpression(variables, custom[i].equation)).toFixed(decimal))}`

@@ -200,17 +200,13 @@ function initial_values_calc(years, ttm, prev_eps, terminal_growth, discount, gr
  * @returns {Number} The answer for the expression with the variables
  */
 function evalExpression(variables, equation){
-    if(variables !== false){
-        const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
-        let scope = {};
-        for(let i = 0; i < variables.length; i ++){
-            scope[alphabet[i]] = variables[i];
-        }
-        return math.evaluate(equation, scope);
+    const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    let scope = {};
+    for(let i = 0; i < variables.length; i ++){
+        if(variables[i] === false) return 0;
+        scope[alphabet[i]] = variables[i];
     }
-    else{
-        return 0;
-    }
+    return math.evaluate(equation, scope);
 }
 
 
