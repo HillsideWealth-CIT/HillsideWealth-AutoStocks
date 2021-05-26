@@ -177,6 +177,15 @@ function column_builder(){
         { data : "stockdata.0.datestring" },
         { defaultContent: 0 },
         { data : "stock_current_price" },
+        {   data : null,
+            type : "any-number",
+            render: function(data, type, row, meta){
+                return(`
+                <div style="color: ${textColor(row.npvoutput.premiumDiscount)}">
+                    ${row.npvoutput.premiumDiscount}
+                </div>`)
+            }
+        },
 
         { data : "setup.fcfroic.5yrAvg", type : "any-number" },
 
@@ -226,15 +235,6 @@ function column_builder(){
         { data : "stockdata.0.fcfYield", type : "any-number" },
         { data : "stockdata.0.fcfMultiple", type : "any-number" },
         { data : "npvoutput.fvMultiple", type : "any-number" },
-        {   data : null,
-            type : "any-number",
-            render: function(data, type, row, meta){
-                return(`
-                <div style="color: ${textColor(row.npvoutput.premiumDiscount)}">
-                    ${row.npvoutput.premiumDiscount}
-                </div>`)
-            }
-        },
         { data : "fcfYield.min", type : "any-number" },
         { data : "fcfYield.max", type : "any-number" },
         { data : "setup.fcfYield.10yrAvg", type : "any-number" },
