@@ -45,10 +45,10 @@ function formatNumber(nums, extraSymbol) {
  */
 function clearNAN(param, extraSymbol) {
     if (isNaN(param)) {
-        return null;
+        return 'null';
     }
     if (!isFinite(param)) {
-        return Infinity;
+        return 'Infinity';
     }
     else if (extraSymbol) {
         return param + extraSymbol;
