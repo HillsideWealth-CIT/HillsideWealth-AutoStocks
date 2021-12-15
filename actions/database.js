@@ -2,7 +2,7 @@
 const { Pool } = require('pg')
 const pool = new Pool({
     connectionString: process.env.SECOND_DATABASE_URL,
-    ssl: true
+    ssl: { rejectUnauthorized: false }
 })
 
 const _ = require('lodash')
