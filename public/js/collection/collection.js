@@ -221,6 +221,7 @@ function column_builder(){
 
         { data : "setup.capex_sales.5yrAvg", type : "any-number" },
 
+        { data : "stockdata.1.debt_to_equity" },
         { data : "stockdata.0.cap_lease_debt" },
 
         { data : "stockdata.0.goodwill" },
@@ -232,6 +233,8 @@ function column_builder(){
 
         { data : "setup.cash_conversion_cycle.5yrAvg", type : "any-number" },
 
+        { data : "OwnerCashEarning_LFY", type : "any-number" },
+        { data : "OwnerCashEarningsYield", type : "any-number" },
         { data : "stockdata.0.fcfYield", type : "any-number" },
         { data : "stockdata.0.fcfMultiple", type : "any-number" },
         { data : "npvoutput.fvMultiple", type : "any-number" },

@@ -348,6 +348,8 @@ function FAD(data, column) {
     'NetDebt/FCF SD 5yr' : "setup.ndFcf.5stdev",
     'NetDebt/FCF SD 10yr' : "setup.ndFcf.10stdev",
 
+
+    'D/E (LFY)' : "stockdata.1.debt_to_equity",
     'CapitalLeases/Debt' : "stockdata.0.cap_lease_debt",
 
     'CAPEX/Sales%' : "stockdata.0.capex_sales",

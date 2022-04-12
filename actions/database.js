@@ -336,6 +336,34 @@ const arrayAddStockData = async (data) => {
                 if(i == 0) columns.push('goodwill')
                 placeholders.push(`$${params.push(parseFloat(isFinite(data[i].goodwill) ? data[i].goodwill : 0.0))}`)
             }
+            if(data[i].debt_to_equity != null){
+                if(i == 0) columns.push('debt_to_equity')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].debt_to_equity) ? data[i].debt_to_equity : 0.0))}`)
+            }
+            if(data[i].operating_cash_flow != null){
+                if(i == 0) columns.push('operating_cash_flow')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].operating_cash_flow) ? data[i].operating_cash_flow : 0.0))}`)
+            }
+            if(data[i].purchase_of_ppe != null){
+                if(i == 0) columns.push('purchase_of_ppe')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].purchase_of_ppe) ? data[i].purchase_of_ppe : 0.0))}`)
+            }
+            if(data[i].sales_of_ppe != null){
+                if(i == 0) columns.push('sales_of_ppe')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].sales_of_ppe) ? data[i].sales_of_ppe : 0.0))}`)
+            }
+            if(data[i].other_financing != null){
+                if(i == 0) columns.push('other_financing')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].other_financing) ? data[i].other_financing : 0.0))}`)
+            }
+            if(data[i].net_intangibles_purchase_and_sale != null){
+                if(i == 0) columns.push('net_intangibles_purchase_and_sale')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].net_intangibles_purchase_and_sale) ? data[i].net_intangibles_purchase_and_sale : 0.0))}`)
+            }
+            if(data[i].stock_based_compensation != null){
+                if(i == 0) columns.push('stock_based_compensation')
+                placeholders.push(`$${params.push(parseFloat(isFinite(data[i].stock_based_compensation) ? data[i].stock_based_compensation : 0.0))}`)
+            }
             if (i == 0) { columns.push('ttm') }
             placeholders.push(`$${params.push(data[i].ttm)}`)
         }
