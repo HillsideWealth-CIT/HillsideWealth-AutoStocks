@@ -35,6 +35,7 @@ var column_list = ['check',
     'FCF Margin% 5yr',
 
     'CAPEX/Sales% 5yr',
+    'D/E (LFY)',
     'CapitalLeases/Debt',
     'Goodwill% TTM',
 
@@ -43,6 +44,8 @@ var column_list = ['check',
     'FCF/Net Income% 5yr',
     'Cash Conversion Cycle 5yr',
 
+    'OwnerCashEarnings (LFY)',
+    'OwnerCashEarnings Yield',
     'FCF Yield',
     'FCF Multiple TTM',
     'FV FCF Multiple',

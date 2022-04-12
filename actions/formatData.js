@@ -353,6 +353,21 @@ function format_data(stock) {
         stock.dcf_values_15y = { fair_value: null, growth_value: null, terminal_value: null };
     }
 
+    //calculates Owner Cash Earnings LFY
+    try{
+        stock.OwnerCashEarning_LFY = (cNaI(Number(stock.stockdata[1].operating_cash_flow))
+        + cNaI(Number(stock.stockdata[1].purchase_of_ppe))
+        + cNaI(Number(stock.stockdata[1].sales_of_ppe))
+        + cNaI(Number(stock.stockdata[1].other_financing))
+        + cNaI(Number(stock.stockdata[1].net_intangibles_purchase_and_sale))
+        - cNaI(Number(stock.stockdata[1].stock_based_compensation))).toFixed(2)
+
+        stock.OwnerCashEarningsYield = ((cNaI(Number(stock.OwnerCashEarning_LFY)) / cNaI(Number(stock.stockdata[0].market_cap))) * 100).toFixed(2) + '%'
+    }
+    catch(err){
+     stock.OwnerCashEarning_LFY = 0
+    }
+
     // Calculates metric growth rates
     try {
         const end_date = stock.stockdata[0].date.getFullYear(),
@@ -684,6 +699,11 @@ function formatHistorical(data, cs, years=20) {
                         ? sd[row].cashflow_reinvestment_rate
                         : 'cashflow_reinvestment_rate';
                     break;
+                case 'debtToEquity':
+                    value = (avg === false) 
+                        ? sd[row].debt_to_equity
+                        : 'debt_to_equity';
+                    break;
                 case 'discountRate':
                     value = (avg === false) 
                         ? sd[row].discount_rate
@@ -794,6 +814,11 @@ function formatHistorical(data, cs, years=20) {
                         ?  sd[row].net_debt
                         : 'net_debt'
                     break;
+                case 'netIntangibles':
+                    value = (avg === false) 
+                        ?  sd[row].net_intangibles_purchase_and_sale
+                        : 'net_intangibles_purchase_and_sale'
+                    break;
                 case 'netIncome':
                     value = (avg === false) 
                         ?  sd[row].net_income
@@ -804,6 +829,11 @@ function formatHistorical(data, cs, years=20) {
                         ?  sd[row].netmargin
                         : 'netmargin'
                     break;
+                case 'operatingCashFlow':
+                    value = (avg === false) 
+                        ?  sd[row].operating_cash_flow
+                        : 'operating_cash_flow'
+                    break;
                 case 'operatingCushion':
                     value = (avg === false) 
                         ?  sd[row].operating_cushion
@@ -813,6 +843,11 @@ function formatHistorical(data, cs, years=20) {
                     value = (avg === false) 
                         ?  sd[row].operatingmargin
                         : 'operatingmargin'
+                    break;
+                case 'otherFinancing':
+                    value = (avg === false) 
+                        ?  sd[row].other_financing
+                        : 'other_financing'
                     break;
                 case 'ownerEarning':
                     value = (avg === false) 
@@ -834,6 +869,11 @@ function formatHistorical(data, cs, years=20) {
                         ?  sd[row].purchase_of_business
                         : 'purchase_of_business';
                     break;
+                case 'purchaseOfPPE':
+                    value = (avg === false) 
+                        ?  sd[row].purchase_of_ppe
+                        : 'purchase_of_ppe';
+                    break;
                 case 'reinvestedCfJdv':
                     value = (avg === false) 
                         ?  sd[row].reinvested_cf_jdv
@@ -854,6 +894,11 @@ function formatHistorical(data, cs, years=20) {
                         ?  sd[row].roic
                         : 'roic';
                     break;
+                case 'salesOfPPE':
+                    value = (avg === false) 
+                        ?  sd[row].sales_of_ppe
+                        : 'sales_of_ppe';
+                    break;
                 case 'sharesOutstanding':
                     value = (avg === false) 
                         ?  sd[row].shares_outstanding
@@ -868,6 +913,11 @@ function formatHistorical(data, cs, years=20) {
                     value = (avg === false) 
                         ?  sd[row].st_debt_lease_obligations
                         : 'st_debt_lease_obligations';
+                    break;
+                case 'stockBasedCompensation':
+                    value = (avg === false) 
+                        ?  sd[row].stock_based_compensation
+                        : 'stock_based_compensation';
                     break;
                 case 'terminalGrowthRate':
                     value = (avg === false) 

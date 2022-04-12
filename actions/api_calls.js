@@ -255,6 +255,20 @@ const gurufocusAdd = async (
                     catch{ currentData.invested_capital = NaN; }
                     try { currentData.goodwill = parseFloat(annuals.balance_sheet["Goodwill"][f])  }
                     catch{ currentData.goodwill = NaN; }
+                    try { currentData.debt_to_equity = parseFloat(annuals.common_size_ratios["Debt-to-Equity"][f])  }
+                    catch{ currentData.debt_to_equity = NaN; }
+                    try { currentData.operating_cash_flow = parseFloat(annuals.cashflow_statement["Cash Flow from Operations"][f])  }
+                    catch{ currentData.operating_cash_flow = NaN; }
+                    try { currentData.purchase_of_ppe = parseFloat(annuals.cashflow_statement["Purchase Of Property, Plant, Equipment"][f])  }
+                    catch{ currentData.purchase_of_ppe = NaN; }
+                    try { currentData.sales_of_ppe = parseFloat(annuals.cashflow_statement["Sale Of Property, Plant, Equipment"][f])  }
+                    catch{ currentData.sales_of_ppe = NaN; }
+                    try { currentData.other_financing = parseFloat(annuals.cashflow_statement["Other Financing"][f])  }
+                    catch{ currentData.other_financing = NaN; }
+                    try { currentData.net_intangibles_purchase_and_sale = parseFloat(annuals.cashflow_statement["Net Intangibles Purchase And Sale"][f])  }
+                    catch{ currentData.net_intangibles_purchase_and_sale = NaN; }
+                    try { currentData.stock_based_compensation = parseFloat(annuals.cashflow_statement["Stock Based Compensation"][f])  }
+                    catch{ currentData.stock_based_compensation = NaN; }
                 currentStock.data.push(currentData)
             }
         } catch (err) {
