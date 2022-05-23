@@ -83,7 +83,8 @@ function format_data(stock) {
 
         data.nd_aebitda = `${cNaI(Number(data.net_debt) / Number(data.aebitda)).toFixed(2)}`;
         data.ndFcf = `${cNaI(Number(data.net_debt) / Number(data.fcf)).toFixed(2)}`;
-        data.cap_lease_debt = `${cNaI(Number(data.cap_lease_debt) * 100).toFixed(2)}%`;
+        data.cap_lease_debt_test = data.cap_lease_debt
+        data.cap_lease_debt = data.cap_lease_debt != 0 ? `${cNaI(Number(data.cap_lease_debt) * 100).toFixed(2)}%`: `N/A`;
 
         data.capex_sales = `${cNaI((Number(data.capex) / Number(data.revenue)) * 100).toFixed(2)}%`;
         data.capex_ownerEarnings = `${cNaI((Number(data.capex) / (Number(data.owner_earning) * Number(data.shares_outstanding))) * 100).toFixed(2)}%`;
